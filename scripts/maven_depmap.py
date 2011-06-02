@@ -42,6 +42,9 @@ class Fragment:
         self.local_gid = local_gid
         self.local_aid = local_aid
 
+class IncompatibleFilenames(Exception):
+    def __init__(self):
+        self.args=("Filenames of pom and jar does not match properly. Check that jar subdirectories match '.' in pom name.",)
 
 def _get_tag_under_parent(dom, parent, tag):
     """get first xml tag under parent tag within dom"""
@@ -65,12 +68,14 @@ def _get_jpp_from_filename(pom_path, jar_path = None):
             jpp_gid = "JPP/%s" % basename(dirname(jar_path))
             jpp_aid = basename(jar_path)[:-4]
             # we assert that jar and pom parts match
-            assert pomname == "JPP.%s-%s.pom" % (jpp_gid[4:], jpp_aid)
+            if not pomname == "JPP.%s-%s.pom" % (jpp_gid[4:], jpp_aid):
+                raise IncompatibleFilenames()
         else:
             jpp_gid = "JPP"
             jpp_aid = basename(jar_path)[:-4]
             # we assert that jar and pom parts match
-            assert pomname == "JPP-%s-%s.pom" % (jpp_gid[4:], jpp_aid)
+            if not pomname == "JPP-%s.pom" % jpp_aid:
+                raise IncompatibleFilenames()
     else:
         if pomname[3] == ".":
             match = re.match('JPP\.([^-]*?)-.*', pomname)
@@ -170,17 +175,20 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
     append_deps = options.append
 
-    if len(sys.argv) < 3:
+    if len(args) < 2:
         parser.error("Incorrect number of arguments")
     # these will fail when incorrect number of arguments is given
-    fragment_path = sys.argv[1].strip()
-    pom_path = sys.argv[2].strip()
-    jar_path = sys.argv[3].strip()
-    if jar_path[-4:] == ".jar":
+    fragment_path = args[0].strip()
+    pom_path = args[1].strip()
+    if len(args) == 3:
+        jar_path = args[2].strip()
         fragment = parse_pom(pom_path, jar_path)
     else:
         fragment = parse_pom(pom_path)
 
     if fragment:
         output_fragment(fragment_path, fragment, append_deps)
-
+    else:
+        print "Unknown error while generating fragment. Send bugreport \
+        to https://fedorahosted.org/javapackages/"
+        sys.exit(1)
