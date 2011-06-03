@@ -32,5 +32,18 @@
 
 last_tag=`git tag | tail -n1`
 
+if [ -z $last_tag ];then 
+    echo "Nothing to do, no tags exist"
+    exit
+fi
+
 git archive -v --prefix="javapackages-$last_tag/" $last_tag | xz > \
     javapackages-$last_tag.tar.xz
+
+read -i 'n' -e -p "Do you want to upload file javapackages-$last_tag.tar.xz to fedorahosted? (y/n): "
+
+if [ "$REPLY" = "y" ];then
+    scp javapackages-$last_tag.tar.xz fedorahosted.org:javapackages
+fi
+
+
