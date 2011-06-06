@@ -1,0 +1,55 @@
+#!/usr/bin/python
+
+#
+#  maven.req - Maven requires generator
+#  Copyright (C) 2011 Jaromir Capik <jcapik@redhat.com>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# List of scopes considered runtime
+runtime_scopes = [None, "runtime"]
+
+import sys
+import xml.dom.minidom
+
+# Returns a list of direct subtags matching the tagname
+def getTag(tag,tagname):
+    result = []
+    for node in tag.childNodes:
+	if node.nodeType == node.ELEMENT_NODE and node.tagName == tagname:
+	    result.append(node)
+    return result
+
+# Returns a text contained in the last subtag matching the tagname
+def getText(tag,tagname):
+    result = None
+    for node in getTag(tag,tagname):
+	for text in node.childNodes:
+	    if text.nodeType == node.TEXT_NODE:
+		result = text.data
+    return result
+
+# Main loop (project / dependencies / dependency / ...)
+for pomfile in sys.stdin:
+    dom = xml.dom.minidom.parse(pomfile.rstrip())
+    for project_tag in getTag(dom, "project"):
+	for dependencies_tag in getTag(project_tag, "dependencies"):
+	    for dependency_tag in getTag(dependencies_tag, "dependency"):
+		scope = getText(dependency_tag,"scope")
+		if scope in runtime_scopes:
+		    groupId = getText(dependency_tag,"groupId")
+		    artifactId = getText(dependency_tag,"artifactId")
+		    if groupId != None and artifactId != None:
+			print "mvn(%s:%s)" %(groupId, artifactId)
