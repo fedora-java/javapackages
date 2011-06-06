@@ -1,0 +1,3 @@
+%__osgi_provides	%{_rpmconfigdir}/osgi.prov
+%__osgi_path	^.*\.jar
+
