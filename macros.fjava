@@ -43,9 +43,13 @@
 
 %add_maven_depmap(f:a:) \
 install -dm 755 $RPM_BUILD_ROOT/%{_mavendepmapfragdir}\
-python -m %{_datadir}/java-utils/maven_depmap \\\
+python -m %{_datadir}/java-utils/maven_depmap %{-a} \\\
           %{buildroot}%{_mavendepmapfragdir}/%{name}%{-f*:-%{-f*}} \\\
-          %{buildroot}%{_mavenpomdir}/%1 %if %# == 2 %{buildroot}/%{_javadir}/%2 %{-a} %endif \
+          %{buildroot}%{_mavenpomdir}/%1 \\\
+%if %# == 2 \
+	%{buildroot}/%{_javadir}/%2 \\\
+%endif \
+\
 %{nil}
 
 #==============================================================================
