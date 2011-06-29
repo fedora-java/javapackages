@@ -48,9 +48,13 @@ class Fragment:
         self.local_gid = local_gid
         self.local_aid = local_aid
 
+class PackagingTypeMissingFile(Exception):
+    def __init__(self, pom_path):
+        self.args=("Packaging type is not 'pom' and no artifact path has been provided for pom %s" % pom_path,)
+
 class IncompatibleFilenames(Exception):
-    def __init__(self):
-        self.args=("Filenames of pom and jar does not match properly. Check that jar subdirectories match '.' in pom name.",)
+    def __init__(self, pom_path, jar_path):
+        self.args=("Filenames of pom %s and jar %s does not match properly. Check that jar subdirectories match '.' in pom name." % (pom_path, jar_path),)
 
 def _get_tag_under_parent(dom, parent, tag):
     """get first xml tag under parent tag within dom"""
@@ -75,13 +79,13 @@ def _get_jpp_from_filename(pom_path, jar_path = None):
             jpp_aid = basename(jar_path)[:-4]
             # we assert that jar and pom parts match
             if not pomname == "JPP.%s-%s.pom" % (jpp_gid[4:], jpp_aid):
-                raise IncompatibleFilenames()
+                raise IncompatibleFilenames(pom_path, jar_path)
         else:
             jpp_gid = "JPP"
             jpp_aid = basename(jar_path)[:-4]
             # we assert that jar and pom parts match
             if not pomname == "JPP-%s.pom" % jpp_aid:
-                raise IncompatibleFilenames()
+                raise IncompatibleFilenames(pom_path, jar_path)
     else:
         if pomname[3] == ".":
             match = re.match('JPP\.([^-]*?)-.*', pomname)
@@ -102,6 +106,13 @@ def parse_pom(pom_file, jar_file = None):
         return None
 
     project = projects[0]
+    proj_packaging = _get_tag_under_parent(dom, project, 'packaging')
+    # if project packaging is undefined => jar
+    # only "pom" packaging type can be without jar_file path otherwise
+    # we bail
+    if not jar_file:
+        if not proj_packaging or proj_packaging.firstChild.nodeValue != "pom":
+            raise PackagingTypeMissingFile(pom_path)
 
     proj_version = _get_tag_under_parent(dom, project, 'version')
     proj_gid = _get_tag_under_parent(dom, project, 'groupId')
@@ -195,6 +206,7 @@ if __name__ == "__main__":
     if fragment:
         output_fragment(fragment_path, fragment, append_deps)
     else:
-        print "Unknown error while generating fragment. Send bugreport \
-        to https://fedorahosted.org/javapackages/"
+        print "Problem parsing pom file. Is it valid maven pom? Send bugreport \
+        to https://fedorahosted.org/javapackages/ and attach %s to \
+        this bugreport" % pom_path
         sys.exit(1)
