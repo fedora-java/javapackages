@@ -1,3 +1,3 @@
 %__maven_provides	%{_rpmconfigdir}/maven.prov
-%__maven_path	^%{_datadir}/maven2/.*\.pom
+%__maven_path	^%{_datadir}/maven-poms/.*\.pom
 
