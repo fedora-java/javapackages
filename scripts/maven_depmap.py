@@ -35,6 +35,7 @@
 
 from optparse import OptionParser
 import sys
+import os
 import re
 import xml.dom.minidom as minidom
 from os.path import basename, dirname
@@ -74,6 +75,8 @@ def _get_jpp_from_filename(pom_path, jar_path = None):
     """
     pomname = basename(pom_path)
     if jar_path:
+        if not os.path.isfile(jar_path):
+            raise IOError("Jar path doesn't exist")
         if pomname[3] == '.':
             jpp_gid = "JPP/%s" % basename(dirname(jar_path))
             jpp_aid = basename(jar_path)[:-4]
