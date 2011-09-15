@@ -59,10 +59,18 @@ class TagBuilder:
         for path in paths:
 	        self.get_osgi_provide (path)
     
-
+    def normalize_manifest(self, manifest):
+        lines = []
+        for line in manifest.readlines():
+            if line.startswith(' '):
+                lines[-1] += line.strip()
+            else:
+                lines.append(line.strip())
+        return lines
+    
     def handle_manifest(self, manifest):
         provideInfo = OsgiProvideInfo()
-        for line in manifest.readlines():
+        for line in self.normalize_manifest(manifest):
             if line.startswith("Bundle-SymbolicName:"):
                 provideInfo.setSymbolicName(line.split(':')[1].strip())
             if line.startswith("Bundle-Version:"):
