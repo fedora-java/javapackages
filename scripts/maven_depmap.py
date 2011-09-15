@@ -43,9 +43,9 @@ from os.path import basename, dirname
 class Fragment:
     """simple structure to hold fragment information"""
     def __init__(self, gid, aid, version, local_gid, local_aid):
-        self.gid = gid
-        self.aid = aid
-        self.version = version
+        self.gid = gid.strip()
+        self.aid = aid.strip()
+        self.version = version.strip()
         self.local_gid = local_gid
         self.local_aid = local_aid
 
