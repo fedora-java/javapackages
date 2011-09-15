@@ -43,37 +43,36 @@ class TagBuilder:
         for path in paths:
             self.get_osgi_require (path)
     
+    def normalize_manifest(self, manifest):
+        lines = []
+        for line in manifest.readlines():
+            if line.startswith(' '):
+                lines[-1] += line.strip()
+            else:
+                lines.append(line.strip())
+        return lines
+    
     def parse_manifest (self, manifest):
         headers = {}
         DELIM = ": "
-        name = None
-        for line in manifest.readlines():
+        for line in self.normalize_manifest(manifest):
             split = line.split(DELIM)
-            if not name:
+            if len(split) > 1:
                 name = split[0].strip()
                 headers[name]= split[1].strip()
-            else:
-                if len(split) < 2:
-                    headers[name] = headers[name]+line.strip()
-                else:
-                    name = split[0].strip()
-                    headers[name]= split[1].strip()
         return headers
     
     def split_bundle_name (self, bundles):
         bundlenames = []
         for bundle in bundles.split(','):
-            if ")" in bundle or "]" in bundle >0:
+            if ")" in bundle or "]" in bundle:
                 continue
             if ";" in bundle:
                 bundlenames.append(bundle.split(";")[0].strip())
             else:
-                bundlenames.append(bundle)
-                
+                bundlenames.append(bundle.strip())
         return bundlenames
-                
-            
-	  
+    
     def get_osgi_require (self, path):
         if not os.path.islink(path):
             if zipfile.is_zipfile(path):
