@@ -70,7 +70,7 @@ popd \
 }
 
 %__find_javadoc_license() %{expand: \
-%{!?__javadoc_license} \
+%{!?__javadoc_license: \
 %global __javadoc_license %(\
 cd %{buildsubdir} \
 for lic in LICENSE COPYING;do \
@@ -81,6 +81,7 @@ fi \
 done \
 echo "%{nil}";
 )\
+}
 }
 
 %generate_javadoc_sub() %{expand:\
