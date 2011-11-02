@@ -99,7 +99,7 @@ API documentation for %{name}. \
 %{?__spec_check_pre} \
 pushd %{buildsubdir} \
 %{__mkdir_p} %{buildroot}/%{_javadocdir}/%{name} \
-cp -pr %{__javadoc_dir}/* %{buildroot}/%{_javadocdir}/%{name} \
+cp -pr %{__apidocs_dir}/* %{buildroot}/%{_javadocdir}/%{name} \
 popd \
 }
 
