@@ -61,6 +61,40 @@ python -m %{_datadir}/java-utils/maven_depmap %{-a} \\\
 %{nil}
 
 #==============================================================================
+
+# %generate_javadoc_subpackage can be used to completely create
+# javadoc subpackage for java projects. There are these variables that
+# change its behaviour:
+#
+# %__javadoc_license - set if the license is in non-standard place to
+#                prevent Requires on main package
+# %__apidocs_dir - set custom path to directory with javadocs
+#                (defaults to target/site/apidocs)
+# %__javadoc_skip_requires - if defined javadoc subpackage will not
+#                require main package under any circumstances
+#
+
+
+%generate_javadoc_sub() %{expand:\
+%{!?__apidocs_dir: %global __apidocs_dir target/site/apidocs} \
+%{expand: %{__find_javadoc_license}} \
+%global __spec_check_pre %{expand:%{__java_check_pre}} \
+%package javadoc \
+Group:          Documentation \
+Summary:        Javadoc for %{name} \
+Requires:       jpackage-utils \
+%if "%{__javadoc_license}" == "%{nil}" \
+%{?!__javadoc_skip_requires:Requires: %{?epoch:%{epoch}:}%{name}-%{version}} \
+%endif \
+%description javadoc \
+API documentation for %{name}. \
+%files javadoc \
+%{_javadocdir}/%{name} \
+%doc %{__javadoc_license} \
+# we needs this so that rpm runs __spec_check_pre \
+%check \
+}
+
 %__java_check_pre %{expand: \
 %{?__spec_check_pre} \
 pushd %{buildsubdir} \
@@ -86,25 +120,5 @@ echo $licenses; \
 fi \
 )\
 }
-}
-
-%generate_javadoc_sub() %{expand:\
-%{expand: %{__find_javadoc_license}} \
-%global __javadoc_dir target/site/apidocs \
-%global __spec_check_pre %{expand:%{__java_check_pre}} \
-%package javadoc \
-Group:          Documentation \
-Summary:        Javadoc for %{name} \
-Requires:       jpackage-utils \
-%if "%{__javadoc_license}" == "%{nil}" \
-%{?!__javadoc_skip_requires:Requires: %{?epoch:%{epoch}:}%{name}-%{version}} \
-%endif \
-%description javadoc \
-API documentation for %{name}. \
-%files javadoc \
-%{_javadocdir}/%{name} \
-%doc %{__javadoc_license} \
-# we needs this so that rpm runs __spec_check_pre \
-%check \
 }
 
