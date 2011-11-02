@@ -61,5 +61,45 @@ python -m %{_datadir}/java-utils/maven_depmap %{-a} \\\
 %{nil}
 
 #==============================================================================
+%__java_check_pre %{expand: \
+%{?__spec_check_pre} \
+pushd %{buildsubdir} \
+%{__mkdir_p} %{buildroot}/%{_javadocdir}/%{name} \
+cp -pr %{__javadoc_dir}/* %{buildroot}/%{_javadocdir}/%{name} \
+popd \
+}
 
+%__find_javadoc_license() %{expand: \
+%{!?__javadoc_license} \
+%global __javadoc_license %(\
+cd %{buildsubdir} \
+for lic in LICENSE COPYING;do \
+if [ -f $lic ];then \
+   echo $lic; \
+   exit 0; \
+fi \
+done \
+echo "%{nil}";
+)\
+}
+
+%generate_javadoc_sub() %{expand:\
+%{expand: %{__find_javadoc_license}} \
+%global __javadoc_dir target/site/apidocs \
+%global __spec_check_pre %{expand:%{__java_check_pre}} \
+%package javadoc \
+Group:          Documentation \
+Summary:        Javadoc for %{name} \
+Requires:       jpackage-utils \
+%if "%{__javadoc_license}" == "%{nil}" \
+%{?!__javadoc_skip_requires:Requires: %{?epoch:%{epoch}:}%{name}-%{version}} \
+%endif \
+%description javadoc \
+API documentation for %{name}. \
+%files javadoc \
+%{_javadocdir}/%{name} \
+%doc %{__javadoc_license} \
+# we needs this so that rpm runs __spec_check_pre \
+%check \
+}
 
