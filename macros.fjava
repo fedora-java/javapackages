@@ -63,8 +63,9 @@ python -m %{_datadir}/java-utils/maven_depmap %{-a} \\\
 #==============================================================================
 
 # %create_javadoc_subpackage can be used to completely create
-# javadoc subpackage for java projects. There are these variables that
-# change its behaviour:
+# javadoc subpackage for java projects.
+# !!! Needs to be used at the end of %install section
+# There are these variables that change its behaviour:
 #
 # %__javadoc_license - set if the license is in non-standard place to
 #                prevent Requires on main package
