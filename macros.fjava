@@ -80,7 +80,7 @@ python -m %{_datadir}/java-utils/maven_depmap %{-a} \\\
 %create_javadoc_subpackage() %{expand:\
 %{!?__apidocs_dir: %global __apidocs_dir target/site/apidocs} \
 %{expand: %{__find_javadoc_license}} \
-%global __spec_check_pre %{expand:%{__java_check_pre}} \
+%global __spec_install_post %{expand:%{__java_install_post}} \
 %package javadoc \
 Group:          Documentation \
 Summary:        Javadoc for %{name} \
@@ -93,11 +93,9 @@ API documentation for %{name}. \
 %files javadoc \
 %{_javadocdir}/%{name} \
 %doc %{__javadoc_license} \
-# we needs this so that rpm runs __spec_check_pre \
-%check \
 }
 
-%__java_check_pre %{expand: \
+%__java_install_post %{expand: \
 %{?__spec_check_pre} \
 pushd %{buildsubdir} \
 %{__mkdir_p} %{buildroot}/%{_javadocdir}/%{name} \
