@@ -62,7 +62,7 @@ python -m %{_datadir}/java-utils/maven_depmap %{-a} \\\
 
 #==============================================================================
 
-# %generate_javadoc_subpackage can be used to completely create
+# %create_javadoc_subpackage can be used to completely create
 # javadoc subpackage for java projects. There are these variables that
 # change its behaviour:
 #
@@ -71,11 +71,12 @@ python -m %{_datadir}/java-utils/maven_depmap %{-a} \\\
 # %__apidocs_dir - set custom path to directory with javadocs
 #                (defaults to target/site/apidocs)
 # %__javadoc_skip_requires - if defined javadoc subpackage will not
-#                require main package under any circumstances
+#                require main package under any circumstances (useful
+#                if upstream doesn't provide separate license file)
 #
 
 
-%generate_javadoc_sub() %{expand:\
+%create_javadoc_subpackage() %{expand:\
 %{!?__apidocs_dir: %global __apidocs_dir target/site/apidocs} \
 %{expand: %{__find_javadoc_license}} \
 %global __spec_check_pre %{expand:%{__java_check_pre}} \
