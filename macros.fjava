@@ -73,13 +73,17 @@ popd \
 %{!?__javadoc_license: \
 %global __javadoc_license %(\
 cd %{buildsubdir} \
-for lic in LICENSE COPYING;do \
+licenses="" \
+for lic in LICENSE* COPYING* doc/LICENSE* doc/COPYING* license*;do \
 if [ -f $lic ];then \
-   echo $lic; \
-   exit 0; \
+   licenses="$licenses $lic"; \
 fi \
 done \
-echo "%{nil}";
+if [ "$licenses" == "" ]; then \
+echo "%{nil}"; \
+else \
+echo $licenses; \
+fi \
 )\
 }
 }
