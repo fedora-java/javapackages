@@ -57,6 +57,10 @@ class IncompatibleFilenames(Exception):
     def __init__(self, pom_path, jar_path):
         self.args=("Filenames of pom %s and jar %s does not match properly. Check that jar subdirectories match '.' in pom name." % (pom_path, jar_path),)
 
+class MissingJarFile(Exception):
+    def __init__(self):
+        self.args=("Jar seems to be missing in standard directories. Make sure you have installed it")
+
 def _get_tag_under_parent(dom, parent, tag):
     """get first xml tag under parent tag within dom"""
     tags = dom.getElementsByTagName(tag)
@@ -73,19 +77,35 @@ def _get_jpp_from_filename(pom_path, jar_path = None):
     is "xbean-main". Therefore for jar name to be compatible it has be
     in %{_javadir}/xbean/xbean-main.jar
     """
+    # this is not nice, because macros can change but handling these
+    # in rpm macros is ugly as hell
+    javadirs=["/usr/share/java", "/usr/share/java-jni", "/usr/lib/java",
+              "/usr/lib64/java"]
     pomname = basename(pom_path)
     if jar_path:
         if not os.path.isfile(jar_path):
             raise IOError("Jar path doesn't exist")
+        jarpart = None
+        for jdir in javadirs:
+            if jdir in jar_path:
+                javadir_re = re.compile(".*%s/" % jdir)
+                jarpart = re.sub(javadir_re, "", jar_path)
+        if not jarpart:
+            raise MissingJarFile()
+
         if pomname[3] == '.':
-            jpp_gid = "JPP/%s" % basename(dirname(jar_path))
-            jpp_aid = basename(jar_path)[:-4]
+            if '/' not in jarpart:
+                raise IncompatibleFilenames(pom_path, jar_path)
+            jpp_gid = "JPP/%s" % dirname(jarpart)
+            jpp_aid = basename(jarpart)[:-4]
             # we assert that jar and pom parts match
             if not pomname == "JPP.%s-%s.pom" % (jpp_gid[4:], jpp_aid):
                 raise IncompatibleFilenames(pom_path, jar_path)
         else:
+            if '/' in jarpart:
+                raise IncompatibleFilenames(pom_path, jar_path)
             jpp_gid = "JPP"
-            jpp_aid = basename(jar_path)[:-4]
+            jpp_aid = basename(jarpart)[:-4]
             # we assert that jar and pom parts match
             if not pomname == "JPP-%s.pom" % jpp_aid:
                 raise IncompatibleFilenames(pom_path, jar_path)
