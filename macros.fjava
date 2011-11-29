@@ -42,24 +42,36 @@
 #
 
 %add_maven_depmap(f:a:) \
+# default values \
+%if %# == 0 \
+    _pompart="JPP-%{name}.pom" \
+   _jarpart="%{name}.jar" \
+%else \
+   _pompart="%1" \
+   _jarpart="%2" \
+%endif \
 install -dm 755 $RPM_BUILD_ROOT/%{_mavendepmapfragdir}\
-_jpath="jar_missing_in_jar_paths" \
-if [ -f %{buildroot}/%{_javadir}/%2 ]; then \
-	_jpath="%{buildroot}/%{_javadir}/%2" \
-elif [ -f %{buildroot}/%{_javajnidir}/%2 ]; then \
-	_jpath="%{buildroot}/%{_javajnidir}/%2" \
-elif [ -f %{buildroot}/%{_jnidir}/%2 ]; then \
-	_jpath="%{buildroot}/%{_jnidir}/%2" \
+_jpath="$_jarpart" \
+if [ -f %{buildroot}/%{_javadir}/$_jarpart ]; then \
+	_jpath="%{buildroot}/%{_javadir}/$_jarpart" \
+elif [ -f %{buildroot}/%{_javajnidir}/$_jarpart ]; then \
+	_jpath="%{buildroot}/%{_javajnidir}/$_jarpart" \
+elif [ -f %{buildroot}/%{_jnidir}/$_jarpart ]; then \
+	_jpath="%{buildroot}/%{_jnidir}/$_jarpart" \
 fi \
 python -m %{_datadir}/java-utils/maven_depmap %{-a} \\\
           %{buildroot}%{_mavendepmapfragdir}/%{name}%{-f*:-%{-f*}} \\\
-          %{buildroot}%{_mavenpomdir}/%1 \\\
+          %{buildroot}%{_mavenpomdir}/$_pompart \\\
 %if %# == 2 \
+          "${_jpath}" \\\
+%endif \
+%if %# == 0 \
           "${_jpath}" \\\
 %endif \
 \
 %{nil}
 
 #==============================================================================
+
 
 
