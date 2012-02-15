@@ -64,13 +64,21 @@ class TagBuilder:
     
     def split_bundle_name (self, bundles):
         bundlenames = []
+        bundleline = ""
         for bundle in bundles.split(','):
-            if ")" in bundle or "]" in bundle:
+            if "(" in bundle or "[" in bundle:
+                bundleline = bundle
+                continue
+            if bundleline:
+                bundle = bundleline + bundle
+            if ":=optional" in bundle:
+                bundleline = ""
                 continue
             if ";" in bundle:
                 bundlenames.append(bundle.split(";")[0].strip())
             else:
                 bundlenames.append(bundle.strip())
+            bundleline = ""
         return bundlenames
     
     def get_osgi_require (self, path):
