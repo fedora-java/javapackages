@@ -28,36 +28,37 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Authors: Alexander Kurtakov <akurtako@redhat.com>
+#          Stanislav Ochotnicky <sochotnicky@redhat.com>
 
 import sys
-import xml.etree.ElementTree as ET
+from xml.etree.ElementTree import fromstring
+from StringIO import StringIO
 
 class TagBuilder:
     mavenns = "{http://maven.apache.org/POM/4.0.0}"
-    
+
     def __init__ (self, filelist=None):
         if filelist == None:
             filelist = sys.stdin
         paths = map (lambda x: x.rstrip (), filelist.readlines ())
         for path in paths:
 	        self.get_mvn_provide (path)
-	  
+
     def get_mvn_provide (self, path):
-        doc = ET.parse(path)
-        artifactId = doc.getroot().findtext("%sartifactId"%(self.mavenns))
-        if artifactId is None:
-            artifactId = doc.getroot().findtext("artifactId")
-        if artifactId is None:
-            return
-        groupId = doc.getroot().findtext("%sgroupId"%(self.mavenns))
-        if groupId is None:
-            groupId = doc.getroot().findtext("groupId")
-        if groupId is None:
-            groupId = doc.getroot().findtext("%sparent/%sgroupId"%(self.mavenns, self.mavenns))
-        if groupId is None:
-            groupId = doc.getroot().findtext("parent/groupId")
-        if groupId is not None:
-            print "mvn(%s:%s)" %(groupId, artifactId)
+        buf = StringIO()
+        buf.write('<fragments>\n')
+        with open(path) as f:
+            buf.write(f.read())
+        buf.write('</fragments>')
+        fragments = buf.getvalue()
+        doc = fromstring(fragments)
+
+        for depmap in doc.getchildren():
+            for dep_part in depmap.getchildren():
+                if dep_part.tag == 'maven':
+                    groupId = dep_part.findtext("groupId")
+                    artifactId = dep_part.findtext("artifactId")
+                    print "mvn(%s:%s)" %(groupId, artifactId)
 
 if __name__ == "__main__":
     builder = TagBuilder ()
