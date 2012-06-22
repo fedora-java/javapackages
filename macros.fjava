@@ -137,12 +137,104 @@ fi \
 
 #==============================================================================
 #
-# TODO: this is undocumented yet
+# %pom_* -- macros for batch editing of POM files
+#
+# These macros can be used to edit Maven POM files directly from RPM spec
+# file. Using these macros it is possible to alter Maven dependency management,
+# change plugin invocation, or even inject or remove arbitrary XML code to/from
+# nodes described by an XPath expression.
+#
+# See comments preceding individual macros for more detailed documentation.
 #
 
+# Private macro, shouldn't be used directly
 %__pom_call           . %{_datadir}/java-utils/pom_editor.sh; pom_
+
+
+# %pom_remove_dep - remove dependency on Maven artifact from POM file
+#
+# Usage: %pom_remove_dep [groupId]:[artifactId] [POM location]
+#
+# This macro patches specified POM file not to contain dependencies on given
+# Maven artifact.
+#
+# groupId and artifactId are identifiers of Maven group and artifact of the
+# module on which dependency is to be removed. If they are ommited then all
+# identifiers are matched.
+#
+# POM location can be either a full path to the POM file, or a path to the
+# directory containing pom.xml. If POM location is not given then pom.xml from
+# current working directory is used.
+#
 %pom_remove_dep()     %{expand: %{__pom_call}remove_dep     %*}
+
+
+# %pom_remove_plugin - remove Maven plugin invocation from POM file
+#
+# Usage: %pom_remove_plugin [groupId]:[artifactId] [POM location]
+#
+# This macro patches specified POM file not to contain invocations of given
+# Maven plugin.
+#
+# groupId and artifactId are identifiers of Maven group and artifact of the
+# plugin which invocation is to be removed. If they are ommited then all
+# identifiers are matched.
+#
+# POM location can be either a full path to the POM file, or a path to the
+# directory containing pom.xml. If POM location is not given then pom.xml from
+# current working directory is used.
+#
 %pom_remove_plugin()  %{expand: %{__pom_call}remove_plugin  %*}
+
+
+# %pom_disable_module - disable given project module in POM file
+#
+# Usage: %pom_disable_module <module name> [POM location]
+#
+# This macro patches specified POM file not to contain reference to given
+# project module.
+#
+# Module name is the exact name of the module to be disabled. It must not be
+# ommited.
+#
+# POM location can be either a full path to the POM file, or a path to the
+# directory containing pom.xml. If POM location is not given then pom.xml from
+# current working directory is used.
+#
 %pom_disable_module() %{expand: %{__pom_call}disable_module %*}
+
+
+# %pom_xpath_remove - remove an XML node from POM file
+#
+# Usage: %pom_xpath_remove <XPath> [POM location]
+#
+# This macro patches specified POM file removing all XML nodes described by the
+# XPath expression.
+#
+# XPath is an expression describing a set of XML nodes to be removed from the
+# POM file. It must be a properly formated XPath 1.0 expression, as described
+# in <http://www.w3.org/TR/xpath/>.
+#
+# POM location can be either a full path to the POM file, or a path to the
+# directory containing pom.xml. If POM location is not given then pom.xml from
+# current working directory is used.
+#
 %pom_xpath_remove()   %{expand: %{__pom_call}xpath_remove   %*}
+
+
+# %pom_xpath_inject - inject XML code into POM file
+#
+# Usage: %pom_xpath_inject <XPath> [XML code] [POM location]
+#
+# This macro patches specified POM file appending some code as childreen of all
+# XML nodes described by the XPath expression.
+#
+# XPath is an expression describing a set of XML nodes in the POM file to which
+# child code is to be appended. It must be a properly formated XPath 1.0
+# expression, as described in <http://www.w3.org/TR/xpath/>.
+#
+# POM location can be either a full path to the POM file, or a path to the
+# directory containing pom.xml. If POM location is not given then pom.xml from
+# current working directory is used.
+#
 %pom_xpath_inject()   %{expand: %{__pom_call}xpath_inject   %*}
