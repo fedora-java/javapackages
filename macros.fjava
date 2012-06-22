@@ -28,7 +28,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Authors: Stanislav Ochotnicky <sochotnicky@redhat.com>
-#          [your name here]
+#          Mikolaj Izdebski <mizdebsk@redhat.com>
 
 
 #==============================================================================
@@ -135,3 +135,14 @@ fi \
 }
 
 
+#==============================================================================
+#
+# TODO: this is undocumented yet
+#
+
+%__pom_call           . %{_datadir}/java-utils/pom_editor.sh; pom_
+%pom_remove_dep()     %{expand: %{__pom_call}remove_dep     %*}
+%pom_remove_plugin()  %{expand: %{__pom_call}remove_plugin  %*}
+%pom_disable_module() %{expand: %{__pom_call}disable_module %*}
+%pom_xpath_remove()   %{expand: %{__pom_call}xpath_remove   %*}
+%pom_xpath_inject()   %{expand: %{__pom_call}xpath_inject   %*}
