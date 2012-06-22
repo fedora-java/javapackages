@@ -31,7 +31,9 @@
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
 
-_pom_xslt_header='<?xml version="1.0" encoding="UTF-8"?>
+_pom_initialize()
+{
+    _pom_xslt_header='<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns="http://maven.apache.org/POM/4.0.0"
@@ -42,13 +44,14 @@ _pom_xslt_header='<?xml version="1.0" encoding="UTF-8"?>
               omit-xml-declaration="yes"/>
 '
 
-_pom_xslt_trailer='<xsl:template match="@*|node()">
+    _pom_xslt_trailer='<xsl:template match="@*|node()">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>
 '
+}
 
 
 # Print an error message followed by backtrace and exit.
@@ -176,29 +179,44 @@ EOF
 
 pom_remove_dep()
 {
+    set +x
+    _pom_initialize
     _pom_disable_gaid pom:dependencies/pom:dependency "${@}"
+    set -x
 }
 
 
 pom_remove_plugin()
 {
+    set +x
+    _pom_initialize
     _pom_disable_gaid pom:plugins/pom:plugin "${@}"
+    set -x
 }
 
 
 pom_disable_module()
 {
+    set +x
+    _pom_initialize
     _pom_disable_xpath "${2}" "//pom:modules/pom:module [text()='${1}']" "module disabled by maintainer: ${1}"
+    set -x
 }
 
 
 pom_xpath_remove()
 {
+    set +x
+    _pom_initialize
     _pom_disable_xpath "${2}" "${1}" "element removed by maintainer: ${1}"
+    set -x
 }
 
 
 pom_xpath_inject()
 {
+    set +x
+    _pom_initialize
     _pom_inject_xpath "${3}" "${1}" "${2}"
+    set -x
 }
