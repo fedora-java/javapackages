@@ -67,6 +67,8 @@ class TagBuilder:
         bundlenames = []
         bundleline = ""
         for bundle in bundles.split(','):
+            if not bundle:
+                continue
             if "(" in bundle or "[" in bundle:
                 bundleline = bundle
                 continue
