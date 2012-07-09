@@ -45,6 +45,7 @@ git archive -v --prefix="javapackages-$last_tag/" $last_tag | xz > \
 read -i 'n' -e -p "Do you want to upload file javapackages-$last_tag.tar.xz to fedorahosted? (y/n): "
 
 if [ "$REPLY" = "y" ];then
+    git push --tags
     scp javapackages-$last_tag.tar.xz fedorahosted.org:javapackages
 fi
 
