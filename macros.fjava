@@ -222,6 +222,12 @@ fi \
 # directory containing pom.xml. If POM location is not given then pom.xml from
 # current working directory is used.
 #
+# NOTE: POM files use a specific namespace - http://maven.apache.org/POM/4.0.0.
+# The easiest way to respect this namespace in XPath expressions is prefixing
+# all node names with "pom:". For example, "pom:environment/pom:os" will work
+# because it selects nodes from pom namespace, but "environment/os" won't find
+# anything because it looks for nodes that don't belong to any XML namespace.
+#
 %pom_xpath_remove()   %{expand: %{__pom_call}xpath_remove   %*
 }
 
