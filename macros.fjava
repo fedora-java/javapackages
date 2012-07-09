@@ -166,7 +166,8 @@ fi \
 # directory containing pom.xml. If POM location is not given then pom.xml from
 # current working directory is used.
 #
-%pom_remove_dep()     %{expand: %{__pom_call}remove_dep     %*}
+%pom_remove_dep()     %{expand: %{__pom_call}remove_dep     %*
+}
 
 
 # %pom_remove_plugin - remove Maven plugin invocation from POM file
@@ -184,7 +185,8 @@ fi \
 # directory containing pom.xml. If POM location is not given then pom.xml from
 # current working directory is used.
 #
-%pom_remove_plugin()  %{expand: %{__pom_call}remove_plugin  %*}
+%pom_remove_plugin()  %{expand: %{__pom_call}remove_plugin  %*
+}
 
 
 # %pom_disable_module - disable given project module in POM file
@@ -201,7 +203,8 @@ fi \
 # directory containing pom.xml. If POM location is not given then pom.xml from
 # current working directory is used.
 #
-%pom_disable_module() %{expand: %{__pom_call}disable_module %*}
+%pom_disable_module() %{expand: %{__pom_call}disable_module %*
+}
 
 
 # %pom_xpath_remove - remove an XML node from POM file
@@ -219,7 +222,8 @@ fi \
 # directory containing pom.xml. If POM location is not given then pom.xml from
 # current working directory is used.
 #
-%pom_xpath_remove()   %{expand: %{__pom_call}xpath_remove   %*}
+%pom_xpath_remove()   %{expand: %{__pom_call}xpath_remove   %*
+}
 
 
 # %pom_xpath_inject - inject XML code into POM file
@@ -237,4 +241,5 @@ fi \
 # directory containing pom.xml. If POM location is not given then pom.xml from
 # current working directory is used.
 #
-%pom_xpath_inject()   %{expand: %{__pom_call}xpath_inject   %*}
+%pom_xpath_inject()   %{expand: %{__pom_call}xpath_inject   %*
+}
