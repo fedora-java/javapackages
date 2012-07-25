@@ -36,14 +36,19 @@
 # add_maven_depmap is simplified version of jpackage-style add_to_maven_depmap
 # -f addition to fragment name
 # -a is "g1:a1,g2:a2" formatted string with additional depmaps (groupId:artifactId,...)
+# -v is "v1,v2" formatted string with additional compatibility versions
+#    supposed to be provided (jar,pom will be renamed to -%{version} variants
+#    and additional symlinks optionally created)
 # %1 is the pom filename relative to mavenpomdir
 # %2 is the path to jar file (when omitted we deal with parent pom file without jar)
 #
 # add_maven_depmap automatically parses pom file and it will fail with incorrect pom
 # or jar filename
 #
+# in the end add_maven_depmap optionally moves jar and pom file to
+# -%{version} variant and can create additional versioned symlinks
 
-%add_maven_depmap(f:a:) \
+%add_maven_depmap(f:a:v:) \
 # default values \
 %if %# == 0 \
     _pompart="JPP-%{name}.pom" \
@@ -70,6 +75,24 @@ python -m %{_datadir}/java-utils/maven_depmap %{-a} \\\
 %if %# == 0 \
           "${_jpath}" \\\
 %endif \
+\
+# this part only works for jars for now (now war/other compat support) \
+if [[ "%{-v}" != "" ]];then \
+mv %{buildroot}%{_mavenpomdir}/$_pompart \\\
+   %{buildroot}%{_mavenpomdir}/${_pompart/.pom/-%{version}.pom} \
+if [ -f ${_jpath} ]; then \
+    mv ${_jpath} ${_jpath/.jar/-%{version}.jar} \
+fi \
+for ver in $(echo %{-v*} | tr ',' '\\n');do \
+ ln -s ${_pompart/.pom/-%{version}.pom} \\\
+       %{buildroot}/%{_mavenpomdir}/${_pompart/.pom/-$ver.pom} \
+ # we can have pom-only artifacts \
+ if [ -f ${_jpath/.jar/-%{version}.jar} ];then \
+       ln -s `basename ${_jpath/.jar/-%{version}.jar}` \\\
+             ${_jpath/.jar/-$ver.jar} \
+ fi \
+done \
+fi \
 \
 %{nil}
 
