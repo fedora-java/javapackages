@@ -59,7 +59,8 @@ class TagBuilder:
                 if dep_part.tag == 'maven':
                     groupId = dep_part.findtext("groupId")
                     artifactId = dep_part.findtext("artifactId")
-                    print "mvn(%s:%s)" %(groupId, artifactId)
+                    version = dep_part.findtext("version")
+                    print "mvn(%s:%s) = %s" %(groupId, artifactId, version)
 
 if __name__ == "__main__":
     builder = TagBuilder ()
