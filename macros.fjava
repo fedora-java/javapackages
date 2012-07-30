@@ -300,7 +300,7 @@ fi \
 
 # %pom_remove_parent - remove parent POM reference from POM file
 #
-# Usage: %pom_add_parent [POM location]
+# Usage: %pom_remove_parent [POM location]
 #
 # This macro patches specified POM file removing reference to parent POM.
 #
@@ -325,4 +325,34 @@ fi \
 # information about parameters.
 #
 %pom_set_parent()     %{expand: %{__pom_call}set_parent     %*
+}
+
+
+# %pom_add_dep[_mgmt] - add dependency to POM file
+#
+# Usage: %pom_add_dep groupId:artifactId[:version:[scope]] [POM location] \
+#            [extra XML]
+#        %pom_add_dep_mgmt groupId:articId[:version:[scope]] [POM location] \
+#            [extra XML]
+#
+# These macros patch specified POM file adding a dependency on given version of
+# artifactId from groupId, with given scope (if any). %pom_add_dep adds the
+# dependency to <dependencies> XML node, while %pom_add_dep_mgmt adds it to
+# <dependencyManagement>.
+#
+# groupId and artifactId are identifiers of Maven artifact on which dependency
+# is to be added.. They must be specified. If version is not specified then
+# default value of "any" is used. If scope is not specified then no scope is
+# defined (Maven defaults to "compile" in this case).
+#
+# POM location can be either a full path to the POM file, or a path to the
+# directory containing pom.xml. If POM location is not given then pom.xml from
+# current working directory is used.
+#
+# Extra XML is additional XML code to be added into the <dependency> node. This
+# parameter can be ommited, in which case no extra XML is appended.
+#
+%pom_add_dep()        %{expand: %{__pom_call}add_dep        %*
+}
+%pom_add_dep_mgmt()   %{expand: %{__pom_call}add_dep_mgmt   %*
 }

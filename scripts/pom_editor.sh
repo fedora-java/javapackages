@@ -284,3 +284,21 @@ pom_set_parent()
     _pom_inject_gaid "pom:project" "${1}" "${2}" "parent" "${3}"
     set -x
 }
+
+
+pom_add_dep()
+{
+    set +x
+    _pom_initialize
+    _pom_inject_gaid "pom:project/pom:dependencies" "${1}" "${2}" "dependency" "${3}"
+    set -x
+}
+
+
+pom_add_dep_mgmt()
+{
+    set +x
+    _pom_initialize
+    _pom_inject_gaid "pom:project/pom:dependencyManagement" "${1}" "${2}" "dependency" "${3}"
+    set -x
+}
