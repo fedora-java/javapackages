@@ -190,6 +190,30 @@ EOF
 }
 
 
+# Add a new XML element referencing given artifact.
+#  $1 - XPath of parent node
+#  $2 - groupId:artifactId[:version[:scope]]
+#  $3 - POM location pattern
+#  $4 - XML tag name
+#  $5 - additional XML contents
+_pom_inject_gaid()
+{
+    local xml=$(awk '
+BEGIN { FS=":" }
+
+{
+  if (!$3) { $3="any" }
+  if (!$4) { $4="compile" }
+  print    "<groupId>" $1 "</groupId>"
+  print "<artifactId>" $2 "</artifactId>"
+  print    "<version>" $3 "</version>"
+  print      "<scope>" $4 "</scope>"
+}' <<<"${2}")
+
+    _pom_inject_xpath "${3}" "${1}" "<${4}> ${xml} ${5} </${4}>"
+}
+
+
 pom_remove_dep()
 {
     set +x
