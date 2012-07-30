@@ -80,7 +80,7 @@ _pom_patch()
     fi
 
     # Create a backup file -- pom.xml.orig.
-    test -f "${pom}".orig || cp "${pom}"{,.orig}
+    test -f "${pom}".orig || cp -p "${pom}"{,.orig}
 
     # Apply identity transformation.
     xsltproc --nonet - "${pom}" >"${pom}".tmp <<<"${_pom_xslt_header}${_pom_xslt_trailer}"
