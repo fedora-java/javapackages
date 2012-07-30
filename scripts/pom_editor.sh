@@ -202,12 +202,11 @@ _pom_inject_gaid()
 BEGIN { FS=":" }
 
 {
-  if (!$3) { $3="any" }
-  if (!$4) { $4="compile" }
-  print    "<groupId>" $1 "</groupId>"
+  print "<groupId>" $1 "</groupId>"
   print "<artifactId>" $2 "</artifactId>"
-  print    "<version>" $3 "</version>"
-  print      "<scope>" $4 "</scope>"
+  if (!$3) { $3="any" }
+  print "<version>" $3 "</version>"
+  if ($4) { print "<scope>" $4 "</scope>" }
 }' <<<"${2}")
 
     _pom_inject_xpath "${3}" "${1}" "<${4}> ${xml} ${5} </${4}>"
@@ -255,5 +254,14 @@ pom_xpath_inject()
     set +x
     _pom_initialize
     _pom_inject_xpath "${3}" "${1}" "${2}"
+    set -x
+}
+
+
+pom_add_parent()
+{
+    set +x
+    _pom_initialize
+    _pom_inject_gaid "pom:project" "${1}" "${2}" "parent" "${3}"
     set -x
 }

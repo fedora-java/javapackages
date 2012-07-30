@@ -272,3 +272,27 @@ fi \
 #
 %pom_xpath_inject()   %{expand: %{__pom_call}xpath_inject   %*
 }
+
+
+# %pom_add_parent - add parent POM reference to POM file
+#
+# Usage: %pom_add_parent groupId:artifactId[:version] [POM location]
+#
+# This macro patches specified POM file adding a reference to parent POM with
+# specified groupId, artifactId and version.
+#
+# groupId and artifactId are identifiers of Maven group and artifact of the POM
+# to be referenced as parent POM. They must be specified. If version is not
+# specified then default value of "any" is used.
+#
+# POM location can be either a full path to the POM file, or a path to the
+# directory containing pom.xml. If POM location is not given then pom.xml from
+# current working directory is used.
+#
+# Note: If specified POM has already a reference to parent POM this macro will
+# not alter or remove it. Instead a second reference will be added. This is
+# usually not the expected behavior, so if you want to replace existing parent
+# POM reference, consider using %pom_set_parent macro instead.
+#
+%pom_add_parent()     %{expand: %{__pom_call}add_parent     %*
+}
