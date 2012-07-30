@@ -159,10 +159,23 @@ _pom_disable_gaid()
     local what=$(sed 's/[^ ]*://' <<<"${1}")
     local gid=$(sed -e 's/:[^:]*//' -e "s/..*/[text()='&']/" <<<"${2}")
     local aid=$(sed -e 's/[^:]*://' -e "s/..*/[text()='&']/" <<<"${2}")
+    local extra=""
 
-    # TODO: support cases with no groupId specified
+    # Support cases with no groupId specified
+    if test -z "${gid}"; then
+	extra='
+  <xsl:template match="//'"${1} [pom:artifactId${aid}]"'">
+    <xsl:comment>
+      <xsl:text> '"${what}"' disabled by maintainer: </xsl:text>
+      <xsl:apply-templates select="pom:artifactId"/>
+      <xsl:text> </xsl:text>
+    </xsl:comment>
+  </xsl:template>'
+    fi
+
     _pom_patch "${3}" <<EOF
 ${_pom_xslt_header}
+  ${extra}
   <xsl:template match="//${1} [pom:groupId${gid} and pom:artifactId${aid}]">
     <xsl:comment>
       <xsl:text> ${what} disabled by maintainer: </xsl:text>
