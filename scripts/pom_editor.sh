@@ -202,6 +202,7 @@ _pom_inject_gaid()
 BEGIN { FS=":" }
 
 {
+  if (!$1) { $1="org.apache.maven.plugins" }
   print "<groupId>" $1 "</groupId>"
   print "<artifactId>" $2 "</artifactId>"
   if (!$3) { $3="any" }
@@ -300,5 +301,14 @@ pom_add_dep_mgmt()
     set +x
     _pom_initialize
     _pom_inject_gaid "pom:project/pom:dependencyManagement" "${1}" "${2}" "dependency" "${3}"
+    set -x
+}
+
+
+pom_add_plugin()
+{
+    set +x
+    _pom_initialize
+    _pom_inject_gaid "pom:project/pom:build/pom:plugins" "${1}" "${2}" "plugin" "${3}"
     set -x
 }
