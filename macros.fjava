@@ -310,3 +310,19 @@ fi \
 #
 %pom_remove_parent()  %{expand: %{__pom_call}remove_parent  %*
 }
+
+
+# %pom_set_parent - set parent POM reference in POM file
+#
+# Usage: %pom_set_parent groupId:artifactId[:version] [POM location]
+#
+# This macro patches specified POM file setting reference to parent POM to
+# specified groupId, artifactId and version.
+#
+# This macros first removes parent POM reference and then adds a new one. It's
+# (more or less) equivalent to call to %pom_remove_parent followed by
+# invocation of %pom_add_parent. See documentation for these macros for more
+# information about parameters.
+#
+%pom_set_parent()     %{expand: %{__pom_call}set_parent     %*
+}
