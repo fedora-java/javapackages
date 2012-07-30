@@ -265,3 +265,12 @@ pom_add_parent()
     _pom_inject_gaid "pom:project" "${1}" "${2}" "parent" "${3}"
     set -x
 }
+
+
+pom_remove_parent()
+{
+    set +x
+    _pom_initialize
+    _pom_disable_xpath "${1}" "//pom:project/pom:parent" "parent POM reference removed by maintainer"
+    set -x
+}

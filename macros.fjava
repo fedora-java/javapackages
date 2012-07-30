@@ -296,3 +296,17 @@ fi \
 #
 %pom_add_parent()     %{expand: %{__pom_call}add_parent     %*
 }
+
+
+# %pom_remove_parent - remove parent POM reference from POM file
+#
+# Usage: %pom_add_parent [POM location]
+#
+# This macro patches specified POM file removing reference to parent POM.
+#
+# POM location can be either a full path to the POM file, or a path to the
+# directory containing pom.xml. If POM location is not given then pom.xml from
+# current working directory is used.
+#
+%pom_remove_parent()  %{expand: %{__pom_call}remove_parent  %*
+}
