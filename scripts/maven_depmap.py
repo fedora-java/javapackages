@@ -215,11 +215,44 @@ def output_fragment(fragment_path, fragment, additions = None):
        fragment.local_aid, fragment.version) )
 
 
+def create_maven_repo(repo_path, fragment, additions = None):
+    """Create maven repository layout from fragment in given repository"""
+    final_dir = os.path.join(repo_path,
+                             fragment.get_repository_subdir())
+    # create directory structure first
+    os.makedirs(final_dir)
+
+    # we want relative paths for symlinks so we need to know how many levels
+    # deep we are in the repository
+    gid_dircount = fragment.gid.count('.')
+    relative_datadir = '..%s' % os.path.sep * (gid_dircount+4)
+
+    javadir_sub = fragment.local_gid.replace('JPP', '')
+    os.symlink(os.path.join(relative_datadir,
+                            'java',
+                            javadir_sub,
+                            "%s.%s" % (fragment.local_aid, fragment.packaging)),
+               os.path.join(final_dir,
+                            "%s-%s.%s" % (fragment.aid,
+                                          fragment.version,
+                                          fragment.packaging)))
+    pom_fname = "JPP"
+    if javadir_sub != '':
+        pom_fname = "%s.%s" % javadir_sub
+    pom_fname = "%s-%s.pom" % (pom_fname, fragment.local_aid)
+    os.symlink(os.path.join(relative_datadir, 'maven-poms', pom_fname),
+               os.path.join(final_dir,
+                            "%s-%s.pom" % (fragment.aid,
+                                           fragment.version)))
+
 if __name__ == "__main__":
 
     usage="usage: %prog [options] fragment_path pom_path [jar_path]"
     parser = OptionParser(usage=usage)
-    parser.add_option("-a","--append",type="str",help="Additional depmaps to add (gid:aid)  [default: %default]")
+    parser.add_option("-a","--append",type="str",
+                      help="Additional depmaps to add (gid:aid)  [default: %default]")
+    parser.add_option('-m', '--maven-repo', type="str", dest='maven_repo',
+                      help='Where to create Maven repository layout')
 
 
     parser.set_defaults(append=None)
@@ -240,6 +273,8 @@ if __name__ == "__main__":
 
     if fragment:
         output_fragment(fragment_path, fragment, append_deps)
+        if options.maven_repo:
+            create_maven_repo(options.maven_repo, fragment, append_deps)
     else:
         print "Problem parsing pom file. Is it valid maven pom? Send bugreport \
         to https://fedorahosted.org/javapackages/ and attach %s to \
