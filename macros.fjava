@@ -31,6 +31,12 @@
 #          Mikolaj Izdebski <mizdebsk@redhat.com>
 
 
+%_maven_repository %{_datadir}/maven-repository
+
+%_maven_files() %{expand:
+%{_mavendepmapfragdir}/%{!1:%{name}:%1}
+}
+
 #==============================================================================
 #
 # add_maven_depmap is simplified version of jpackage-style add_to_maven_depmap
