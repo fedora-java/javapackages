@@ -54,7 +54,7 @@
 # in the end add_maven_depmap optionally moves jar and pom file to
 # -%{version} variant and can create additional versioned symlinks
 
-%add_maven_depmap(f:a:v:) \
+%add_maven_depmap(f:a:v:m) \
 # default values \
 %if %# == 0 \
     _pompart="JPP-%{name}.pom" \
@@ -73,6 +73,7 @@ elif [ -f %{buildroot}/%{_jnidir}/$_jarpart ]; then \
 	_jpath="%{buildroot}/%{_jnidir}/$_jarpart" \
 fi \
 python -m %{_datadir}/java-utils/maven_depmap %{-a} \\\
+          %{-m:-m %{buildroot}%{_maven_repository}} \\\
           %{buildroot}%{_mavendepmapfragdir}/%{name}%{-f*:-%{-f*}} \\\
           %{buildroot}%{_mavenpomdir}/$_pompart \\\
 %if %# == 2 \
