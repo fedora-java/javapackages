@@ -44,12 +44,20 @@ from os.path import basename, dirname
 
 class Fragment:
     """simple structure to hold fragment information"""
-    def __init__(self, gid, aid, version, local_gid, local_aid):
+    def __init__(self, gid, aid, version, local_gid, local_aid, packaging):
         self.gid = gid.strip()
         self.aid = aid.strip()
         self.version = version.strip()
         self.local_gid = local_gid
         self.local_aid = local_aid
+        self.packaging = packaging
+
+    def get_repository_subdir(self):
+        """Return subdirectory where we should create maven symlinks"""
+        return os.path.join(self.gid.replace('.', os.path.sep),
+                            fragment.aid,
+                            fragment.version)
+
 
 class PackagingTypeMissingFile(Exception):
     def __init__(self, pom_path):
@@ -153,7 +161,8 @@ def parse_pom(pom_file, jar_file = None):
             proj_aid.firstChild.nodeValue,
             proj_version.firstChild.nodeValue,
             jpp_gid,
-            jpp_aid
+            jpp_aid,
+            proj_packaging.firstChild.nodeValue
             )
 
     parent = _get_tag_under_parent(dom, project, 'parent')
@@ -172,7 +181,8 @@ def parse_pom(pom_file, jar_file = None):
          proj_aid.firstChild.nodeValue,
          proj_version.firstChild.nodeValue,
          jpp_gid,
-         jpp_aid
+         jpp_aid,
+         proj_packaging.firstChild.nodeValue
     )
 
 def output_fragment(fragment_path, fragment, additions = None):
