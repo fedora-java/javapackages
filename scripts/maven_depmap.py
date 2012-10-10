@@ -196,7 +196,6 @@ def create_mappings(fragment, additions = None):
 def output_fragment(fragment_path, fragment, mappings):
     """Writes fragment into fragment_path in specialised format
     compatible with jpp"""
-    print fragment_path
     with open(fragment_path, "aw") as ffile:
         for m in mappings:
             gid, aid = m
@@ -276,16 +275,20 @@ if __name__ == "__main__":
     # these will fail when incorrect number of arguments is given
     fragment_path = args[0].strip()
     pom_path = args[1].strip()
+    print fragment_path
+    print pom_path
     if len(args) == 3:
         jar_path = args[2].strip()
+        print jar_path
         fragment = parse_pom(pom_path, jar_path)
     else:
         fragment = parse_pom(pom_path)
 
     if fragment:
-        output_fragment(fragment_path, fragment, append_deps)
+        mappings = create_mappings(fragment, append_deps)
+        output_fragment(fragment_path, fragment, mappings)
         if options.maven_repo:
-            create_maven_repo(options.maven_repo, fragment, append_deps)
+            create_maven_repo(options.maven_repo, fragment, mappings)
     else:
         print "Problem parsing pom file. Is it valid maven pom? Send bugreport \
         to https://fedorahosted.org/javapackages/ and attach %s to \

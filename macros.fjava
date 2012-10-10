@@ -80,7 +80,8 @@ python -m %{_datadir}/java-utils/maven_depmap %{-a} \\\
 %if %# == 0 \
           "${_jpath}" \\\
 %endif \
-\
+       | sed 's:%{buildroot}::' | cat - maven-files-%{name}%{-f*:-%{-f*}} \\\
+       | sort | uniq > maven-files-%{name}%{-f*:-%{-f*}}
 # this part only works for jars for now (now war/other compat support) \
 if [[ "%{-v}" != "" ]];then \
 mv %{buildroot}%{_mavenpomdir}/$_pompart \\\
