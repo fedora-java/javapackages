@@ -52,12 +52,6 @@ class Fragment:
         self.local_aid = local_aid
         self.packaging = packaging
 
-    def get_repository_subdir(self):
-        """Return subdirectory where we should create maven symlinks"""
-        return os.path.join(self.gid.replace('.', os.path.sep),
-                            fragment.aid,
-                            fragment.version)
-
 
 class PackagingTypeMissingFile(Exception):
     def __init__(self, pom_path):
@@ -150,6 +144,11 @@ def parse_pom(pom_file, jar_file = None):
     proj_version = _get_tag_under_parent(dom, project, 'version')
     proj_gid = _get_tag_under_parent(dom, project, 'groupId')
     proj_aid = _get_tag_under_parent(dom, project, 'artifactId')
+    if not proj_packaging:
+        proj_packaging = 'jar'
+    else:
+        proj_packaging = proj_packaging.firstChild.nodeValue
+
 
     if not proj_aid:
         return None
@@ -162,7 +161,7 @@ def parse_pom(pom_file, jar_file = None):
             proj_version.firstChild.nodeValue,
             jpp_gid,
             jpp_aid,
-            proj_packaging.firstChild.nodeValue
+            proj_packaging
             )
 
     parent = _get_tag_under_parent(dom, project, 'parent')
@@ -182,22 +181,25 @@ def parse_pom(pom_file, jar_file = None):
          proj_version.firstChild.nodeValue,
          jpp_gid,
          jpp_aid,
-         proj_packaging.firstChild.nodeValue
+         proj_packaging
     )
 
-def output_fragment(fragment_path, fragment, additions = None):
-    """Writes fragment into fragment_path in specialised format
-    compatible with jpp"""
-
+def create_mappings(fragment, additions = None):
     maps = [(fragment.gid, fragment.aid)]
     if additions:
         adds = additions.split(',')
         for add in adds:
             g, a = add.strip().split(':')
             maps.append((g, a))
+    return maps
 
+def output_fragment(fragment_path, fragment, mappings):
+    """Writes fragment into fragment_path in specialised format
+    compatible with jpp"""
+    print fragment_path
     with open(fragment_path, "aw") as ffile:
-        for m in maps:
+        for m in mappings:
+            gid, aid = m
             ffile.write("""
 <dependency>
     <maven>
@@ -211,39 +213,48 @@ def output_fragment(fragment_path, fragment, additions = None):
         <version>%s</version>
     </jpp>
 </dependency>
-""" % (m[0], m[1], fragment.version, fragment.local_gid,
+""" % (gid, aid, fragment.version, fragment.local_gid,
        fragment.local_aid, fragment.version) )
 
 
-def create_maven_repo(repo_path, fragment, additions = None):
+def create_maven_repo(repo_path, fragment, mappings):
     """Create maven repository layout from fragment in given repository"""
-    final_dir = os.path.join(repo_path,
-                             fragment.get_repository_subdir())
-    # create directory structure first
-    os.makedirs(final_dir)
 
-    # we want relative paths for symlinks so we need to know how many levels
-    # deep we are in the repository
-    gid_dircount = fragment.gid.count('.')
-    relative_datadir = '..%s' % os.path.sep * (gid_dircount+4)
-
+    # subdirectory under _javadir (if any)
     javadir_sub = fragment.local_gid.replace('JPP', '')
-    os.symlink(os.path.join(relative_datadir,
-                            'java',
-                            javadir_sub,
-                            "%s.%s" % (fragment.local_aid, fragment.packaging)),
-               os.path.join(final_dir,
-                            "%s-%s.%s" % (fragment.aid,
-                                          fragment.version,
-                                          fragment.packaging)))
-    pom_fname = "JPP"
-    if javadir_sub != '':
-        pom_fname = "%s.%s" % javadir_sub
-    pom_fname = "%s-%s.pom" % (pom_fname, fragment.local_aid)
-    os.symlink(os.path.join(relative_datadir, 'maven-poms', pom_fname),
-               os.path.join(final_dir,
-                            "%s-%s.pom" % (fragment.aid,
-                                           fragment.version)))
+    for m in mappings:
+        gid, aid = m
+        repo_subdir = os.path.join(gid.replace('.', os.path.sep),
+                                   aid,
+                                   fragment.version)
+
+        final_dir = os.path.join(repo_path,
+                                 repo_subdir)
+        # create directory structure first
+        os.makedirs(final_dir)
+        print final_dir
+
+        # we want relative paths for symlinks so we need to know how many levels
+        # deep we are in the repository
+        gid_dircount = gid.count('.')
+        relative_datadir = '..%s' % os.path.sep * (gid_dircount+4)
+
+        os.symlink(os.path.join(relative_datadir,
+                                'java',
+                                javadir_sub,
+                                "%s.%s" % (fragment.local_aid, fragment.packaging)),
+                   os.path.join(final_dir,
+                                "%s-%s.%s" % (aid,
+                                              fragment.version,
+                                              fragment.packaging)))
+        pom_fname = "JPP"
+        if javadir_sub != '':
+            pom_fname = "%s.%s" % (pom_fname, javadir_sub)
+        pom_fname = "%s-%s.pom" % (pom_fname, fragment.local_aid)
+        os.symlink(os.path.join(relative_datadir, 'maven-poms', pom_fname),
+                   os.path.join(final_dir,
+                                "%s-%s.pom" % (aid,
+                                               fragment.version)))
 
 if __name__ == "__main__":
 
