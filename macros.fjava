@@ -31,11 +31,9 @@
 #          Mikolaj Izdebski <mizdebsk@redhat.com>
 
 
+# directory that can contain a proper maven repository usable by upstream
+# maven one day
 %_maven_repository %{_datadir}/maven-repository
-
-%_maven_files() %{expand:
-%{_mavendepmapfragdir}/%{!1:%{name}:%1}
-}
 
 #==============================================================================
 #
