@@ -43,7 +43,7 @@
 # -v is "v1,v2" formatted string with additional compatibility versions
 #    supposed to be provided (jar,pom will be renamed to -%{version} variants
 #    and additional symlinks optionally created)
-# -m If included a Maven repository layout will be generated in %_maven_repository 
+# -m If included a Maven repository layout will be generated in %_maven_repository
 #    and files will be symlinked there as well
 # %1 is the pom filename relative to mavenpomdir
 # %2 is the path to jar file (when omitted we deal with parent pom file without jar)
@@ -83,7 +83,8 @@ python -m %{_datadir}/java-utils/maven_depmap %{-a} \\\
           "${_jpath}" \\\
 %endif \
        | sed 's:%{buildroot}::' | cat - maven-files-%{name}%{-f*:-%{-f*}} \\\
-       | sort | uniq > maven-files-%{name}%{-f*:-%{-f*}}
+       | sort | uniq > maven-files-%{name}%{-f*:-%{-f*}}.new \
+mv maven-files-%{name}%{-f*:-%{-f*}}.new maven-files-%{name}%{-f*:-%{-f*}} \
 # this part only works for jars for now (now war/other compat support) \
 if [[ "%{-v}" != "" ]];then \
 mv %{buildroot}%{_mavenpomdir}/$_pompart \\\
