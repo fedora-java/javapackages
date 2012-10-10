@@ -237,15 +237,16 @@ def create_maven_repo(repo_path, fragment, mappings):
         # deep we are in the repository
         gid_dircount = gid.count('.')
         relative_datadir = '..%s' % os.path.sep * (gid_dircount+4)
+        if fragment.packaging != 'pom':
+            os.symlink(os.path.join(relative_datadir,
+                                    'java',
+                                    javadir_sub,
+                                    "%s.%s" % (fragment.local_aid, fragment.packaging)),
+                       os.path.join(final_dir,
+                                    "%s-%s.%s" % (aid,
+                                                  fragment.version,
+                                                  fragment.packaging)))
 
-        os.symlink(os.path.join(relative_datadir,
-                                'java',
-                                javadir_sub,
-                                "%s.%s" % (fragment.local_aid, fragment.packaging)),
-                   os.path.join(final_dir,
-                                "%s-%s.%s" % (aid,
-                                              fragment.version,
-                                              fragment.packaging)))
         pom_fname = "JPP"
         if javadir_sub != '':
             pom_fname = "%s.%s" % (pom_fname, javadir_sub)
