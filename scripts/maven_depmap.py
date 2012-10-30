@@ -193,13 +193,16 @@ def create_mappings(fragment, additions = None):
             maps.append((g, a))
     return maps
 
-def output_fragment(fragment_path, fragment, mappings):
+def output_fragment(fragment_path, fragment, mappings, versions):
     """Writes fragment into fragment_path in specialised format
     compatible with jpp"""
     with open(fragment_path, "aw") as ffile:
-        for m in mappings:
-            gid, aid = m
-            ffile.write("""
+        versions = versions.split(',')
+        versions.insert(0, fragment.version)
+        for ver in versions:
+            for m in mappings:
+                gid, aid = m
+                ffile.write("""
 <dependency>
     <maven>
         <groupId>%s</groupId>
@@ -212,8 +215,8 @@ def output_fragment(fragment_path, fragment, mappings):
         <version>%s</version>
     </jpp>
 </dependency>
-""" % (gid, aid, fragment.version, fragment.local_gid,
-       fragment.local_aid, fragment.version) )
+""" % (gid, aid, ver, fragment.local_gid,
+       fragment.local_aid, ver) )
 
 
 def create_maven_repo(repo_path, fragment, mappings):
@@ -264,12 +267,17 @@ if __name__ == "__main__":
                       help="Additional depmaps to add (gid:aid)  [default: %default]")
     parser.add_option('-m', '--maven-repo', type="str", dest='maven_repo',
                       help='Where to create Maven repository layout')
+    parser.add_option('-r', '--versions', type="str",
+                      help='Additional versions to add for each depmap')
+
+
 
 
     parser.set_defaults(append=None)
 
     (options, args) = parser.parse_args()
     append_deps = options.append
+    add_versions = options.versions
 
     if len(args) < 2:
         parser.error("Incorrect number of arguments")
@@ -287,7 +295,7 @@ if __name__ == "__main__":
 
     if fragment:
         mappings = create_mappings(fragment, append_deps)
-        output_fragment(fragment_path, fragment, mappings)
+        output_fragment(fragment_path, fragment, mappings, add_versions)
         if options.maven_repo:
             create_maven_repo(options.maven_repo, fragment, mappings)
     else:

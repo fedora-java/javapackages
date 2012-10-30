@@ -72,7 +72,7 @@ elif [ -f %{buildroot}/%{_javajnidir}/$_jarpart ]; then \
 elif [ -f %{buildroot}/%{_jnidir}/$_jarpart ]; then \
 	_jpath="%{buildroot}/%{_jnidir}/$_jarpart" \
 fi \
-python -m %{_datadir}/java-utils/maven_depmap %{-a} \\\
+python -m %{_datadir}/java-utils/maven_depmap %{-a} %{-v*:-r %{-v*}} \\\
           %{-m:-m %{buildroot}%{_maven_repository}} \\\
           %{buildroot}%{_mavendepmapfragdir}/%{name}%{-f*:-%{-f*}} \\\
           %{buildroot}%{_mavenpomdir}/$_pompart \\\
