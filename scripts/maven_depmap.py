@@ -197,7 +197,10 @@ def output_fragment(fragment_path, fragment, mappings, versions):
     """Writes fragment into fragment_path in specialised format
     compatible with jpp"""
     with open(fragment_path, "aw") as ffile:
-        versions = versions.split(',')
+        if not versions:
+            versions = []
+        else:
+            versions = versions.split(',')
         versions.insert(0, fragment.version)
         for ver in versions:
             for m in mappings:
