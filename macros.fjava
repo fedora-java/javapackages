@@ -55,23 +55,22 @@
 # -%{version} variant and can create additional versioned symlinks
 
 %add_maven_depmap(f:a:v:m) \
+set -e \
 # default values \
 %if %# == 0 \
-    _pompart="JPP-%{name}.pom" \
+   _pompart="JPP-%{name}.pom" \
    _jarpart="%{name}.jar" \
 %else \
    _pompart="%1" \
    _jarpart="%2" \
 %endif \
+_filelist="maven-files-%{name}%{-f*:-%{-f*}}" \
 install -dm 755 $RPM_BUILD_ROOT/%{_mavendepmapfragdir}\
-_jpath="$_jarpart" \
-if [ -f %{buildroot}/%{_javadir}/$_jarpart ]; then \
-	_jpath="%{buildroot}/%{_javadir}/$_jarpart" \
-elif [ -f %{buildroot}/%{_javajnidir}/$_jarpart ]; then \
-	_jpath="%{buildroot}/%{_javajnidir}/$_jarpart" \
-elif [ -f %{buildroot}/%{_jnidir}/$_jarpart ]; then \
-	_jpath="%{buildroot}/%{_jnidir}/$_jarpart" \
-fi \
+for _dir in %{_jnidir} %{_javajnidir} %{_javadir}; do \
+    if [ -f %{buildroot}/$_dir/$_jarpart ]; then \
+	_jpath="%{buildroot}/$_dir/$_jarpart" \
+    fi \
+done \
 python -m %{_datadir}/java-utils/maven_depmap %{-a} %{-v*:-r %{-v*}} \\\
           %{-m:-m %{buildroot}%{_maven_repository}} \\\
           %{buildroot}%{_mavendepmapfragdir}/%{name}%{-f*:-%{-f*}} \\\
@@ -82,10 +81,7 @@ python -m %{_datadir}/java-utils/maven_depmap %{-a} %{-v*:-r %{-v*}} \\\
 %if %# == 0 \
           "${_jpath}" \\\
 %endif \
-        > maven-files.tmp \
-sed 's:%{buildroot}::' maven-files.tmp | cat - maven-files-%{name}%{-f*:-%{-f*}} \\\
-       | sort | uniq > maven-files-%{name}%{-f*:-%{-f*}}.new \
-mv maven-files-%{name}%{-f*:-%{-f*}}.new maven-files-%{name}%{-f*:-%{-f*}} \
+        >> ${_filelist} \
 # this part only works for jars for now (now war/other compat support) \
 if [[ "%{-v}" != "" ]];then \
 mv %{buildroot}%{_mavenpomdir}/$_pompart \\\
@@ -96,13 +92,17 @@ fi \
 for ver in $(echo %{-v*} | tr ',' '\\n');do \
  ln -s ${_pompart/.pom/-%{version}.pom} \\\
        %{buildroot}/%{_mavenpomdir}/${_pompart/.pom/-$ver.pom} \
+ echo %{_mavenpomdir}/${_pompart/.pom/-$ver.pom} >>${_filelist} \
  # we can have pom-only artifacts \
  if [ -f ${_jpath/.jar/-%{version}.jar} ];then \
        ln -s `basename ${_jpath/.jar/-%{version}.jar}` \\\
              ${_jpath/.jar/-$ver.jar} \
+       echo ${_jpath/.jar/-$ver.jar} >>${_filelist} \
  fi \
 done \
 fi \
+sed -i 's:%{buildroot}::' ${_filelist} \
+sort -u -o ${_filelist} ${_filelist} \
 \
 %{nil}
 
