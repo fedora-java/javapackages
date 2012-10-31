@@ -71,7 +71,7 @@ for _dir in %{_jnidir} %{_javajnidir} %{_javadir}; do \
 	_jpath="%{buildroot}/$_dir/$_jarpart" \
     fi \
 done \
-python -m %{_datadir}/java-utils/maven_depmap %{-a} %{-v*:-r %{-v*}} \\\
+python -m /usr/share/java-utils/maven_depmap %{-a} %{-v*:-r %{-v*}} \\\
           %{-m:-m %{buildroot}%{_maven_repository}} \\\
           %{buildroot}%{_mavendepmapfragdir}/%{name}%{-f*:-%{-f*}} \\\
           %{buildroot}%{_mavenpomdir}/$_pompart \\\
@@ -181,7 +181,7 @@ fi \
 #
 
 # Private macro, shouldn't be used directly
-%__pom_call           . %{_datadir}/java-utils/pom_editor.sh; pom_
+%__pom_call           . /usr/share/java-utils/pom_editor.sh; pom_
 
 
 # %pom_remove_dep - remove dependency on Maven artifact from POM file
