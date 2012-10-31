@@ -82,7 +82,8 @@ python -m %{_datadir}/java-utils/maven_depmap %{-a} %{-v*:-r %{-v*}} \\\
 %if %# == 0 \
           "${_jpath}" \\\
 %endif \
-       | sed 's:%{buildroot}::' | cat - maven-files-%{name}%{-f*:-%{-f*}} \\\
+        > maven-files.tmp \
+sed 's:%{buildroot}::' maven-files.tmp | cat - maven-files-%{name}%{-f*:-%{-f*}} \\\
        | sort | uniq > maven-files-%{name}%{-f*:-%{-f*}}.new \
 mv maven-files-%{name}%{-f*:-%{-f*}}.new maven-files-%{name}%{-f*:-%{-f*}} \
 # this part only works for jars for now (now war/other compat support) \
