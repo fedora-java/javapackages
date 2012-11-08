@@ -86,7 +86,7 @@ python -m /usr/share/java-utils/maven_depmap %{-a} %{-v*:-r %{-v*}} \\\
 if [[ "%{-v}" != "" ]];then \
 mv %{buildroot}%{_mavenpomdir}/$_pompart \\\
    %{buildroot}%{_mavenpomdir}/${_pompart/.pom/-%{version}.pom} \
-if [ -f ${_jpath} ]; then \
+if [ -f "${_jpath}" ]; then \
     mv ${_jpath} ${_jpath/.jar/-%{version}.jar} \
 fi \
 for ver in $(echo %{-v*} | tr ',' '\\n');do \
@@ -94,7 +94,7 @@ for ver in $(echo %{-v*} | tr ',' '\\n');do \
        %{buildroot}/%{_mavenpomdir}/${_pompart/.pom/-$ver.pom} \
  echo %{_mavenpomdir}/${_pompart/.pom/-$ver.pom} >>${_filelist} \
  # we can have pom-only artifacts \
- if [ -f ${_jpath/.jar/-%{version}.jar} ];then \
+ if [ -f "${_jpath/.jar/-%{version}.jar}" ];then \
        ln -s `basename ${_jpath/.jar/-%{version}.jar}` \\\
              ${_jpath/.jar/-$ver.jar} \
        echo ${_jpath/.jar/-$ver.jar} >>${_filelist} \
