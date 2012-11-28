@@ -35,7 +35,7 @@
 # unless you are prepared to face consequences (FTBFS, API change etc.)
 
 #
-# mvn_build - build Maven project
+# %mvn_build - build Maven project
 #
 # -f          force; skip test compilation and execution
 # -j          skip javadoc generation and installation
