@@ -1,0 +1,165 @@
+#!/bin/sh -e
+# Copyright (c) 2012 Red Hat, Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of Red Hat nor the names of its
+#    contributors may be used to endorse or promote products derived
+#    from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
+
+# For now enable debugging by default.
+export XMVN_DEBUG=1
+
+need_arg()
+{
+    if [ $# -eq 1 ]; then
+	echo "$0: Option $1 requires an argument, specify -h for usage." >&2
+	exit 1
+    fi
+}
+
+
+usage()
+{
+    me=$(basename "$0")
+
+    cat <<EOF
+$me - Build Maven project locally
+
+Usage: $me [options] [-- maven-arguments]
+
+Available options:
+        -a, --add-depmap <groupId>:<artifactId>:<POM-path>
+                Install additional depmap for artifact.
+        -d, --xmvn-debug
+                Enable debugging output for Maven local resolver.
+        -D, --depmap <FILE>
+                Use local depmap file.
+        -f, --force, --skip-tests
+                Skip test compilation and execution.
+        -h, --help
+                Display this usage information and exit.
+        -i, --skip-install
+                Skip artifact installation.
+        -j, --skip-javadoc
+                Skip javadoc generation and installation.
+        -L, --layout <RULES>
+                Use custom packaging layout.
+        -s, --singleton
+                Singleton packaging (one artifact per package).
+        -v, --compat-version <version>:<POM-path>
+                Install a compatibility version of artifact.
+        -X, --debug
+                Enable Maven debugging output (implies -d).
+EOF
+}
+
+
+debug=
+base_goal=verify
+skip_tests=
+install_goal=org.fedoraproject.xmvn:xmvn-mojo:install
+javadoc_goal=org.apache.maven.plugins:maven-javadoc-plugin:aggregate
+add_depmaps=
+singleton=test
+
+if [ -n "$RPM_PACKAGE_NAME" ]; then
+    export XMVN_INSTALL_NAME="$RPM_PACKAGE_NAME"
+else
+    export XMVN_INSTALL_NAME=$(basename "$PWD")
+fi
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+	--)
+	    break
+	    ;;
+	-a|--add-depmap)
+	    need_arg "$@"
+	    export XMVN_INSTALL_DEPMAPS="$XMVN_INSTALL_DEPMAPS,$2"
+	    shift
+	    ;;
+	-d|--xmvn-debug)
+	    export XMVN_DEBUG=1
+	    ;;
+	-D|--depmap)
+	    need_arg "$@"
+	    export XMVN_RESOLV_DEPMAPS="$XMVN_RESOLV_DEPMAPS,$2"
+	    shift
+	    ;;
+	-f|--force|--skip-tests)
+	    base_goal=package
+	    skip_tests=-Dmaven.test.skip=true
+	    ;;
+	-h|--help)
+	    usage
+	    exit 0
+	    ;;
+	-i|--skip-install)
+	    install_goal=
+	    ;;
+	-j|--skip-javadoc)
+	    javadoc_goal=
+	    ;;
+	-L|--layout)
+	    need_arg "$@"
+	    export XMVN_INSTALL_LAYOUT="$XMVN_INSTALL_LAYOUT,$2"
+	    shift
+	    ;;
+	-s|--singleton)
+	    singleton=:
+	    ;;
+	-v|--compat-version)
+	    need_arg "$@"
+	    export XMVN_INSTALL_VERSIONS="$XMVN_INSTALL_VERSIONS,$2"
+	    shift
+	    ;;
+	-X|--debug)
+	    export XMVN_DEBUG=1
+	    debug=-X
+	    ;;
+	*)
+	    echo "$0: Unknown option: $1, specify -h for usage." >&2
+	    exit 1
+    esac
+
+    shift
+done
+
+if $singleton; then
+    export XMVN_INSTALL_LAYOUT="$XMVN_INSTALL_LAYOUT;^(.*)$=>@1"
+fi
+
+
+xmvn \
+    --offline \
+    --batch-mode \
+    $debug \
+    $skip_tests \
+    $base_goal \
+    $install_goal \
+    $javadoc_goal \
+    "${@}"

@@ -37,24 +37,7 @@
 #
 # %mvn_build - build Maven project
 #
-# -f          force; skip test compilation and execution
-# -j          skip javadoc generation and installation
-# -D <file>   use local depmap file
-# -L <rules>  use custom packaging layout
-# -s          singleton packaging; one artifact per package
-#
-%mvn_build(fjsD:L:) \
->.mfiles-javadoc \
-%{-D:export XMVN_RESOLV_DEPMAPS="$XMVN_RESOLV_DEPMAPS,"'%{-D*}'} \
-%{-L:export XMVN_INSTALL_LAYOUT='%{-L*}'} \
-%{-s:export XMVN_INSTALL_LAYOUT="$XMVN_INSTALL_LAYOUT;"'^(.*)$=>@1'} \
-: ${XMVN_INSTALL_NAME:=%{name}} \
-export XMVN_INSTALL_NAME \
-xmvn \\\
-%{!-f:verify}%{-f:package -Dmaven.test.skip=true} \\\
-org.fedoraproject.xmvn:xmvn-mojo:install \\\
-%{!-j:org.apache.maven.plugins:maven-javadoc-plugin:aggregate} \
-%{nil}
+%mvn_build mvn-build -n %{name}
 
 #
 # %mvn_install - install Maven project
