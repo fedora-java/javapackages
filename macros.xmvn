@@ -37,7 +37,7 @@
 #
 # %mvn_build - build Maven project
 #
-%mvn_build mvn-build -n %{name}
+%mvn_build mvn-build
 
 #
 # %mvn_install - install Maven project
