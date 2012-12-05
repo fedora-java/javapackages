@@ -53,14 +53,12 @@ class TagBuilder:
         buf.write('</fragments>')
         fragments = buf.getvalue()
         doc = fromstring(fragments)
+        for mpart in doc.iter('maven'):
+            groupId = mpart.find('groupId').text
+            artifactId = mpart.find('artifactId').text
+            version = mpart.find('version').text
+            print "mvn(%s:%s) = %s" %(groupId, artifactId, version)
 
-        for depmap in doc.getchildren():
-            for dep_part in depmap.getchildren():
-                if dep_part.tag == 'maven':
-                    groupId = dep_part.findtext("groupId")
-                    artifactId = dep_part.findtext("artifactId")
-                    version = dep_part.findtext("version")
-                    print "mvn(%s:%s) = %s" %(groupId, artifactId, version)
 
 if __name__ == "__main__":
     builder = TagBuilder ()
