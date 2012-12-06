@@ -1,0 +1,3 @@
+#!/bin/sh
+# always required for javadocs
+echo jpackage-utils
