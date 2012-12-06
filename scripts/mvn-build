@@ -126,7 +126,7 @@ while [ $# -gt 0 ]; do
 	    ;;
 	-L|--layout)
 	    need_arg "$@"
-	    export XMVN_INSTALL_LAYOUT="$XMVN_INSTALL_LAYOUT,$2"
+	    export XMVN_INSTALL_LAYOUT="$XMVN_INSTALL_LAYOUT;$2"
 	    shift
 	    ;;
 	-s|--singleton)
