@@ -43,9 +43,9 @@ class TagBuilder:
             filelist = sys.stdin
         paths = map (lambda x: x.rstrip (), filelist.readlines ())
         for path in paths:
-	        self.get_mvn_provide (path)
+	        self.print_mvn_provides(path)
 
-    def get_mvn_provide (self, path):
+    def print_mvn_provides(self, path):
         buf = StringIO()
         buf.write('<fragments>\n')
         with open(path) as f:
