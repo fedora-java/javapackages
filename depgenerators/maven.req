@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2011, Red Hat, Inc
+# Copyright (c) 2012, Red Hat, Inc
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,41 +29,56 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Authors:
-#   Jaromir Capik <jcapik@redhat.com>
+#   Stanislav Ochotnicky <sochotnicky@redhat.com>
 #
 
-# List of scopes considered runtime
-runtime_scopes = [None, "runtime"]
 
 import sys
-import xml.dom.minidom
+from xml.etree.ElementTree import fromstring
+from StringIO import StringIO
 
-# Returns a list of direct subtags matching the tagname
-def getTag(tag,tagname):
-    result = []
-    for node in tag.childNodes:
-	if node.nodeType == node.ELEMENT_NODE and node.tagName == tagname:
-	    result.append(node)
-    return result
+class TagBuilder:
+    def __init__ (self, filelist=None):
+        if filelist == None:
+            filelist = sys.stdin
+        paths = map (lambda x: x.rstrip (), filelist.readlines ())
+        # this is always required because jpackage-utils owns the directory
+        print("jpackage-utils")
+        for path in paths:
+            self.print_mvn_requires(path)
 
-# Returns a text contained in the last subtag matching the tagname
-def getText(tag,tagname):
-    result = None
-    for node in getTag(tag,tagname):
-	for text in node.childNodes:
-	    if text.nodeType == node.TEXT_NODE:
-		result = text.data
-    return result
+    def print_mvn_requires(self, path):
+        buf = StringIO()
+        buf.write('<fragments>\n')
+        with open(path) as f:
+            buf.write(f.read())
+        buf.write('</fragments>')
+        fragments = buf.getvalue()
+        doc = fromstring(fragments)
+        for mpart in doc.findall('.//autoRequires'):
+            groupId = mpart.find('groupId').text
+            artifactId = mpart.find('artifactId').text
+            print("mvn(%s:%s)" %(groupId, artifactId))
 
-# Main loop (project / dependencies / dependency / ...)
-for pomfile in sys.stdin:
-    dom = xml.dom.minidom.parse(pomfile.rstrip())
-    for project_tag in getTag(dom, "project"):
-	for dependencies_tag in getTag(project_tag, "dependencies"):
-	    for dependency_tag in getTag(dependencies_tag, "dependency"):
-		scope = getText(dependency_tag,"scope")
-		if scope in runtime_scopes:
-		    groupId = getText(dependency_tag,"groupId")
-		    artifactId = getText(dependency_tag,"artifactId")
-		    if groupId != None and artifactId != None:
-			print "mvn(%s:%s)" %(groupId, artifactId)
+        jreq = doc.find('.//requiresJava')
+        if jreq is not None:
+            jreq = jreq.text
+            jsplit = jreq.split('.')
+            if len(jsplit) != 2:
+                # if we don't have major.minor format, just ignore version
+                print("java")
+                return
+            try:
+                major = int(jsplit[0])
+                minor = int(jsplit[1])
+                if major > 1 or minor > 5:
+                    print("java >= 1:%s.%s" % (major, minor))
+                else:
+                    print("java >= %s.%s" % (major, minor))
+            except ValueError:
+                # what? not a numbered major/minor java release?
+                print "java"
+
+
+if __name__ == "__main__":
+    builder = TagBuilder ()
