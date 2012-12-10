@@ -82,6 +82,12 @@ _pom_patch()
     # Create a backup file -- pom.xml.orig.
     test -f "${pom}".orig || cp -p "${pom}"{,.orig}
 
+    # Most of POM files specify XML namespace explicitly, but some of
+    # them don't. In order to be able to process all POMs in a uniform
+    # way we force explicit namespace declaration here. (An assumption
+    # is made that model version is 4.0.0.)
+    sed -i 's|<project>|<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">|' "${pom}"
+
     # Apply identity transformation.
     xsltproc --nonet - "${pom}" >"${pom}".tmp <<<"${_pom_xslt_header}${_pom_xslt_trailer}"
 
