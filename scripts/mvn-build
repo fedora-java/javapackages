@@ -60,6 +60,10 @@ Available options:
                 Use local depmap file.
         -f, --force, --skip-tests
                 Skip test compilation and execution.
+        -g, --goal-before, --pre <GOAL>
+                Run Maven goal before default XMvn goals.
+        -G, --goal-after, --post <GOAL>
+                Run Maven goal after default XMvn goals.
         -h, --help
                 Display this usage information and exit.
         -i, --skip-install
@@ -85,6 +89,8 @@ install_goal=org.fedoraproject.xmvn:xmvn-mojo:install
 javadoc_goal=org.apache.maven.plugins:maven-javadoc-plugin:aggregate
 add_depmaps=
 singleton=test
+pre_goals=
+post_goals=
 
 if [ -n "$RPM_PACKAGE_NAME" ]; then
     export XMVN_INSTALL_NAME="$RPM_PACKAGE_NAME"
@@ -113,6 +119,16 @@ while [ $# -gt 0 ]; do
 	-f|--force|--skip-tests)
 	    base_goal=package
 	    skip_tests=-Dmaven.test.skip=true
+	    ;;
+	-g|--goal-before|--pre)
+	    need_arg "$@"
+	    pre_goals="${pre_goals} $2"
+	    shift
+	    ;;
+	-G|--goal-after|--post)
+	    need_arg "$@"
+	    post_goals="${post_goals} $2"
+	    shift
 	    ;;
 	-h|--help)
 	    usage
@@ -159,7 +175,9 @@ xmvn \
     --batch-mode \
     $debug \
     $skip_tests \
+    "${@}" \
+    $pre_goals \
     $base_goal \
     $install_goal \
     $javadoc_goal \
-    "${@}"
+    $post_goals
