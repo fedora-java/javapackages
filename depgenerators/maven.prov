@@ -36,16 +36,14 @@ from xml.etree.ElementTree import fromstring
 from StringIO import StringIO
 
 class TagBuilder:
-    mavenns = "{http://maven.apache.org/POM/4.0.0}"
-
     def __init__ (self, filelist=None):
         if filelist == None:
             filelist = sys.stdin
         paths = map (lambda x: x.rstrip (), filelist.readlines ())
         for path in paths:
-	        self.get_mvn_provide (path)
+	        self.print_mvn_provides(path)
 
-    def get_mvn_provide (self, path):
+    def print_mvn_provides(self, path):
         buf = StringIO()
         buf.write('<fragments>\n')
         with open(path) as f:
@@ -53,7 +51,10 @@ class TagBuilder:
         buf.write('</fragments>')
         fragments = buf.getvalue()
         doc = fromstring(fragments)
-        for mpart in doc.iter('maven'):
+        if doc.find('.//skipProvides') is not None:
+            # this is compat package, don't generate mvn provides
+            return
+        for mpart in doc.findall('.//maven'):
             groupId = mpart.find('groupId').text
             artifactId = mpart.find('artifactId').text
             version = mpart.find('version').text

@@ -1,0 +1,2 @@
+%__javadoc_requires	%{_rpmconfigdir}/javadoc.req
+%__javadoc_path	^%{_javadocdir}/.*
