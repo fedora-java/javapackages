@@ -1,4 +1,5 @@
-# Copyright (c) 2012-2013 Red Hat, Inc.
+#!/bin/sh -e
+# Copyright (c) 2013 Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,46 +30,13 @@
 #
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
+if [ $# -ne 2 ]; then
+    echo "$0: Exactly 2 arguments are required." >&2
+    exit 1
+fi
 
-# *** WARNING ***
-# The following macros are highlly experimental. Do *not* rely on them
-# unless you are prepared to face consequences (FTBFS, API change etc.)
+echo "export XMVN_INSTALL_LAYOUT=\"\$XMVN_INSTALL_LAYOUT\"'$1
+$2
+'" >>.xmvnrc
 
-#
-# %mvn_package - TODO
-#
-%mvn_package mvn-package
-
-#
-# %mvn_alias - TODO
-#
-%mvn_alias mvn-alias
-
-#
-# %mvn_file - TODO
-#
-%mvn_file mvn-file
-
-#
-# %mvn_build - build Maven project
-#
-%mvn_build mvn-build
-
-#
-# %mvn_install - install Maven project
-#
-%mvn_install() \
-[ -d .root ] && cp -pr .root/* $RPM_BUILD_ROOT \
-if [ -d target/site/apidocs ]; then \
-   install -dm755 $RPM_BUILD_ROOT/%{_javadocdir}/%{name} \
-   cp -pr target/site/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name} \
-   echo '/%{_javadocdir}/%{name}' >>.mfiles-javadoc \
-fi \
-%{nil}
-
-#
-# %mvn_check - verify Maven project
-#
-%mvn_check() \
-: \
-%{nil}
+exit 0

@@ -87,6 +87,7 @@ base_goal=verify
 skip_tests=
 install_goal=org.fedoraproject.xmvn:xmvn-mojo:install
 javadoc_goal=org.apache.maven.plugins:maven-javadoc-plugin:aggregate
+builddep_goal=org.fedoraproject.xmvn:xmvn-mojo:builddep
 add_depmaps=
 singleton=test
 pre_goals=
@@ -169,6 +170,10 @@ if $singleton; then
     export XMVN_INSTALL_LAYOUT="$XMVN_INSTALL_LAYOUT;^(.*)$=>@1"
 fi
 
+if [ -f .xmvnrc ]; then
+    . ./.xmvnrc
+fi
+
 
 xmvn \
     --offline \
@@ -180,4 +185,5 @@ xmvn \
     $base_goal \
     $install_goal \
     $javadoc_goal \
+    $builddep_goal \
     $post_goals
