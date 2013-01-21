@@ -160,7 +160,9 @@ while [ $# -gt 0 ]; do
 done
 
 if $singleton; then
-    export XMVN_INSTALL_LAYOUT="$XMVN_INSTALL_LAYOUT;^(.*)$=>@1"
+    export XMVN_INSTALL_LAYOUT="$XMVN_INSTALL_LAYOUT"':{*}
+@1
+'
 fi
 
 if [ -f .xmvnrc ]; then
