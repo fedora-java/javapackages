@@ -52,12 +52,8 @@ $me - Build Maven project locally
 Usage: $me [options] [-- maven-arguments]
 
 Available options:
-        -a, --add-depmap <groupId>:<artifactId>:<POM-path>
-                Install additional depmap for artifact.
         -d, --xmvn-debug
                 Enable debugging output for Maven local resolver.
-        -D, --depmap <FILE>
-                Use local depmap file.
         -f, --force, --skip-tests
                 Skip test compilation and execution.
         -g, --goal-before, --pre <GOAL>
@@ -86,7 +82,6 @@ skip_tests=
 install_goal=org.fedoraproject.xmvn:xmvn-mojo:install
 javadoc_goal=org.apache.maven.plugins:maven-javadoc-plugin:aggregate
 builddep_goal=org.fedoraproject.xmvn:xmvn-mojo:builddep
-add_depmaps=
 singleton=test
 pre_goals=
 post_goals=
@@ -102,18 +97,8 @@ while [ $# -gt 0 ]; do
 	--)
 	    break
 	    ;;
-	-a|--add-depmap)
-	    need_arg "$@"
-	    export XMVN_INSTALL_DEPMAPS="$XMVN_INSTALL_DEPMAPS,$2"
-	    shift
-	    ;;
 	-d|--xmvn-debug)
 	    export XMVN_DEBUG=1
-	    ;;
-	-D|--depmap)
-	    need_arg "$@"
-	    export XMVN_RESOLV_DEPMAPS="$XMVN_RESOLV_DEPMAPS,$2"
-	    shift
 	    ;;
 	-f|--force|--skip-tests)
 	    base_goal=package
