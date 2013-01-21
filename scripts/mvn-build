@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# Copyright (c) 2012 Red Hat, Inc.
+# Copyright (c) 2012-2013 Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -70,8 +70,6 @@ Available options:
                 Skip artifact installation.
         -j, --skip-javadoc
                 Skip javadoc generation and installation.
-        -L, --layout <RULES>
-                Use custom packaging layout.
         -s, --singleton
                 Singleton packaging (one artifact per package).
         -v, --compat-version <version>:<POM-path>
@@ -140,11 +138,6 @@ while [ $# -gt 0 ]; do
 	    ;;
 	-j|--skip-javadoc)
 	    javadoc_goal=
-	    ;;
-	-L|--layout)
-	    need_arg "$@"
-	    export XMVN_INSTALL_LAYOUT="$XMVN_INSTALL_LAYOUT;$2"
-	    shift
 	    ;;
 	-s|--singleton)
 	    singleton=:
