@@ -30,11 +30,6 @@
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
 
-# *** WARNING ***
-# The following macros are highlly experimental. Do *not* rely on them
-# unless you are prepared to face consequences (FTBFS, API change etc.)
-
-
 # %mvn_package - assign Maven artifact(s) to a subpackage
 #
 # Usage: %mvn_package [gId]:[aId[:ver]] <subpackage name>
