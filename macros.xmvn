@@ -34,28 +34,77 @@
 # The following macros are highlly experimental. Do *not* rely on them
 # unless you are prepared to face consequences (FTBFS, API change etc.)
 
+
+# %mvn_package - assign Maven artifact(s) to a subpackage
 #
-# %mvn_package - TODO
+# Usage: %mvn_package [gId]:[aId[:ver]] <subpackage name>
+#
+# This macro causes given artifact(s) to be installed in given subpackage.
+#
+# GId, aId and ver can contain wildcards and alternatives, which allows
+# multiple artifacts to be matched. If any of gId, aId or ver is omited
+# then any value will match the respective part. In particular a bare :
+# symbol will match any artifact.
+#
+# Subpackage name can contain backreferences in form @n.
 #
 %mvn_package mvn-package
 
+
+# %mvn_alias - create alias(es) for given Maven artifact(s)
 #
-# %mvn_alias - TODO
+# Usage: %mvn_alias [gId]:[aId[:ver]] [aliasGId]:[aliasAId[:aliasVer]] [...]
+#
+# This macro adds one or more aliases for specified artifacts. Aliases are
+# additional groupId, artifactId and version triples under which artifacts
+# can be found. After resulting package is installed any attempts to
+# resolve any of aliases will result in resolving the original artifact.
+#
+# GId, aId and ver can contain wildcards and alternatives, which allows
+# multiple artifacts to be matched. If any of gId, aId or ver is omited
+# then any value will match the respective part. In particular a bare :
+# symbol will match any artifact.
+#
+# AliasGId, aliasAId and aliasVer can contain backreferences in form @n,
+# which can refer only to respective parts.
 #
 %mvn_alias mvn-alias
 
+
+# %mvn_file - specify file name(s) for Maven artifact(s)
 #
-# %mvn_file - TODO
+# Usage: %mvn_file [gId]:[aId[:ver]] <file1> [file2 ...]
+#
+# GId, aId and ver can contain wildcards and alternatives, which allows
+# multiple artifacts to be matched. If any of gId, aId or ver is omited
+# then any value will match the respective part. In particular a bare :
+# symbol will match any artifact.
+#
+# File names can contain backreferences in form @n. If multiple names
+# are given then the first one will be primary name of the artifact and
+# additional names will be symbolic links pointing to the primary file.
 #
 %mvn_file mvn-file
 
-#
+
 # %mvn_build - build Maven project
+#
+# Usage: %mvn_build [options]
+#
+# This macro causes Maven project to be built (usually compiled and
+# packaged). It is intended to be placed in %build section of spec file.
+#
+# For summary of accepted options execute `mvn-build --help` command.
 #
 %mvn_build mvn-build
 
-#
+
 # %mvn_install - install Maven project
+#
+# Usage: %mvn_install
+#
+# This macro causes previously built Maven project to be installed into
+# buildroot. It is intended to be placed in %install section of spec file.
 #
 %mvn_install() \
 [ -d .root ] && cp -pr .root/* $RPM_BUILD_ROOT \
