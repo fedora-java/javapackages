@@ -65,10 +65,3 @@ if [ -d target/site/apidocs ]; then \
    echo '/%{_javadocdir}/%{name}' >>.mfiles-javadoc \
 fi \
 %{nil}
-
-#
-# %mvn_check - verify Maven project
-#
-%mvn_check() \
-: \
-%{nil}
