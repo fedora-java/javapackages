@@ -32,7 +32,7 @@
 
 # A marker informing Tycho that mvn-local was ran.
 export TYCHO_MVN_LOCAL=true
-undef TYCHO_MVN_RPMBUILD
+unset TYCHO_MVN_RPMBUILD
 export TYCHO_MVN_RPMBUILD
 
 exec xmvn "${@}"

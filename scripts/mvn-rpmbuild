@@ -37,7 +37,7 @@ export XMVN_REPO_LOCAL
 
 # A marker informing Tycho that mvn-rpmbuild was ran.
 export TYCHO_MVN_RPMBUILD=true
-undef TYCHO_MVN_LOCAL
+unset TYCHO_MVN_LOCAL
 export TYCHO_MVN_LOCAL
 
 exec xmvn \
