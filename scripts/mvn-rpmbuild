@@ -40,6 +40,15 @@ export TYCHO_MVN_RPMBUILD=true
 unset TYCHO_MVN_LOCAL
 export TYCHO_MVN_LOCAL
 
+# Install maven metadata for plugins in groups org.apache.maven.plugins
+# and org.codehaus.mojo. This is to allow plugins in these groups to be
+# used without giving groupId prefix.
+for groupId in org/apache/maven/plugins org/codehaus/mojo; do
+    mkdir -p "${XMVN_REPO_LOCAL}"/${groupId}
+    ln -sf /etc/maven/metadata-${groupId////-}.xml \
+        "${XMVN_REPO_LOCAL}"/${groupId}/maven-metadata-central.xml
+done
+
 exec xmvn \
     --offline \
     --batch-mode \
