@@ -144,14 +144,15 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+
+if [ -f .xmvnrc ]; then
+    . ./.xmvnrc
+fi
+
 if $singleton; then
     export XMVN_INSTALL_LAYOUT="$XMVN_INSTALL_LAYOUT"':{*}
 @1
 '
-fi
-
-if [ -f .xmvnrc ]; then
-    . ./.xmvnrc
 fi
 
 
