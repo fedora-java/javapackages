@@ -273,6 +273,15 @@ pom_xpath_inject()
 }
 
 
+pom_xpath_replace()
+{
+    set +x
+    _pom_initialize
+    _pom_replace_xpath "${3}" "${1}" "${2}"
+    set -x
+}
+
+
 pom_add_parent()
 {
     set +x

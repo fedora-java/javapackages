@@ -284,6 +284,25 @@ fi \
 }
 
 
+# %pom_xpath_replace - replace XML node from POM file with given XML code
+#
+# Usage: %pom_xpath_replace <XPath> <XML code> [POM location]
+#
+# This macro patches specified POM file removing all XML nodes described by the
+# XPath expression and injecting given XML code in their place.
+#
+# XPath is an expression describing a set of XML nodes to be removed from the
+# POM file. It must be a properly formated XPath 1.0 expression, as described
+# in <http://www.w3.org/TR/xpath/>.
+#
+# POM location can be either a full path to the POM file, or a path to the
+# directory containing pom.xml. If POM location is not given then pom.xml from
+# current working directory is used.
+#
+%pom_xpath_replace()  %{expand: %{__pom_call}xpath_replace  %*
+}
+
+
 # %pom_add_parent - add parent POM reference to POM file
 #
 # Usage: %pom_add_parent groupId:artifactId[:version] [POM location]
