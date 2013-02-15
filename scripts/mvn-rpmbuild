@@ -40,6 +40,15 @@ export TYCHO_MVN_RPMBUILD=true
 unset TYCHO_MVN_LOCAL
 export TYCHO_MVN_LOCAL
 
+# Support local depmaps
+XMVN_RESOLV_DEPMAPS=,
+for arg in "$@"; do
+    if egrep -q '^-Dmaven\.local\.depmap\.file=' <<<"$arg"; then
+	XMVN_RESOLV_DEPMAPS="$XMVN_RESOLV_DEPMAPS,"$(sed 's/[^=]*=//' <<<"$arg")
+    fi
+done
+export XMVN_RESOLV_DEPMAPS
+
 # Install maven metadata for plugins in groups org.apache.maven.plugins
 # and org.codehaus.mojo. This is to allow plugins in these groups to be
 # used without giving groupId prefix.
