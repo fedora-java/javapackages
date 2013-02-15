@@ -282,6 +282,15 @@ pom_xpath_replace()
 }
 
 
+pom_xpath_set()
+{
+    set +x
+    _pom_initialize
+    _pom_replace_xpath "${3}" "${1}/text()" "${2}"
+    set -x
+}
+
+
 pom_add_parent()
 {
     set +x
