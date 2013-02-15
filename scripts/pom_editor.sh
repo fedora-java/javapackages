@@ -123,15 +123,7 @@ EOF
 #  $3 - comment to replace the element with
 _pom_disable_xpath()
 {
-    _pom_patch "${1}" <<EOF
-${_pom_xslt_header}
-  <xsl:template match="${2}">
-    <xsl:comment>
-      <xsl:text> ${3} </xsl:text>
-    </xsl:comment>
-  </xsl:template>
-${_pom_xslt_trailer}
-EOF
+    _pom_replace_xpath "${1}" "${2}" "<xsl:comment><xsl:text> ${3} </xsl:text></xsl:comment>"
 }
 
 
