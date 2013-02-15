@@ -1,5 +1,5 @@
 #!/bin/bash -e
-# Copyright (c) 2012, Red Hat, Inc
+# Copyright (c) 2012-2013, Red Hat, Inc
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -98,6 +98,22 @@ _pom_patch()
     # This is to help maintainers detect unneeded patches.
     cmp -s "${pom}"{,.tmp} && _pom_bailout Operation on POM has no effect.
     rm -f "${pom}".tmp
+}
+
+
+# Replace a particular node with given content.
+#  $1 - POM location pattern
+#  $2 - XPath of the element to replace
+#  $3 - content to replace the element with
+_pom_replace_xpath()
+{
+    _pom_patch "${1}" <<EOF
+${_pom_xslt_header}
+  <xsl:template match="${2}">
+    ${3}
+  </xsl:template>
+${_pom_xslt_trailer}
+EOF
 }
 
 
