@@ -58,6 +58,9 @@ for groupId in org/apache/maven/plugins org/codehaus/mojo; do
         "${XMVN_REPO_LOCAL}"/${groupId}/maven-metadata-central.xml
 done
 
+# Maven needs to have M2_HOME exported. See: rhbz#912333
+export M2_HOME=/usr/share/maven
+
 exec xmvn \
     --offline \
     --batch-mode \
