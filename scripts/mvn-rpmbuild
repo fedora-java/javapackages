@@ -61,10 +61,12 @@ done
 # Maven needs to have M2_HOME exported. See: rhbz#912333
 export M2_HOME=/usr/share/maven
 
+# Extra arguments passed to JVM
+export ADDITIONAL_OPTIONS="${ADDITIONAL_OPTIONS} ${MAVEN_OPTS}"
+
 exec xmvn \
     --offline \
     --batch-mode \
     -Dmaven.repo.local="${XMVN_REPO_LOCAL}" \
-    $MAVEN_OPTS \
     -Dmaven.home=${M2_HOME} \
     "${@}"
