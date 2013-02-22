@@ -32,7 +32,7 @@
 #   Stanislav Ochotnicky <sochotnicky@redhat.com>
 #
 
-
+import os
 import sys
 from xml.etree.ElementTree import fromstring
 from StringIO import StringIO
@@ -44,21 +44,47 @@ class TagBuilder:
         paths = map (lambda x: x.rstrip (), filelist.readlines ())
         # this is always required because jpackage-utils owns the directory
         print("jpackage-utils")
+        provided = []
+        if paths:
+            # let's first read all fragment files for provided GAVs
+            provided = self.get_provided_GAVs(os.path.dirname(paths[0]))
         for path in paths:
-            self.print_mvn_requires(path)
+            self.print_mvn_requires(path, provided)
 
-    def print_mvn_requires(self, path):
+    def get_provided_GAVs(self, fragment_dir):
+        provided = []
+        for dirname, dirnames, filenames in os.walk(fragment_dir):
+            # print path to all filenames.
+            for filename in filenames:
+                doc = self.get_fragment_doc(os.path.join(dirname, filename))
+                for mpart in doc.findall('.//dependency/maven'):
+                    groupId = mpart.find('groupId').text
+                    artifactId = mpart.find('artifactId').text
+                    version = mpart.find('version').text
+                    provided.append((groupId, artifactId, version))
+        return provided
+
+    def get_fragment_doc(self, fragment_path):
         buf = StringIO()
         buf.write('<fragments>\n')
-        with open(path) as f:
+        with open(fragment_path) as f:
             buf.write(f.read())
         buf.write('</fragments>')
         fragments = buf.getvalue()
-        doc = fromstring(fragments)
+        return fromstring(fragments)
+
+    def print_mvn_requires(self, path, provided):
+        doc = self.get_fragment_doc(path)
         for mpart in doc.findall('.//autoRequires'):
             groupId = mpart.find('groupId').text
             artifactId = mpart.find('artifactId').text
-            print("mvn(%s:%s)" %(groupId, artifactId))
+            for g, a, v in provided:
+                if g == groupId and a == artifactId:
+                    # generate versioned requires for our subpackages
+                    print("mvn(%s:%s) = %s" %(groupId, artifactId, v))
+                    break # skip the else branch
+            else:
+                print("mvn(%s:%s)" %(groupId, artifactId))
 
         jreq = doc.find('.//requiresJava')
         if jreq is not None:
