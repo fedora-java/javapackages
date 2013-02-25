@@ -54,6 +54,8 @@ Usage: $me [options] [-- maven-arguments]
 Available options:
         -d, --xmvn-debug
                 Enable debugging output for Maven local resolver.
+        -E, --disable-effective-poms
+                Disable resolution of effective POMs.
         -f, --force, --skip-tests
                 Skip test compilation and execution.
         -g, --goal-before, --pre <GOAL>
@@ -92,6 +94,8 @@ else
     export XMVN_INSTALL_NAME=$(basename "$PWD")
 fi
 
+export XMVN_RESOLV_POM_REPOS="/usr/share/maven2/poms/,/usr/share/maven-effective-poms/,/usr/share/maven-poms/"
+
 while [ $# -gt 0 ]; do
     case "$1" in
 	--)
@@ -100,6 +104,10 @@ while [ $# -gt 0 ]; do
 	    ;;
 	-d|--xmvn-debug)
 	    export XMVN_DEBUG=1
+	    ;;
+	# XXX
+	-E|--disable-effective-poms)
+	    export XMVN_RESOLV_POM_REPOS="/usr/share/maven2/poms/,/usr/share/maven-poms/"
 	    ;;
 	-f|--force|--skip-tests)
 	    base_goal=package

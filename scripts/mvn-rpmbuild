@@ -49,6 +49,16 @@ for arg in "$@"; do
 done
 export XMVN_RESOLV_DEPMAPS
 
+# XXX Allow -Dmaven.local.effective.pom=false to be used to disable
+# resolution from effective POM repository.
+XMVN_RESOLV_POM_REPOS="/usr/share/maven2/poms/,/usr/share/maven-effective-poms/,/usr/share/maven-poms/"
+for arg in "$@"; do
+    if egrep -q '^-Dmaven\.local\.effective\.pom=false' <<<"$arg"; then
+	XMVN_RESOLV_POM_REPOS="/usr/share/maven2/poms/,/usr/share/maven-poms/"
+    fi
+done
+export XMVN_RESOLV_POM_REPOS
+
 # Install maven metadata for plugins in groups org.apache.maven.plugins
 # and org.codehaus.mojo. This is to allow plugins in these groups to be
 # used without giving groupId prefix.
