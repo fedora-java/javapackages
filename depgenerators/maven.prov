@@ -51,14 +51,24 @@ class TagBuilder:
         buf.write('</fragments>')
         fragments = buf.getvalue()
         doc = fromstring(fragments)
+        versioned_provides = False
         if doc.find('.//skipProvides') is not None:
-            # this is compat package, don't generate mvn provides
-            return
+            # this is compat package, generate versioned provides
+            # yes, the naming is weird
+            versioned_provides = True
+
         for mpart in doc.findall('.//maven'):
             groupId = mpart.find('groupId').text
             artifactId = mpart.find('artifactId').text
             version = mpart.find('version').text
-            print "mvn(%s:%s) = %s" %(groupId, artifactId, version)
+            if versioned_provides:
+                print "mvn({gid}:{aid}:{version}) = {version}".format(gid=groupId,
+                                                                       aid=artifactId,
+                                                                       version=version)
+            else:
+                print "mvn({gid}:{aid}) = {version}".format(gid=groupId,
+                                                            aid=artifactId,
+                                                            version=version)
 
 
 if __name__ == "__main__":
