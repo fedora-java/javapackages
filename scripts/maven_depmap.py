@@ -193,14 +193,20 @@ def create_mappings(fragment, additions = None):
             maps.append((g, a))
     return maps
 
-def output_fragment(fragment_path, fragment, mappings, versions):
+def output_fragment(fragment_path, fragment, mappings, add_versions):
     """Writes fragment into fragment_path in specialised format
     compatible with jpp"""
     with open(fragment_path, "aw") as ffile:
-        if not versions:
+
+        if not add_versions:
             versions = []
         else:
-            versions = versions.split(',')
+            versions = add_versions.split(',')
+
+        if add_versions or add_versions == "":
+            # skip RPM provides in compat packages
+            ffile.write("<skipProvides/>\n")
+
         versions.insert(0, fragment.version)
         for ver in versions:
             for m in mappings:
