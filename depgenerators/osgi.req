@@ -93,7 +93,8 @@ class TagBuilder:
                     headers = self.parse_manifest(manifest)
                     if headers.get("Require-Bundle"):
                         for bundle in self.split_bundle_name(headers.get("Require-Bundle")):
-                            print "osgi(%s)" %(bundle)
+                            if bundle != "system.bundle":
+                                print "osgi(%s)" %(bundle)
 
 if __name__ == "__main__":
     builder = TagBuilder ()
