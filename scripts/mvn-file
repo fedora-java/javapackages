@@ -45,11 +45,11 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-xml="<artifact>
+xml="<artifactGlob>
         <groupId>${pattern[0]}</groupId>
         <artifactId>${pattern[1]}</artifactId>
         <version>${pattern[2]}</version>
-      </artifact>
+      </artifactGlob>
       <files>$files
       </files>"
 

@@ -37,11 +37,11 @@ fi
 
 IFS=: read -a pattern <<<"$1"
 
-xml="<artifact>
+xml="<artifactGlob>
         <groupId>${pattern[0]}</groupId>
         <artifactId>${pattern[1]}</artifactId>
         <version>${pattern[2]}</version>
-      </artifact>
+      </artifactGlob>
       <targetPackage>$2</targetPackage>"
 
 . /usr/share/java-utils/xmvn_config_editor.sh

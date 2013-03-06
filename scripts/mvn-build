@@ -147,9 +147,9 @@ done
 
 
 if $singleton; then
-    _write_xmvn_config "%mvn_build macro (--singleton option)" "artifactManagement" "rule" "<artifact>
+    _write_xmvn_config "%mvn_build macro (--singleton option)" "artifactManagement" "rule" "<artifactGlob>
         <artifactId>{*}</artifactId>
-      </artifact>
+      </artifactGlob>
       <targetPackage>@1</targetPackage>"
 fi
 

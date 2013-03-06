@@ -50,11 +50,11 @@ while [ $# -gt 0 ]; do
         </alias>"
 done
 
-xml="<artifact>
+xml="<artifactGlob>
         <groupId>${pattern[0]}</groupId>
         <artifactId>${pattern[1]}</artifactId>
         <version>${pattern[2]}</version>
-      </artifact>
+      </artifactGlob>
       <aliases>$aliases
       </aliases>"
 
