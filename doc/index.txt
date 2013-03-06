@@ -392,7 +392,7 @@ mentioned (e.g. some parent POMs), then these will all end up in package named
 [TIP]
 ======
 `%mvn_package` macro supports wildcards and brace expansions, so whole `%prep` section from previous example can be replaced with single line:
-`%mvn_package ":plexus-compiler-{jikes,eclipse,csharp}" plexus-compiler-extras
+`%mvn_package ":plexus-compiler-{jikes,eclipse,csharp}" plexus-compiler-extras`
 ======
 
 .XMvn package relationships
