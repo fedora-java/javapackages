@@ -51,7 +51,7 @@ macros. Below are some examples added for convenience.
 Often dependencies specified in Maven `pom.xml` files need to be removed because of different reasons. `%pom_remove_dep` macro can be used to ease this task:
 
 .Removing dependencies from pom.xml files
-[source,bash]
+[source,spec]
 --------
 # Removes dependency on groupId:artifactId from ./pom.xml
 %pom_remove_dep groupId:artifactId
@@ -72,7 +72,7 @@ Often dependencies specified in Maven `pom.xml` files need to be removed because
 `%pom_remove_plugin` macro works exactly as `%pom_remove_dep`, except it removes Maven plugin invocations. Some examples:
 
 .Removing Maven plugins from pom.xml files
-[source,bash]
+[source,spec]
 --------
 # Disables maven-jar-plugin so that classpath isn't included in manifests
 %pom_remove_plugin :maven-jar-plugin
@@ -86,7 +86,7 @@ reasons and there is a need to disable them. This can be achieved by using
 `%pom_disable_module`, for example:
 
 .Disabling specific project modules
-[source,bash]
+[source,spec]
 --------
 # Disables child-module-1, a submodule of the main pom.xml file
 %pom_disable_module child-module-1
@@ -104,7 +104,7 @@ link:http://www.w3.org/TR/xml/[XML] code to any `pom.xml` file. Below you can fi
 some examples for these macros.
 
 .Less common pom.xml modifications
-[source,bash]
+[source,spec]
 --------
 # Removes parent definition
 %pom_xpath_remove "pom:parent"
@@ -154,7 +154,7 @@ and all pom files must be copied into `%{_mavenpomdir}` and given
 file names of the following form, where `jarname` is the name of the
 jar without the .jar suffix:
 
-[source,bash]
+[source,spec]
 --------
 %{_mavenpomdir}/JPP[.subdirectory]-jarname.pom
 --------
@@ -175,7 +175,7 @@ poms -- the same convention should be followed:
 In its simplest form (a pom without a jar file), `%add_maven_depmap` looks like this:
 
 .Parent pom
-[source,bash]
+[source,spec]
 --------
 %add_maven_depmap JPP-%{name}.pom
 --------
@@ -187,7 +187,7 @@ groupId and artifactId inside the pom file and the pom file placed into
 For a pom that maps directly to a jar file, the following is the correct form:
 
 .Standard invocation
-[source,bash]
+[source,spec]
 --------
 %add_maven_depmap JPP-%{name}.pom %{name}.jar
 --------
@@ -196,7 +196,7 @@ In addition to creating the pom mapping, this will also ensure that the correct
 jar is associated with the groupId and artifactId from the pom.
 
 .Providing additional artifact mappings
-[source,bash]
+[source,spec]
 --------
 %add_maven_depmap JPP-%{name}.pom %{name}.jar -a "org.apache.commons:commons-lang"
 --------
@@ -208,7 +208,7 @@ where the groupId or artifactId may have changed, and other packages might
 require different IDs than those reflected in the installed pom.
 
 .Multiple subpackages
-[source,bash]
+[source,spec]
 --------
 %add_maven_depmap JPP-%{name}.pom %{name}.jar -f "XXX"
 --------
@@ -217,7 +217,7 @@ instead of standard location. This is useful for packages with multiple
 subpackages where each has its own jar files.
 
 .Multiple artifacts in a subdirectory
-[source,bash]
+[source,spec]
 --------
 %add_maven_depmap JPP.%{name}-sub.pom %{name}/sub.jar
 --------
