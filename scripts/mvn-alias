@@ -35,13 +35,29 @@ if [ $# -lt 2 ]; then
     exit 1
 fi
 
-pattern="$1" shift
+IFS=: read -a pattern <<<"$1"
+shift
 
+aliases=
 while [ $# -gt 0 ]; do
-    echo "export XMVN_INSTALL_DEPMAPS=\"\$XMVN_INSTALL_DEPMAPS\"'$pattern
-$1
-'" >>.xmvnrc
+    IFS=: read -a alias <<<"$1"
     shift
+    aliases="$aliases
+        <alias>
+          <groupId>${alias[0]}</groupId>
+          <artifactId>${alias[1]}</artifactId>
+          <version>${alias[2]}</version>
+        </alias>"
 done
 
+xml="<artifactGlob>
+        <groupId>${pattern[0]}</groupId>
+        <artifactId>${pattern[1]}</artifactId>
+        <version>${pattern[2]}</version>
+      </artifactGlob>
+      <aliases>$aliases
+      </aliases>"
+
+. /usr/share/java-utils/xmvn_config_editor.sh
+_write_xmvn_config "%mvn_alias macro" "artifactManagement" "rule" "$xml"
 exit 0

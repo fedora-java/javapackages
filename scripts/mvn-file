@@ -35,13 +35,24 @@ if [ $# -lt 2 ]; then
     exit 1
 fi
 
-pattern="$1" shift
+IFS=: read -a pattern <<<"$1"
+shift
 
+files=
 while [ $# -gt 0 ]; do
-    echo "export XMVN_INSTALL_FILES=\"\$XMVN_INSTALL_FILES\"'$pattern
-$1
-'" >>.xmvnrc
+    files="$files
+        <file>$1</file>"
     shift
 done
 
+xml="<artifactGlob>
+        <groupId>${pattern[0]}</groupId>
+        <artifactId>${pattern[1]}</artifactId>
+        <version>${pattern[2]}</version>
+      </artifactGlob>
+      <files>$files
+      </files>"
+
+. /usr/share/java-utils/xmvn_config_editor.sh
+_write_xmvn_config "%mvn_file macro" "artifactManagement" "rule" "$xml"
 exit 0

@@ -1,5 +1,5 @@
-#!/bin/sh -e
-# Copyright (c) 2013 Red Hat, Inc.
+#!/bin/bash -e
+# Copyright (c) 2013, Red Hat, Inc
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,25 +30,53 @@
 #
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
-# A marker informing Tycho that mvn-local was ran.
-export TYCHO_MVN_LOCAL=true
-unset TYCHO_MVN_RPMBUILD
-export TYCHO_MVN_RPMBUILD
 
-# Allow -Dmaven.local.effective.pom=false to be used to disable
-# resolution from effective POM repository.
-XMVN_COMPAT=19-rpmbuild
-for arg in "$@"; do
-    if egrep -q '^-Dmaven\.local\.effective\.pom=false' <<<"$arg"; then
-	XMVN_COMPAT=19-rpmbuild-raw
+# Write XMvn reactor configuration file.
+#  $1 - name of the macro or script that generated the config file
+#       (for documentation purposes only)
+#  $2 - 2nd leven major XML tag name (eg. resolverSettings)
+#  $3 - 3rd level minor XML tag name (eg. jarRepositories)
+#  $4 (optional) - 4th level micro XML tag name (eg. repository)
+#  $5 (or $4 if micro tag is not specified) - XML contents
+_write_xmvn_config()
+{
+    mkdir -p .xmvn/config.d
+
+    # index := ++index_file
+    local index_file=.xmvn/javapackages-rule-index
+    local index=$(($(cat $index_file 2>/dev/null || :) + 1))
+    echo $index >$index_file
+
+    # Write common header
+    cat >.xmvn/config.d/javapackages-config-$index.xml <<EOF
+<?xml version="1.0" encoding="US-ASCII"?>
+<!-- XMvn configuration file generated with $1
+     from maven-local package (part of javapackages-tools). -->
+<configuration xmlns="http://fedorahosted.org/xmvn/CONFIG/0.4.0">
+EOF
+
+    if [[ $# -eq 4 ]]; then
+	cat >>.xmvn/config.d/javapackages-config-$index.xml <<EOF
+  <$2>
+    <$3>
+      $4
+    </$3>
+  </$2>
+</configuration>
+EOF
+    elif [[ $# -eq 5 ]]; then
+	cat >>.xmvn/config.d/javapackages-config-$index.xml <<EOF
+  <$2>
+    <$3>
+      <$4>
+        $5
+      </$4>
+    </$3>
+  </$2>
+</configuration>
+EOF
+    else
+	echo "_write_xmvn_config(): Requires either 4 or 5 arguments"
+	exit 1
     fi
-done
-export XMVN_COMPAT
-
-# Maven needs to have M2_HOME exported. See: rhbz#912333
-export M2_HOME=/usr/share/maven
-
-# Extra arguments passed to JVM
-export ADDITIONAL_OPTIONS="${ADDITIONAL_OPTIONS} ${MAVEN_OPTS}"
-
-exec xmvn "${@}"
+}

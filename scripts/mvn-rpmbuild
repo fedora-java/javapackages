@@ -30,34 +30,44 @@
 #
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
-# XMvn default repo location is .xm2, but for backwards-compatibility
-# we use .m2 if called as mvn-rpmbuild.
-: "${XMVN_REPO_LOCAL:=.m2}"
-export XMVN_REPO_LOCAL
-
 # A marker informing Tycho that mvn-rpmbuild was ran.
 export TYCHO_MVN_RPMBUILD=true
 unset TYCHO_MVN_LOCAL
 export TYCHO_MVN_LOCAL
 
 # Support local depmaps
-XMVN_RESOLV_DEPMAPS=,
+depmap=/some/nonexistent/path
 for arg in "$@"; do
     if egrep -q '^-Dmaven\.local\.depmap\.file=' <<<"$arg"; then
-	XMVN_RESOLV_DEPMAPS="$XMVN_RESOLV_DEPMAPS,"$(sed 's/[^=]*=//' <<<"$arg")
+	depmap="$XMVN_RESOLV_DEPMAPS,"$(sed 's/[^=]*=//' <<<"$arg")
     fi
 done
-export XMVN_RESOLV_DEPMAPS
 
-# XXX Allow -Dmaven.local.effective.pom=false to be used to disable
+mkdir -p .xmvn/config.d
+cat >>.xmvn/config.d/mvn-rpmbuild-config.xml <<EOF
+<configuration>
+  <resolverSettings>
+    <!-- XMvn default repo location is .xm2, but for backwards-compatibility
+         we use .m2 if called as mvn-rpmbuild. -->
+    <localRepositories>
+      <repository>.m2</repository>
+    <localRepositories>
+    <metadataRepositories>
+      <repository>$depmap</repository>
+    </metadataRepositories>
+  </resolverSettings>
+</configuration>
+EOF
+
+# Allow -Dmaven.local.effective.pom=false to be used to disable
 # resolution from effective POM repository.
-XMVN_RESOLV_POM_REPOS="/usr/share/maven2/poms/,/usr/share/maven-effective-poms/,/usr/share/maven-poms/"
+XMVN_COMPAT=19-rpmbuild
 for arg in "$@"; do
     if egrep -q '^-Dmaven\.local\.effective\.pom=false' <<<"$arg"; then
-	XMVN_RESOLV_POM_REPOS="/usr/share/maven2/poms/,/usr/share/maven-poms/"
+	XMVN_COMPAT=19-rpmbuild-raw
     fi
 done
-export XMVN_RESOLV_POM_REPOS
+export XMVN_COMPAT
 
 # Install maven metadata for plugins in groups org.apache.maven.plugins
 # and org.codehaus.mojo. This is to allow plugins in these groups to be
