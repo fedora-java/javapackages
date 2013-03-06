@@ -1,0 +1,9 @@
+
+This needs asciidoc with html5 support so if you want to build the docs on
+Fedora right now:
+
+  hg clone https://asciidoc.googlecode.com/hg/ asciidoc
+  ln -s $(pwd)/asciidoc/a2x.py ~/bin/a2x
+  ln -s $(pwd)/asciidoc/asciidoc.py ~/bin/asciidoc
+
+And of course add ~/bin to your PATH before running make

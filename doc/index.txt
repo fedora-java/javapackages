@@ -1,0 +1,306 @@
+Java Packaging HOWTO
+====================
+Stanislav Ochotnický <sochotnicky@redhat.com>
+v1.0, 2013-05-03
+
+
+:numbered!:
+[abstract]
+== Abstract
+This document aims to help developers create and maintain Java packages in
+Fedora. It *does not* supersede or replace
+link:https://fedoraproject.org/wiki/Packaging:Java[Java Packaging Guidelines],
+but rather aims to document tools and techniques used for packaging Java
+software on Fedora.
+
+:numbered:
+== The Basics
+This section includes basic introduction to Java world, describes `jar` file
+contents and basically describes to people unfamiliar with Java world enough to
+understand Java packaging later on.
+
+
+== Packaging principles
+
+Packaging Java has certain specifics that will be covered in this section which
+will cover basic packaging principles such as:
+
+ * No bundling
+ * Working with upstreams
+ * Commenting workarounds
+ * Links to other appropriate documents
+
+[[helper_macros]]
+=== Java helper functions
+
+Many repeating tasks when packaging Java software can be automated. Most of the
+time they are RPM macros or shell scripts.
+
+==== Macros for pom.xml modification
+
+Sometimes Maven `pom.xml` files need to be patched before they are used to build
+packages. One could use traditional patches to maintain changes, but package
+maintainers should use `%pom_*` macros developed specially to ease this
+task.
+
+These macros are designed to be called from `%prep` section of spec files. There
+are documented in `/etc/rpm/macros.fjava` configuration file, which is also
+link:http://git.fedorahosted.org/git/?p=javapackages.git;a=blob_plain;f=macros.fjava[available online]. See the documentation for technical details how to use these
+macros. Below are some examples added for convenience.
+
+Often dependencies specified in Maven `pom.xml` files need to be removed because of different reasons. `%pom_remove_dep` macro can be used to ease this task:
+
+.Removing dependencies from pom.xml files
+[source,bash]
+--------
+# Removes dependency on groupId:artifactId from ./pom.xml
+%pom_remove_dep groupId:artifactId
+
+# Removes dependency on groupId:artifactId from ./submodule/pom.xml
+%pom_remove_dep groupId:artifactId submodule
+
+# Removes dependency on groupId:artifactId from ./full/path/to/file.pom
+%pom_remove_dep groupId:artifactId full/path/to/file.pom
+
+# Removes dependency on all artifacts in group groupId from ./pom.xml
+%pom_remove_dep groupId:
+
+# Removes all dependencies from ./pom.xml
+%pom_remove_dep :
+--------
+
+`%pom_remove_plugin` macro works exactly as `%pom_remove_dep`, except it removes Maven plugin invocations. Some examples:
+
+.Removing Maven plugins from pom.xml files
+[source,bash]
+--------
+# Disables maven-jar-plugin so that classpath isn't included in manifests
+%pom_remove_plugin :maven-jar-plugin
+
+# Disable a proprietary plugin that isn't packaged for Fedora
+%pom_remove_plugin com.example.mammon:useless-proprietary-plugin submodule
+--------
+
+Sometimes some submodules of upstream project cannot be built for various
+reasons and there is a need to disable them. This can be achieved by using
+`%pom_disable_module`, for example:
+
+.Disabling specific project modules
+[source,bash]
+--------
+# Disables child-module-1, a submodule of the main pom.xml file
+%pom_disable_module child-module-1
+
+# Disables grandchild-module, a submodule of child-module-2/pom.xml
+%pom_disable_module grandchild-module child-module-2
+--------
+
+The above macros cover the most common cases of modifying `pom.xml` files,
+however if there is a need to apply some less-common patches there are also two
+generic macros for modifying `pom.xml` files. `%pom_xpath_remove` can be used to
+remove arbitrary XML nodes, described by link:http://www.w3.org/TR/xpath/[XPath]
+expressions. `%pom_xpath_inject` macro is capable of injecting arbitrary
+link:http://www.w3.org/TR/xml/[XML] code to any `pom.xml` file. Below you can find
+some examples for these macros.
+
+.Less common pom.xml modifications
+[source,bash]
+--------
+# Removes parent definition
+%pom_xpath_remove "pom:parent"
+
+# Removes extensions from the build
+%pom_xpath_remove "pom:build/pom:extensions" module/pom.xml
+
+# Adds new dependency
+%pom_xpath_inject "pom:dependencies" "
+                  <dependency>
+                        <groupId>org.example.project</groupId>
+                        <artifactId>awesomeproject</artifactId>
+                        <version>1.0.0.GA</version>
+                  </dependency>"
+--------
+
+.Handling XML namespaces
+[NOTE]
+=======
+POM files use a specific namespace - http://maven.apache.org/POM/4.0.0. The
+easiest way to respect this namespace in XPath expressions is prefixing all node
+names with `pom:`. For example, `pom:environment/pom:os` will work because it
+selects nodes from `pom` namespace, but `environment/os` won't find anything
+because it looks for nodes that don't belong to any XML namespace.
+=======
+Using `%pom_*` macros not only increases readability of the spec file, but also improves maintainability of the package as there are no patches that would need to be rebased with each upstream release.
+
+==== add_maven_depmap macro
+
+Maven identifies jar files by a set of strings: groupId, artifactId and version
+(mostly). To let mvn-rpmbuild know what groupId:artifactId corresponds to which
+pom or jar file, we use the `%add_maven_depmap`
+macro. `%add_maven_depmap` reads the groupId and artifactId from the
+pom file and creates a file in `%{_mavendepmapfragdir}` that maps
+groupId:artifactId pairs to jar files under `%{_javadir}`. All
+fragments in this directory are read by mvn-rpmbuild during startup, allowing
+the locally installed jar files and poms to be used as a maven repository.
+
+Note that -- unless you use the `-f` option as shown below -- all
+depmap fragments for a given package are written to the same file,
+`%{_mavendepmapfragdir}/%{name}`. You should be sure to include this
+file in the `%files` section of your RPM.
+
+For the macro to work properly, all jar files must be copied into
+`%{_javadir}` (see [[#JAR_file_installation|JAR file installation]]),
+and all pom files must be copied into `%{_mavenpomdir}` and given
+file names of the following form, where `jarname` is the name of the
+jar without the .jar suffix:
+
+[source,bash]
+--------
+%{_mavenpomdir}/JPP[.subdirectory]-jarname.pom
+--------
+
+Note that the subdirectory is only necessary if the jar file is put into a subdirectory of `%{_javadir}`. For example:
+
+* For junit, the jar is `%{_javadir}/junit.jar`, so the pom would be
+  `%{_mavenpomdir}/JPP-junit.pom`.
+* For plexus-ant-factory, the jar is `%{_javadir}/plexus/ant-factory.jar`, so
+  the pom would named `%{_mavenpomdir}/JPP.plexus-ant-factory.pom`.
+
+If a pom is installed with no corresponding jar file -- for example, for parent
+poms -- the same convention should be followed:
+
+* The Apache commons parent pom is installed in
+  `%{_mavenpomdir}/JPP-commons-parent.pom`.
+
+In its simplest form (a pom without a jar file), `%add_maven_depmap` looks like this:
+
+.Parent pom
+[source,bash]
+--------
+%add_maven_depmap JPP-%{name}.pom
+--------
+
+This will read the pom file in question and provide a mapping between the
+groupId and artifactId inside the pom file and the pom file placed into
+`%{_mavenpomdir}`.
+
+For a pom that maps directly to a jar file, the following is the correct form:
+
+.Standard invocation
+[source,bash]
+--------
+%add_maven_depmap JPP-%{name}.pom %{name}.jar
+--------
+
+In addition to creating the pom mapping, this will also ensure that the correct
+jar is associated with the groupId and artifactId from the pom.
+
+.Providing additional artifact mappings
+[source,bash]
+--------
+%add_maven_depmap JPP-%{name}.pom %{name}.jar -a "org.apache.commons:commons-lang"
+--------
+This form also adds additional mappings for given pom/jar file. For example, if
+the pom file indicates that it contains groupId commons-lang, artifactId
+commons-lang, this form ensures that we also add a mapping between groupId
+org.apache.commons and the installed jar/pom files. This is necessary in cases
+where the groupId or artifactId may have changed, and other packages might
+require different IDs than those reflected in the installed pom.
+
+.Multiple subpackages
+[source,bash]
+--------
+%add_maven_depmap JPP-%{name}.pom %{name}.jar -f "XXX"
+--------
+This form stores dependency mapping inside `%{_mavendepmapfragdir}/%{name}-XXX`
+instead of standard location. This is useful for packages with multiple
+subpackages where each has its own jar files.
+
+.Multiple artifacts in a subdirectory
+[source,bash]
+--------
+%add_maven_depmap JPP.%{name}-sub.pom %{name}/sub.jar
+--------
+
+This form should be used when a package consists of multiple jar files that are
+installed into a subdirectory of `%{_javadir}`. Note that in this case, the pom
+file name includes the optional subdirectory field.
+
+
+
+== Build systems
+
+Lorem ipsum about build systems, differences, preferences etcetera.
+
+
+Will probably include some information about <<Xdepmap,depmap>> files.
+
+=== Maven
+
+Loong section about maven
+
+.XMvn package relationships
+image:images/xmvn.svg["XMvn related packages",width=600]
+
+
+=== Ant
+
+Medium length-section about Ant
+
+=== Gradle
+
+No information for Gradle!
+
+:numbered!:
+
+
+== History
+
+This section will be updated with history of Java packaging so that packagers
+can get bigger context. We can mention JPP, add_to_maven_depmap madness, Maven
+updates between major versions etcetera.
+
+[appendix]
+== Example Appendix
+AsciiDoc article appendices are just just article sections with
+'specialsection' titles.
+
+=== Appendix Sub-section
+Appendix sub-section at level 2.
+
+
+[bibliography]
+References
+----------
+
+[bibliography]
+- [[[guidelines]]] https://fedoraproject.org/wiki/Packaging:Java
+- [[[walsh-muellner]]] Norman Walsh & Leonard Muellner.
+  'DocBook - The Definitive Guide'. O'Reilly & Associates. 1999.
+  ISBN 1-56592-580-7.
+
+
+[glossary]
+Glossary
+--------
+Glossaries are optional. Glossaries entries are an example of a style
+of AsciiDoc labeled lists.
+
+[glossary]
+[[Xdepmap]]depmap::
+  Depmap is a special file telling Maven relationships between
+  groupId,artifactId and jar file on the filesystem
+
+A second glossary term::
+  The corresponding (indented) definition.
+
+
+ifdef::backend-docbook[]
+[index]
+Example Index
+-------------
+////////////////////////////////////////////////////////////////
+The index is normally left completely empty, it's contents being
+generated automatically by the DocBook toolchain.
+////////////////////////////////////////////////////////////////
+endif::backend-docbook[]
