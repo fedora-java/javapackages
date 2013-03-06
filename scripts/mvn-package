@@ -35,8 +35,15 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-echo "export XMVN_INSTALL_LAYOUT=\"\$XMVN_INSTALL_LAYOUT\"'$1
-$2
-'" >>.xmvnrc
+IFS=: read -a pattern <<<"$1"
 
+xml="<artifact>
+        <groupId>${pattern[0]}</groupId>
+        <artifactId>${pattern[1]}</artifactId>
+        <version>${pattern[2]}</version>
+      </artifact>
+      <targetPackage>$2</targetPackage>"
+
+. scripts/xmvn_config_editor.sh
+_write_xmvn_config "%mvn_package macro" "artifactManagement" "rule" "$xml"
 exit 0

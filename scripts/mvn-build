@@ -30,8 +30,8 @@
 #
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
-# For now enable debugging by default.
-export XMVN_DEBUG=1
+. ./scripts/xmvn_config_editor.sh
+
 
 need_arg()
 {
@@ -87,9 +87,7 @@ pre_goals=
 post_goals=
 
 if [ -n "$RPM_PACKAGE_NAME" ]; then
-    export XMVN_INSTALL_NAME="$RPM_PACKAGE_NAME"
-else
-    export XMVN_INSTALL_NAME=$(basename "$PWD")
+    _write_xmvn_config "%mvn_build macro (default)" "installerSettings" "packageName" "$RPM_PACKAGE_NAME"
 fi
 
 while [ $# -gt 0 ]; do
@@ -99,7 +97,8 @@ while [ $# -gt 0 ]; do
 	    break
 	    ;;
 	-d|--xmvn-debug)
-	    export XMVN_DEBUG=1
+	    _write_xmvn_config "%mvn_build macro (--xmvn-debug option)" "resolverSettings" "debug" "true"
+	    _write_xmvn_config "%mvn_build macro (--xmvn-debug option)" "installerSettings" "debug" "true"
 	    ;;
 	-f|--force|--skip-tests)
 	    base_goal=package
@@ -130,11 +129,12 @@ while [ $# -gt 0 ]; do
 	    ;;
 	-v|--compat-version)
 	    need_arg "$@"
-	    export XMVN_INSTALL_VERSIONS="$XMVN_INSTALL_VERSIONS,$2"
+	    echo "$0: Option: $1 is not supported for now." >&2
 	    shift
 	    ;;
 	-X|--debug)
-	    export XMVN_DEBUG=1
+	    _write_xmvn_config "%mvn_build macro (--debug option)" "resolverSettings" "debug" "true"
+	    _write_xmvn_config "%mvn_build macro (--debug option)" "installerSettings" "debug" "true"
 	    debug=-X
 	    ;;
 	*)
@@ -146,14 +146,11 @@ while [ $# -gt 0 ]; do
 done
 
 
-if [ -f .xmvnrc ]; then
-    . ./.xmvnrc
-fi
-
 if $singleton; then
-    export XMVN_INSTALL_LAYOUT="$XMVN_INSTALL_LAYOUT"':{*}
-@1
-'
+    _write_xmvn_config "%mvn_build macro (--singleton option)" "artifactManagement" "rule" "<artifact>
+        <artifactId>{*}</artifactId>
+      </artifact>
+      <targetPackage>@1</targetPackage>"
 fi
 
 

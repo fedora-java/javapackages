@@ -31,23 +31,52 @@
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
 
-# Create skeleton XMvn reactor configuration file if it doesn't exist
-# yet.
-_xmvn_init_config()
+# Write XMvn reactor configuration file.
+#  $1 - name of the macro or script that generated the config file
+#       (for documentation purposes only)
+#  $2 - 2nd leven major XML tag name (eg. resolverSettings)
+#  $3 - 3rd level minor XML tag name (eg. jarRepositories)
+#  $4 (optional) - 4th level micro XML tag name (eg. repository)
+#  $5 (or $4 if micro tag is not specified) - XML contents
+_write_xmvn_config()
 {
-    mkdir -p .xmvn
-    if ! [[ -e .xmvn/reactor-configuration.xml ]]; then
-	cat >.xmvn/reactor-configuration.xml <<EOF
+    mkdir -p .xmvn/config.d
+
+    # index := ++index_file
+    local index_file=.xmvn/javapackages-rule-index
+    local index=$(($(cat $index_file 2>/dev/null || :) + 1))
+    echo $index >$index_file
+
+    # Write common header
+    cat >.xmvn/config.d/javapackages-config-$index.xml <<EOF
 <?xml version="1.0" encoding="US-ASCII"?>
-<configuration>
-  <artifactManagement>
-    <artifactManagement>
-    </artifactManagement>
-  </artifactManagement>
-  <installerSettings>
-    <packageName>${RPM_PACKAGE_NAME}</packageName>
-  </installerSettings>
+<!-- XMvn configuration file generated with $1
+     from maven-local package (part of javapackages-tools). -->
+<configuration xmlns="http://fedorahosted.org/xmvn/CONFIG/0.4.0">
+EOF
+
+    if [[ $# -eq 4 ]]; then
+	cat >>.xmvn/config.d/javapackages-config-$index.xml <<EOF
+  <$2>
+    <$3>
+      $4
+    </$3>
+  </$2>
 </configuration>
 EOF
+    elif [[ $# -eq 5 ]]; then
+	cat >>.xmvn/config.d/javapackages-config-$index.xml <<EOF
+  <$2>
+    <$3>
+      <$4>
+        $5
+      </$4>
+    </$3>
+  </$2>
+</configuration>
+EOF
+    else
+	echo "_write_xmvn_config(): Requires either 4 or 5 arguments"
+	exit 1
     fi
 }
