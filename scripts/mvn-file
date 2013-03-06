@@ -53,6 +53,6 @@ xml="<artifact>
       <files>$files
       </files>"
 
-. scripts/xmvn_config_editor.sh
+. /usr/share/java-utils/xmvn_config_editor.sh
 _write_xmvn_config "%mvn_file macro" "artifactManagement" "rule" "$xml"
 exit 0

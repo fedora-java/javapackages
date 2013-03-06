@@ -30,7 +30,7 @@
 #
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
-. ./scripts/xmvn_config_editor.sh
+. /usr/share/java-utils/xmvn_config_editor.sh
 
 
 need_arg()
