@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<configuration>
+  <resolverSettings>
+    <localRepositories>
+      <repository>.m2</repository>
+    </localRepositories>
+    <jarRepositories>
+      <repository>/usr/share/java</repository>
+      <repository>/usr/lib/java</repository>
+    </jarRepositories>
+    <pomRepositories>
+      <repository>/usr/share/maven-effective-poms</repository>
+      <repository>/usr/share/maven-poms</repository>
+      <repository>/usr/share/maven/poms</repository>
+      <repository>/usr/share/maven2/poms</repository>
+    </pomRepositories>
+    <metadataRepositories>
+      <repository>/usr/share/maven-fragments</repository>
+    </metadataRepositories>
+    <prefixes>
+      <prefix>/</prefix>
+    </prefixes>
+  </resolverSettings>
+</configuration>
