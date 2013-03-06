@@ -13,6 +13,7 @@
       <repository>/usr/lib/java</repository>
     </jarRepositories>
     <pomRepositories>
+      <repository>/usr/share/maven-effective-poms</repository>
       <repository>/usr/share/maven-poms</repository>
       <repository>/usr/share/maven/poms</repository>
       <repository>/usr/share/maven2/poms</repository>
