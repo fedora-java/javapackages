@@ -6,40 +6,40 @@
   <resolverSettings>
     <debug>true</debug>
     <localRepositories>
-      <localRepository>.xm2</localRepository>
+      <repository>.xm2</repository>
     </localRepositories>
     <jarRepositories>
-      <jarRepository>/usr/share/java</jarRepository>
-      <jarRepository>/usr/lib/java</jarRepository>
+      <repository>/usr/share/java</repository>
+      <repository>/usr/lib/java</repository>
     </jarRepositories>
     <pomRepositories>
-      <pomRepository>/usr/share/maven-poms</pomRepository>
-      <pomRepository>/usr/share/maven/poms</pomRepository>
-      <pomRepository>/usr/share/maven2/poms</pomRepository>
+      <repository>/usr/share/maven-poms</repository>
+      <repository>/usr/share/maven/poms</repository>
+      <repository>/usr/share/maven2/poms</repository>
     </pomRepositories>
     <metadataRepositories>
-      <metadataRepository>/usr/share/maven-fragments</metadataRepository>
+      <repository>/usr/share/maven-fragments</repository>
     </metadataRepositories>
     <prefixes>
       <prefix>/</prefix>
     </prefixes>
     <blacklist>
-      <blacklist>
+      <artifact>
         <groupId>javax.activation</groupId>
         <artifactId>activation</artifactId>
-      </blacklist>
-      <blacklist>
+      </artifact>
+      <artifact>
         <groupId>org.eclipse.jetty.orbit</groupId>
         <artifactId>javax.activation</artifactId>
-      </blacklist>
-      <blacklist>
+      </artifact>
+      <artifact>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-webdav</artifactId>
-      </blacklist>
-      <blacklist>
+      </artifact>
+      <artifact>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-webdav-jackrabbit</artifactId>
-      </blacklist>
+      </artifact>
     </blacklist>
   </resolverSettings>
   <installerSettings>
