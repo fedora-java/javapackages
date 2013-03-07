@@ -15,9 +15,7 @@ software on Fedora.
 
 :numbered:
 == The Basics
-This section includes basic introduction to Java world, describes `jar` file
-contents and basically describes to people unfamiliar with Java world enough to
-understand Java packaging later on.
+include::basics.txt[]
 
 
 == Packaging principles

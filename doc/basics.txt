@@ -1,0 +1,18 @@
+This section includes basic introduction to Java packaging world to people
+coming from different backgrounds. Goal is to understand language of all groups
+involved. If you are a Java developer coming into contact with RPM packaging for
+the first time start reading xref:Xbasic_devs[Java developer] section. On the
+other hand if you are coming from RPM packaging background an
+xref:Xbasic_packagers[introduction to Java world] is probably better starting point.
+
+
+[[Xbasic_packagers]]
+=== For Packagers
+Packagers!
+
+
+
+
+[[Xbasic_devs]]
+=== For Java Developers
+Developers!
