@@ -101,8 +101,8 @@ while [ $# -gt 0 ]; do
 	    break
 	    ;;
 	-d|--xmvn-debug)
-	    _write_xmvn_config "%mvn_build macro (--xmvn-debug option)" "resolverSettings" "debug" "true"
-	    _write_xmvn_config "%mvn_build macro (--xmvn-debug option)" "installerSettings" "debug" "true"
+	    _write_xmvn_config "%mvn_build macro (xmvn-debug option)" "resolverSettings" "debug" "true"
+	    _write_xmvn_config "%mvn_build macro (xmvn-debug option)" "installerSettings" "debug" "true"
 	    ;;
 	# XXX
 	-E|--disable-effective-poms)
@@ -141,8 +141,8 @@ while [ $# -gt 0 ]; do
 	    shift
 	    ;;
 	-X|--debug)
-	    _write_xmvn_config "%mvn_build macro (--debug option)" "resolverSettings" "debug" "true"
-	    _write_xmvn_config "%mvn_build macro (--debug option)" "installerSettings" "debug" "true"
+	    _write_xmvn_config "%mvn_build macro (debug option)" "resolverSettings" "debug" "true"
+	    _write_xmvn_config "%mvn_build macro (debug option)" "installerSettings" "debug" "true"
 	    debug=-X
 	    ;;
 	*)
@@ -155,7 +155,7 @@ done
 
 
 if $singleton; then
-    _write_xmvn_config "%mvn_build macro (--singleton option)" "artifactManagement" "rule" "<artifactGlob>
+    _write_xmvn_config "%mvn_build macro (singleton option)" "artifactManagement" "rule" "<artifactGlob>
         <artifactId>{*}</artifactId>
       </artifactGlob>
       <targetPackage>@1</targetPackage>"
