@@ -119,6 +119,14 @@ some examples for these macros.
                         <artifactId>awesomeproject</artifactId>
                         <version>1.0.0.GA</version>
                   </dependency>"
+
+# Use a bit more complex XPath to add additional exclusion into
+# maven-wagon dependency
+%pom_xpath_inject "pom:dependency[pom:artifactId[text()='maven-wagon']]/pom:exclusions" "
+        <exclusion>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+        </exclusion>"
 --------
 
 .Handling XML namespaces
