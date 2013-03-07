@@ -144,12 +144,12 @@ Using `%pom_*` macros not only increases readability of the spec file, but also 
 
 Maven identifies jar files by a set of strings: groupId, artifactId and version
 (mostly). To let mvn-rpmbuild know what groupId:artifactId corresponds to which
-pom or jar file, we use the `%add_maven_depmap`
+POM or jar file, we use the `%add_maven_depmap`
 macro. `%add_maven_depmap` reads the groupId and artifactId from the
-pom file and creates a file in `%{_mavendepmapfragdir}` that maps
+POM file and creates a file in `%{_mavendepmapfragdir}` that maps
 groupId:artifactId pairs to jar files under `%{_javadir}`. All
 fragments in this directory are read by mvn-rpmbuild during startup, allowing
-the locally installed jar files and poms to be used as a maven repository.
+the locally installed jar and POM files to be used as a maven repository.
 
 Note that -- unless you use the `-f` option as shown below -- all
 depmap fragments for a given package are written to the same file,
@@ -157,7 +157,7 @@ depmap fragments for a given package are written to the same file,
 file in the `%files` section of your RPM.
 
 For the macro to work properly, all jar files must be copied into `%{_javadir}`
-and all pom files must be copied into `%{_mavenpomdir}` and given file names of
+and all POM files must be copied into `%{_mavenpomdir}` and given file names of
 the following form, where `jarname` is the name of the jar without the .jar
 suffix:
 
@@ -168,30 +168,30 @@ suffix:
 
 Note that the subdirectory is only necessary if the jar file is put into a subdirectory of `%{_javadir}`. For example:
 
-* For junit, the jar is `%{_javadir}/junit.jar`, so the pom would be
+* For junit, the jar is `%{_javadir}/junit.jar`, so the POM would be
   `%{_mavenpomdir}/JPP-junit.pom`.
 * For plexus-ant-factory, the jar is `%{_javadir}/plexus/ant-factory.jar`, so
-  the pom would named `%{_mavenpomdir}/JPP.plexus-ant-factory.pom`.
+  the POM would named `%{_mavenpomdir}/JPP.plexus-ant-factory.pom`.
 
-If a pom is installed with no corresponding jar file -- for example, for parent
-poms -- the same convention should be followed:
+If a POM is installed with no corresponding jar file -- for example, for parent
+POM files -- the same convention should be followed:
 
-* The Apache commons parent pom is installed in
+* The Apache commons parent POM is installed in
   `%{_mavenpomdir}/JPP-commons-parent.pom`.
 
-In its simplest form (a pom without a jar file), `%add_maven_depmap` looks like this:
+In its simplest form (a POM without a jar file), `%add_maven_depmap` looks like this:
 
-.Parent pom
+.Parent POM
 [source,spec]
 --------
 %add_maven_depmap JPP-%{name}.pom
 --------
 
-This will read the pom file in question and provide a mapping between the
-groupId and artifactId inside the pom file and the pom file placed into
+This will read the POM file in question and provide a mapping between the
+groupId and artifactId inside the POM file and the POM file placed into
 `%{_mavenpomdir}`.
 
-For a pom that maps directly to a jar file, the following is the correct form:
+For a POM that maps directly to a jar file, the following is the correct form:
 
 .Standard invocation
 [source,spec]
@@ -199,20 +199,20 @@ For a pom that maps directly to a jar file, the following is the correct form:
 %add_maven_depmap JPP-%{name}.pom %{name}.jar
 --------
 
-In addition to creating the pom mapping, this will also ensure that the correct
-jar is associated with the groupId and artifactId from the pom.
+In addition to creating the POM mapping, this will also ensure that the correct
+jar is associated with the groupId and artifactId from the POM.
 
 .Providing additional artifact mappings
 [source,spec]
 --------
 %add_maven_depmap JPP-%{name}.pom %{name}.jar -a "org.apache.commons:commons-lang"
 --------
-This form also adds additional mappings for given pom/jar file. For example, if
-the pom file indicates that it contains groupId commons-lang, artifactId
+This form also adds additional mappings for given POM/jar file. For example, if
+the POM file indicates that it contains groupId commons-lang, artifactId
 commons-lang, this form ensures that we also add a mapping between groupId
 org.apache.commons and the installed jar/pom files. This is necessary in cases
 where the groupId or artifactId may have changed, and other packages might
-require different IDs than those reflected in the installed pom.
+require different IDs than those reflected in the installed POM.
 
 .Multiple subpackages
 [source,spec]
@@ -230,7 +230,7 @@ subpackages where each has its own jar files.
 --------
 
 This form should be used when a package consists of multiple jar files that are
-installed into a subdirectory of `%{_javadir}`. Note that in this case, the pom
+installed into a subdirectory of `%{_javadir}`. Note that in this case, the POM
 file name includes the optional subdirectory field.
 
 
