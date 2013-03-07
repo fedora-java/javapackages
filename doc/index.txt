@@ -148,11 +148,10 @@ depmap fragments for a given package are written to the same file,
 `%{_mavendepmapfragdir}/%{name}`. You should be sure to include this
 file in the `%files` section of your RPM.
 
-For the macro to work properly, all jar files must be copied into
-`%{_javadir}` (see [[#JAR_file_installation|JAR file installation]]),
-and all pom files must be copied into `%{_mavenpomdir}` and given
-file names of the following form, where `jarname` is the name of the
-jar without the .jar suffix:
+For the macro to work properly, all jar files must be copied into `%{_javadir}`
+and all pom files must be copied into `%{_mavenpomdir}` and given file names of
+the following form, where `jarname` is the name of the jar without the .jar
+suffix:
 
 [source,spec]
 --------
