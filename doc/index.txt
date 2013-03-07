@@ -94,7 +94,7 @@ of AsciiDoc labeled lists.
 [glossary]
 [[Xdepmap]]depmap::
   Depmap is a special file telling Maven relationships between
-  groupId,artifactId and jar file on the filesystem
+  groupId,artifactId and JAR file on the filesystem
 
 A second glossary term::
   The corresponding (indented) definition.

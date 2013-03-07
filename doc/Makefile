@@ -1,7 +1,7 @@
 all: index.html
 
-index.html: index.txt
-	asciidoc -b html5 -a icons -a toc2 -a theme=flask index.txt
+index.html: *.txt
+	asciidoc -b html5 -a icons -a toc2 -a toclevels=3 -a theme=flask index.txt
 
 .images_uploaded: images/* images/icons/*
 	scp -r images/ fedorapeople.org:public_html/java-packaging-howto/
