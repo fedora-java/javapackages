@@ -1,18 +1,36 @@
 This section includes basic introduction to Java packaging world to people
 coming from different backgrounds. Goal is to understand language of all groups
 involved. If you are a Java developer coming into contact with RPM packaging for
-the first time start reading xref:Xbasic_devs[Java developer] section. On the
+the first time start reading xref:XFor_Devs[Java developer] section. On the
 other hand if you are coming from RPM packaging background an
-xref:Xbasic_packagers[introduction to Java world] is probably better starting point.
+xref:XFor_Packagers[introduction to Java world] is probably a better starting
+point.
 
+It should be noted that especially in this section we might sacrifice
+correctness for simplicity
 
-[[Xbasic_packagers]]
+[[XFor_Packagers]]
 === For Packagers
-Packagers!
+Java is a programming language which is usually compiled into bytecode for JVM
+(Java Virtual Machine). For more details about the JVM and bytecode
+specification see
+link:http://docs.oracle.com/javase/specs/jvms/se7/html/index.html[JVM
+documentation]. Resulting bytecode is then assembled into zip files with
+specific layout and additional metadata. Most commonly these special zip files
+have `.jar` suffix, but other variations exist. These files have their format
+specified in the
+link:http://docs.oracle.com/javase/7/docs/technotes/guides/jar/jar.html[JAR File
+Specification].
+
+Classic compiled applications use linker to find dependencies (linked
+libraries), Python interpreter has predefined directories where it searches for
+imported modules. JVM itself has no embedded knowledge of installation paths and
+thus no automatic way to resolve dependencies of Java projects. This means that
+all Java applications have to use wrapper shell scripts to setup the environment
+before invoking the JVM and running the application itself.
+// JVM, classpaths, imports, POM files, JAR files
 
 
-
-
-[[Xbasic_devs]]
+[[XFor_Devs]]
 === For Java Developers
 Developers!
