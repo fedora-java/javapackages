@@ -1,0 +1,229 @@
+Many repeating tasks when packaging Java software can be automated. Most of the
+time they are RPM macros or shell scripts.
+
+==== Macros for pom.xml modification
+
+Sometimes Maven `pom.xml` files need to be patched before they are used to build
+packages. One could use traditional patches to maintain changes, but package
+maintainers should use `%pom_*` macros developed specially to ease this
+task.
+
+These macros are designed to be called from `%prep` section of spec files. There
+are documented in `/etc/rpm/macros.fjava` configuration file, which is also
+link:http://git.fedorahosted.org/git/?p=javapackages.git;a=blob_plain;f=macros.fjava[available online]. See the documentation for technical details how to use these
+macros. Below are some examples added for convenience.
+
+Often dependencies specified in Maven `pom.xml` files need to be removed because of different reasons. `%pom_remove_dep` macro can be used to ease this task:
+
+.Removing dependencies from pom.xml files
+[source,spec]
+--------
+# Removes dependency on groupId:artifactId from ./pom.xml
+%pom_remove_dep groupId:artifactId
+
+# Removes dependency on groupId:artifactId from ./submodule/pom.xml
+%pom_remove_dep groupId:artifactId submodule
+
+# Removes dependency on groupId:artifactId from ./full/path/to/file.pom
+%pom_remove_dep groupId:artifactId full/path/to/file.pom
+
+# Removes dependency on all artifacts in group groupId from ./pom.xml
+%pom_remove_dep groupId:
+
+# Removes all dependencies from ./pom.xml
+%pom_remove_dep :
+--------
+
+`%pom_remove_plugin` macro works exactly as `%pom_remove_dep`, except it removes Maven plugin invocations. Some examples:
+
+.Removing Maven plugins from pom.xml files
+[source,spec]
+--------
+# Disables maven-jar-plugin so that classpath isn't included in manifests
+%pom_remove_plugin :maven-jar-plugin
+
+# Disable a proprietary plugin that isn't packaged for Fedora
+%pom_remove_plugin com.example.mammon:useless-proprietary-plugin submodule
+--------
+
+Sometimes some submodules of upstream project cannot be built for various
+reasons and there is a need to disable them. This can be achieved by using
+`%pom_disable_module`, for example:
+
+.Disabling specific project modules
+[source,spec]
+--------
+# Disables child-module-1, a submodule of the main pom.xml file
+%pom_disable_module child-module-1
+
+# Disables grandchild-module, a submodule of child-module-2/pom.xml
+%pom_disable_module grandchild-module child-module-2
+--------
+
+The above macros cover the most common cases of modifying `pom.xml` files,
+however if there is a need to apply some less-common patches there are also two
+generic macros for modifying `pom.xml` files. `%pom_xpath_remove` can be used to
+remove arbitrary XML nodes, described by link:http://www.w3.org/TR/xpath/[XPath]
+expressions. `%pom_xpath_inject` macro is capable of injecting arbitrary
+link:http://www.w3.org/TR/xml/[XML] code to any `pom.xml` file. Below you can find
+some examples for these macros.
+
+.Less common pom.xml modifications
+[source,spec]
+--------
+# Removes parent definition
+%pom_xpath_remove "pom:parent"
+
+# Removes extensions from the build
+%pom_xpath_remove "pom:build/pom:extensions" module/pom.xml
+
+# Adds new dependency
+%pom_xpath_inject "pom:dependencies" "
+                  <dependency>
+                        <groupId>org.example.project</groupId>
+                        <artifactId>awesomeproject</artifactId>
+                        <version>1.0.0.GA</version>
+                  </dependency>"
+
+# Use a bit more complex XPath to add additional exclusion into
+# maven-wagon dependency
+%pom_xpath_inject "pom:dependency[pom:artifactId[text()='maven-wagon']]/pom:exclusions" "
+        <exclusion>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+        </exclusion>"
+--------
+
+.Handling XML namespaces
+[NOTE]
+=======
+POM files use a specific namespace - http://maven.apache.org/POM/4.0.0. The
+easiest way to respect this namespace in XPath expressions is prefixing all node
+names with `pom:`. For example, `pom:environment/pom:os` will work because it
+selects nodes from `pom` namespace, but `environment/os` won't find anything
+because it looks for nodes that don't belong to any XML namespace.
+=======
+Using `%pom_*` macros not only increases readability of the spec file, but also improves maintainability of the package as there are no patches that would need to be rebased with each upstream release.
+
+==== add_maven_depmap macro
+
+Maven identifies jar files by a set of strings: groupId, artifactId and version
+(mostly). To let mvn-rpmbuild know what groupId:artifactId corresponds to which
+POM or jar file, we use the `%add_maven_depmap`
+macro. `%add_maven_depmap` reads the groupId and artifactId from the
+POM file and creates a file in `%{_mavendepmapfragdir}` that maps
+groupId:artifactId pairs to jar files under `%{_javadir}`. All
+fragments in this directory are read by mvn-rpmbuild during startup, allowing
+the locally installed jar and POM files to be used as a maven repository.
+
+Note that -- unless you use the `-f` option as shown below -- all
+depmap fragments for a given package are written to the same file,
+`%{_mavendepmapfragdir}/%{name}`. You should be sure to include this
+file in the `%files` section of your RPM.
+
+For the macro to work properly, all jar files must be copied into `%{_javadir}`
+and all POM files must be copied into `%{_mavenpomdir}` and given file names of
+the following form, where `jarname` is the name of the jar without the .jar
+suffix:
+
+[source,spec]
+--------
+%{_mavenpomdir}/JPP[.subdirectory]-jarname.pom
+--------
+
+Note that the subdirectory is only necessary if the jar file is put into a subdirectory of `%{_javadir}`. For example:
+
+* For junit, the jar is `%{_javadir}/junit.jar`, so the POM would be
+  `%{_mavenpomdir}/JPP-junit.pom`.
+* For plexus-ant-factory, the jar is `%{_javadir}/plexus/ant-factory.jar`, so
+  the POM would named `%{_mavenpomdir}/JPP.plexus-ant-factory.pom`.
+
+If a POM is installed with no corresponding jar file -- for example, for parent
+POM files -- the same convention should be followed:
+
+* The Apache commons parent POM is installed in
+  `%{_mavenpomdir}/JPP-commons-parent.pom`.
+
+In its simplest form (a POM without a jar file), `%add_maven_depmap` looks like this:
+
+.Parent POM
+[source,spec]
+--------
+%add_maven_depmap JPP-%{name}.pom
+--------
+
+This will read the POM file in question and provide a mapping between the
+groupId and artifactId inside the POM file and the POM file placed into
+`%{_mavenpomdir}`.
+
+For a POM that maps directly to a jar file, the following is the correct form:
+
+.Standard invocation
+[source,spec]
+--------
+%add_maven_depmap JPP-%{name}.pom %{name}.jar
+--------
+
+In addition to creating the POM mapping, this will also ensure that the correct
+jar is associated with the groupId and artifactId from the POM.
+
+.Providing additional artifact mappings
+[source,spec]
+--------
+%add_maven_depmap JPP-%{name}.pom %{name}.jar -a "org.apache.commons:commons-lang"
+--------
+This form also adds additional mappings for given POM/jar file. For example, if
+the POM file indicates that it contains groupId commons-lang, artifactId
+commons-lang, this form ensures that we also add a mapping between groupId
+org.apache.commons and the installed jar/pom files. This is necessary in cases
+where the groupId or artifactId may have changed, and other packages might
+require different IDs than those reflected in the installed POM.
+
+.Multiple subpackages
+[source,spec]
+--------
+%add_maven_depmap JPP-%{name}.pom %{name}.jar -f "XXX"
+--------
+This form stores dependency mapping inside `%{_mavendepmapfragdir}/%{name}-XXX`
+instead of standard location. This is useful for packages with multiple
+subpackages where each has its own jar files.
+
+.Multiple artifacts in a subdirectory
+[source,spec]
+--------
+%add_maven_depmap JPP.%{name}-sub.pom %{name}/sub.jar
+--------
+
+This form should be used when a package consists of multiple jar files that are
+installed into a subdirectory of `%{_javadir}`. Note that in this case, the POM
+file name includes the optional subdirectory field.
+
+==== Generating Application Shell Scripts
+As mentioned in section about xref:XFor_Packagers[Java packaging basics], all
+Java applications need wrapper shell scripts to setup the environment before
+running JVM and associated Java code.
+
+
+The jpackage-utils package contains a convenience `%jpackage_script` macro that
+can be used to create scripts that work for the majority of packages.  See its
+definition and documentation in `/etc/rpm/macros.jpackage`.  One thing to pay
+attention to is the 6th argument to it - whether to prefer a JRE over a full SDK
+when looking up a JVM to invoke - most packages that don't require the full Java
+SDK will want to set that to `true` to avoid unexpected results when looking up
+a JVM when some of the installed JRE's don't have the corresponding SDK (*-devel
+package) installed.
+
+[source,spec]
+--------
+%install
+...
+%jpackage_script msv.textui.Driver "" "" msv-msv:msv-xsdlib:relaxngDatatype:isorelax msv true
+...
+--------
+
+The previous example installs the "msv" script (5th argument) with main class
+being msv.textui.Driver (1st argument). No optional flags (2nd argument) or
+options (3rd argument) are used. This script will add several libraries to
+classpath before executing main class (4th argument, jars separated with
+":"). `build-classpath` is run on every part of 4th argument to create full
+classpaths.
