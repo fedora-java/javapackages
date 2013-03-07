@@ -231,6 +231,35 @@ This form should be used when a package consists of multiple jar files that are
 installed into a subdirectory of `%{_javadir}`. Note that in this case, the POM
 file name includes the optional subdirectory field.
 
+==== Generating Application Shell Scripts
+As mentioned in section about xref:XFor_Packagers[Java packaging basics], all
+Java applications need wrapper shell scripts to setup the environment before
+running JVM and associated Java code.
+
+
+The jpackage-utils package contains a convenience `%jpackage_script` macro that
+can be used to create scripts that work for the majority of packages.  See its
+definition and documentation in `/etc/rpm/macros.jpackage`.  One thing to pay
+attention to is the 6th argument to it - whether to prefer a JRE over a full SDK
+when looking up a JVM to invoke - most packages that don't require the full Java
+SDK will want to set that to `true` to avoid unexpected results when looking up
+a JVM when some of the installed JRE's don't have the corresponding SDK (*-devel
+package) installed.
+
+[source,spec]
+--------
+%install
+...
+%jpackage_script msv.textui.Driver "" "" msv-msv:msv-xsdlib:relaxngDatatype:isorelax msv true
+...
+--------
+
+The previous example installs the "msv" script (5th argument) with main class
+being msv.textui.Driver (1st argument). No optional flags (2nd argument) or
+options (3rd argument) are used. This script will add several libraries to
+classpath before executing main class (4th argument, jars separated with
+":"). `build-classpath` is run on every part of 4th argument to create full
+classpaths.
 
 
 == Build systems
