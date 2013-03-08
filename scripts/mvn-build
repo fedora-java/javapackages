@@ -111,6 +111,7 @@ while [ $# -gt 0 ]; do
 	-f|--force|--skip-tests)
 	    base_goal=package
 	    skip_tests=-Dmaven.test.skip=true
+	    _write_xmvn_config "%mvn_build macro (force option)" "buildSettings" "skipTests" "true"
 	    ;;
 	-g|--goal-before|--pre)
 	    need_arg "$@"
