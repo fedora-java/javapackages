@@ -53,6 +53,7 @@
     <jarDir>usr/share/java</jarDir>
     <jniDir>usr/lib/java</jniDir>
     <pomDir>usr/share/maven-poms</pomDir>
+    <effectivePomDir>usr/share/maven-effective-poms</effectivePomDir>
     <metadataDir>usr/share/maven-fragments</metadataDir>
     <installRoot>.xmvn/root</installRoot>
   </installerSettings>
