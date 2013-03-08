@@ -44,6 +44,12 @@
     </blacklist>
   </resolverSettings>
   <installerSettings>
+    <enableRawPoms>true</enableRawPoms>
+    <enableEffectivePoms>true</enableEffectivePoms>
+    <pomRawModel>true</pomRawModel>
+    <pomEffectiveModel>false</pomEffectiveModel>
+    <jarRawModel>true</jarRawModel>
+    <jarEffectiveModel>true</jarEffectiveModel>
     <jarDir>usr/share/java</jarDir>
     <jniDir>usr/lib/java</jniDir>
     <pomDir>usr/share/maven-poms</pomDir>
