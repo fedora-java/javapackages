@@ -37,7 +37,7 @@ The macros `%mvn_build` and `%mvn_install` automatically handle building of the
 JAR files and their subsequent installation to the correct directory. The
 corresponding POM and <<Xdepmap,depmap>> files are also installed.
 
-==== Additional mappings ====
+==== Additional Mappings ====
 [[pom_jar_mapping]]
 
 The macro `%mvn_alias` can be used to add additional mappings for given POM/JAR
@@ -56,7 +56,7 @@ POM.
 %mvn_alias "commons-lang:commons-lang" "org.apache.commons:commons-lang"
 -------
 
-==== Alternative JAR file names ====
+==== Alternative JAR File Names ====
 In some cases, it may be important to be able to provide symlinks to actual JAR
 files. This can be achieved with `%mvn_file` macro. This macro allows packager
 to specify names of the JAR files, their location in `%{_javadir}` directory and
@@ -76,7 +76,7 @@ installed in `%{_javadir}/google/guice.jar` and there also will be a symlink to
 this JAR file located in `%{_javadir}/guice.jar`. Note the macro will add ".jar"
 extensions automatically.
 
-==== Single artifact per package ====
+==== Single Artifact Per Package ====
 If the project consists of multiple artifacts, it is recommended to install each
 artifact to the separate subpackage. The macro `%mvn_build -s` will generate
 separate `.mfiles` file for every artifact in the project. This file contains
@@ -117,7 +117,7 @@ The Plugin Plugin is used to...
 ...
 -------
 
-==== Assignment of the Maven artifacts to the subpackages ====
+==== Assignment of the Maven Artifacts to the Subpackages ====
 The macro `%mvn_package` allows maintainer to specify in which exact package the
 selected artifact will end up. It is something between singleton packaging, when
 each artifact has its own subpackage and default packaging, when all artifacts
