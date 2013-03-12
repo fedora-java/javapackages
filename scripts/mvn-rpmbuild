@@ -51,7 +51,7 @@ cat >>.xmvn/config.d/mvn-rpmbuild-config.xml <<EOF
          we use .m2 if called as mvn-rpmbuild. -->
     <localRepositories>
       <repository>.m2</repository>
-    <localRepositories>
+    </localRepositories>
     <metadataRepositories>
       <repository>$depmap</repository>
     </metadataRepositories>
