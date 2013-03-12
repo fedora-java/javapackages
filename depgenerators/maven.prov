@@ -43,14 +43,23 @@ class TagBuilder:
         for path in paths:
 	        self.print_mvn_provides(path)
 
+    def get_fragment_doc(self, fragment_path):
+        with open(fragment_path) as f:
+            content = f.read()
+
+            start, end = "", ""
+            if not fragment_path[-4:] == '.xml':
+                start = "<fragments>"
+                end = "</fragments>"
+
+            fragments = "{start}{content}{end}".format(start=start,
+                                                       content=content,
+                                                       end=end)
+            return fromstring(fragments)
+
+
     def print_mvn_provides(self, path):
-        buf = StringIO()
-        buf.write('<fragments>\n')
-        with open(path) as f:
-            buf.write(f.read())
-        buf.write('</fragments>')
-        fragments = buf.getvalue()
-        doc = fromstring(fragments)
+        doc = self.get_fragment_doc(path)
         versioned_provides = False
         if doc.find('.//skipProvides') is not None:
             # this is compat package, generate versioned provides

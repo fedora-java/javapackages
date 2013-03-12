@@ -65,13 +65,18 @@ class TagBuilder:
         return provided
 
     def get_fragment_doc(self, fragment_path):
-        buf = StringIO()
-        buf.write('<fragments>\n')
         with open(fragment_path) as f:
-            buf.write(f.read())
-        buf.write('</fragments>')
-        fragments = buf.getvalue()
-        return fromstring(fragments)
+            content = f.read()
+
+            start, end = "", ""
+            if not fragment_path[-4:] == '.xml':
+                start = "<fragments>"
+                end = "</fragments>"
+
+            fragments = "{start}{content}{end}".format(start=start,
+                                                       content=content,
+                                                       end=end)
+            return fromstring(fragments)
 
     def print_mvn_requires(self, path, provided):
         doc = self.get_fragment_doc(path)
