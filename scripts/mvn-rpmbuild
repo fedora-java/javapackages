@@ -82,6 +82,4 @@ done
 exec xmvn \
     --offline \
     --batch-mode \
-    -Dmaven.repo.local="${XMVN_REPO_LOCAL}" \
-    -Dmaven.home=${M2_HOME} \
     "${@}"
