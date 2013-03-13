@@ -36,10 +36,14 @@ unset TYCHO_MVN_LOCAL
 export TYCHO_MVN_LOCAL
 
 # Support local depmaps
-depmap=/some/nonexistent/path
+depmap=
 for arg in "$@"; do
     if egrep -q '^-Dmaven\.local\.depmap\.file=' <<<"$arg"; then
-	depmap="$XMVN_RESOLV_DEPMAPS,"$(sed 's/[^=]*=//' <<<"$arg")
+	depmap=$(sed 's/[^=]*=//' <<<"$arg")
+	depmap="
+    <metadataRepositories>
+      <repository>$depmap</repository>
+    </metadataRepositories>"
     fi
 done
 
@@ -51,10 +55,7 @@ cat >>.xmvn/config.d/mvn-rpmbuild-config.xml <<EOF
          we use .m2 if called as mvn-rpmbuild. -->
     <localRepositories>
       <repository>.m2</repository>
-    </localRepositories>
-    <metadataRepositories>
-      <repository>$depmap</repository>
-    </metadataRepositories>
+    </localRepositories>$depmap
   </resolverSettings>
 </configuration>
 EOF
