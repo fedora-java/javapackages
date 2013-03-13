@@ -45,10 +45,4 @@ for arg in "$@"; do
 done
 export XMVN_COMPAT
 
-# Maven needs to have M2_HOME exported. See: rhbz#912333
-export M2_HOME=/usr/share/maven
-
-# Extra arguments passed to JVM
-export ADDITIONAL_OPTIONS="${ADDITIONAL_OPTIONS} ${MAVEN_OPTS}"
-
 exec xmvn "${@}"

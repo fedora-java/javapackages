@@ -78,12 +78,6 @@ for groupId in org/apache/maven/plugins org/codehaus/mojo; do
         .m2/${groupId}/maven-metadata-central.xml
 done
 
-# Maven needs to have M2_HOME exported. See: rhbz#912333
-export M2_HOME=/usr/share/maven
-
-# Extra arguments passed to JVM
-export ADDITIONAL_OPTIONS="${ADDITIONAL_OPTIONS} ${MAVEN_OPTS}"
-
 exec xmvn \
     --offline \
     --batch-mode \
