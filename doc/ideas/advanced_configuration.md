@@ -10,7 +10,7 @@ configuring XMvn directly, without the intermediate layer provides by
 
 XMvn configuration is documented on the XMvn site, you can refer to
 this documentation.  What is important here is the way of specifying
-documentation.  In most cases it's enough to create
+configuration.  In most cases it's enough to create
 `.xmvn/configuration.xml` file in the build directory that contains
 the XMvn configuration in XML format.  That file will be loaded
 automatically by XMvn.
