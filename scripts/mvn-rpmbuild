@@ -41,20 +41,33 @@ for arg in "$@"; do
     if egrep -q '^-Dmaven\.local\.depmap\.file=' <<<"$arg"; then
 	depmap=$(sed 's/[^=]*=//' <<<"$arg")
 	depmap="
+    <!-- Use local depmap file. -->
     <metadataRepositories>
       <repository>$depmap</repository>
     </metadataRepositories>"
     fi
 done
 
+# Local repository
+repo=".m2"
+repo_arg="-Dmaven.repo.local=$PWD/.m2/"
+for arg in "$@"; do
+    if egrep -q '^-Dmaven\.repo\.local=' <<<"$arg"; then
+	repo_arg=
+	repo=$(sed 's/[^=]*=//' <<<"$arg")
+    fi
+done
+
+export MAVEN_OPTS="$MAVEN_OPTS $repo_arg"
+
 mkdir -p .xmvn/config.d
 cat >>.xmvn/config.d/mvn-rpmbuild-config.xml <<EOF
 <configuration>
   <resolverSettings>
     <!-- XMvn default repo location is .xm2, but for backwards-compatibility
-         we use .m2 if called as mvn-rpmbuild. -->
+         we use $repo if called as mvn-rpmbuild. -->
     <localRepositories>
-      <repository>.m2</repository>
+      <repository>$repo</repository>
     </localRepositories>$depmap
   </resolverSettings>
 </configuration>
@@ -74,9 +87,9 @@ export XMVN_COMPAT
 # and org.codehaus.mojo. This is to allow plugins in these groups to be
 # used without giving groupId prefix.
 for groupId in org/apache/maven/plugins org/codehaus/mojo; do
-    mkdir -p .m2/${groupId}
+    mkdir -p "$repo"/${groupId}
     ln -sf /etc/maven/metadata-${groupId////-}.xml \
-        .m2/${groupId}/maven-metadata-central.xml
+        "$repo"/${groupId}/maven-metadata-central.xml
 done
 
 exec xmvn \
