@@ -191,3 +191,14 @@ dependencies. There are two types of dependencies in RPM:
 
 
 ==== Quiz for Java Developers
+
+1. How would you build a binary RPM if you were given a source RPM?
+2. What is most common content of Source0 `spec` file tag?
+3. What is the difference between `Version` and `Release` tags?
+4. How would you apply a patch in RPM?
+5. Where on filesystem should JAR files go?
+6. What is the format of RPM changelog or what tool would you use to produce it?
+7. How would you install an application that needs certain layout (think
+   ANT_HOME) while honoring distribution filesystem layout guidelines?
+8. How would you generate script for running a application with main class
+   org.project.MainClass which depends on commons-lang jar?
