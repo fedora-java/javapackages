@@ -97,9 +97,25 @@ all Java applications have to use wrapper shell scripts to setup the environment
 before invoking the JVM and running the application itself. Note that this is
 not necessary for libraries.
 
+==== Build System Identification
+How to determine preferred upstream build system
 
 
-// JVM, classpaths, imports, POM files, JAR files
+==== Quiz for Packagers
+At this point you should have enough knowledge about Java to start
+packaging. If you are not able to answer following questions return back to
+previous sections or ask experienced packagers for different explanations of
+given topics.
+
+1. What is the difference between JVM and Java?
+2. What is a CLASSPATH environment variable and how can you use it?
+3. Name two typical Java build systems and how you can identify which one is being used
+4. What is the difference between `java` and `javac` comands?
+5. What are contents of a typical `JAR` file?
+6. What is a pom.xml file and what information it contains?
+7. How would you handle packaging software that contains `lib/junit4.jar` inside
+   source tarball?
+8. Name at least three methods for bundling code in Java projects
 
 
 [[XFor_Devs]]

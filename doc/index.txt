@@ -28,9 +28,6 @@ will cover basic packaging principles such as:
  * Commenting workarounds
  * Links to other appropriate documents
 
-=== Build System Identification
-How to determine preferred upstream build system
-
 [[helper_macros]]
 === Java Helper Functions
 include::helper_macros.txt[]
