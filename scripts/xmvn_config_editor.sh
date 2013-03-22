@@ -46,9 +46,10 @@ _write_xmvn_config()
     local index_file=.xmvn/javapackages-rule-index
     local index=$(($(cat $index_file 2>/dev/null || :) + 1))
     echo $index >$index_file
+    local suffix=$(printf %05d $index)
 
     # Write common header
-    cat >.xmvn/config.d/javapackages-config-$index.xml <<EOF
+    cat >.xmvn/config.d/javapackages-config-$suffix.xml <<EOF
 <?xml version="1.0" encoding="US-ASCII"?>
 <!-- XMvn configuration file generated with $1
      from maven-local package (part of javapackages-tools). -->
@@ -56,7 +57,7 @@ _write_xmvn_config()
 EOF
 
     if [[ $# -eq 4 ]]; then
-	cat >>.xmvn/config.d/javapackages-config-$index.xml <<EOF
+	cat >>.xmvn/config.d/javapackages-config-$suffix.xml <<EOF
   <$2>
     <$3>
       $4
@@ -65,7 +66,7 @@ EOF
 </configuration>
 EOF
     elif [[ $# -eq 5 ]]; then
-	cat >>.xmvn/config.d/javapackages-config-$index.xml <<EOF
+	cat >>.xmvn/config.d/javapackages-config-$suffix.xml <<EOF
   <$2>
     <$3>
       <$4>
