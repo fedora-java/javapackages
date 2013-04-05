@@ -26,6 +26,7 @@ will cover basic packaging principles such as:
  * No bundling
  * Working with upstreams
  * Commenting workarounds
+ * Single library version
  * Links to other appropriate documents
 
 [[helper_macros]]
