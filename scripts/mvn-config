@@ -1,5 +1,5 @@
-#!/bin/bash -e
-# Copyright (c) 2013, Red Hat, Inc
+#!/bin/sh -e
+# Copyright (c) 2013 Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,59 +30,19 @@
 #
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
+if [ $# -ne 2 ]; then
+    echo "$0: Exactly 2 arguments are required." >&2
+    exit 1
+fi
 
-# Write XMvn reactor configuration file.
-#  $1 - name of the macro or script that generated the config file
-#       (for documentation purposes only)
-#  $2 - 2nd leven major XML tag name (eg. resolverSettings)
-#  $3 - 3rd level minor XML tag name (eg. jarRepositories)
-#  $4 (optional) - 4th level micro XML tag name (eg. repository)
-#  $5 (or $4 if micro tag is not specified) - XML contents
-_write_xmvn_config()
-{
-    mkdir -p .xmvn/config.d
+open=
+close=
+for node in $(sed "s|/| |g" <<<"${1}"); do
+    open="${open}<${node}>"
+    close="</${node}>${close}"
+done
+xml="${open}${2}${close}"
 
-    # index := ++index_file
-    local index_file=.xmvn/javapackages-rule-index
-    local index=$(($(cat $index_file 2>/dev/null || :) + 1))
-    echo $index >$index_file
-    local suffix=$(printf %05d $index)
-
-    # Write common header
-    cat >.xmvn/config.d/javapackages-config-$suffix.xml <<EOF
-<?xml version="1.0" encoding="US-ASCII"?>
-<!-- XMvn configuration file generated with $1
-     from maven-local package (part of javapackages-tools). -->
-<configuration xmlns="http://fedorahosted.org/xmvn/CONFIG/0.4.0">
-EOF
-
-    if [[ $# -eq 2 ]]; then
-	cat >>.xmvn/config.d/javapackages-config-$suffix.xml <<EOF
-      $2
-</configuration>
-EOF
-    elif [[ $# -eq 4 ]]; then
-	cat >>.xmvn/config.d/javapackages-config-$suffix.xml <<EOF
-  <$2>
-    <$3>
-      $4
-    </$3>
-  </$2>
-</configuration>
-EOF
-    elif [[ $# -eq 5 ]]; then
-	cat >>.xmvn/config.d/javapackages-config-$suffix.xml <<EOF
-  <$2>
-    <$3>
-      <$4>
-        $5
-      </$4>
-    </$3>
-  </$2>
-</configuration>
-EOF
-    else
-	echo "_write_xmvn_config(): Requires either 4 or 5 arguments"
-	exit 1
-    fi
-}
+. /usr/share/java-utils/xmvn_config_editor.sh
+_write_xmvn_config "%mvn_config macro" "$xml"
+exit 0

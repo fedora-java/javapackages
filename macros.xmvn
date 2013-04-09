@@ -82,6 +82,22 @@
 %mvn_file mvn-file
 
 
+# %mvn_config - set XMvn configuration option
+#
+# Usage: %mvn_config <option> <value>
+#
+# This macro sets value of specified XMvn configuration option.
+#
+# Option is a sequence of slash-delimited XML node names that identify
+# XMvn configuration option, as in XMvn configuration reference; for
+# example: buildSettings/compilerSource.
+#
+# For information about available configuration options, see XMvn
+# configuration reference, available on XMvn website.
+#
+%mvn_config mvn-config
+
+
 # %mvn_build - build Maven project
 #
 # Usage: %mvn_build [options]
