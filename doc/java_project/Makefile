@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/make -f
 
 compile: 
 	rm -rf compiled/
