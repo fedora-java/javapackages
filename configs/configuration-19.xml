@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="US-ASCII"?>
 <configuration>
-  <buildSettings>
-    <debug>true</debug>
-  </buildSettings>
   <resolverSettings>
-    <debug>true</debug>
     <localRepositories>
       <repository>.xm2</repository>
     </localRepositories>
