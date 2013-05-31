@@ -83,13 +83,17 @@ class TagBuilder:
         for mpart in doc.findall('.//autoRequires'):
             groupId = mpart.find('groupId').text
             artifactId = mpart.find('artifactId').text
+            version = mpart.find('version')
             for g, a, v in provided:
                 if g == groupId and a == artifactId:
                     # generate versioned requires for our subpackages
                     print("mvn(%s:%s) = %s" %(groupId, artifactId, v))
                     break # skip the else branch
             else:
-                print("mvn(%s:%s)" %(groupId, artifactId))
+                if version:
+                    print("mvn(%s:%s:%s)" %(groupId, artifactId, version.text))
+                else:
+                    print("mvn(%s:%s)" %(groupId, artifactId))
 
         jreq = doc.find('.//requiresJava')
         if jreq is not None:
