@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!-- Dependency map for com.sun:tools so that packages don't
+     need to use system scope and provide systemPath. -->
+<dependencyMap>
+  <dependency>
+    <maven>
+      <groupId>com.sun</groupId>
+      <artifactId>tools</artifactId>
+      <version>SYSTEM</version>
+    </maven>
+    <jpp>
+      <groupId>JAVA_HOME</groupId>
+      <artifactId>../lib/tools</artifactId>
+      <version>SYSTEM</version>
+    </jpp>
+  </dependency>
+</dependencyMap>
