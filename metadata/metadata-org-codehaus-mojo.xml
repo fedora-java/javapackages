@@ -602,6 +602,11 @@
       <artifactId>taglist-maven-plugin</artifactId>
     </plugin>
     <plugin>
+      <name>Templating Maven Plugin</name>
+      <prefix>templating</prefix>
+      <artifactId>templating-maven-plugin</artifactId>
+    </plugin>
+    <plugin>
       <name>Tomcat Maven Plugin</name>
       <prefix>tomcat</prefix>
       <artifactId>tomcat-maven-plugin</artifactId>
