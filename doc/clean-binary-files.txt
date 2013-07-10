@@ -1,0 +1,107 @@
+From: Deepak Bhole <dbhole@redhat.com>
+To: jpackage-discuss@zarb.org
+
+Based on the initial design specifications for a clean-binary-files, 
+I have created a script that does so (with some added functionality that
+became evident as necessary during design).
+
+The original mail is here:
+https://www.zarb.org/pipermail/jpackage-discuss/2005-November/009158.html
+
+There are now 3 files:
+clean-binary-files
+check-binary-files
+create-jar-links
+
+Due to the complex functionality and flexibility that is expected from
+the script (set), the syntax seems a bit daunting. Any input with
+regards to this matter, or any other, would be appreciated.
+
+================
+Example use case
+================
+
+Suppose there is a vanilla tarball abc-1.tar.gz with some binary files
+(jars) in it. In the source repo, we would want a clean copy without any
+jars. We can use the scripts to achieve this:
+
+To generate an instructions file:
+clean-binary-files -e <exclusion file> -l -a abc-1.tar.gz > instructions
+
+This creates an 'instructions' file, which contains info on what stays
+and what goes.
+
+Then, one can run:
+clean-binary-files -f instructions -n -a abc-1.tar.gz
+
+This would create abc-1-clean.tar.gz for uploading into jpp/fedora/etc.
+repositories with no binary (jar) files.
+
+In %prep for the rpm spec, one would have:
+check-binary-files -f instructions -a abc-1-clean.tar.gz
+
+This ensures that the tarball is clean, and has nothing extra, or
+missing.
+
+Following this, one can extract the tarball, cd to it, and run:
+create-jar-links -f <instructions> -d <custom_jar_map>
+
+This would call build-jar-repository and create symlinks, with extra
+mappings (form vanilla jar names to jpp names) that are specifiable via
+the custom jar map.
+
+Alternatively, if you have a vanilla tarball, you can clean and create
+symlinks in it's place all at once by:
+clean-binary-files -e <exclusion file> -d <custom_jar_map> -a
+abc-1.tar.gz
+
+Note: If the -a <file> is not given to clean-binary-files, all actions
+are performed on current directory.
+
+--help output from each of the scripts:
+-------------------
+clean-binary-files:
+-------------------
+
+Usage: $0 {[-f {-, instructions_file}], [-e exclusion_file] [-l]} [-a
+archive_file] [-d custom_jar_map] [-n] [-p] [-s] 
+
+Options:
+-f - The instructions file, specifying which files to keep and which
+     to remove
+-e - The exclusions file, specifying special binary files that are to
+     be preserved, or non-binary files that are to be removed.
+-l - Only list instructions (to put in instructions file), do not delete
+anything.
+-a - Archive file on which actions will be performed, as opposed to 
+     current directory
+-d - A custom jar map file (has priority over the generic one).
+-n - No symlinks (i.e. only clean jars, don't run build-jar-repository
+afterwards)
+-p - Preserve original file names (-p to build-jar-repository)
+-s - Silent mode. Won't output commands during cleanup
+
+------------------
+check-binary-files
+------------------
+Usage: $0 -f instructions_file [-a archive_file]
+
+Options:
+-a - Archive file on which actions will be performed, as opposed to 
+     current directory
+-f - The instructions file to check against.
+
+-----------------
+create-jar-links:
+-----------------
+Usage: $0 -f instructions_file [-a archive_file] [-p]
+
+Options:
+-a - Archive file on which actions will be performed, as opposed to 
+     current directory
+-p - Preserve original file names (-p to build-jar-repository)
+-f - The instructions file to check against.
+
+Cheers,
+Deepak
+

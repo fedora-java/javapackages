@@ -1,0 +1,207 @@
+#!/bin/sh
+#
+# Script to clean binary files.
+#
+# JPackage Project <http://www.jpackage.org/>
+#
+# $Id: create-jar-links,v 1.1 2006/09/19 19:39:37 fnasser Exp $
+
+# Import java functions
+[ -r /usr/share/java-utils/java-functions ] \
+ &&  . /usr/share/java-utils/java-functions || exit 1
+
+# Prints help message
+usage() {
+	/bin/cat >&2 << EOF_USAGE
+
+Usage: $0 -f instructions_file [-a archive_file] [-p]
+
+Options:
+	-a - Archive file on which actions will be performed, as opposed to 
+	     current directory
+	-p - Preserve original file names (-p to build-jar-repository)
+	-f - The instructions file to check against.
+EOF_USAGE
+	exit 2
+}
+
+[ "$1" = "--help" ] && usage
+
+[ "$#" = 0 ] && usage
+
+set_javacmd || exit 3
+check_java_env || exit 4
+set_jvm_dirs || exit 5
+
+# Default jar map
+_JAR_MAP_FILE=/usr/share/java-utils/jarname-jpp-map
+
+# Directory in which script was invoked
+_WORKING_DIR=`pwd`
+
+# Run-time variables
+_ARCHIVE_FILE=""
+_REMOVE_LIST=""
+_INSTRUCTIONS_FILE=""
+_CUSTOM_JAR_MAP_FILE=""
+_PRESERVE_BINARY_NAMES=0
+
+# Directory where archive is extracted, if we are working with one
+_ARCHIVE_EXTRACTION_DIR=/tmp/_cbr_archive_dir.$$
+
+# Executes the build-jar-repository command
+create_jar_links () {
+
+	_old_ifs=$IFS
+	IFS="|"
+
+	for file in $_REMOVE_LIST; do
+
+		echo $file | grep -E "\\.jar$" >& /dev/null
+		if [ ! $? -eq 0 ]; then
+			continue
+		fi
+
+		# Strip version and extention. e.g. abc-2.1-api-1.0.4.jar -> abc-2.1-api
+		_jar_filename=`basename $file`
+		_search_name=`basename $file`
+		_search_name=`echo $_search_name | sed -r -e s/-[[:digit:].]*\\\.jar//g | sed -r -e s/\\\.jar$//g`
+
+		_mapped_jar_name=""
+		_final_name=""
+
+		# Search in custom jar map first
+		if [ ! "$_CUSTOM_JAR_MAP_FILE" = "" ] && [ -f $_CUSTOM_JAR_MAP_FILE ]; then
+			# echo "grep -E \"^$_search_name.jar \" $_CUSTOM_JAR_MAP_FILE | awk '{print $2}'"
+			_mapped_jar_name=`grep -E "^$_search_name\\.jar " $_CUSTOM_JAR_MAP_FILE | awk '{print $2}'`
+
+			if [ "$_mapped_jar_name" = "" ]; then
+				_mapped_jar_name=`grep -E "^$_jar_filename " $_CUSTOM_JAR_MAP_FILE | awk '{print $2}'`
+			fi
+		fi
+
+		# Search in global jar map ONLY IF things were not found in the custom map
+		if [ -f $_JAR_MAP_FILE ] && [ "$_mapped_jar_name" = "" ]; then
+			# echo "grep -E \"^$_search_name.jar \" $_JAR_MAP_FILE | awk '{print $2}'"
+			_mapped_jar_name=`grep -E "^$_search_name\\.jar " $_JAR_MAP_FILE | awk '{print $2}'`
+		fi
+
+		if [ "$_mapped_jar_name" = "" ]; then
+			_final_name=$_search_name
+		else
+			_final_name=$_mapped_jar_name
+		fi
+
+		_preserve_name_flag=""
+		if [ $_PRESERVE_BINARY_NAMES = 1 ]; then
+			_preserve_name_flag="-p"
+		fi
+
+		_target_dir=`dirname $file`
+
+		_old_ifs=$IFS
+	    IFS='
+'
+
+		for jppname in $_final_name; do
+			echo "build-jar-repository -s $_preserve_name_flag $_target_dir $jppname"
+			build-jar-repository -s $_preserve_name_flag $_target_dir $jppname
+		done
+
+		IFS=$_old_ifs
+	done
+
+	IFS=$_old_ifs
+
+}
+
+while [ $# -gt 0 ] ; do
+	case "$1" in
+		-f)
+			if [ ! -f $2 ] ; then
+				echo "$0: error: Could not find instructions file!"
+				exit 6;
+			fi
+
+			while read line; do
+
+				echo $line | grep ^% >& /dev/null
+				if [ $? -eq 0 ] || [ "$line" = "" ]; then
+					continue
+				fi
+
+				_type=`echo $line | awk '{print $1}'`
+				_value=`echo $line | awk '{ printf "%s", $2; for (i = 3; i <= NF; i=i+1) printf " %s", $i }'`
+
+				if [ $_type = "remove" ]; then
+
+					if [ -z "$_REMOVE_LIST" ]; then
+						_REMOVE_LIST=$_value
+					else
+						_REMOVE_LIST=${_REMOVE_LIST}"|"$_value
+					fi
+				fi
+
+			done < $2
+
+			_INSTRUCTIONS_FILE="$2"
+
+			shift
+		;;
+		-a)
+			_ARCHIVE_FILE="$2"
+			shift
+		;;
+		-d)
+			_CUSTOM_JAR_MAP_FILE="$2"
+			shift
+		;;
+		-p)
+			_PRESERVE_BINARY_NAMES=1
+		;;
+		*)
+			echo "ERROR: Unknown argument $1"
+			exit 6
+		;;
+	esac
+	shift
+done
+
+if [ "$_INSTRUCTIONS_FILE" = "" ]; then
+	echo "ERROR: Instructions file must be specified."
+	exit 6
+fi
+
+# If we are dealing with an archive file, we need to extract things somewhere, and do our actions in there
+if [ ! -z $_ARCHIVE_FILE ]; then
+	rm -rf $_ARCHIVE_EXTRACTION_DIR
+	mkdir -p $_ARCHIVE_EXTRACTION_DIR
+	pushd $_ARCHIVE_EXTRACTION_DIR >& /dev/null
+	tar xf $_WORKING_DIR/`basename $_ARCHIVE_FILE`
+fi
+
+create_jar_links
+
+if [ ! -z $_ARCHIVE_FILE ]; then
+
+	_archive_basename=`basename $_ARCHIVE_FILE`
+	_arch_name=${_archive_basename%%.*}
+	_arch_ext=${_archive_basename#*.}
+
+	_compression_flag=""
+
+	echo $_ARCHIVE_FILE | grep gz$ >& /dev/null
+	if [ $? -eq 0 ]; then
+		_compression_flag=z
+	fi
+
+	echo $_ARCHIVE_FILE | grep bz2$ >& /dev/null
+	if [ $? -eq 0 ]; then
+		_compression_flag=f
+	fi
+
+	tar cf$_compression_flag $_WORKING_DIR/$_arch_name-clean.$_arch_ext *
+
+	popd >& /dev/null
+	rm -rf $_ARCHIVE_EXTRACTION_DIR
+fi

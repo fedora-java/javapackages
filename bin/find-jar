@@ -1,0 +1,36 @@
+#!/bin/sh
+# Small helper script to find a jar or a directory of jars depending on the JVM used
+#
+# JPackage Project <http://www.jpackage.org/>
+#
+# $Id: find-jar,v 1.2 2005/09/17 07:06:19 david Exp $
+
+# Import java functions
+[ -r /usr/share/java-utils/java-functions ] \
+ &&  . /usr/share/java-utils/java-functions || exit 1
+
+# Prints help message
+usage() {
+/bin/cat << EOF_USAGE
+Usage: $0 <jar>
+jarX: name of a jar or a jar directory
+      Example: javamail
+EOF_USAGE
+exit 2
+}
+
+[ "$#" -ne "1" ] && usage
+
+set_javacmd || exit 3
+
+check_java_env || exit 4
+
+set_jvm_dirs || exit 5
+
+find_jar $1
+
+if [ $? != 0 ]; then
+   echo $"Could not find the requested jar or jar directory." >&2
+   echo $"Please check the correct JAVA_HOME is set." >&2
+   exit 6
+fi

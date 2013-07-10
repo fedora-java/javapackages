@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# Small script to build a jar repository depending on the JVM used
+#
+# JPackage Project <http://www.jpackage.org/>
+#
+# $Id: build-jar-repository,v 1.2 2005/09/17 07:06:19 david Exp $
+
+# Import java functions
+[ -r /usr/share/java-utils/java-functions ] \
+ &&  . /usr/share/java-utils/java-functions || exit 1
+
+# Prints help message
+usage() {
+/bin/cat >&2 << EOF_USAGE
+Usage: $0 [<linktype>] <directory> <jar1> [<jar2> .. <jarn>]
+
+With:
+    linktype:
+              -s, --soft, --symbolic   create symbolic links (default)
+              -h, --hard               create hard links
+              -c, --copy               copy files
+              -p, --preserve-naming    try to preserve the names of the original
+                                       jar files
+                                       (in case of a nested hit the /s in the 
+                                       path will still be replaced by _s)
+                                       Using this option makes any future
+                                       automated repository rebuild impossible,
+                                       and implies -c unless specified otherwise
+    directory: name of an existing directory where links will be created
+    jarX: name of a jar
+          Example: jndi
+    
+EOF_USAGE
+exit 2
+}
+
+[ "$#" -lt "2" ] && usage
+
+set_javacmd || exit 3
+
+check_java_env || exit 4
+
+set_jvm_dirs || exit 5
+
+_ALLFOUND="true"
+
+link_jar_repository $@
+
+if [ "$?" = 0 ] ; then
+    exit 0
+else
+    echo "$0: error: Some specified jars were not found for this jvm" >&2
+    exit 7
+fi

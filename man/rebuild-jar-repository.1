@@ -1,0 +1,38 @@
+.TH REBUILD-JAR-REPOSITORY "1" "March 2006" "rebuild-jar-repository (jpackage-utils) 1.7.0" "User Commands"
+.SH NAME
+rebuild-jar-repository \- rebuild a JAR repository based on the current JVM
+.SH SYNOPSIS
+.B rebuild-jar-repository
+[\fIOPTION\fR]... \fIDIRECTORY\fR
+.SH DESCRIPTION
+Rebuild a jar repository (built by
+.B build-jar-repository
+) based on the current JVM settings
+.SH OPTIONS
+.PP
+If no option is specified the default action will be to rebuild with
+symbolic links
+.TP
+\fB\-c\fR, \fB\-\-copy\fR
+copy files
+.TP
+\fB\-h\fR, \fB\-\-hard\fR
+create hard links
+.TP
+\fB\-s\fR, \fB\-\-soft\fR, \fB\-\-symbolic\fR
+create symbolic links (default)
+.SH EXAMPLES
+.TP
+rebuild-jar-repository .
+Will update all links created by 
+.B build-jar-repository
+in the current working directory.  Updated links will be symbolic links.
+.TP
+rebuild-jar-repository -h /tmp
+Will update all links created by 
+.B build-jar-repository
+in the /tmp.  Updated links will be hard links.
+.SH AUTHOR
+Written by the JPackage Project
+.SH REPORTING BUGS
+Report bugs using JPackage Bugzilla (http://www.jpackage.org/bugzilla/)

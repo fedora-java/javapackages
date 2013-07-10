@@ -1,0 +1,61 @@
+#!/bin/sh
+# 
+# Show jar content difference
+#
+# JPackage Project <http://www.jpackage.org/>
+#   Guillaume Rousse <guillomovitch@sourceforge.net>
+#
+# 1.0  - initial release
+# 1.1  - corrected a typo
+#      - used /tmp for temp files
+# 1.2  - allow diffing two jars with same basename
+#      - use mktemp(1) for creating temp files
+# 1.3  - fix java-functions location
+
+# Source functions library
+if [ -r /usr/share/java-utils/java-functions ] ; then 
+  . /usr/share/java-utils/java-functions
+else
+  echo "Can't find functions library, aborting"
+  exit 1
+fi
+
+# Check arguments
+if [ $# != 2 ] ; then
+	echo  "usage: `basename $0` jar1 jar2"
+	exit 1
+fi
+
+if [ -r "$1" ] ; then
+	JAR1=$1
+	LIST1=/tmp/`basename "$JAR1"`.list.XXXXXX
+else
+	echo "Jar '$1' not readable"
+	exit 1
+fi
+
+if [ -r "$2" ] ; then
+	JAR2=$2
+	LIST2=/tmp/`basename "$JAR2"`.list.XXXXXX
+else
+	echo "Jar '$2' not readable"
+	exit 1
+fi
+
+# Get jar command
+set_jvm
+JAR=$JAVA_HOME/bin/jar
+
+LIST1=`mktemp "$LIST1"`
+LIST2=`mktemp "$LIST2"`
+
+# Get sorted jar content
+$JAR tvf "$JAR1" | awk -F" " '{ print $8}' | sort > "$LIST1"
+$JAR tvf "$JAR2" | awk -F" " '{ print $8}' | sort > "$LIST2"
+
+# Compute difference
+diff -Naur "$LIST1" "$LIST2"
+
+# Remove files
+rm -f "$LIST1"
+rm -f "$LIST2"

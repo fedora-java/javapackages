@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+# Small script to rebuild a jar repository depending on the JVM used
+#
+# JPackage Project <http://www.jpackage.org/>
+#
+# $Id: rebuild-jar-repository,v 1.3 2006/03/29 19:45:09 jasonc Exp $
+
+# Import java functions
+[ -r /usr/share/java-utils/java-functions ] \
+ &&  . /usr/share/java-utils/java-functions || exit 1
+
+# Prints help message
+usage() {
+/bin/cat >&2 << EOF_USAGE
+Usage: $0 [<linktype>] <directory>
+                                                                                                                              
+With:
+    linktype:
+              -s, --soft, --symbolic   create symbolic links (default)
+              -h, --hard               create hard links
+              -c, --copy               copy files
+    directory: name of an existing directory where existing links will be
+               recreated
+
+EOF_USAGE
+exit 2
+}
+
+[ "$#" -lt "1" ] && usage
+
+unset repository
+unset args
+
+while [ $# -gt 0 -a -z "$repository" ] ; do
+   case "$1" in
+      -h|--hard|-s|--soft|--symbolic|-c|--copy)
+         args=$1
+         ;;
+      --|-)
+         args="$args --"
+         break
+         ;;
+      *)
+         repository=$1
+         if ! [ -d "$repository" -a -w "$repository" ] ; then
+            echo "$0: error: $1 must be a writable directory" >&2
+            exit 7
+         fi
+   esac
+   shift
+done
+
+args="$args $@"
+
+set_javacmd || exit 3
+
+check_java_env || exit 4
+
+set_jvm_dirs || exit 5
+
+extension_list=$(find $repository -name '\[*\]*.jar' -not -type d | \
+sed 's+\]\[+/+g' | sed 's+.*\[++g' | sed 's+\].*++g' | sort | uniq)
+
+rm -f $(find $repository -name '\[*\]*.jar' -not -type d)
+
+link_jar_repository $repository $args $extension_list
+
+if [ "$?" = 0 ] ; then
+    exit 0
+else
+    echo "$0: error: Some detected jars were not found for this jvm" >&2
+    exit 6
+fi

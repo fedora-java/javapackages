@@ -1,0 +1,140 @@
+$Id: jpackage-utils-policy,v 1.1 2004/12/15 16:23:45 robert Exp $
+
+JPackage packaging policy
+
+Package
+
+Name
+
+The package name, hereafter refered to as %{name}, is the complete
+name of the packaged software.
+
+Exception: if it is a requirement that multiple versions of a package
+can be installed to a single machine, relevant part of the version
+number is appended to complete software name to form the package name.
+
+Package name must contain only lowercase characters.
+
+Version
+
+The package version, hereafter referred to as %{version}, is the
+complete version of the packaged software.
+
+Exception: non-numeric version extensions, such as "pre", "rc",
+"beta", etc, are prohibited as they may confuse rpm. Instead, these
+are included in the package revision.
+
+Exception: when no exact version is available, as in non-tagged CVS
+snapshot, use the snapshot date in YYYYMMDD format.
+
+Release 
+
+The package release, hereafter refered to as %{release}, is a strictly
+increasing number, followed by specific project jpp tag appended.
+
+Exception: when non-numeric version extensions are used, this number
+is preceded by the number 0, a dot, and the version extension to
+ensure proper release ordering.
+
+Granularity 
+
+Small is beautiful: prefer several modular subpackages when possible. 
+
+The main package must contain only basic files needed for running the
+software, with license agreement and basic documentation files.
+
+Any optional file must be provided as a separate subpackage, with
+exact version and release dependency to the main package.
+
+Any demo or sample files must be provided as a separate -demo
+subpackage, with exact version and release dependency to the main
+package.
+
+Any user manual must be provided as a separate -manual subpackage,
+with no special dependency to the main package.
+
+Each Javadoc tree must be provided as a separate -javadoc subpackage,
+with no special dependency to the main package.
+
+Sections
+
+free section contains free software.
+
+non-free section contains non-free and non-distributable software.
+
+Dependencies
+
+A free package must avoid optional non-free runtime
+dependencies. Build dependencies are needed, however, to ensure proper
+build environment.
+
+Files
+
+Locations
+
+Data and demo files must be installed into the standard
+/usr/share/%{name} directory.
+
+Javadoc files must be installed into a
+/usr/share/javadoc/%{name}-%{version} directory.
+
+Application archives must be installed under the /usr/share/java
+directory in the following way:
+
+For simple software with just a few jars, directly to top level.  For
+simple software with many jars, into a /usr/share/java/%{name}
+directory.  For complex applications, in a /usr/share/java/%{name}
+subdirectory with proper internal structure.
+
+Names
+
+The general idea is that given package name, one should be able to
+deduce jar name(s): package abcd should contain either a single
+/usr/share/java/abcd.jar jar, or multiple /usr/share/java/abcd/*.jar
+or /usr/share/java/abcd-*.jar jars.
+
+Main jars stored directly under /usr/share/java must follow naming
+pattern %{name}-%{version}.jar.
+
+Secondary jars stored directly under /usr/share/java must follow
+naming pattern %{name}-<subpackage>-%{version}.jar.
+
+Jars stored in a /usr/share/java/%{name} subdirectory must follow
+naming pattern <subpackage>-%{version}.jar.
+
+All zip format archive must be converted to jar format, and a
+compatibility symlink be provided.
+
+All legacy names must be converted to standard names, and a
+compatibility symlink be provided if there's substantial difference.
+
+Compatibility symlinks must be versioned too.
+
+For every versioned jar or symlink, a corresponding unversioned
+symlink must be provided to allow version independant use.
+
+Granularity
+ 
+Once again, small is beautiful: prefer several modular jars when
+possible.
+
+Avoid duplicate classes, and remove redundant jars.
+
+Building 
+
+In order to track source origin, it is preferable to use unmodified
+original archives, when available in a form suitable for building.
+
+Never use provided external binaries. Delete them to ensure potential
+build interference.
+
+Running
+
+All applications must use a standardized wrapper script, using the
+JPackage function library.
+
+All servers must be shipped with usual service script, logrotate
+configuration, etc...
+
+Classpath references in MANIFEST files interfere with classpath, are
+not configurable, and don't work in JDK 1.1.x. They must be removed.
