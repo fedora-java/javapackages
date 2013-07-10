@@ -39,7 +39,7 @@ for extension in "$@" ; do
 	    # well take everything in the directory
 	    # This may create duplicates if symlinks point back inside the
 	    # directory structure, but who cares
-	    _JARS=$(find "$extension" -follow -name "*.jar" -xtype f -printf %p: 2>/dev/null)
+	    _JARS=$(find "$extension" -follow -name "*.jar" -type f -printf %p: 2>/dev/null)
 	else
 	    _JARS=$extension:
 	fi
