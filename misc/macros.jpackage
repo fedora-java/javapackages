@@ -166,11 +166,7 @@ EOF\
 # update_maven_depmap updates the main maven depmap
 #
 %update_maven_depmap() \
-echo -e "<dependencies>\\n" > %{_mavendepmapdir}/maven2-depmap.xml\
-if [ -d %{_mavendepmapfragdir} ] && [ -n "`find %{_mavendepmapfragdir} -type f`" ]; then\
-cat %{_mavendepmapfragdir}/* >> %{_mavendepmapdir}/maven2-depmap.xml\
-fi\
-echo -e "</dependencies>\\n" >> %{_mavendepmapdir}/maven2-depmap.xml\
+:\
 %{nil}
 
 #==============================================================================
