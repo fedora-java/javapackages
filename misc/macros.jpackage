@@ -13,47 +13,47 @@
 #
 # Root directory where all Java VMs/SDK/JREs are installed.
 #
-%_jvmdir	%{_prefix}/lib/jvm
+%_jvmdir        %{_prefix}/lib/jvm
 
 #
 # Root directory where all Java VMs/SDK/JREs expose their jars
 #
-%_jvmjardir	%{_prefix}/lib/jvm-exports
+%_jvmjardir     %{_prefix}/lib/jvm-exports
 
 #
 # Root directory for all Java VM/SDK/JRE's private things.
 #
-%_jvmprivdir	%{_prefix}/lib/jvm-private
+%_jvmprivdir    %{_prefix}/lib/jvm-private
 
 #
 # Root directory for all architecture dependent parts of Java VM/SDK/JRE's
 #
-%_jvmlibdir	%{_prefix}/lib/jvm
+%_jvmlibdir     %{_prefix}/lib/jvm
 
 #
 # Root directory for all architecture independent parts of Java VM/SDK/JRE's
 #
-%_jvmdatadir	%{_datadir}/jvm
+%_jvmdatadir    %{_datadir}/jvm
 
 #
 # Root directory for all configurations parts of Java VM/SDK/JRE's
 #
-%_jvmsysconfdir	%{_sysconfdir}/jvm
+%_jvmsysconfdir %{_sysconfdir}/jvm
 
 #
 # Root directory for all common architecture dependent parts of Java VM/SDK/JRE's
 #
-%_jvmcommonlibdir	%{_prefix}/lib/jvm-commmon
+%_jvmcommonlibdir %{_prefix}/lib/jvm-commmon
 
 #
 # Root directory for all common architecture independent parts of Java VM/SDK/JRE's
 #
-%_jvmcommondatadir	%{_datadir}/jvm-commmon
+%_jvmcommondatadir %{_datadir}/jvm-commmon
 
 #
 # Root directory for all common configurations parts of Java VM/SDK/JRE's
 #
-%_jvmcommonsysconfdir	%{_sysconfdir}/jvm-commmon
+%_jvmcommonsysconfdir %{_sysconfdir}/jvm-commmon
 
 #
 # Directory where arch and version independent jars are installed.
@@ -69,7 +69,7 @@
 #
 # To simplify things only %{_javadir} is defined.
 #
-%_javadir        %{_datadir}/java
+%_javadir       %{_datadir}/java
 
 #
 # Directory where arch-specific (JNI) version-independent jars are installed.
@@ -86,10 +86,12 @@
 #
 # Root directory where all javadoc is installed. Also already in RH macros.
 #
-%_javadocdir     %{_datadir}/javadoc
+%_javadocdir    %{_datadir}/javadoc
 
-# Directory for maven poms
-%_mavenpomdir %{_datadir}/maven-poms
+#
+# Directory for maven POMs
+#
+%_mavenpomdir   %{_datadir}/maven-poms
 
 #
 # Directory for maven depmaps
@@ -129,7 +131,7 @@
 #   %{javadir}-ext/foo.jar
 #   %{javadir}-*/bar.jar
 #
-%add_jvm_extension JAVA_LIBDIR=%{buildroot}/%{_javadir}	%{_bindir}/jvmjar -l
+%add_jvm_extension JAVA_LIBDIR=%{buildroot}/%{_javadir} %{_bindir}/jvmjar -l
 
 #==============================================================================
 #
@@ -175,10 +177,10 @@ EOF\
 #
 # This is kind of tasteless and should be moved to an external template
 #
-# %1	main class
-# %2	flags
-# %3	options
-# %4	jars (separated by ':')
+# %1    main class
+# %2    flags
+# %3    options
+# %4    jars (separated by ':')
 # %5    the name of script you wish to create
 # %6    whether to prefer a jre over a sdk when finding a jvm
 #
