@@ -67,5 +67,10 @@ function abs2rel(path, base)
    return join(basedirs, "/")
 end
 
+if #arg ~= 2 then
+   io.stderr:write("usage: " .. arg[0] .. " <PATH> <BASE>\n")
+   os.exit(1)
+end
+
 print(abs2rel(arg[1], arg[2]))
 
