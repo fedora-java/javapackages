@@ -1,3 +1,5 @@
+#!/usr/bin/lua
+
 --[[
 abs2rel for Lua
 
