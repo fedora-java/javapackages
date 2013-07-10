@@ -88,11 +88,14 @@
 #
 %_javadocdir     %{_datadir}/javadoc
 
+# Directory for maven poms
+%_mavenpomdir %{_datadir}/maven-poms
+
 #
 # Directory for maven depmaps
 #
-%_mavendepmapdir /etc/maven
-%_mavendepmapfragdir /etc/maven/fragments
+%_mavendepmapdir %{_sysconfdir}/maven
+%_mavendepmapfragdir %{_datadir}/maven-fragments
 
 #
 # Current default JVM home.
