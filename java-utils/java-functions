@@ -24,11 +24,26 @@ fi
 [ ! -z "$_JAVA_HOME" -a -d "$_JAVA_HOME" ] && JAVA_HOME="$_JAVA_HOME"
 
 # Test default JRE/JVM roots if nothing is defined yet
-[ -z "$JAVA_HOME" -a -d "$JVM_ROOT/java" ] && JAVA_HOME="$JVM_ROOT/java"
-[ -z "$JAVA_HOME" -a -d "$JVM_ROOT/jre" ] && JAVA_HOME="$JVM_ROOT/jre"
+_set_java_home() {
+  if [ -z "$JAVA_HOME" ] ; then
+    local _java_dirs="java"
+    case "$_prefer_jre" in
+      1|[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]) _java_dirs="jre $_java_dirs" ;;
+      *)                               _java_dirs="$_java_dirs jre" ;;
+    esac
+    for d in $_java_dirs ; do
+      if [ -d "$JVM_ROOT/$d" ] ; then
+        JAVA_HOME="$JVM_ROOT/$d"
+        break
+      fi
+    done
+  fi
+}
 
 # Set the java virtual machine
 set_jvm() {
+  _set_java_home
+
   # use $JAVA_HOME if defined
   if [ -n "$JAVA_HOME" ] ; then
     return
@@ -37,7 +52,11 @@ set_jvm() {
   # try to find it from java command
 
   # try javac first, or we might get the location of the jre instead - djw
-  java=`which javac 2>/dev/null || :`
+  # if JRE is prefered then don't try javac - mizdebsk
+  case "$_prefer_jre" in
+    1|[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]) java= ;;
+    *) java=`which javac 2>/dev/null || :` ;;
+  esac
 
   # if we don't have the jdk, then maybe we have the jre - djw
   if [ -z "$java" ] ; then
@@ -60,6 +79,8 @@ set_jvm() {
 # Set the classpath
 # This requires a valid JAVA_HOME, JAVACMD, and JAVA_LIBDIR
 set_classpath() {
+  _set_java_home
+
   # get local classpath first
   jars=$@
   if [ -n "$ADDITIONAL_JARS" ] ; then
@@ -130,6 +151,8 @@ run() {
 # Set JVM-related directories
 # Requires a correct $JAVA_LIBDIR, $JAVA_HOME and $JAVA_CMD
 set_jvm_dirs() {
+    _set_java_home
+
     # Jar repository provided by the JVM
     JVM_LIBDIR=$JVM_ROOT-exports/$(echo "$JAVA_HOME" |\
         sed -n "s+$JVM_ROOT/\([-_[:alnum:].]*\)\(.*\)+\1+p")
