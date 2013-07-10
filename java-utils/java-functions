@@ -145,7 +145,7 @@ run() {
     echo "arguments used: $@"
   fi
   # let's start
-  exec $JAVACMD $FLAGS -classpath $CLASSPATH $OPTIONS $MAIN_CLASS "$@"
+  exec "$JAVACMD" $FLAGS -classpath "$CLASSPATH" $OPTIONS "$MAIN_CLASS" "$@"
 }
 
 # Set JVM-related directories
