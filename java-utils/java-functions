@@ -169,8 +169,8 @@ set_jvm_dirs() {
         # Yuck, "grep -o" would be cleaner, but requires GNU grep >= 2.5.
         # This could be improved/simplified if sed had non-greedy matching.
         JAVA_VERSION=$($JAVACMD $opt 2>&1 | sed -n \
-            -e '/java \(full \)*version "/s/'$re'/<<<\1>>>/' \
-            -e '/java \(full \)*version "/s/.*<<<\([^>]\{1,\}\)>>>.*/\1/p')
+            -e '/\(openjdk\|java\) \(full \)*version "/s/'$re'/<<<\1>>>/' \
+            -e '/\(openjdk\|java\) \(full \)*version "/s/.*<<<\([^>]\{1,\}\)>>>.*/\1/p')
         if [ -n "$JAVA_VERSION" ] ; then
             break
         fi
