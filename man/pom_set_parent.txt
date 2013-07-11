@@ -1,0 +1,52 @@
+pom_set_parent(7)
+=================
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+pom_set_parent - set parent POM reference in POM file
+
+SYNOPSIS
+--------
+*%pom_set_parent* groupId*:*artifactId[*:*version] [POM-location]
+
+DESCRIPTION
+-----------
+This macro patches specified POM file setting reference to parent POM
+to specified groupId, artifactId and version.
+
+This macros first removes parent POM reference and then adds a new
+one.  It's (more or less) equivalent to call to *%pom_remove_parent*
+followed by invocation of *%pom_add_parent*.  See
+*pom_remove_parent*(7) and *pom_add_parent*(7) for more information
+about parameters.
+
+EXAMPLES
+--------
+*%pom_set_parent com.example:example-parent module* - this call sets
+parent POM of *module/pom.xml* to *com.example:example-parent*.
+
+AUTHOR
+------
+Written by Mikolaj Izdebski.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*pom_add_dep*(7),
+*pom_add_parent*(7),
+*pom_add_plugin*(7),
+*pom_disable_module*(7),
+*pom_remove_dep*(7),
+*pom_remove_parent*(7),
+*pom_remove_plugin*(7),
+*pom_xpath_inject*(7),
+*pom_xpath_remove*(7),
+*pom_xpath_replace*(7),
+*pom_xpath_set*(7).

@@ -1,0 +1,64 @@
+pom_add_plugin(7)
+=================
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+pom_add_plugin - add plugin invocation to POM file
+
+SYNOPSIS
+--------
+*%pom_add_plugin* groupId*:*artifactId[*:*version] [POM-location]
+  [extra-XML]
+
+DESCRIPTION
+-----------
+This macro patches specified POM file adding plugin invocation of
+given groupId and artifactId.
+
+groupId and artifactId are identifiers of Maven plugin artifact of
+which invocation is to be added.  groupId may be ommited, in which
+case value of "org.apache.maven.plugins" is used as default.
+artifactId must be specified.  If version is not specified then
+default value of "any" is used.
+
+POM location can be either a full path to the POM file, or a path to
+the directory containing *pom.xml*.  If POM location is not given then
+*pom.xml* from current working directory is used.
+
+Extra XML is additional XML code to be added into the *<plugin>* node.
+This parameter can be ommited, in which case no extra XML is appended.
+
+EXAMPLES
+--------
+*%pom_add_plugin com.example:plugin foo* - this call adds invocation
+of plugin *com.example:plugin* to *foo/pom.xml*.
+
+*%pom_add_plugin :maven-compiler-plugin . "<target>1.5</target>"* -
+this call adds invocation of Maven Compiler Plugin with target
+configured to 1.5.
+
+AUTHOR
+------
+Written by Mikolaj Izdebski.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*pom_add_dep*(7),
+*pom_add_parent*(7),
+*pom_disable_module*(7),
+*pom_remove_dep*(7),
+*pom_remove_parent*(7),
+*pom_remove_plugin*(7),
+*pom_set_parent*(7),
+*pom_xpath_inject*(7),
+*pom_xpath_remove*(7),
+*pom_xpath_replace*(7),
+*pom_xpath_set*(7).

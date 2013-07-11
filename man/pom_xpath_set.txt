@@ -1,0 +1,57 @@
+pom_xpath_set(7)
+================
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+pom_xpath_set - set text contents of XML node from POM file
+
+SYNOPSIS
+--------
+*%pom_xpath_set* XPath new-contents [POM-location]
+
+DESCRIPTION
+-----------
+This macro patches specified POM file replacing text contents of all
+XML nodes described by the XPath expression with given new text
+content.
+
+XPath is an expression describing a set of XML nodes to be removed
+from the POM file.  It must be a properly formated XPath 1.0
+expression, as described in http://www.w3.org/TR/xpath/.
+
+POM location can be either a full path to the POM file, or a path to
+the directory containing *pom.xml*.  If POM location is not given then
+*pom.xml* from current working directory is used.
+
+BUGS
+----
+POM files use a specific namespace -
+http://maven.apache.org/POM/4.0.0.  Currently this namespace needs to
+be explicitly specified in all XPath POM macros by prefixing all node
+names with *pom:*.
+
+AUTHOR
+------
+Written by Mikolaj Izdebski.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*pom_add_dep*(7),
+*pom_add_parent*(7),
+*pom_add_plugin*(7),
+*pom_disable_module*(7),
+*pom_remove_dep*(7),
+*pom_remove_parent*(7),
+*pom_remove_plugin*(7),
+*pom_set_parent*(7),
+*pom_xpath_inject*(7),
+*pom_xpath_remove*(7),
+*pom_xpath_replace*(7).

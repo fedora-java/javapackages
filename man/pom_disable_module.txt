@@ -1,0 +1,53 @@
+pom_disable_module(7)
+=====================
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+pom_disable_module - disable given project module in POM file
+
+SYNOPSIS
+--------
+*%pom_disable_module* module-name [POM-location]
+
+DESCRIPTION
+-----------
+This macro patches specified POM file not to contain reference to
+given project module.
+
+Module name is the exact name of the module to be disabled. It must
+not be ommited.
+
+POM location can be either a full path to the POM file, or a path to
+the directory containing *pom.xml*.  If POM location is not given then
+*pom.xml* from current working directory is used.
+
+EXAMPLES
+--------
+*%pom_disable_module nonfree* - this call removes aggregated module
+*nonfree* from POM file in current working directory.
+
+AUTHOR
+------
+Written by Mikolaj Izdebski.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*pom_add_dep*(7),
+*pom_add_parent*(7),
+*pom_add_plugin*(7),
+*pom_remove_dep*(7),
+*pom_remove_parent*(7),
+*pom_remove_plugin*(7),
+*pom_set_parent*(7),
+*pom_xpath_inject*(7),
+*pom_xpath_remove*(7),
+*pom_xpath_replace*(7),
+*pom_xpath_set*(7).
