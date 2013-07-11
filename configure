@@ -35,8 +35,10 @@ set -e
 vars="
 bindir
 datadir
+mandir
 prefix
 sysconfdir
+rpmconfigdir
 
 javadir
 javadocdir
@@ -63,8 +65,10 @@ eval $(for _; do echo "$_"; done |
 test -z "${prefix}" && prefix=/usr/local
 test -z "${bindir}" && bindir=${prefix}/bin
 test -z "${datadir}" && datadir=${prefix}/share
+test -z "${mandir}" && mandir=${datadir}/man
 test -z "${sysconfdir}" && sysconfdir=${prefix}/etc
+test -z "${rpmconfigdir}" && rpmconfigdir=${prefix}/lib/rpm
 
-eval $(sed -n 's/^%_\('"$vars_re"'\)\ *\(.*\)$/\1="\2"/;T;s/%{_\(.*}\)/${\1/;p' misc/macros.jpackage)
+eval $(sed -n 's/^%_\('"$vars_re"'\)\ *\(.*\)$/\1="\2"/;T;s/%{_\(.*}\)/${\1/;p' etc/macros.jpackage)
 
 set | sed -n 's/^\('"$vars_re"'\)=/&/;T;p' >config.status
