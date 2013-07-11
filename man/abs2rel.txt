@@ -1,0 +1,30 @@
+abs2rel(1)
+==========
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+abs2rel - convert absolute path to relative path
+
+SYNOPSIS
+--------
+*abs2rel* path base
+
+DESCRIPTION
+-----------
+The *abs2rel* command takes exactly two arguments - a destination path
+and a base path.  It determines relative path from the base path to
+the destination path and prints it on standard output.
+
+EXAMPLES
+--------
+*abs2rel /1/2/3/a/b/c /1/2/3* will print *a/b/c* on standard output.
+
+*abs2rel foo/bar foo/baz* will print *../bar* on standard output.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
