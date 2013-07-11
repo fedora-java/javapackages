@@ -422,6 +422,11 @@
       <artifactId>netbeans-freeform-maven-plugin</artifactId>
     </plugin>
     <plugin>
+      <name>Mojo's Maven Plugin for NSIS</name>
+      <prefix>nsis</prefix>
+      <artifactId>nsis-maven-plugin</artifactId>
+    </plugin>
+    <plugin>
       <name>OpenJPA Maven Plugin</name>
       <prefix>openjpa</prefix>
       <artifactId>openjpa-maven-plugin</artifactId>
@@ -605,6 +610,11 @@
       <name>Templating Maven Plugin</name>
       <prefix>templating</prefix>
       <artifactId>templating-maven-plugin</artifactId>
+    </plugin>
+    <plugin>
+      <name>Tidy Maven Plugin</name>
+      <prefix>tidy</prefix>
+      <artifactId>tidy-maven-plugin</artifactId>
     </plugin>
     <plugin>
       <name>Tomcat Maven Plugin</name>

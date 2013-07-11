@@ -177,6 +177,11 @@
       <artifactId>maven-javadoc-plugin</artifactId>
     </plugin>
     <plugin>
+      <name>Apache Maven Javadoc Plugin</name>
+      <prefix>javadoc</prefix>
+      <artifactId>maven-javadoc-plugin</artifactId>
+    </plugin>
+    <plugin>
       <name>Maven JXR Plugin</name>
       <prefix>jxr</prefix>
       <artifactId>maven-jxr-plugin</artifactId>
@@ -358,6 +363,11 @@
     </plugin>
     <plugin>
       <name>Maven War Plugin</name>
+      <prefix>war</prefix>
+      <artifactId>maven-war-plugin</artifactId>
+    </plugin>
+    <plugin>
+      <name>Apache Maven WAR Plugin</name>
       <prefix>war</prefix>
       <artifactId>maven-war-plugin</artifactId>
     </plugin>
