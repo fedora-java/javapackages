@@ -62,12 +62,12 @@ vars_re=$(echo $vars | sed 's/ /\\|/g')
 eval $(for _; do echo "$_"; done |
     sed -n 's/^--\('"$vars_re"'\)=\(.*\)$/\1="\2"/;T;p')
 
-test -z "${prefix}" && prefix=/usr/local
-test -z "${bindir}" && bindir=${prefix}/bin
-test -z "${datadir}" && datadir=${prefix}/share
-test -z "${mandir}" && mandir=${datadir}/man
-test -z "${sysconfdir}" && sysconfdir=${prefix}/etc
-test -z "${rpmconfigdir}" && rpmconfigdir=${prefix}/lib/rpm
+test -z "${prefix}" && prefix="/usr/local"
+test -z "${bindir}" && bindir="${prefix}/bin"
+test -z "${datadir}" && datadir="${prefix}/share"
+test -z "${mandir}" && mandir="${datadir}/man"
+test -z "${sysconfdir}" && sysconfdir="${prefix}/etc"
+test -z "${rpmconfigdir}" && rpmconfigdir="${prefix}/lib/rpm"
 
 eval $(sed -n 's/^%_\('"$vars_re"'\)\ *\(.*\)$/\1="\2"/;T;s/%{_\(.*}\)/${\1/;p' etc/macros.jpackage)
 
