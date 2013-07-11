@@ -1,0 +1,176 @@
+#!/bin/sh
+#
+# Script to clean binary files.
+#
+# JPackage Project <http://www.jpackage.org/>
+#
+# $Id: check-binary-files,v 1.1 2006/09/19 19:39:37 fnasser Exp $
+
+# Import java functions
+[ -r /usr/share/java-utils/java-functions ] \
+ &&  . /usr/share/java-utils/java-functions || exit 1
+
+# Prints help message
+usage() {
+	/bin/cat >&2 << EOF_USAGE
+
+Usage: $0 -f instructions_file [-a archive_file]
+
+Options:
+	-a - Archive file on which actions will be performed, as opposed to 
+	     current directory
+	-f - The instructions file to check against.
+EOF_USAGE
+	exit 2
+}
+
+[ "$1" = "--help" ] && usage
+
+[ "$#" = 0 ] && usage
+
+set_javacmd || exit 3
+check_java_env || exit 4
+set_jvm_dirs || exit 5
+
+# Directory in which script was invoked
+_WORKING_DIR=`pwd`
+
+# Run-time variables
+_ARCHIVE_FILE=""
+_KEEP_LIST=""
+_REMOVE_LIST=""
+_INSTRUCTIONS_FILE=""
+
+# Directory where archive is extracted, if we are working with one
+_ARCHIVE_EXTRACTION_DIR=/tmp/_cbr_archive_dir.$$
+
+# Adds to the appropriate (keep/remove) list
+add_to_keep_or_remove_list() {
+
+	if [ $1 = "keep" ]; then
+
+		shift
+
+		if [ -z "$_KEEP_LIST" ]; then
+			_KEEP_LIST=$*
+		else
+			_KEEP_LIST=${_KEEP_LIST}"|"$*
+		fi
+	else
+
+		shift
+
+		if [ -z "$_REMOVE_LIST" ]; then
+			_REMOVE_LIST=$*
+		else
+			_REMOVE_LIST=${_REMOVE_LIST}"|"$*
+		fi
+	fi
+}
+
+# Ensures that files in kee/remove list exist on disk, and vice-versa
+ensure_files_exist() {
+
+	_old_ifs=$IFS
+	IFS="|"
+
+	_had_errors=0
+
+	for file in $_KEEP_LIST; do
+		if [ ! -f $file ]; then
+			echo "ERROR: File $file should exist, but does not."
+			_had_errors=1
+		fi
+	done
+
+	for file in $_REMOVE_LIST; do
+		if [ -f $file ]; then
+			echo "ERROR: File $file should not exist, but does."
+			_had_errors=1
+		fi
+	done
+
+	IFS=$_old_ifs
+
+	if [ $_had_errors -eq 1 ]; then
+		exit 7
+	fi
+
+}
+
+while [ $# -gt 0 ] ; do
+	case "$1" in
+		-f)
+			if [ ! -f $2 ] ; then
+				echo "$0: error: Could not find instructions file!"
+				exit 6;
+			fi
+
+			while read line; do
+
+				echo $line | grep ^% >& /dev/null
+				if [ $? -eq 0 ] || [ "$line" = "" ]; then
+					continue
+				fi
+
+				_type=`echo $line | awk '{print $1}'`
+				_value=`echo $line | awk '{ printf "%s", $2; for (i = 3; i <= NF; i=i+1) printf " %s", $i }'`
+
+				add_to_keep_or_remove_list $_type $_value
+
+			done < $2
+
+			_INSTRUCTIONS_FILE="$2"
+
+			shift
+		;;
+		-a)
+			_ARCHIVE_FILE="$2"
+			shift
+		;;
+		*)
+			echo "ERROR: Unknown argument $1"
+			exit 6
+		;;
+	esac
+	shift
+done
+
+if [ "$_INSTRUCTIONS_FILE" = "" ]; then
+	echo "ERROR: Instructions file must be specified."
+	exit 6
+fi
+
+# If we are dealing with an archive file, we need to extract things somewhere, and do our actions in there
+if [ ! -z $_ARCHIVE_FILE ]; then
+	rm -rf $_ARCHIVE_EXTRACTION_DIR
+	mkdir -p $_ARCHIVE_EXTRACTION_DIR
+	pushd $_ARCHIVE_EXTRACTION_DIR >& /dev/null
+	tar xf $_WORKING_DIR/`basename $_ARCHIVE_FILE`
+fi
+
+ensure_files_exist
+
+if [ ! -z $_ARCHIVE_FILE ]; then
+
+	_archive_basename=`basename $_ARCHIVE_FILE`
+	_arch_name=${_archive_basename%%.*}
+	_arch_ext=${_archive_basename#*.}
+
+	_compression_flag=""
+
+	echo $_ARCHIVE_FILE | grep gz$ >& /dev/null
+	if [ $? -eq 0 ]; then
+		_compression_flag=z
+	fi
+
+	echo $_ARCHIVE_FILE | grep bz2$ >& /dev/null
+	if [ $? -eq 0 ]; then
+		_compression_flag=f
+	fi
+
+	tar cf$_compression_flag $_WORKING_DIR/$_arch_name-clean.$_arch_ext *
+
+	popd >& /dev/null
+	rm -rf $_ARCHIVE_EXTRACTION_DIR
+fi

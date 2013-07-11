@@ -1,0 +1,594 @@
+#!/bin/sh
+#
+# Script to clean binary files.
+#
+# JPackage Project <http://www.jpackage.org/>
+#
+# $Id: clean-binary-files,v 1.1 2006/09/19 19:39:37 fnasser Exp $
+
+# Import java functions
+[ -r /usr/share/java-utils/java-functions ] \
+ &&  . /usr/share/java-utils/java-functions || exit 1
+
+# Prints help message
+usage() {
+	/bin/cat >&2 << EOF_USAGE
+
+Usage: $0 {[-f {-, instructions_file}], [-e exclusion_file] [-l]} [-a archive_file] [-d custom_jar_map] [-n] [-p] [-s] 
+
+Options:
+	-f - The instructions file, specifying which files to keep and which
+	     to remove
+	-e - The exclusions file, specifying special binary files that are to
+	     be preserved, or non-binary files that are to be removed.
+	-l - Only list instructions (to put in instructions file), do not delete anything.
+	-a - Archive file on which actions will be performed, as opposed to 
+	     current directory
+	-d - A custom jar map file (has priority over the generic one).
+	-n - No symlinks (i.e. only clean jars, don't run build-jar-repository afterwards)
+	-p - Preserve original file names (-p to build-jar-repository)
+	-s - Silent mode. Won't output commands during cleanup
+EOF_USAGE
+	exit 2
+}
+
+[ "$1" = "--help" ] && usage
+
+[ "$#" = 0 ] && usage
+
+set_javacmd || exit 3
+check_java_env || exit 4
+set_jvm_dirs || exit 5
+
+# Directory in which script was invoked
+_WORKING_DIR=`pwd`
+
+# Default jar map
+_JAR_MAP_FILE=/usr/share/java-utils/jarname-jpp-map
+
+# Variables used for comparing file lists
+_TEMP_COMPARISON_FILE=/tmp/_temp_comparison_file.$$
+_KEEP_REMOVE_FILELIST=/tmp/_kr_file.$$
+_ON_DISK_FILELIST=/tmp/_fnlist_file.$$
+_FILELIST_DIFF=/tmp/_filelist_diff_file.$$
+rm -f $_KEEP_REMOVE_FILELIST $_ON_DISK_FILELIST $_FILELIST_DIFF
+
+# Temporary instructions file
+_TEMP_INSTRUCTIONS_FILE=/tmp/_temp_instruction_file.$$
+
+# Directory where archive is extracted, if we are working with one
+_ARCHIVE_EXTRACTION_DIR=/tmp/_cbr_archive_dir.$$
+
+# MODE can be list, list_and_delete, or delete
+_MODE="list_and_delete"
+
+# Run-time variables
+_ARCHIVE_FILE=""
+_INSTRUCTIONS_FILE=""
+_EXCEPTIONS_FILE=""
+_KEEP_LIST=""
+_PRESERVE_BINARY_NAMES=0
+_REMOVE_LIST=""
+_SILENT_MODE=0
+_CREATE_SYMLINKS=1
+_CUSTOM_JAR_MAP_FILE=""
+
+# Adds to the appropriate (keep/remove) list
+add_to_keep_or_remove_list() {
+
+	if [ $1 = "keep" ]; then
+
+		shift
+
+		if [ -z "$_KEEP_LIST" ]; then
+			_KEEP_LIST=$*
+		else
+			_KEEP_LIST=${_KEEP_LIST}"|"$*
+		fi
+	else
+
+		shift
+
+		if [ -z "$_REMOVE_LIST" ]; then
+			_REMOVE_LIST=$*
+		else
+			_REMOVE_LIST=${_REMOVE_LIST}"|"$*
+		fi
+	fi
+}
+
+# Function to check against exclusion generate the 
+# keep/remove command
+check_and_generate_command() {
+
+	_old_ifs=$IFS
+	IFS='|'
+
+	echo $1 | grep -E "\\.jar$" >& /dev/null
+	if [ $? -eq 0 ]; then
+
+		# Check if the item is in the exclusion list
+		_exclude=0
+
+		for excluded in $_KEEP_LIST; do
+			if [ "$1" = "$excluded" ]; then
+				_exclude=1
+				break
+			fi
+		done
+
+		if [ $_exclude -eq 0 ]; then
+			output_command "remove $1"
+		else
+			output_command "keep $1"
+		fi
+	fi
+
+	IFS=$_old_ifs
+}
+
+# Function to delete files
+delete_and_replace_file() {
+
+	rm -f "$1"
+	print "rm -f \"$1\""
+
+	# Now find the appropriate jar in the map, and output the 
+	# build-jar-repository command
+	execute_bjr_command $1
+}
+
+# Ensures that the file exists
+ensure_exclusion_files_exist() {
+
+	rm -f $_ON_DISK_FILELIST
+	touch $_ON_DISK_FILELIST
+
+	# Generate a list of binary files on disk
+
+	_filter="\\.jar$"
+
+	if [ ! "$_KEEP_LIST" = "" ]; then
+		_filter="$_filter|$_KEEP_LIST"
+	fi
+
+	if [ ! "$_REMOVE_LIST" = "" ]; then
+		_filter="$_filter|$_REMOVE_LIST"
+	fi
+
+	find . | sed -e s:^./::g | grep -E "$_filter" | sort -u > $_ON_DISK_FILELIST
+
+	_old_ifs=$IFS
+	IFS='|'
+	
+	for filename in $_KEEP_LIST; do
+		grep ^$filename $_ON_DISK_FILELIST >& /dev/null
+		if [ $? -gt 0 ]; then
+			echo "Cannot find file $filename from exclusions list. Aborting."
+
+			rm -f $_ON_DISK_FILELIST
+			IFS=$_old_ifs
+
+			exit 7
+		fi
+	done
+
+	for filename in $_REMOVE_LIST; do
+		grep ^$filename $_ON_DISK_FILELIST >& /dev/null
+		if [ $? -gt 0 ]; then
+			echo "Cannot find file $filename from exclusions list. Aborting."
+
+			rm -f $_ON_DISK_FILELIST
+			IFS=$_old_ifs
+
+			exit 7
+		fi
+	done
+
+	rm -f $_ON_DISK_FILELIST
+	IFS=$_old_ifs
+}
+
+# Ensures that files in kee/remove list exist on disk, and vice-versa
+ensure_files_exist() {
+	rm -f $_TEMP_COMPARISON_FILE
+	touch $_TEMP_COMPARISON_FILE
+
+	_old_ifs=$IFS
+	IFS='|'
+
+	for filename in $_REMOVE_LIST; do
+		echo $filename >> $_TEMP_COMPARISON_FILE
+	done
+
+	for filename in $_KEEP_LIST; do
+		echo $filename >> $_TEMP_COMPARISON_FILE
+	done
+
+	IFS=$_old_ifs
+
+	sort -u --output=$_KEEP_REMOVE_FILELIST $_TEMP_COMPARISON_FILE
+	rm -f $_TEMP_COMPARISON_FILE
+
+	# We have a list of keep/remove items. Now generate a list of
+	# binary files on disk
+
+	_filter="\\.jar$"
+
+	if [ ! "$_KEEP_LIST" = "" ]; then
+		_filter="$_filter|$_KEEP_LIST"
+	fi
+
+	if [ ! "$_REMOVE_LIST" = "" ]; then
+		_filter="$_filter|$_REMOVE_LIST"
+	fi
+
+	find . | sed -e s:^./::g | grep -E "$_filter" | sort -u > $_ON_DISK_FILELIST
+
+	# Now compare the two
+	diff -c $_KEEP_REMOVE_FILELIST $_ON_DISK_FILELIST > $_FILELIST_DIFF
+	rm -f $_KEEP_REMOVE_FILELIST $_ON_DISK_FILELIST
+
+	if [ -s $_FILELIST_DIFF ]; then
+		echo "ERROR: Extraneous files were found."
+		echo ""
+		echo "Files in keep/remove list, but not on disk/archive:"
+		cat $_FILELIST_DIFF | grep "^- " | sed -e s:"^- "::g
+
+		echo ""
+		echo "Binary files in on disk/archive, but not in keep/remove list:"
+		cat $_FILELIST_DIFF | grep "^+ " | sed -e s:"^+ "::g
+
+		echo ""
+		echo "Indistinguishable files:"
+		cat $_FILELIST_DIFF | grep "^\! " | sed -e s:"^\! "::g
+
+		rm -f $_FILELIST_DIFF
+		exit 7
+	fi
+
+	rm -f $_FILELIST_DIFF
+}
+
+# Executes the build-jar-repository command
+execute_bjr_command() {
+
+	if [ $_CREATE_SYMLINKS -eq 0 ]; then
+		return 0;
+	fi
+
+	echo $1 | grep -E "\\.jar$" >& /dev/null
+	if [ ! $? -eq 0 ]; then
+		return 0
+	fi
+
+	# Strip version and extention. e.g. abc-2.1-api-1.0.4.jar -> abc-2.1-api
+	_jar_filename=`basename $1`
+	_search_name=`basename $1`
+	_search_name=`echo $_search_name | sed -r -e s/-[[:digit:].]*\\\.jar//g | sed -r -e s/\\\.jar$//g`
+
+	_mapped_jar_name=""
+	_final_name=""
+
+	# Search in custom jar map first
+	if [ ! "$_CUSTOM_JAR_MAP_FILE" = "" ] && [ -f $_CUSTOM_JAR_MAP_FILE ]; then
+		# echo "grep -E \"^$_search_name.jar \" $_CUSTOM_JAR_MAP_FILE | awk '{print $2}'"
+		_mapped_jar_name=`grep -E "^$_search_name\\.jar " $_CUSTOM_JAR_MAP_FILE | awk '{print $2}'`
+
+		if [ "$_mapped_jar_name" = "" ]; then
+			_mapped_jar_name=`grep -E "^$_jar_filename " $_CUSTOM_JAR_MAP_FILE | awk '{print $2}'`
+		fi
+	fi
+
+	# Search in global jar map ONLY IF things were not found in the custom map
+	if [ -f $_JAR_MAP_FILE ] && [ "$_mapped_jar_name" = "" ]; then
+		# echo "grep -E \"^$_search_name.jar \" $_JAR_MAP_FILE | awk '{print $2}'"
+		_mapped_jar_name=`grep -E "^$_search_name\\.jar " $_JAR_MAP_FILE | awk '{print $2}'`
+	fi
+
+	if [ "$_mapped_jar_name" = "" ]; then
+		_final_name=$_search_name
+	else
+		_final_name=$_mapped_jar_name
+	fi
+
+	_preserve_name_flag=""
+	if [ $_PRESERVE_BINARY_NAMES = 1 ]; then
+		_preserve_name_flag="-p"
+	fi
+
+	_target_dir=`dirname $1`
+
+	_old_ifs=$IFS
+	IFS='
+'
+
+	for jppname in $_final_name; do
+		print "build-jar-repository -s $_preserve_name_flag $_target_dir $jppname"
+		build-jar-repository -s $_preserve_name_flag $_target_dir $jppname
+	done
+
+	IFS=$_old_ifs
+
+}
+
+# Outputs command to either STDOUT, or to a temp file, depending on what is required
+output_command() {
+	if [ $_MODE = "list" ]; then
+		echo $*
+	elif [ $_MODE = "list_and_delete" ]; then
+		echo $* >> $_TEMP_INSTRUCTIONS_FILE
+	fi
+}
+
+# Outputs to STDOUT (depending on whether or not we are in silent mode)
+print() {
+	if [ $_SILENT_MODE -eq 0 ]; then
+		echo $*
+	fi
+}
+
+## BEGIN EXECUTION
+
+# Get the command line options and set up appropriate parameters
+while [ $# -gt 0 ] ; do
+	case "$1" in
+		-e) # Exclusion list (LIST MODE)
+
+			if [ ! -f $2 ] ; then
+				echo "$0: ERROR: Could not find exclusions file!"
+				exit 6;
+			fi
+
+			while read line; do
+
+				echo $line | grep ^% >& /dev/null
+				if [ $? -eq 0 ] || [ "$line" = "" ]; then
+					continue
+				fi
+
+ 				_type=`echo $line | awk '{print $1}'`
+ 				_value=`echo $line | awk '{ printf "%s", $2; for (i = 3; i <= NF; i=i+1) printf " %s", $i }'`
+
+ 				if [ $_type = "keep" ]; then
+ 					if [ -z "$_KEEP_LIST" ]; then
+ 						_KEEP_LIST=$_value
+ 					else
+ 						_KEEP_LIST=${_KEEP_LIST}"|"$_value
+ 					fi
+ 				else
+ 					if [ -z "$_REMOVE_LIST" ]; then
+ 						_REMOVE_LIST=$_value
+ 					else
+ 						_REMOVE_LIST=${_REMOVE_LIST}"|"$_value
+ 					fi
+ 				fi
+
+			done < $2
+
+
+			if [ ! "$_MODE" = "list" ]; then
+
+				# If program had previously crashed, the temp file could be there. Remove it
+				rm -f $_TEMP_INSTRUCTIONS_FILE
+
+				_MODE="list_and_delete"
+			fi
+
+			if [ ! "$_INSTRUCTIONS_FILE" = "" ]; then
+				echo "ERROR: -e and -f are mutually exclusive options"
+				exit 6
+			fi
+
+			_EXCEPTIONS_FILE=$2
+
+			shift
+		;;
+		-f) # Instruction file (DELETE MODE)
+
+			if [ $2 == "-" ]; then
+
+				while read command; do
+
+					_type=`echo $command | awk '{print $1}'`
+					_value=`echo $command | awk '{ printf "%s", $2; for (i = 3; i <= NF; i=i+1) printf " %s", $i }'`
+
+					add_to_keep_or_remove_list $_type $_value
+
+				done
+
+			else
+
+				if [ ! -f $2 ] ; then
+					echo "$0: ERROR: Could not find instructions file!"
+					exit 6;
+				fi
+
+
+				while read line; do
+
+					echo $line | grep ^% >& /dev/null
+					if [ $? -eq 0 ] || [ "$line" = "" ]; then
+						continue
+					fi
+
+					_type=`echo $line | awk '{print $1}'`
+					_value=`echo $line | awk '{ printf "%s", $2; for (i = 3; i <= NF; i=i+1) printf " %s", $i }'`
+
+					add_to_keep_or_remove_list $_type $_value
+
+				done < $2
+
+				_INSTRUCTIONS_FILE=$2
+
+			fi
+
+			if [ "$_MODE" = "list" ]; then
+				echo "ERROR: -f and -l are mutually exclusive options"
+				exit 6
+			fi
+
+			if [ ! "$_EXCEPTIONS_FILE" = "" ]; then
+				echo "ERROR: -e and -f are mutually exclusive options"
+				exit 6
+			fi
+
+			_MODE=delete
+
+			shift
+		;;
+		-l)
+
+			if [ "$_MODE" = "delete" ]; then
+				echo "ERROR: -f and -l are mutually exclusive options"
+				exit 6
+			fi
+
+			_MODE=list
+		;;
+		-a)
+			_ARCHIVE_FILE=$2
+			shift
+		;;
+		-d)
+			_CUSTOM_JAR_MAP_FILE=$2
+			shift
+		;;
+		-n)
+			_CREATE_SYMLINKS=0
+		;;
+		-p)
+			_PRESERVE_BINARY_NAMES=1
+		;;
+		-s)
+			_SILENT_MODE=1
+		;;
+		*)
+			echo "ERROR: Unknown argument $1"
+			exit 6
+		;;
+	esac
+	shift
+done
+
+# Are basic arguments given?
+
+if [ -z "$_EXCEPTIONS_FILE" ] && [ -z "$_INSTRUCTIONS_FILE" ]; then
+	echo "ERROR: One of -f or -e is required!"
+	exit 6
+fi
+
+# Now, carry out the actions
+
+# If we are dealing with an archive file, we need to extract things somewhere, and do our actions in there
+if [ ! -z $_ARCHIVE_FILE ]; then
+	rm -rf $_ARCHIVE_EXTRACTION_DIR
+	mkdir -p $_ARCHIVE_EXTRACTION_DIR
+	pushd $_ARCHIVE_EXTRACTION_DIR >& /dev/null
+	tar xf $_WORKING_DIR/`basename $_ARCHIVE_FILE`
+fi
+
+# If in delete mode, we need to clean up the binary files
+
+if [ $_MODE = "delete" ]; then
+
+	# First, ensure that files in keep/remove lists exist on disk, and vice-versa
+	ensure_files_exist
+
+	_old_ifs=$IFS
+	IFS='|'
+
+	for filename in $_REMOVE_LIST; do
+		delete_and_replace_file $filename
+	done
+
+	IFS=$_old_ifs
+
+else
+
+	# Else, in list mode, we list the actions that will go into the instructions file
+
+	# Ensure that files in both lists exist
+	ensure_exclusion_files_exist
+
+	# Generate a list of files, and subsequently, the commands
+
+	_old_ifs=$IFS
+
+	IFS='
+'
+
+	for filename in `find . | grep .jar$ | sed -e s:^./::g`; do
+		check_and_generate_command $filename
+	done
+
+	IFS=$_old_ifs
+
+	# Add all of the "remove" commands from the exclusion list
+	_old_ifs=$IFS
+	IFS='|'
+
+	for filename in $_REMOVE_LIST; do
+		output_command "remove $filename"
+	done;
+
+	IFS=$_old_ifs
+
+	if [ $_MODE = "list_and_delete" ]; then
+
+		_instructions_file_flag="-f"
+		_instructions_file="$_TEMP_INSTRUCTIONS_FILE"
+
+		_silent_mode_flag=""
+		if [ $_SILENT_MODE = 1 ]; then
+			_silent_mode_flag="-s"
+		fi
+
+		_preserve_names_flag=""
+		if [ $_PRESERVE_BINARY_NAMES = 1 ]; then
+			_preserve_names_flag="-p"
+		fi
+
+		_no_symlinks_flag=""
+		if [ $_CREATE_SYMLINKS = 0 ]; then
+			_no_symlinks_flag="-n"
+		fi
+
+		_custom_map_flag=""
+		_custom_map=""
+		if [ ! "$_CUSTOM_JAR_MAP_FILE" = "" ]; then
+			_custom_map_flag="-d"
+			_custom_map="$_CUSTOM_JAR_MAP_FILE"
+		fi
+
+		#echo "$0 $_instructions_file_flag $_instructions_file $_preserve_names_flag $_silent_mode_flag $_no_symlinks_flag $_custom_map_flag $_custom_map"
+		#$0 $_instructions_file_flag $_instructions_file $_preserve_names_flag $_silent_mode_flag $_no_symlinks_flag $_custom_map_flag $_custom_map
+		clean-binary-files $_instructions_file_flag $_instructions_file $_preserve_names_flag $_silent_mode_flag $_no_symlinks_flag $_custom_map_flag $_custom_map
+		rm -f $_TEMP_INSTRUCTIONS_FILE
+	fi
+
+fi
+
+if [ ! -z $_ARCHIVE_FILE ]; then
+	_archive_basename=`basename $_ARCHIVE_FILE`
+	_arch_name=${_archive_basename%%.*}
+	_arch_ext=${_archive_basename#*.}
+
+	_compression_flag=""
+
+	echo $_ARCHIVE_FILE | grep gz$ >& /dev/null
+	if [ $? -eq 0 ]; then
+		_compression_flag=z
+	fi
+
+	echo $_ARCHIVE_FILE | grep bz2$ >& /dev/null
+	if [ $? -eq 0 ]; then
+		_compression_flag=f
+	fi
+
+	tar cf$_compression_flag $_WORKING_DIR/$_arch_name-clean.$_arch_ext *
+
+	popd >& /dev/null
+
+	rm -rf $_ARCHIVE_EXTRACTION_DIR
+fi

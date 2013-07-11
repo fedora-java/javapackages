@@ -1,0 +1,92 @@
+#!/bin/sh
+set -e
+
+if ! test -f config.status; then
+    echo config.status does not exist. Run configure first. >&2
+    exit 1
+fi
+. ./config.status
+
+DEST=${DEST:-${RPM_BUILD_ROOT}}
+DEST=${DEST:-root}
+rm -rf "${DEST}"
+
+dir()
+{
+    install -d -m 755 "${DEST}/${1}"
+    echo "%dir ${1}"
+}
+
+link()
+{
+    install -d -m 755 "${DEST}/"$(basename "${2}")
+    ln -sf "${1}" "${DEST}/${2}"
+    echo "${2}"
+}
+
+inst()
+{
+    install -d -m 755 "${DEST}/${3}"
+    install -p -m 644 "${2}" "${DEST}/${3}/"
+    echo "${1} ${3}/"$(basename "${2}")
+}
+
+inst_data() { inst "%attr(0644,root,root)" "${@}"; }
+inst_exec() { inst "%attr(0755,root,root)" "${@}"; }
+inst_config() { inst "%config(noreplace)" "${@}"; }
+
+dir "${sysconfdir}/java"
+dir "${sysconfdir}/java/security"
+dir "${sysconfdir}/java/security/security.d"
+dir "${jvmdir}"
+dir "${jvmjardir}"
+dir "${jvmprivdir}"
+dir "${jvmlibdir}"
+dir "${jvmdatadir}"
+dir "${jvmsysconfdir}"
+dir "${jvmcommonlibdir}"
+dir "${jvmcommondatadir}"
+dir "${jvmcommonsysconfdir}"
+dir "${javadir}"
+dir "${javadir}-utils"
+dir "${javadir}-ext"
+dir "${jnidir}"
+dir "${jnidir}-ext"
+dir "${javadocdir}"
+dir "${mavenpomdir}"
+dir "${mavendepmapdir}"
+dir "${mavendepmapfragdir}"
+
+for ver in 1.5.0 1.6.0 1.7.0 1.8.0; do
+    dir "${javadir}-${ver}"
+    dir "${jnidir}-${ver}"
+done
+
+inst_exec bin/abs2rel "${bindir}"
+inst_exec bin/build-classpath "${bindir}"
+inst_exec bin/build-classpath-directory "${bindir}"
+inst_exec bin/build-jar-repository "${bindir}"
+inst_exec bin/check-binary-files "${bindir}"
+inst_exec bin/clean-binary-files "${bindir}"
+inst_exec bin/create-jar-links "${bindir}"
+inst_exec bin/diff-jars "${bindir}"
+inst_exec bin/find-jar "${bindir}"
+inst_exec bin/jvmjar "${bindir}"
+inst_exec bin/rebuild-jar-repository "${bindir}"
+
+link "${bindir}/abs2rel" "${javadir}-utils/abs2rel.sh"
+
+inst_config etc/font.properties "${sysconfdir}/java"
+inst_config etc/java.conf "${sysconfdir}/java"
+sed -e "s|%{javadir}|'${javadir}'|" \
+    -e "s|%{jnidir}|'${jnidir}'|" \
+    -e "s|%{jvmdir}|'${jvmdir}'|" \
+    -i "${DEST}/${sysconfdir}/java/java.conf"
+
+inst_data java-utils/java-functions "${javadir}-utils"
+inst_data misc/macros.jpackage "${sysconfdir}/rpm"
+
+inst_data man/build-classpath.1 "${mandir}/man1"
+inst_data man/build-jar-repository.1 "${mandir}/man1"
+inst_data man/diff-jars.1 "${mandir}/man1"
+inst_data man/rebuild-jar-repository.1 "${mandir}/man1"

@@ -1,0 +1,359 @@
+# Functions library for Java applications.                           -*- sh -*-
+#
+# JPackage Project <http://www.jpackage.org/>
+#   Guillaume Rousse <guillomovitch@sourceforge.net>
+#   Ville Skyttä <scop at jpackage.org>
+#   David Walluck <david@jpackage.org>
+#   Nicolas Mailhot <Nicolas.Mailhot at laPoste.net>
+
+# Allow user to override JAVA_HOME
+# in his environment
+_JAVA_HOME="$JAVA_HOME"
+
+# Read configuration or die.
+if [ -f /etc/java/java.conf ] ; then
+  . /etc/java/java.conf
+else
+  echo "Can't find configuration file, aborting"
+  exit 1
+fi
+
+# Read user configuration file if it exists
+[ -f ~/.java/java.conf ] && . ~/.java/java.conf
+
+[ ! -z "$_JAVA_HOME" -a -d "$_JAVA_HOME" ] && JAVA_HOME="$_JAVA_HOME"
+
+# Test default JRE/JVM roots if nothing is defined yet
+_set_java_home() {
+  if [ -z "$JAVA_HOME" ] ; then
+    local _java_dirs="java"
+    case "$_prefer_jre" in
+      1|[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]) _java_dirs="jre $_java_dirs" ;;
+      *)                               _java_dirs="$_java_dirs jre" ;;
+    esac
+    for d in $_java_dirs ; do
+      if [ -d "$JVM_ROOT/$d" ] ; then
+        JAVA_HOME="$JVM_ROOT/$d"
+        break
+      fi
+    done
+  fi
+}
+
+# Set the java virtual machine
+set_jvm() {
+  _set_java_home
+
+  # use $JAVA_HOME if defined
+  if [ -n "$JAVA_HOME" ] ; then
+    return
+  fi
+
+  # try to find it from java command
+
+  # try javac first, or we might get the location of the jre instead - djw
+  # if JRE is prefered then don't try javac - mizdebsk
+  case "$_prefer_jre" in
+    1|[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]) java= ;;
+    *) java=`which javac 2>/dev/null || :` ;;
+  esac
+
+  # if we don't have the jdk, then maybe we have the jre - djw
+  if [ -z "$java" ] ; then
+    java=`which java 2>/dev/null || :`
+  fi
+
+  if [ -n "$java" ] ; then
+    while [ -h "$java" ] ; do
+      java=`readlink $java 2>/dev/null`
+    done
+    JAVA_HOME="`dirname $java`/.."
+    export JAVA_HOME
+    return
+  fi
+
+  echo "Can't find java virtual machine, aborting."
+  exit 1
+}
+
+# Set the classpath
+# This requires a valid JAVA_HOME, JAVACMD, and JAVA_LIBDIR
+set_classpath() {
+  _set_java_home
+
+  # get local classpath first
+  jars=$@
+  if [ -n "$ADDITIONAL_JARS" ] ; then
+      jars="$jars $ADDITIONAL_JARS"
+  fi
+  LOCAL_CLASSPATH=$(/usr/bin/build-classpath $jars)
+  # append original classpath if defined
+  CLASSPATH=$LOCAL_CLASSPATH:$CLASSPATH
+}
+
+set_javacmd() {
+  if [ -x "$JAVACMD" ]; then
+    return
+  fi
+  set_jvm
+  # Add all sorts of jvm layouts here
+  if [ -x "$JAVA_HOME/jre/sh/java" ]; then
+    JAVACMD="$JAVA_HOME/jre/sh/java"
+  elif [ -x "$JAVA_HOME/bin/java" ]; then
+    JAVACMD="$JAVA_HOME/bin/java"
+  else
+    JAVACMD=`which java 2>/dev/null`
+  fi
+
+  if [ ! -x "$JAVACMD" ]; then
+    echo "$0: error: Failed to set JAVACMD"
+    return 1
+  fi
+
+  if [ -n "$JAVACMD_OPTS" ]; then
+    JAVACMD="$JAVACMD $JAVACMD_OPTS"
+  fi
+
+  return 0
+}
+
+# Set flags
+set_flags() {
+  FLAGS=$@
+  if [ -n "$ADDITIONAL_FLAGS" ] ; then
+    FLAGS="$FLAGS $ADDITIONAL_FLAGS"
+  fi
+}
+
+# Set options
+set_options() {
+  OPTIONS=$@
+  if [ -n "$ADDITIONAL_OPTIONS" ] ; then
+    OPTIONS="$OPTIONS $ADDITIONAL_OPTIONS"
+  fi
+}
+
+# Run application
+run() {
+  set_javacmd
+  if [ -n "$VERBOSE" ]; then
+    echo "java virtual machine used: $JAVACMD"
+    echo "classpath used: $CLASSPATH"
+    echo "main class used: $MAIN_CLASS"
+    echo "flags used: $FLAGS"
+    echo "options used: $OPTIONS"
+    echo "arguments used: $@"
+  fi
+  # let's start
+  exec "$JAVACMD" $FLAGS -classpath "$CLASSPATH" $OPTIONS "$MAIN_CLASS" "$@"
+}
+
+# Set JVM-related directories
+# Requires a correct $JAVA_LIBDIR, $JAVA_HOME and $JAVA_CMD
+set_jvm_dirs() {
+    _set_java_home
+
+    # Jar repository provided by the JVM
+    JVM_LIBDIR=$JVM_ROOT-exports/$(echo "$JAVA_HOME" |\
+        sed -n "s+$JVM_ROOT/\([-_[:alnum:].]*\)\(.*\)+\1+p")
+
+    # Java standard version of the JVM.  -fullversion seems to be lot faster
+    # to invoke than -version.  Some examples:
+    #   java full version "1.4.2_04-b05"
+    #   java full version "J2RE 1.4.1 IBM build cxia321411-20030930"
+    #   java full version "Blackdown-1.4.1-01"
+    #   java version "1.5.0"
+    JAVA_VERSION=
+    re='\([[:digit:]]\{1,\}\.[[:digit:]]\{1,\}\(\.[[:digit:]]\{1,\}\)*\)'
+    for opt in -fullversion -version ; do
+        # Yuck, "grep -o" would be cleaner, but requires GNU grep >= 2.5.
+        # This could be improved/simplified if sed had non-greedy matching.
+        JAVA_VERSION=$($JAVACMD $opt 2>&1 | sed -n \
+            -e '/java \(full \)*version "/s/'$re'/<<<\1>>>/' \
+            -e '/java \(full \)*version "/s/.*<<<\([^>]\{1,\}\)>>>.*/\1/p')
+        if [ -n "$JAVA_VERSION" ] ; then
+            break
+        fi
+    done
+
+    # Jar repository for this Java standard
+    JAVAVER_LIBDIR=$JAVA_LIBDIR-$JAVA_VERSION
+    JAVAVER_JNIDIR=$JNI_LIBDIR-$JAVA_VERSION
+
+    if [ ! -d "$JVM_LIBDIR" ]; then
+        echo "$0: error: JVM_LIBDIR $JVM_LIBDIR does not exist or is not a directory"
+        return 1
+    elif [ ! -d "$JAVAVER_LIBDIR" ]; then
+        echo "$0: error: JAVAVER_LIBDIR $JAVAVER_LIBDIR does not exist or is not a directory"
+        return 1
+    elif [ ! -d "$JAVAVER_JNIDIR" ]; then
+        echo "$0: error: JAVAVER_JNIDIR $JAVAVER_JNIDIR does not exist or is not a directory"
+        return 1
+    fi
+
+    return 0
+}
+
+
+# Links a jar repository
+link_jar_repository() {
+
+   unset repository
+   unset extension_list
+
+   unset _LINK_CMD
+   unset _PRESERVE_NAMING
+
+   while [ $# -gt 0 ] ; do
+      case "$1" in
+         -h|--hard)
+            _LINK_CMD="/bin/ln -f"
+            ;;
+         -s|--soft|--symbolic)
+            _LINK_CMD="/bin/ln -fs"
+            ;;
+         -c|--copy)
+            _LINK_CMD="/bin/cp -f"
+            ;;
+         -p|--preserve-naming)
+            _PRESERVE_NAMING="true"
+            [ -z "$_LINK_CMD" ] && _LINK_CMD="/bin/cp -f"
+            ;;
+         --|-)
+            break
+            ;;
+         *)
+            if [ -z "$repository" ] ; then
+               repository=$1
+               if ! [ -d "$repository" -a -w "$repository" ] ; then
+                  echo "$0: error: $1 must be a writable directory" >&2
+                  exit 1
+               fi
+            else
+               extension_list="$extension_list $1"
+            fi
+            ;;
+      esac
+      shift
+   done
+
+   [ -z "$_LINK_CMD" ] && _LINK_CMD="/bin/ln -fs"
+   extension_list="$extension_list $@"
+
+   pushd $repository > /dev/null
+      _ALLFOUND=0
+      for extension in $extension_list ; do
+         extension=$(echo $extension | sed 's+/$++g' | sed 's+\.jar$++g')
+         found_extension=$(find_jar $extension)
+         found=$?
+         [ -z "$_PRESERVE_NAMING" ] \
+            && extension=[$(echo $extension | sed 's+/+][+g')] \
+            || extension=$(echo $extension | sed 's+/+_+g')
+         if [ $found -eq 0 ] ; then
+            if [ -d "$found_extension" ] ; then
+               for jar in $(find "$found_extension" -follow -name "*.jar") ; do
+                  /bin/rm -fr "$extension$(basename $jar)"
+                  $_LINK_CMD $jar "$extension$(basename $jar)"
+               done
+            else
+               /bin/rm -fr $extension.jar
+               $_LINK_CMD $found_extension $extension.jar
+            fi
+         else
+            # Defer failure to get list of all errors in one shot
+            # Do create a symlink so we can recover with another jvm
+            /bin/rm -fr $extension.jar
+            /bin/ln -fs /could/not/find/extension/for/this/jvm $extension.jar
+            _ALLFOUND=1
+         fi
+      done
+   popd $repository > /dev/null
+   return $_ALLFOUND
+}
+
+
+# Finds a specific extention (jar or directory)
+# Requires a correct $JAVA_LIBDIR, $JAVAVER_LIBDIR and $JVM_LIBDIR
+find_jar() {
+
+   # Remove jar extension if present
+   extension=$(echo "$1" | sed 's+\.jar$++g')
+
+   found_extension=$(do_find_jar $extension)
+   found=$?
+
+   # Version-less fallback
+   if [ $found != 0 ] && $(echo $extension | grep -q -e "-[\.[:digit:]]*$")
+      then
+      # 's+++g' breaks here for some reason (GNU sed 4.1.5), 's///g' works
+      extension=$(echo $extension | sed 's/-[\.[:digit:]]\+$//g')
+      found_extension=$(do_find_jar $extension)
+      found=$?
+   fi
+
+   # Root directory fallback
+   if [ $found != 0 ] && $(echo $extension | grep -q "/") ; then
+      extension=$(dirname $extension)
+      found_extension=$(do_find_jar $extension)
+      found=$?
+   fi
+
+   if [ $found = 0 ] ; then
+      echo "$found_extension"
+      return 0
+   else
+      echo "$0: error: Could not find $1 Java extension for this JVM" >&2
+      return 1
+   fi
+}
+
+
+# Core routine used by find_jar
+do_find_jar() {
+
+   extension=$1
+
+   for jardir in "$JVM_LIBDIR" "$JAVAVER_JNIDIR" "$JAVAVER_LIBDIR" \
+                 "$JAVAAPP_LIBDIR" "$JNI_LIBDIR" "$JAVA_LIBDIR" ; do
+      if [ -d "$jardir" ] ; then
+         if [ -r "$jardir/$extension.jar" ] ; then
+            echo "$jardir/$extension.jar"
+            return 0
+         fi
+         if [ -d "$jardir/$extension" ] ; then
+            echo "$jardir/$extension"
+            return 0
+         fi
+      fi
+   done
+
+   return 1
+}
+
+
+## Checks java environment
+check_java_env() {
+
+   # This is usually set by set_jvm
+   if [ -z "$JAVA_HOME" ] ; then
+      echo "$0: error: JAVA_HOME must be set" >&2
+      return 1
+   fi
+
+   if [ -z "$JAVACMD" ] ; then
+      echo "$0: error: JAVACMD must be set" >&2
+      return 2
+   fi
+
+   if [ -z "$JAVA_LIBDIR" ] ; then
+      echo "$0: error: JAVA_LIBDIR must be set" >&2
+      return 3
+   fi
+
+   if [ -z "$JNI_LIBDIR" ] ; then
+      echo "$0: error: JNI_LIBDIR must be set" >&2
+      return 4
+   fi
+
+   return 0
+}

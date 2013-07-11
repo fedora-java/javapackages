@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.docbook.org/xml/4.1.2/docbookx.dtd" [
+<!ENTITY alternatives "<citerefentry><refentrytitle>alternatives</refentrytitle><manvolnum>8</manvolnum></citerefentry>">
+]>
+<book lang="en">
+  <bookinfo>
+    <title>JPackage <trademark>Java</trademark> infrastructure design and packaging policy</title>
+    <authorgroup>
+      <author>
+        <firstname>Nicolas</firstname>
+        <surname>Mailhot</surname>
+        <affiliation>
+          <orgname>JPackage Project</orgname>
+        </affiliation>
+      </author>
+      <author>
+        <firstname>Ville</firstname>
+        <surname>Skyttä</surname>
+        <affiliation>
+          <orgname>JPackage Project</orgname>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <abstract>
+      <para>
+This document describes the packaging policy followed by the <ulink url="http://www.jpackage.org/">JPackage</ulink> cross-distribution RPM <trademark>Java</trademark> packaging project.
+      </para>
+    </abstract>
+    <releaseinfo>$Id: jpackage-1.5-policy.xml,v 1.1 2004/12/15 16:23:45 robert Exp $</releaseinfo>
+  </bookinfo>
+  <preface>
+    <title>Why ?</title>
+    <para>
+Clean Java packaging has historically been a daunting task. Lack of any standard addressing the physical location of files on the system combined with the common use of licensing terms that only allow free redistribution of key components as a part of a greater ensemble has let to the systematic release of self-sufficient applications with built-in copies of external components.
+    </para>
+    <para>
+As a consequence applications are only tested with the versions of the components they bundle, a complete Java system suffers from endless duplication of the same modules, and integrating multiple parts can be a nightmare since they are bound to depend on the same elements - only with different and subtly incompatible versions<footnote><para>
+Different requirements, different bugs.
+	</para></footnote>. Any security or compatibility<footnote><para>
+For example when the system kernel or C core changes Java assumptions.
+	</para></footnote> upgrade must be performed for each of those duplicated elements.
+    </para>
+    <para>
+This problem is compounded by the current practice of folding extensions proper in the JVM itself after a while ; an element that could safely be embedded in a application will suddenly conflict with a JVM part and cause subtle failures.
+    </para>
+    <para>
+ It is not surprising then that complex Java systems tend to fossilize very quickly, with the cost of maintaining dependencies current growing too high so fast people basically give up on it.
+    </para>
+    <para>
+This situation is incompatible with your typical fast-evolving Linux platform. To attain its aim of user- and administrator-friendly rpm packaging of Java applications the JPackage Project had to evolve its own system infrastructure and strict packaging rules.
+    </para>
+  </preface>
+  <chapter>
+    <title>General rules</title>
+    <section>
+      <title>Be modular</title>
+      <para>
+Whenever possible a module shall be broken out in its constituting elements. A given element will have a single name and location on the system. Only a single version of this element shall be installed. Applications sharing the same dependencies shall depend on external packages, not built-in versions.
+      </para>
+    </section>
+    <section>
+      <title>Be vendor and implementation agnostic</title>
+      <para>
+The user shall be able to choose between the different available implementations of the same element, especially when their licensing terms are not equivalent or their level of completeness unequal. Whenever possible it should be possible to install them in parallel, with the user able to select each of them specifically or let the system choose the best one<footnote><para>
+Based on licensing terms, known completeness, relative bugginess, market penetration and so on.
+	  </para></footnote>.
+      </para>
+    </section>
+    <section>
+      <title>Be distribution agnostic</title>
+      <para>
+Packages should work on most major rpm-based distributions. This means following standards like the <ulink url="http://www.linuxbase.org/">Linux Standard Base</ulink>, the <ulink url="http://www.pathname.com/fhs/">Filesystem Hierarchy Standard</ulink>, or <ulink url="http://www.freedesktop.org/">freedesktop.org</ulink> specifications.
+      </para>
+      <para>
+Above all usage of distribution-specific facilities<footnote><para>
+Like <ulink url="http://www.mandrakelinux.com/">Mandrake</ulink>'s <function>gprintf</function> function.
+	  </para></footnote> is <emphasis>forbidden</emphasis>.
+      </para>
+      <para>
+Note this is a pragmatic reading of the standards. Facilities not specified but commonly found are readily used by the project<footnote><para>
+For example RPM 4 extensions, <ulink url="http://www.debian.org/">Debian</ulink>'s &alternatives; system...
+	  </para></footnote> and distribution-specific adaptations are tolerated provided they do not interfere with common usage or a generic version is also available.
+      </para>
+    </section>
+  </chapter>
+  <chapter>
+    <title>Naming</title>
+    <section>
+      <title>Package naming</title>
+      <para>
+Packages shall be named after the common name of their origin project in small caps. When a package provides an extension that was folded at some point in the Java standard, the <emphasis>-ext</emphasis> (as in external) suffix shall be appended to distinguish between the package name and the extension name. Both the JVMs including this extension and the standalone extension package shall then have the original name as a virtual Provides.
+      </para>
+      <para>
+JVM packages shall be named <emphasis>java-standard_version-vendor</emphasis>. Original on-site
+names are not followed since practice varies wildly from vendor to vendor and version to version.
+      </para>
+    </section>
+    <section>
+      <title>Jar file naming</title>
+      <orderedlist>
+        <listitem>
+          <para>
+If a package provides a single jar it shall have the same name as the package itself, with appended product version.
+	  </para>
+          <informalexample>
+            <screen><filename>jaf-1.0.2.jar</filename></screen>
+          </informalexample>
+        </listitem>
+        <listitem>
+          <para>
+A non-versioned symbolic link pointing on the original file shall also be provided.
+	  </para>
+          <informalexample>
+            <screen><filename>jaf-1.0.2.jar</filename>
+<filename class="symlink">jaf.jar</filename> &rarr; <filename>jaf-1.0.2.jar</filename></screen>
+          </informalexample>
+        </listitem>
+        <listitem>
+          <para>
+If the project name and the commonly used jar name differ a symbolic link with the usual name shall also be provided.
+	  </para>
+          <example>
+            <title>Single jar complete naming</title>
+            <screen><filename>jaf-1.0.2.jar</filename>
+<filename class="symlink">jaf.jar</filename> &rarr; <filename>jaf-1.0.2.jar</filename>
+<filename class="symlink">activation.jar</filename> &rarr; <filename>jaf-1.0.2.jar</filename></screen>
+          </example>
+        </listitem>
+        <listitem>
+          <para>
+If the package provides several jars their usual names will be used.
+	  </para>
+          <informalexample>
+            <screen><filename>ant-1.5.3.jar</filename>
+<filename class="symlink">ant.jar</filename> &rarr; <filename>ant-1.5.3.jar</filename>
+<filename>ant-optional-1.5.3.jar</filename>
+<filename class="symlink">ant-optional.jar</filename> &rarr; <filename>ant-optional-1.5.3.jar</filename></screen>
+          </informalexample>
+        </listitem>
+        <listitem>
+          <para>
+If the number of provided jars exceeds two or if they were at a point provided in a single monolithic jar the files should be placed in a sub-directory named after the package (as for a single jar).
+	  </para>
+          <example>
+            <title>Bunch of jars naming</title>
+            <screen><filename class="directory">javamail</filename>
+<filename>javamail/imap-1.3.jar</filename>
+<filename class="symlink">javamail/imap.jar</filename> &rarr; <filename>imap-1.3.jar</filename>
+<filename>javamail/mailapi-1.3.jar</filename>
+<filename class="symlink">javamail/mailapi.jar</filename> &rarr; <filename>mailapi-1.3.jar</filename>
+<filename>javamail/pop3-1.3.jar</filename>
+<filename class="symlink">javamail/pop3.jar</filename> &rarr; <filename>pop3-1.3.jar</filename>
+<filename>javamail/smtp-1.3.jar</filename>
+<filename class="symlink">javamail/smtp.jar</filename> &rarr; <filename>smtp-1.3.jar</filename></screen>
+          </example>
+        </listitem>
+        <listitem>
+          <para>
+If a project offers the choice of packaging it as a single monolithic jar or several ones, the split packaging will be preferred.
+	  </para>
+        </listitem>
+      </orderedlist>
+    </section>
+  </chapter>
+  <chapter>
+    <title>Directory structure</title>
+    <para>
+Core directory structure is provided by the <emphasis>jpackage-utils</emphasis> package. It consists of:
+    </para>
+    <section>
+      <title>
+        <systemitem class="macro">%{_javadir}</systemitem>
+      </title>
+      <section>
+        <title>
+          <filename class="directory">/usr/share/java</filename>
+        </title>
+        <para>
+The <systemitem class="macro">%{_javadir}</systemitem> rpm macro defines the main jar repository. Historically it was the sole directory used by the 1.0 JPackage distribution, before packaging constraints forced a more complex system. It usually expands into <filename class="directory">/usr/share/java</filename>.
+	</para>
+        <para>
+All jar files and directories of jar files that do not depend on a particular Java standard version or JNI shall be installed in <filename class="directory">%{_javadir}</filename>.
+	</para>
+      </section>
+      <section>
+        <title>
+          <filename class="directory">/usr/share/java-ext</filename>
+        </title>
+        <para>
+From <systemitem class="macro">%{_javadir}</systemitem> we derive <filename class="directory">%{_javadir}-ext</filename>. All jar files and directories of jar files that depend on a particular Java standard version but not JNI shall be installed in <filename class="directory">%{_javadir}-ext</filename>.
+	</para>
+      </section>
+      <section>
+        <title>
+          <filename class="directory">/usr/share/java-x.y.z</filename>
+        </title>
+        <para>
+We also derive the <filename class="directory">%{_javadir}-x.y.z</filename> directories. They contain symlinks to files or directories of <filename class="directory">%{_javadir}-ext</filename> for all elements that are valid for the x.y.z Java standard version. Since an implementation is usually valid for a range of Java standard iterations, a file or directory in <filename class="directory">%{_javadir}-ext</filename> will usually have several symbolic links pointing to it. Also of note are the non-versioned symlinks : for two jars named <filename>foo13.jar</filename> and <filename>foo14.jar</filename>, the <filename class="symlink">foo.jar</filename> symlink will point to <filename>foo13.jar</filename> in <filename class="directory">%{_javadir}-1.3.0</filename> and <filename class="directory">%{_javadir}-1.3.1</filename>, and <filename>foo14.jar</filename> in <filename class="directory">%{_javadir}-1.4.0</filename>, <filename class="directory">%{_javadir}-1.4.1</filename> and <filename class="directory">%{_javadir}-1.4.2</filename>.
+	</para>
+        <para>
+Unfortunately the Java standard has been known to change enough between minor versions that we must take into account the full version and distinguish between <filename class="directory">%{_javadir}-1.4.0</filename> and <filename class="directory">%{_javadir}-1.4.1</filename>.
+	</para>
+        <example>
+          <title>Java standard version-specific repositories usage</title>
+          <screen><filename class="directory">/usr/share/java-ext/jsse</filename>
+<filename>/usr/share/java-ext/jsse/jcert-1.0.3.01.jar</filename>
+<filename class="symlink">/usr/share/java-ext/jsse/jcert.jar</filename> &rarr; <filename>jcert-1.0.3.01.jar</filename>
+<filename>/usr/share/java-ext/jsse/jnet-1.0.3.01.jar</filename>
+<filename class="symlink">/usr/share/java-ext/jsse/jnet.jar</filename> &rarr; <filename>jnet-1.0.3.01.jar</filename>
+<filename>/usr/share/java-ext/jsse/jsse-1.0.3.01.jar</filename>
+<filename class="symlink">/usr/share/java-ext/jsse/jsse.jar</filename> &rarr; <filename>jsse-1.0.3.01.jar</filename>
+<filename class="symlink">/usr/share/java-1.3.0/jsse</filename> &rarr; <filename class="directory">/usr/share/java-ext/jsse</filename>
+<filename class="symlink">/usr/share/java-1.3.1/jsse</filename> &rarr; <filename class="directory">/usr/share/java-ext/jsse</filename></screen>
+        </example>
+      </section>
+      <section>
+        <title>
+          <filename class="directory">/usr/share/java-utils</filename>
+        </title>
+        <para>
+We also derive <filename class="directory">%{_javadir}-utils</filename>. It is used to host java-related scripts and functions, including the main shell-script function library <filename>java-functions</filename>.
+	</para>
+      </section>
+    </section>
+    <section>
+      <title><systemitem class="macro">%{_jnidir}</systemitem>:
+ <filename class="directory">/usr/lib/java</filename>...</title>
+      <para>
+The <systemitem class="macro">%{_jnidir}</systemitem> rpm macro defines the main JNI jar repository. Like <systemitem class="macro">%{_javadir}</systemitem> it is declined in -ext and -x.y.z variants. It follows exactly the same rules as the <systemitem class="macro">%{_javadir}</systemitem>-derived tree structure, except that it hosts jars that use JNI.
+      </para>
+      <para>
+<systemitem class="macro">%{_jnidir}</systemitem> usually expands into <filename class="directory">/usr/lib/java</filename>.
+      </para>
+    </section>
+    <section>
+      <title>
+        <systemitem class="macro">%{_jvmdir}</systemitem>
+      </title>
+      <section>
+        <title>%{_libdir}/jvm: <filename class="directory">/usr/lib/jvm</filename></title>
+        <para>
+The <systemitem class="macro">%{_jvmdir}</systemitem> rpm macro defines the root directory under which the different system JVMs are installed. It usually expands into <filename class="directory">/usr/lib/jvm</filename>.
+	</para>
+      </section>
+      <section id="jvm-exports">
+        <title>%{_libdir}/jvm-exports: <filename class="directory">/usr/lib/jvm-exports</filename></title>
+        <para>
+From <systemitem class="macro">%{_jvmdir}</systemitem> we derive <filename class="directory">%{_jvmdir}-exports</filename>. Each subdirectory of <filename class="directory">%{_jvmdir}</filename> must have a corresponding one in <filename class="directory">%{_jvmdir}-exports</filename>. It is used to register Java extensions bundled with the <acronym>SDK</acronym> or <acronym>RE</acronym> with symbolic links pointing inside the JVM structure in <filename class="directory">%{_jvmdir}</filename>.
+	</para>
+        <para>
+The symbolic links shall point to the actual in-JVM jar file providing the extension (though that is not strictly necessary for the system to work), be available in versioned and non-versioned versions and follow general naming rules.
+	</para>
+      </section>
+      <section id="jvm-private">
+        <title>%{_libdir}/jvm-private: <filename class="directory">/usr/lib/jvm-private</filename></title>
+        <para>
+The <filename class="directory">%{_jvmdir}-private</filename> directory contains files that are private and internal to JVMs, but for some reason need to be relocated from their normal location in the JVM dirs.  No scripts should reference these files.  The contents below this directory are laid out so that there are appropriately versioned directories depending on their purpose, and the actual files are below those.
+        </para>
+        <para>
+One example of private files are the Java Cryptography Extension (<acronym>JCE</acronym>) policy files; the ones that come with various 1.4.x JVMs are limited in strength and the vendors supply unlimited strength jurisdiction policy files as separate downloads.  Typically these files are Java standard version and vendor specific (eg. <filename class="directory">java-1.4.2-sun</filename>).
+        </para>
+        <example id="jce-private">
+          <title>JCE policy file layout for Sun's J2SE 1.4.2</title>
+          <screen><filename class="directory">/usr/lib/jvm-private/java-1.4.2-sun</filename>
+<filename class="directory">/usr/lib/jvm-private/java-1.4.2-sun/jce</filename>
+<filename class="directory">/usr/lib/jvm-private/java-1.4.2-sun/jce/vanilla</filename>
+<filename class="directory">/usr/lib/jvm-private/java-1.4.2-sun/jce/vanilla/US_export_policy.jar</filename>
+<filename class="directory">/usr/lib/jvm-private/java-1.4.2-sun/jce/vanilla/local_policy.jar</filename>
+<filename class="directory">/usr/lib/jvm-private/java-1.4.2-sun/jce/unlimited</filename>
+<filename class="directory">/usr/lib/jvm-private/java-1.4.2-sun/jce/unlimited/US_export_policy.jar</filename>
+<filename class="directory">/usr/lib/jvm-private/java-1.4.2-sun/jce/unlimited/local_policy.jar</filename></screen>
+        </example>
+        <para>
+The various versions of <link linkend="jce-private">JCE policy jars</link> are further controlled by the &alternatives; system, using a link pointing to the corresponding jars in the JVM's <filename class="directory">jre/lib/security</filename> directory, with the unlimited versions having higher priority than the ones shipped with the JVM (vanilla).
+        </para>
+      </section>
+    </section>
+    <section>
+      <title><systemitem class="macro">%{_sysconfdir}</systemitem>/java:
+ <filename class="directory">/etc/java</filename></title>
+      <para>
+<filename class="directory">%{_sysconfdir}/java</filename> hosts the general configuration files related to the java subsystem, mainly <filename>java.conf</filename>.
+      </para>
+    </section>
+    <section>
+      <title>
+        <systemitem class="macro">%{_javadocdir}</systemitem>
+      </title>
+      <para>
+This is the root of all installed javadoc documentation. It's location and intended usage are debated right now.
+      </para>
+    </section>
+    <section>
+      <title>Application-specific directories</title>
+      <orderedlist>
+        <listitem>
+          <para>
+If an application needs private directories they should be laid out on the system following <ulink url="http://www.pathname.com/fhs/">Filesystem Hierarchy Standard</ulink> rules.
+	  </para>
+        </listitem>
+        <listitem>
+          <para>
+If an application needs to simulate a single-root private tree like on other operating systems (when the FHS requires the subdirectories to be installed on different parts of the system), <filename class="directory">%{_datadir}/appname</filename> shall be used as application home with symbolic links pointing to the real locations of subdirectories on the system. Of course it is better to fix the application to understand proper split file layout and avoid the symbolic link indirection altogether.
+	  </para>
+          <example>
+            <title>FHS and homedir-centered file layout</title>
+            <screen><filename class="directory">/usr/share/tomcat4</filename>
+<filename class="directory">/usr/share/tomcat4/bin</filename>
+<filename class="symlink">/usr/share/tomcat4/common</filename> &rarr; <filename class="directory">/var/lib/tomcat4/common</filename>
+<filename class="symlink">/usr/share/tomcat4/conf</filename> &rarr; <filename class="directory">/etc/tomcat4</filename>
+<filename class="symlink">/usr/share/tomcat4/logs</filename> &rarr; <filename class="directory">/var/log/tomcat4</filename>
+<filename class="symlink">/usr/share/tomcat4/server</filename> &rarr; <filename class="directory">/var/lib/tomcat4/server</filename>
+<filename class="symlink">/usr/share/tomcat4/shared</filename> &rarr; <filename class="directory">/var/lib/tomcat4/shared</filename>
+<filename class="symlink">/usr/share/tomcat4/temp</filename> &rarr; <filename class="directory">/var/cache/tomcat4/temp</filename>
+<filename class="symlink">/usr/share/tomcat4/webapps</filename> &rarr; <filename class="directory">/var/lib/tomcat4/webapps</filename>
+<filename class="symlink">/usr/share/tomcat4/work</filename> &rarr; <filename class="directory">/var/cache/tomcat4/work</filename></screen>
+          </example>
+        </listitem>
+        <listitem>
+          <para>
+Gratuitous complexity is eschewed. If a directory will always have only a single subdirectory, collapse it<footnote><para>
+ie. do not create a single lib subdirectory in <filename class="directory">%{_datadir}/appname</filename> just because more complex apps do so. If it will always remain single, use <filename class="directory">%{_datadir}/appname</filename> directly.
+	      </para></footnote>.
+	  </para>
+        </listitem>
+        <listitem>
+          <para>
+If an application uses classpath elements that are not jar files they should be installed in a private application directory.
+	  </para>
+          <note>
+            <title>zip, war and other class archive files</title>
+            <para>
+One may encounter other types of archives used in classpaths. If the application has no special need of them being a particular file type, they should be converted to jars and used the usual way. This is particularly true of zip files that were in wide usage at a time but have been deprecated since.
+	    </para>
+          </note>
+        </listitem>
+        <listitem>
+          <para>
+If an application provides private jars files it will always be the only user of, they may be installed in private application directories.
+	  </para>
+          <caution>
+            <title>Private jar files</title>
+            <para>
+This implies <link linkend="build-classpath">generic routines</link> can not be used to build the application classpath, so this part must be handled by the application itself or its packager<footnote><para>
+Hardcoding classpath bits for example.
+		</para></footnote>. However when an application can and will read its private jar repository, we do provide the <link linkend="build-jar-repository">means</link> to maintain the repository parts that are shared with other applications.
+	    </para>
+          </caution>
+        </listitem>
+      </orderedlist>
+    </section>
+  </chapter>
+  <chapter>
+    <title>Scripts and actual run-time classpath resolution</title>
+    <para>
+We assume the correct environment variables have already been set, ie at least <envar>$JAVA_HOME</envar> to select a JVM in <filename class="directory">%{_jvmdir}</filename>, and eventually the relevant <envar>$JAVACMD</envar>, <envar>$LD_ASSUME_KERNEL</envar>, <envar>$LANG</envar>, and <envar>$JAVA_COMPILER</envar> variables.
+    </para>
+    <warning>
+      <title>FIXME</title>
+      <para>
+The current implementation is not sane and carries a lot of legacy garbage. A clean implementation would be to read these values in <filename>~/.apprc</filename>, falling back on <filename>/etc/app.conf</filename>, the user environment, <filename>~/.java</filename> and <filename>/etc/java/java.conf</filename>. If <envar>$JAVA_HOME</envar> was still undefined then, use<filename>/usr/lib/jvm/java</filename> as default.
+      </para>
+      <para>
+Unfortunately we are not doing so right now.
+      </para>
+    </warning>
+    <section>
+      <title>General resolution rules</title>
+      <para>
+When queried for <emphasis>foo/bar-x.y</emphasis> we search for the <filename>foo/bar-x.y.jar</filename> jar file, then the <filename class="directory">foo/bar-x.y</filename> jar directory in the following locations:
+      </para>
+      <itemizedlist>
+        <listitem>
+          <formalpara>
+            <title>
+              <filename class="directory">%{_jvmdir}-exports/name</filename>
+            </title>
+            <para>
+The shadow of the JVM defined by <envar>$JAVA_HOME</envar>=<filename class="directory">%{_jvmdir}/name</filename>. This is the JVM-specific repository where we register the Java extensions it includes.
+	    </para>
+          </formalpara>
+        </listitem>
+        <listitem>
+          <formalpara>
+            <title>
+              <filename class="directory">%{_jnidir}-java_version</filename>
+            </title>
+            <para>
+Where <emphasis>java_version</emphasis> is the JVM standard Java compliance level as deduced from
+<screen><prompt>[bob@sys dir]$</prompt> <command>$JAVACMD</command> <option>-version</option></screen>
+	    </para>
+          </formalpara>
+        </listitem>
+        <listitem>
+          <formalpara>
+            <title>
+              <filename class="directory">%{_javadir}-java_version</filename>
+            </title>
+            <para>
+The java-version specific non-JNI jar repository.
+	    </para>
+          </formalpara>
+        </listitem>
+        <listitem>
+          <formalpara>
+            <title>
+              <filename class="directory">%{_jnidir}</filename>
+            </title>
+            <para>
+The generic JNI jar repository.
+	    </para>
+          </formalpara>
+        </listitem>
+        <listitem>
+          <formalpara>
+            <title>
+              <filename class="directory">%{_javadir}</filename>
+            </title>
+            <para>
+The generic jar repository.
+	    </para>
+          </formalpara>
+        </listitem>
+      </itemizedlist>
+      <para>
+If we didn't find anything, the search is repeated for <filename>foo/bar.jar</filename>, <filename class="directory">foo/bar</filename>, <filename>foo.jar</filename> then at last the <filename class="directory">foo</filename> directory. Note the scan is performed for jar/directory pairs ie a subdirectory located in a more specific repository will always have precedence on a jar with the same name located in a less specific repository.
+      </para>
+    </section>
+    <section>
+      <title>
+        <command>find-jar</command>
+      </title>
+      <cmdsynopsis>
+        <command>find-jar</command>
+        <arg choice="req">element</arg>
+      </cmdsynopsis>
+      <para>
+The <command>find-classpath</command> command tests the resolution of a given element. If successful it will return a jar file or a directory. It is solely intended for testing resolution and should not be used in scripts. Even for single-element classpath building the following command is preferred, since single-element searches can produce multiple file results when resolving into a directory.
+      </para>
+      <example>
+        <title><command>find-jar</command> output</title>
+        <screen><prompt>[bob@sys dir]$</prompt> find-jar jndi
+/usr/lib/jvm-exports/java-1.3.1-blackdown/jndi.jar</screen>
+      </example>
+    </section>
+    <section id="build-classpath">
+      <title>
+        <command>build-classpath</command>
+      </title>
+      <cmdsynopsis>
+        <command>build-classpath</command>
+        <arg choice="req" rep="repeat">element</arg>
+      </cmdsynopsis>
+      <para>
+The <command>build-classpath</command> command builds a standard classpath following the general resolution rules. It takes a list of elements as arguments. If an element resolves in a directory, all its children jar files are included in the classpath.
+      </para>
+      <example>
+        <title><command>build-classpath</command> output</title>
+        <screen><prompt>[bob@sys dir]$</prompt> export JAVA_HOME=/usr/lib/jvm/java-1.3.1-blackdown
+<prompt>[bob@sys dir]$</prompt> build-classpath jsse javamail/mailapi jaxp_parser_impl
+/usr/share/java-1.3.1/jsse/jcert-1.0.3.01.jar:/usr/share/java-1.3.1/jsse/jnet-1.0.3.01.jar:/usr/share/java-1.3.1/jsse/jsse-1.0.3.01.jar:/usr/share/java/javamail/mailapi.jar:/usr/share/java/jaxp_parser_impl.jar
+<prompt>[bob@sys dir]$</prompt> export JAVA_HOME=/usr/lib/jvm/java-1.4.1-sun
+<prompt>[bob@sys dir]$</prompt> build-classpath jsse javamail/mailapi jaxp_parser_impl
+/usr/lib/jvm-exports/java-1.4.1-sun/jsse.jar:/usr/share/java/javamail/mailapi.jar:/usr/share/java/jaxp_parser_impl.jar</screen>
+      </example>
+      <para>
+Like the following command it will fail, return an non-zero error code and write to the error console if one or more of the requested elements were not found. Therefore for a classpath composed of required and optional parts recommended building practice is the following:
+     </para>
+      <example>
+        <title>Constructing a classpath with mandatory and optional parts</title>
+        <programlisting>CLASSPATH=$(build-classpath list_of_required_elements):$(build-classpath list_of_optional_elements 2&gt; /dev/null)</programlisting>
+      </example>
+    </section>
+    <section id="build-jar-repository">
+      <title>
+        <command>build-jar-repository</command>
+      </title>
+      <cmdsynopsis>
+        <command>build-jar-repository</command>
+        <group choice="opt">
+          <arg>-s</arg>
+          <arg>--soft</arg>
+          <arg>--symbolic</arg>
+          <arg>-h</arg>
+          <arg>--hard</arg>
+          <arg>-c</arg>
+          <arg>--copy</arg>
+        </group>
+        <group choice="opt">
+          <arg>-p</arg>
+          <arg>--preserve-naming</arg>
+        </group>
+        <arg choice="req">directory</arg>
+        <arg choice="req" rep="repeat">element</arg>
+      </cmdsynopsis>
+      <para>
+The <command>build-jar-repository</command> command constructs a flat directory of jar file symlinks following the same rules. It takes a directory name followed by a list of elements as arguments. It will try to create a <filename class="symlink">[foo][bar]xxx.jar</filename> set of symbolic links in the target directory for each <emphasis>foo/bar</emphasis> requested element<footnote><para>
+Remember, a single element can resolve in a full directory of jar files.
+	  </para></footnote>. The special symlink naming makes it possible to recognize they were created by this command and is required for the next command. One can optionally specify if created files must be hardlinks, softlinks or file copies. The default is symbolic links, and the switch should only be needed for very broken software.
+      </para>
+      <tip>
+        <title>Incremental use</title>
+        <para>
+<command>build-jar-repository</command> can be safely used on the same directory several times. Previous symlinks won't be removed. If one wants to reset the directory the symbolic links must be cleaned up manually.
+	</para>
+      </tip>
+      <warning>
+        <title>Preserving naming</title>
+        <para>
+If you just want to populate a static directory with jar links or copies you can use the <parameter>--preserve-naming</parameter> <command>build-jar-repository</command> argument. This will create files with a name closer to the original ones. Note however this will inhibit any future repository refresh using the next command. Do not use this switch unless you know what you are doing.
+        </para>
+        <para>
+<parameter>--preserve-naming</parameter> implies <parameter>--copy</parameter> unless specified otherwise.
+	</para>
+      </warning>
+      <example>
+        <title><command>build-jar-repository</command> results</title>
+        <screen><prompt>[bob@sys dir]$</prompt> export JAVA_HOME=/usr/lib/jvm/java-1.3.1-blackdown
+<prompt>[bob@sys dir]$</prompt> build-jar-repository lib jsse javamail/mailapi
+<prompt>[bob@sys dir]$</prompt> build-jar-repository lib jaxp_parser_impl
+<prompt>[bob@sys dir]$</prompt> tree lib
+[nim@rousalka nim]$ tree lib
+lib
+|-- [javamail][mailapi].jar -&gt; /usr/share/java/javamail/mailapi.jar
+|-- [jaxp_parser_impl].jar -&gt; /usr/share/java/jaxp_parser_impl.jar
+|-- [jsse]jcert-1.0.3.01.jar -&gt; /usr/share/java-1.3.1/jsse/jcert-1.0.3.01.jar
+|-- [jsse]jcert.jar -&gt; /usr/share/java-1.3.1/jsse/jcert.jar
+|-- [jsse]jnet-1.0.3.01.jar -&gt; /usr/share/java-1.3.1/jsse/jnet-1.0.3.01.jar
+|-- [jsse]jnet.jar -&gt; /usr/share/java-1.3.1/jsse/jnet.jar
+|-- [jsse]jsse-1.0.3.01.jar -&gt; /usr/share/java-1.3.1/jsse/jsse-1.0.3.01.jar
+`-- [jsse]jsse.jar -&gt; /usr/share/java-1.3.1/jsse/jsse.jar</screen>
+      </example>
+    </section>
+    <section>
+      <title>
+        <command>rebuild-jar-repository</command>
+      </title>
+      <cmdsynopsis>
+        <command>rebuild-jar-repository</command>
+        <group>
+          <arg>-s</arg>
+          <arg>--soft</arg>
+          <arg>--symbolic</arg>
+          <arg>-h</arg>
+          <arg>--hard</arg>
+          <arg>-c</arg>
+          <arg>--copy</arg>
+        </group>
+        <arg choice="req">directory</arg>
+      </cmdsynopsis>
+      <para>
+The <command>rebuild-jar-repository</command> command refreshes a jar repository created using <command>build-jar-repository</command>. It takes a directory name as argument, and is intended to be run after <envar>$JAVA_HOME</envar> was changed to insure all symlinked jar files are still compatible with the new JVM. The same optional arguments as <command>build-jar-repository</command> can be used to specify the kind of link to use.
+      </para>
+      <tip>
+        <title>Mixed usage</title>
+        <para>
+The very specific naming of the symbolic links used by <command>build-jar-repository</command> and <command>rebuild-jar-repository</command> makes it possible to mix automated links with manual links and normal files in directories handled by those commands. The scripts will only change their own links.
+	</para>
+      </tip>
+      <example>
+        <title><command>rebuild-jar-repository</command> results</title>
+        <screen><prompt>[bob@sys dir]$</prompt> export export JAVA_HOME=/usr/lib/jvm/java-1.4.1-sun
+<prompt>[bob@sys dir]$</prompt> rebuild-jar-repository lib
+<prompt>[bob@sys dir]$</prompt> tree lib
+lib
+|-- [javamail][mailapi].jar -&gt; /usr/share/java/javamail/mailapi.jar
+|-- [jaxp_parser_impl].jar -&gt; /usr/share/java/jaxp_parser_impl.jar
+`-- [jsse].jar -&gt; /usr/lib/jvm-exports/java-1.4.1-sun/jsse.jar</screen>
+      </example>
+      <warning>
+        <title>When element resolution fails...</title>
+        <para>
+<command>rebuild-jar-repository</command> will still create a symbolic link unlike <command>build-jar-repository</command>. This choice was made to avoid corrupting the element list when selecting an incomplete java system<footnote><para>
+Therefore another <command>rebuild-jar-repository</command> after the necessary jars were installed or a more complete JVM was selected will work as if the incomplete system was never tried.
+	    </para></footnote>. The created symbolic link points to a bogus location and should always be "broken".
+	</para>
+      </warning>
+    </section>
+  </chapter>
+</book>

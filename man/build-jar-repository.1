@@ -1,0 +1,45 @@
+.TH BUILD-JAR-REPOSITORY "1" "March 2006" "build-jar-repository (jpackage-utils) 1.7.0" "User Commands"
+.SH NAME
+build-jar-repository \- create a symbolic link to a JAR
+.SH SYNOPSIS
+.B build-jar-repository
+[\fIOPTION\fR]... \fIDIRECTORY\fR... \fIJAR\fR
+.SH DESCRIPTION
+Build a JAR repository in the named directory by copying files or creating
+symbolic links
+.SH OPTIONS
+.PP
+If no option is specified the default action will be to create symbolic links
+.TP
+\fB\-c\fR, \fB\-\-copy\fR
+copy files
+.TP
+\fB\-h\fR, \fB\-\-hard\fR
+create hard links
+.TP
+\fB\-p\fR, \fB\-\-preserve-naming\fR
+try to preserve the names of the original JAR files (in case of a nested hit
+the slashes in the path will still be replaced by underscores)
+
+using this option makes any future automated repository rebuild impossible,
+and implies
+.B \-c
+unless specified otherwise
+.TP
+\fB\-s\fR, \fB\-\-soft\fR, \fB\-\-symbolic\fR
+create symbolic links (default)
+.TP
+\fB\-\-help\fR
+.br
+display help text
+.SH EXAMPLES
+.TP
+build-jar-repository . jndi
+will create a symbolic link to the JNDI JAR in the current working directory
+.TP
+build-jar-repository -h /tmp oro
+will create a hard link to the ORO JAR in /tmp
+.SH AUTHOR
+Written by Nicholas Mailhot and David Walluck
+.SH REPORTING BUGS
+Report bugs using JPackage Bugzilla (http://www.jpackage.org/bugzilla/)
