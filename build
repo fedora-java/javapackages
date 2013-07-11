@@ -53,3 +53,4 @@ sed -e "s|%{javadir}|'$${javadir}'|" \
     etc/java.conf >target/java.conf
 
 manpage abs2rel
+manpage find-jar
