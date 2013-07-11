@@ -133,44 +133,6 @@
 #
 %add_jvm_extension JAVA_LIBDIR=%{buildroot}/%{_javadir} %{_bindir}/jvmjar -l
 
-#==============================================================================
-#
-# add_to_depmap adds an entry to the depmap. The arguments are:
-#
-# %1 the original groupid
-# %2 the original artifact id
-# %3 the version
-# %4 the new groupid
-# %5 the new artifactid
-#
-
-%add_to_maven_depmap() \
-install -dm 755 $RPM_BUILD_ROOT/%{_mavendepmapfragdir}\
-cat >>$RPM_BUILD_ROOT/%{_mavendepmapfragdir}/%{name}<< EOF\
-<dependency>\
-    <maven>\
-        <groupId>%1</groupId>\
-        <artifactId>%2</artifactId>\
-        <version>%3</version>\
-    </maven>\
-    <jpp>\
-        <groupId>%4</groupId>\
-        <artifactId>%5</artifactId>\
-        <version>%3</version>\
-    </jpp>\
-</dependency>\
-\
-EOF\
-%{nil}
-
-#==============================================================================
-#
-# update_maven_depmap updates the main maven depmap
-#
-%update_maven_depmap() \
-:\
-%{nil}
-
 
 #
 # Standard JPackage script
