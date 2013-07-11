@@ -127,6 +127,7 @@ inst_data man/build-classpath.1 "${mandir}/man1"
 inst_data man/build-jar-repository.1 "${mandir}/man1"
 inst_data man/diff-jars.1 "${mandir}/man1"
 inst_data man/rebuild-jar-repository.1 "${mandir}/man1"
+inst_data target/abs2rel.1 "${mandir}/man1"
 
 inst_exec depgenerators/maven.prov "${rpmconfigdir}"
 inst_exec depgenerators/maven.req "${rpmconfigdir}"
