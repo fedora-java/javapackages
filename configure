@@ -1,0 +1,39 @@
+#!/bin/sh
+set -e
+
+vars="
+bindir
+datadir
+prefix
+sysconfdir
+
+javadir
+javadocdir
+jnidir
+jvmcommondatadir
+jvmcommonlibdir
+jvmcommonsysconfdir
+jvmdatadir
+jvmdir
+jvmjardir
+jvmlibdir
+jvmprivdir
+jvmsysconfdir
+mavendepmapdir
+mavendepmapfragdir
+mavenpomdir
+"
+
+vars_re=$(echo $vars | sed 's/ /\\|/g')
+
+eval $(for _; do echo "$_"; done |
+    sed -n 's/^--\('"$vars_re"'\)=\(.*\)$/\1="\2"/;T;p')
+
+test -z "${prefix}" && prefix=/usr/local
+test -z "${bindir}" && bindir=${prefix}/bin
+test -z "${datadir}" && datadir=${prefix}/share
+test -z "${sysconfdir}" && sysconfdir=${prefix}/etc
+
+eval $(sed -n 's/^%_\('"$vars_re"'\)\ *\(.*\)$/\1="\2"/;T;s/%{_\(.*}\)/${\1/;p' misc/macros.jpackage)
+
+set | sed -n 's/^\('"$vars_re"'\)=/&/;T;p' >config.status
