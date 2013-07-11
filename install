@@ -84,7 +84,7 @@ sed -e "s|%{javadir}|'${javadir}'|" \
     -i "${DEST}/${sysconfdir}/java/java.conf"
 
 inst_data java-utils/java-functions "${javadir}-utils"
-inst_data misc/macros.jpackage "${sysconfdir}/rpm"
+inst_data etc/macros.jpackage "${sysconfdir}/rpm"
 
 inst_data man/build-classpath.1 "${mandir}/man1"
 inst_data man/build-jar-repository.1 "${mandir}/man1"
