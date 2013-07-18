@@ -232,46 +232,6 @@ def output_fragment(fragment_path, fragment, mappings, add_versions):
 """ % fragment)
 
 
-def create_maven_repo(repo_path, fragment, mappings):
-    """Create maven repository layout from fragment in given repository"""
-
-    # subdirectory under _javadir (if any)
-    javadir_sub = fragment.local_gid.replace('JPP', '')
-    for m in mappings:
-        gid, aid = m
-        repo_subdir = os.path.join(gid.replace('.', os.path.sep),
-                                   aid,
-                                   fragment.version)
-
-        final_dir = os.path.join(repo_path,
-                                 repo_subdir)
-        # create directory structure first
-        os.makedirs(final_dir)
-        print final_dir
-
-        # we want relative paths for symlinks so we need to know how many levels
-        # deep we are in the repository
-        gid_dircount = gid.count('.')
-        relative_datadir = '..%s' % os.path.sep * (gid_dircount+4)
-        if fragment.packaging != 'pom':
-            os.symlink(os.path.join(relative_datadir,
-                                    'java',
-                                    javadir_sub,
-                                    "%s.%s" % (fragment.local_aid, fragment.packaging)),
-                       os.path.join(final_dir,
-                                    "%s-%s.%s" % (aid,
-                                                  fragment.version,
-                                                  fragment.packaging)))
-
-        pom_fname = "JPP"
-        if javadir_sub != '':
-            pom_fname = "%s.%s" % (pom_fname, javadir_sub)
-        pom_fname = "%s-%s.pom" % (pom_fname, fragment.local_aid)
-        os.symlink(os.path.join(relative_datadir, 'maven-poms', pom_fname),
-                   os.path.join(final_dir,
-                                "%s-%s.pom" % (aid,
-                                               fragment.version)))
-
 # Add a file to a ZIP archive (or JAR, WAR, ...) unless the file
 # already exists in the archive.  Provided by Tomas Radej.
 def append_if_missing(archive_name, file_name, file_contents):
@@ -299,8 +259,6 @@ if __name__ == "__main__":
     parser = OptionParser(usage=usage)
     parser.add_option("-a","--append",type="str",
                       help="Additional depmaps to add (gid:aid)  [default: %default]")
-    parser.add_option('-m', '--maven-repo', type="str", dest='maven_repo',
-                      help='Where to create Maven repository layout')
     parser.add_option('-r', '--versions', type="str",
                       help='Additional versions to add for each depmap')
 
@@ -332,8 +290,6 @@ if __name__ == "__main__":
     if fragment:
         mappings = create_mappings(fragment, append_deps)
         output_fragment(fragment_path, fragment, mappings, add_versions)
-        if options.maven_repo:
-            create_maven_repo(options.maven_repo, fragment, mappings)
     else:
         print "Problem parsing POM file. Is it valid maven POM? Send bugreport \
         to https://fedorahosted.org/javapackages/ and attach %s to \
