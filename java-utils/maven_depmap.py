@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2012, Red Hat, Inc
+# Copyright (c) 2012-2013, Red Hat, Inc
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -60,18 +60,18 @@ class Fragment:
 
 class PackagingTypeMissingFile(Exception):
     def __init__(self, pom_path):
-        self.args=("Packaging type is not 'pom' and no artifact path has been provided for pom %s" % pom_path,)
+        self.args=("Packaging type is not 'pom' and no artifact path has been provided for POM %s" % pom_path,)
 
 class IncompatibleFilenames(Exception):
     def __init__(self, pom_path, jar_path):
-        self.args=("Filenames of pom %s and jar %s does not match properly. Check that jar subdirectories match '.' in pom name." % (pom_path, jar_path),)
+        self.args=("Filenames of POM %s and JAR %s does not match properly. Check that JAR subdirectories matches '.' in pom name." % (pom_path, jar_path),)
 
 class MissingJarFile(Exception):
     def __init__(self):
-        self.args=("Jar seems to be missing in standard directories. Make sure you have installed it")
+        self.args=("JAR seems to be missing in standard directories. Make sure you have installed it")
 
 def _get_tag_under_parent(dom, parent, tag):
-    """get first xml tag under parent tag within dom"""
+    """get first XML tag under parent tag within dom"""
     tags = dom.getElementsByTagName(tag)
     for t in tags:
         if t.parentNode == parent:
@@ -79,21 +79,21 @@ def _get_tag_under_parent(dom, parent, tag):
     return None
 
 def _get_jpp_from_filename(pom_path, jar_path = None):
-    """Get resolved (groupId,artifactId) tuple from pom and jar path
+    """Get resolved (groupId,artifactId) tuple from POM and JAR path.
 
-    pom name and jar name have to be compatible.
-    JPP.xbean-xbean-main.pom means groupId is "JPP/xbean" and artifactid
-    is "xbean-main". Therefore for jar name to be compatible it has be
-    in %{_javadir}/xbean/xbean-main.jar
+    POM name and JAR name have to be compatible.
+    JPP.xbean-xbean-main.pom means groupId is "JPP/xbean" and artifactId
+    is "xbean-main". Therefore for JAR name to be compatible it has be
+    in %{_javadir}/xbean/xbean-main.jar.
     """
-    # this is not nice, because macros can change but handling these
-    # in rpm macros is ugly as hell
+    # This is not nice, because macros can change but handling these
+    # in RPM macros is ugly as hell.
     javadirs=["/usr/share/java", "/usr/share/java-jni", "/usr/lib/java",
               "/usr/lib64/java"]
     pomname = basename(pom_path)
     if jar_path:
         if not os.path.isfile(jar_path):
-            raise IOError("Jar path doesn't exist")
+            raise IOError("JAR path doesn't exist")
         jarpart = None
         for jdir in javadirs:
             if jdir in jar_path:
@@ -130,7 +130,7 @@ def _get_jpp_from_filename(pom_path, jar_path = None):
     return(jpp_gid, jpp_aid)
 
 def parse_pom(pom_file, jar_file = None):
-    """Returns Fragment class or None if pom file is invalid"""
+    """Returns Fragment class or None if POM file is invalid"""
     dom = minidom.parse(pom_file)
 
     projects = dom.getElementsByTagName('project')
@@ -315,7 +315,7 @@ if __name__ == "__main__":
 
     if len(args) < 2:
         parser.error("Incorrect number of arguments")
-    # these will fail when incorrect number of arguments is given
+    # These will fail when incorrect number of arguments is given.
     fragment_path = args[0].strip()
     pom_path = args[1].strip()
     print fragment_path
@@ -335,7 +335,7 @@ if __name__ == "__main__":
         if options.maven_repo:
             create_maven_repo(options.maven_repo, fragment, mappings)
     else:
-        print "Problem parsing pom file. Is it valid maven pom? Send bugreport \
+        print "Problem parsing POM file. Is it valid maven POM? Send bugreport \
         to https://fedorahosted.org/javapackages/ and attach %s to \
         this bugreport" % pom_path
         sys.exit(1)
