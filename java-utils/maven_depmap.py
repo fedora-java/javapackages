@@ -219,18 +219,17 @@ def output_fragment(fragment_path, fragment, mappings, add_versions):
                 ffile.write("""
 <dependency>
     <maven>
-        <groupId>%s</groupId>
-        <artifactId>%s</artifactId>
-        <version>%s</version>
+        <groupId>%(gid)s</groupId>
+        <artifactId>%(aid)s</artifactId>
+        <version>%(version)s</version>
     </maven>
     <jpp>
-        <groupId>%s</groupId>
-        <artifactId>%s</artifactId>
-        <version>%s</version>
+        <groupId>%(local_gid)s</groupId>
+        <artifactId>%(local_aid)s</artifactId>
+        <version>%(version)s</version>
     </jpp>
 </dependency>
-""" % (gid, aid, ver, fragment.local_gid,
-       fragment.local_aid, ver) )
+""" % fragment)
 
 
 def create_maven_repo(repo_path, fragment, mappings):
