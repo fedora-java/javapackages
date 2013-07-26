@@ -219,17 +219,18 @@ def output_fragment(fragment_path, fragment, mappings, add_versions):
                 ffile.write("""
 <dependency>
     <maven>
-        <groupId>%(gid)s</groupId>
-        <artifactId>%(aid)s</artifactId>
-        <version>%(version)s</version>
+        <groupId>%s</groupId>
+        <artifactId>%s</artifactId>
+        <version>%s</version>
     </maven>
     <jpp>
-        <groupId>%(local_gid)s</groupId>
-        <artifactId>%(local_aid)s</artifactId>
-        <version>%(version)s</version>
+        <groupId>%s</groupId>
+        <artifactId>%s</artifactId>
+        <version>%s</version>
     </jpp>
 </dependency>
-""" % fragment)
+""" % (gid, aid, ver, fragment.local_gid,
+       fragment.local_aid, ver) )
 
 
 # Add a file to a ZIP archive (or JAR, WAR, ...) unless the file
