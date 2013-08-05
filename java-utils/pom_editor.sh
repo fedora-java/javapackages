@@ -41,7 +41,9 @@ _pom_initialize()
   <xsl:output method="xml"
               version="1.0"
               encoding="UTF-8"
+              indent="yes"
               omit-xml-declaration="yes"/>
+    <xsl:strip-space elements="*"/>
 '
 
     _pom_xslt_trailer='<xsl:template match="@*|node()">
@@ -50,6 +52,15 @@ _pom_initialize()
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>
+'
+    _pom_xslt_reindenter='<xsl:stylesheet 
+   version="1.0" 
+   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+   <xsl:output method="xml" indent="yes"/>
+     <xsl:template match="/">
+       <xsl:copy-of select="."/>
+     </xsl:template>
+   </xsl:stylesheet>
 '
 }
 
@@ -92,7 +103,8 @@ _pom_patch()
     xsltproc --nonet - "${pom}" >"${pom}".tmp <<<"${_pom_xslt_header}${_pom_xslt_trailer}"
 
     # Try to apply the patch.
-    xsltproc --nonet - "${pom}".tmp >"${pom}"
+    xsltproc --nonet - "${pom}".tmp >"${pom}.unindented"
+    xsltproc --nonet - "${pom}.unindented" >"${pom}" <<<"${_pom_xslt_header}${_pom_xslt_trailer}"
 
     # Bail out if the resulting file is identical to the patched one.
     # This is to help maintainers detect unneeded patches.
@@ -142,17 +154,13 @@ ${_pom_xslt_header}
 <xsl:text>
 
 </xsl:text>
-    <xsl:comment>
-      <xsl:text> begin of code added by maintainer </xsl:text>
-    </xsl:comment>
+    <xsl:comment>begin of code added by maintainer</xsl:comment>
 <xsl:text>
 </xsl:text>
 ${3}
 <xsl:text>
 </xsl:text>
-    <xsl:comment>
-      <xsl:text> end of code added by maintainer </xsl:text>
-    </xsl:comment>
+    <xsl:comment>end of code added by maintainer</xsl:comment>
 <xsl:text>
 </xsl:text>
       <xsl:apply-templates select="node()"/>
@@ -224,7 +232,10 @@ BEGIN { FS=":" }
   if ($4) { print "<scope>" $4 "</scope>" }
 }' <<<"${2}")
 
-    _pom_inject_xpath "${3}" "${1}" "<${4}> ${xml} ${5} </${4}>"
+    _pom_inject_xpath "${3}" "${1}" "<${4}>
+${xml}
+${5}
+</${4}>"
 }
 
 
