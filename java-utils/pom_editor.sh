@@ -53,15 +53,6 @@ _pom_initialize()
   </xsl:template>
 </xsl:stylesheet>
 '
-    _pom_xslt_reindenter='<xsl:stylesheet 
-   version="1.0" 
-   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-   <xsl:output method="xml" indent="yes"/>
-     <xsl:template match="/">
-       <xsl:copy-of select="."/>
-     </xsl:template>
-   </xsl:stylesheet>
-'
 }
 
 
@@ -105,10 +96,13 @@ _pom_patch()
     # Try to apply the patch.
     xsltproc --nonet - "${pom}".tmp >"${pom}.unindented"
     xsltproc --nonet - "${pom}.unindented" >"${pom}" <<<"${_pom_xslt_header}${_pom_xslt_trailer}"
+    rm "${pom}.unindented"
 
     # Bail out if the resulting file is identical to the patched one.
     # This is to help maintainers detect unneeded patches.
-    cmp -s "${pom}"{,.tmp} && _pom_bailout Operation on POM has no effect.
+    if [ "x${2}" != "xallow-noop" ]; then
+       cmp -s "${pom}"{,.tmp} && _pom_bailout Operation on POM has no effect.
+    fi
     rm -f "${pom}".tmp
 }
 
@@ -164,6 +158,28 @@ ${3}
 <xsl:text>
 </xsl:text>
       <xsl:apply-templates select="node()"/>
+    </xsl:copy>
+  </xsl:template>
+${_pom_xslt_trailer}
+EOF
+}
+
+# Injects empty node as a child of element specified by XPath only if it doesn't exist yet
+# $1 - POM location pattern
+# $2 - XPath of the parent element
+# $3 - ijected node name
+_pom_inject_node_if_not_present()
+{
+    _pom_patch "${1}" "allow-noop" <<EOF
+${_pom_xslt_header}
+  <xsl:template match="${2}">
+    <xsl:copy>
+    <xsl:apply-templates select="@*"/>
+    <xsl:if test="not(pom:${3})">
+      <xsl:comment>section added by maintainer</xsl:comment>
+      <${3}/>
+    </xsl:if>
+    <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
 ${_pom_xslt_trailer}
@@ -334,6 +350,7 @@ pom_add_dep()
 {
     set +x
     _pom_initialize
+    _pom_inject_node_if_not_present "${2}" "pom:project" "dependencies"
     _pom_inject_gaid "pom:project/pom:dependencies" "${1}" "${2}" "dependency" "${3}"
     set -x
 }
@@ -343,6 +360,7 @@ pom_add_dep_mgmt()
 {
     set +x
     _pom_initialize
+    _pom_inject_node_if_not_present "${2}" "pom:project" "dependencyManagement"
     _pom_inject_gaid "pom:project/pom:dependencyManagement" "${1}" "${2}" "dependency" "${3}"
     set -x
 }
@@ -352,6 +370,8 @@ pom_add_plugin()
 {
     set +x
     _pom_initialize
+    _pom_inject_node_if_not_present "${2}" "pom:project" "build"
+    _pom_inject_node_if_not_present "${2}" "pom:build" "plugins"
     _pom_inject_gaid "pom:project/pom:build/pom:plugins" "${1}" "${2}" "plugin" "${3}"
     set -x
 }
