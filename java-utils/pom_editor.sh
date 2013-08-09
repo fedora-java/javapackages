@@ -29,6 +29,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
+#          Michael Simacek <msimacek@redhat.com>
 
 
 _pom_initialize()
@@ -148,13 +149,13 @@ ${_pom_xslt_header}
 <xsl:text>
 
 </xsl:text>
-    <xsl:comment>begin of code added by maintainer</xsl:comment>
+    <xsl:comment> begin of code added by maintainer </xsl:comment>
 <xsl:text>
 </xsl:text>
 ${3}
 <xsl:text>
 </xsl:text>
-    <xsl:comment>end of code added by maintainer</xsl:comment>
+    <xsl:comment> end of code added by maintainer </xsl:comment>
 <xsl:text>
 </xsl:text>
       <xsl:apply-templates select="node()"/>
@@ -164,10 +165,11 @@ ${_pom_xslt_trailer}
 EOF
 }
 
-# Injects empty node as a child of element specified by XPath only if it doesn't exist yet
-# $1 - POM location pattern
-# $2 - XPath of the parent element
-# $3 - ijected node name
+# Inject empty node as a child of element specified by XPath only if
+# it doesn't exist yet.
+#  $1 - POM location pattern
+#  $2 - XPath of the parent element
+#  $3 - injected node name
 _pom_inject_node_if_not_present()
 {
     _pom_patch "${1}" "allow-noop" <<EOF
@@ -176,7 +178,7 @@ ${_pom_xslt_header}
     <xsl:copy>
     <xsl:apply-templates select="@*"/>
     <xsl:if test="not(pom:${3})">
-      <xsl:comment>section added by maintainer</xsl:comment>
+      <xsl:comment> section added by maintainer </xsl:comment>
       <${3}/>
     </xsl:if>
     <xsl:apply-templates select="node()"/>
