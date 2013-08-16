@@ -71,13 +71,13 @@ _pom_bailout()
 
 _pom_find_file()
 {
-    
+
     local pom="${1}"
     if ! test -f "${pom}"; then
 	pom=./"${1}"/pom.xml
 	test -f "${pom}" || _pom_bailout Failed to locate POM file using pattern "'${1}'"
     fi
-    echo ${pom}
+    echo "${pom}"
 }
 
 # Find POM using pattern $1 and patch it using XSLT patch coming
@@ -100,7 +100,7 @@ _pom_patch()
     xsltproc --nonet - "${pom}" >"${pom}".tmp <<<"${_pom_xslt_header}${_pom_xslt_trailer}"
 
     # Try to apply the patch.
-    xsltproc --nonet - "${pom}".tmp |diff -uwE "${pom}" - |patch "${pom}"
+    xsltproc --nonet - "${pom}".tmp |diff -uwZE "${pom}" - |patch "${pom}" >/dev/null
 
     # Bail out if the resulting file is identical to the patched one.
     # This is to help maintainers detect unneeded patches.
@@ -113,10 +113,10 @@ _pom_patch()
 # Returns whitespace preceding the node
 #  $1 - POM location pattern
 #  $2 - XPath of the node
-_xpath_get_indent()
+_pom_get_indent()
 {
     local pom=$(_pom_find_file "${1}")
-    xsltproc --nonet - "${pom}" >.indent.txt <<EOF
+    (xsltproc --nonet - "${pom}" <<EOF
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns="http://maven.apache.org/POM/4.0.0"
@@ -124,13 +124,47 @@ _xpath_get_indent()
   <xsl:output method="text"
               version="1.0"
               encoding="UTF-8"/>
-<xsl:template match="${2}">
-<xsl:value-of select="preceding-sibling::text()[1]"/>
+<xsl:template match="/">
+<xsl:value-of select="${2}/preceding-sibling::text()[1]"/>
 </xsl:template>
 </xsl:stylesheet>
 EOF
-tail -n 1 .indent.txt
-rm -f .indent.txt
+)|tail -n 1|sed -e "s/\(\S*\)//g"
+}
+
+_pom_get_tab()
+{
+    _pom_get_indent "${1}" "/pom:project/*[1]"
+}
+
+_pom_reformat_injected(){
+    local indent=$(_pom_get_indent "${1}" "${2}")
+    local tab=$(_pom_get_tab "${1}")
+    cat >.input.xml <<EOF
+<root>
+${3}
+</root>
+EOF
+    local injected=$(
+(xsltproc --nonet - .input.xml <<EOF
+<xsl:stylesheet
+  version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:output method="xml" indent="yes"/>
+  <xsl:strip-space elements="*"/>
+  <xsl:template match="/">
+    <xsl:copy-of select="."/>
+  </xsl:template>
+</xsl:stylesheet>
+EOF
+)|tail -n +3| head -n -1| sed "s/^  //" |sed -e "s/  /${tab}/g"|sed -e "s/^\s\+$//"
+)
+   rm -f .input
+   sed -e  "s|\(\s*\)\(.*\)|<xsl:text>\n${indent}\1${tab}</xsl:text>\2|" <<EOF
+<xsl:comment> begin of code added by maintainer </xsl:comment>
+${injected}
+<xsl:comment> end of code added by maintainer </xsl:comment>
+EOF
 }
 
 # Replace a particular node with given content.
@@ -139,10 +173,11 @@ rm -f .indent.txt
 #  $3 - content to replace the element with
 _pom_replace_xpath()
 {
+    local code=$(_pom_reformat_injected "${1}" "${2}" "${3}") 
     _pom_patch "${1}" <<EOF
 ${_pom_xslt_header}
   <xsl:template match="${2}">
-    ${3}
+    ${code}
   </xsl:template>
 ${_pom_xslt_trailer}
 EOF
@@ -155,7 +190,13 @@ EOF
 #  $3 - comment to replace the element with
 _pom_disable_xpath()
 {
-    _pom_replace_xpath "${1}" "${2}" "<xsl:comment><xsl:text> ${3} </xsl:text></xsl:comment>"
+    _pom_patch "${1}" <<EOF
+${_pom_xslt_header}
+  <xsl:template match="${2}">
+    <xsl:comment><xsl:text> ${3} </xsl:text></xsl:comment>
+  </xsl:template>
+${_pom_xslt_trailer}
+EOF
 }
 
 
@@ -166,15 +207,7 @@ _pom_disable_xpath()
 #  $3 - code to inject
 _pom_inject_xpath()
 {
-    local indent=$(_xpath_get_indent "${1}" "${2}")
-    local code=$(sed -e  "s|\(\s*\)\(.*\)|<xsl:text>\n${indent}\1  </xsl:text>\2|" <<EOF
-
-<xsl:comment> begin of code added by maintainer </xsl:comment>
-${3}
-<xsl:comment> end of code added by maintainer </xsl:comment>
-
-EOF
-)
+    local code=$(_pom_reformat_injected "${1}" "${2}" "${3}") 
     _pom_patch "${1}" <<EOF
 ${_pom_xslt_header}
   <xsl:template match="${2}">
@@ -195,7 +228,8 @@ EOF
 #  $3 - injected node name
 _pom_inject_node_if_not_present()
 {
-    local indent=$(_xpath_get_indent "${1}" "${2}")
+    local indent=$(_pom_get_indent "${1}" "${2}")
+    local tab=$(_pom_get_tab "${1}")
     _pom_patch "${1}" "allow-noop" <<EOF
 ${_pom_xslt_header}
   <xsl:template match="${2}">
@@ -203,13 +237,13 @@ ${_pom_xslt_header}
     <xsl:apply-templates select="@*"/>
     <xsl:if test="not(pom:${3})">
     <xsl:text>
-${indent}  </xsl:text>
+${indent}${tab}</xsl:text>
       <xsl:comment> section added by maintainer </xsl:comment>
     <xsl:text>
-${indent}  </xsl:text>
+${indent}${tab}</xsl:text>
       <${3}>
     <xsl:text>
-${indent}  </xsl:text>
+${indent}${tab}</xsl:text>
       </${3}>
     </xsl:if>
     <xsl:apply-templates select="node()"/>
@@ -384,7 +418,7 @@ pom_add_dep()
 {
     set +x
     _pom_initialize
-    _pom_inject_node_if_not_present "${2}" "pom:project" "dependencies"
+    _pom_inject_node_if_not_present "${2}" "/pom:project" "dependencies"
     _pom_inject_gaid "pom:project/pom:dependencies" "${1}" "${2}" "dependency" "${3}"
     set -x
 }
@@ -394,7 +428,7 @@ pom_add_dep_mgmt()
 {
     set +x
     _pom_initialize
-    _pom_inject_node_if_not_present "${2}" "pom:project" "dependencyManagement"
+    _pom_inject_node_if_not_present "${2}" "/pom:project" "dependencyManagement"
     _pom_inject_gaid "pom:project/pom:dependencyManagement" "${1}" "${2}" "dependency" "${3}"
     set -x
 }
@@ -404,8 +438,8 @@ pom_add_plugin()
 {
     set +x
     _pom_initialize
-    _pom_inject_node_if_not_present "${2}" "pom:project" "build"
-    _pom_inject_node_if_not_present "${2}" "pom:build" "plugins"
+    _pom_inject_node_if_not_present "${2}" "/pom:project" "build"
+    _pom_inject_node_if_not_present "${2}" "/pom:project/pom:build" "plugins"
     _pom_inject_gaid "pom:project/pom:build/pom:plugins" "${1}" "${2}" "plugin" "${3}"
     set -x
 }
