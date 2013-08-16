@@ -44,7 +44,6 @@ _pom_initialize()
               encoding="UTF-8"
               indent="yes"
               omit-xml-declaration="yes"/>
-    <xsl:strip-space elements="*"/>
 '
 
     _pom_xslt_trailer='<xsl:template match="@*|node()">
@@ -70,17 +69,23 @@ _pom_bailout()
     exit 1
 }
 
+_pom_find_file()
+{
+    
+    local pom="${1}"
+    if ! test -f "${pom}"; then
+	pom=./"${1}"/pom.xml
+	test -f "${pom}" || _pom_bailout Failed to locate POM file using pattern "'${1}'"
+    fi
+    echo ${pom}
+}
 
 # Find POM using pattern $1 and patch it using XSLT patch coming
 # from stdin. Bailout if the patch cannot be applied.
 _pom_patch()
 {
     # First try find the location of the POM file.
-    local pom="${1}"
-    if ! test -f "${pom}"; then
-	pom=./"${1}"/pom.xml
-	test -f "${pom}" || _pom_bailout Failed to locate POM file using pattern "'${1}'"
-    fi
+    local pom=$(_pom_find_file "${1}")
 
     # Create a backup file -- pom.xml.orig.
     test -f "${pom}".orig || cp -p "${pom}"{,.orig}
@@ -95,9 +100,7 @@ _pom_patch()
     xsltproc --nonet - "${pom}" >"${pom}".tmp <<<"${_pom_xslt_header}${_pom_xslt_trailer}"
 
     # Try to apply the patch.
-    xsltproc --nonet - "${pom}".tmp >"${pom}.unindented"
-    xsltproc --nonet - "${pom}.unindented" >"${pom}" <<<"${_pom_xslt_header}${_pom_xslt_trailer}"
-    rm "${pom}.unindented"
+    xsltproc --nonet - "${pom}".tmp |diff -uwE "${pom}" - |patch "${pom}"
 
     # Bail out if the resulting file is identical to the patched one.
     # This is to help maintainers detect unneeded patches.
@@ -107,6 +110,28 @@ _pom_patch()
     rm -f "${pom}".tmp
 }
 
+# Returns whitespace preceding the node
+#  $1 - POM location pattern
+#  $2 - XPath of the node
+_xpath_get_indent()
+{
+    local pom=$(_pom_find_file "${1}")
+    xsltproc --nonet - "${pom}" >.indent.txt <<EOF
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns="http://maven.apache.org/POM/4.0.0"
+                xmlns:pom="http://maven.apache.org/POM/4.0.0">
+  <xsl:output method="text"
+              version="1.0"
+              encoding="UTF-8"/>
+<xsl:template match="${2}">
+<xsl:value-of select="preceding-sibling::text()[1]"/>
+</xsl:template>
+</xsl:stylesheet>
+EOF
+tail -n 1 .indent.txt
+rm -f .indent.txt
+}
 
 # Replace a particular node with given content.
 #  $1 - POM location pattern
@@ -141,23 +166,21 @@ _pom_disable_xpath()
 #  $3 - code to inject
 _pom_inject_xpath()
 {
+    local indent=$(_xpath_get_indent "${1}" "${2}")
+    local code=$(sed -e  "s|\(\s*\)\(.*\)|<xsl:text>\n${indent}\1  </xsl:text>\2|" <<EOF
+
+<xsl:comment> begin of code added by maintainer </xsl:comment>
+${3}
+<xsl:comment> end of code added by maintainer </xsl:comment>
+
+EOF
+)
     _pom_patch "${1}" <<EOF
 ${_pom_xslt_header}
   <xsl:template match="${2}">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
-<xsl:text>
-
-</xsl:text>
-    <xsl:comment> begin of code added by maintainer </xsl:comment>
-<xsl:text>
-</xsl:text>
-${3}
-<xsl:text>
-</xsl:text>
-    <xsl:comment> end of code added by maintainer </xsl:comment>
-<xsl:text>
-</xsl:text>
+${code}
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
@@ -172,14 +195,22 @@ EOF
 #  $3 - injected node name
 _pom_inject_node_if_not_present()
 {
+    local indent=$(_xpath_get_indent "${1}" "${2}")
     _pom_patch "${1}" "allow-noop" <<EOF
 ${_pom_xslt_header}
   <xsl:template match="${2}">
     <xsl:copy>
     <xsl:apply-templates select="@*"/>
     <xsl:if test="not(pom:${3})">
+    <xsl:text>
+${indent}  </xsl:text>
       <xsl:comment> section added by maintainer </xsl:comment>
-      <${3}/>
+    <xsl:text>
+${indent}  </xsl:text>
+      <${3}>
+    <xsl:text>
+${indent}  </xsl:text>
+      </${3}>
     </xsl:if>
     <xsl:apply-templates select="node()"/>
     </xsl:copy>
@@ -238,21 +269,22 @@ EOF
 #  $5 - additional XML contents
 _pom_inject_gaid()
 {
+    local injected=$(sed -e "s/\(.*\)/  \1/" <<<"${5}")
     local xml=$(awk '
 BEGIN { FS=":" }
 
 {
   if (!$1) { $1="org.apache.maven.plugins" }
-  print "<groupId>" $1 "</groupId>"
-  print "<artifactId>" $2 "</artifactId>"
+  print "  <groupId>" $1 "</groupId>"
+  print "  <artifactId>" $2 "</artifactId>"
   if (!$3) { $3="any" }
-  print "<version>" $3 "</version>"
-  if ($4) { print "<scope>" $4 "</scope>" }
+  print "  <version>" $3 "</version>"
+  if ($4) { print "  <scope>" $4 "</scope>" }
 }' <<<"${2}")
 
     _pom_inject_xpath "${3}" "${1}" "<${4}>
 ${xml}
-${5}
+${injected}
 </${4}>"
 }
 
