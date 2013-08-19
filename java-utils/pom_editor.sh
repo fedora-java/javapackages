@@ -272,7 +272,7 @@ _pom_disable_gaid()
   <xsl:template match="//'"${1} [pom:artifactId${aid}]"'">
     <xsl:comment>
       <xsl:text> '"${what}"' disabled by maintainer: </xsl:text>
-      <xsl:apply-templates select="pom:artifactId"/>
+      <xsl:value-of select="normalize-space(pom:artifactId/text())"/>
       <xsl:text> </xsl:text>
     </xsl:comment>
   </xsl:template>'
