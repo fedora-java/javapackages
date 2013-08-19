@@ -262,8 +262,8 @@ EOF
 _pom_disable_gaid()
 {
     local what=$(sed 's/[^ ]*://' <<<"${1}")
-    local gid=$(sed -e 's/:[^:]*//' -e "s/..*/[text()='&']/" <<<"${2}")
-    local aid=$(sed -e 's/[^:]*://' -e "s/..*/[text()='&']/" <<<"${2}")
+    local gid=$(sed -e 's/:[^:]*//' -e "s/..*/[normalize-space(text())=normalize-space('&')]/" <<<"${2}")
+    local aid=$(sed -e 's/[^:]*://' -e "s/..*/[normalize-space(text())=normalize-space('&')]/" <<<"${2}")
     local extra=""
 
     # Support cases with no groupId specified
@@ -284,9 +284,9 @@ ${_pom_xslt_header}
   <xsl:template match="//${1} [pom:groupId${gid} and pom:artifactId${aid}]">
     <xsl:comment>
       <xsl:text> ${what} disabled by maintainer: </xsl:text>
-      <xsl:apply-templates select="pom:groupId"/>
+      <xsl:value-of select="normalize-space(pom:groupId/text())"/>
       <xsl:text>:</xsl:text>
-      <xsl:apply-templates select="pom:artifactId"/>
+      <xsl:value-of select="normalize-space(pom:artifactId/text())"/>
       <xsl:text> </xsl:text>
     </xsl:comment>
   </xsl:template>
@@ -345,7 +345,7 @@ pom_disable_module()
 {
     set +x
     _pom_initialize
-    _pom_disable_xpath "${2}" "//pom:modules/pom:module [text()='${1}']" "module disabled by maintainer: ${1}"
+    _pom_disable_xpath "${2}" "//pom:modules/pom:module [normalize-space(text())=normalize-space('${1}')]" "module disabled by maintainer: ${1}"
     set -x
 }
 
