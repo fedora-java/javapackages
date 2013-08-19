@@ -429,7 +429,8 @@ pom_add_dep_mgmt()
     set +x
     _pom_initialize
     _pom_inject_node_if_not_present "${2}" "/pom:project" "dependencyManagement"
-    _pom_inject_gaid "pom:project/pom:dependencyManagement" "${1}" "${2}" "dependency" "${3}"
+    _pom_inject_node_if_not_present "${2}" "pom:dependencyManagement" "dependencies"
+    _pom_inject_gaid "pom:project/pom:dependencyManagement/pom:dependencies" "${1}" "${2}" "dependency" "${3}"
     set -x
 }
 
