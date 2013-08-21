@@ -39,10 +39,13 @@ from optparse import OptionParser
 import sys
 import os
 import re
-import xml.dom.minidom as minidom
+
 from os.path import basename, dirname
 from zipfile import ZipFile
 from time import gmtime, strftime
+
+from javapackages import POM
+
 
 class Fragment:
     """simple structure to hold fragment information"""
@@ -69,14 +72,6 @@ class IncompatibleFilenames(Exception):
 class MissingJarFile(Exception):
     def __init__(self):
         self.args=("JAR seems to be missing in standard directories. Make sure you have installed it")
-
-def _get_tag_under_parent(dom, parent, tag):
-    """get first XML tag under parent tag within dom"""
-    tags = dom.getElementsByTagName(tag)
-    for t in tags:
-        if t.parentNode == parent:
-            return t
-    return None
 
 def _get_jpp_from_filename(pom_path, jar_path = None):
     """Get resolved (groupId,artifactId) tuple from POM and JAR path.
@@ -131,62 +126,23 @@ def _get_jpp_from_filename(pom_path, jar_path = None):
 
 def parse_pom(pom_file, jar_file = None):
     """Returns Fragment class or None if POM file is invalid"""
-    dom = minidom.parse(pom_file)
+    pom = POM(pom_file)
 
-    projects = dom.getElementsByTagName('project')
-    if len(projects) != 1:
-        return None
-
-    project = projects[0]
-    proj_packaging = _get_tag_under_parent(dom, project, 'packaging')
     # if project packaging is undefined => jar
     # only "pom" packaging type can be without jar_file path otherwise
     # we bail
     if not jar_file:
-        if not proj_packaging or proj_packaging.firstChild.nodeValue != "pom":
+        if not pom.packaging or pom.packaging != "pom":
             raise PackagingTypeMissingFile(pom_path)
-
-    proj_version = _get_tag_under_parent(dom, project, 'version')
-    proj_gid = _get_tag_under_parent(dom, project, 'groupId')
-    proj_aid = _get_tag_under_parent(dom, project, 'artifactId')
-    if not proj_packaging:
-        proj_packaging = 'jar'
-    else:
-        proj_packaging = proj_packaging.firstChild.nodeValue
-
-
-    if not proj_aid:
-        return None
 
     jpp_gid, jpp_aid = _get_jpp_from_filename(pom_file, jar_file)
 
-    if proj_version and proj_gid:
-        return Fragment(proj_gid.firstChild.nodeValue,
-            proj_aid.firstChild.nodeValue,
-            proj_version.firstChild.nodeValue,
-            jpp_gid,
-            jpp_aid,
-            proj_packaging
-            )
-
-    parent = _get_tag_under_parent(dom, project, 'parent')
-    if not parent:
-        return None
-
-    pgid = _get_tag_under_parent(dom, parent, 'groupId')
-    if not proj_gid:
-        proj_gid = pgid
-
-    pversion = _get_tag_under_parent(dom, parent, 'version')
-    if not proj_version:
-        proj_version = pversion
-
-    return Fragment(proj_gid.firstChild.nodeValue,
-         proj_aid.firstChild.nodeValue,
-         proj_version.firstChild.nodeValue,
+    return Fragment(pom.groupId,
+         pom.artifactId,
+         pom.version,
          jpp_gid,
          jpp_aid,
-         proj_packaging
+         pom.packaging or "jar"
     )
 
 def create_mappings(fragment, additions = None):
