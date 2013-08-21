@@ -31,9 +31,11 @@
 # Authors: Alexander Kurtakov <akurtako@redhat.com>
 #          Stanislav Ochotnicky <sochotnicky@redhat.com>
 
+import os
+import signal
 import sys
-from xml.etree.ElementTree import fromstring
-from StringIO import StringIO
+import traceback
+from javapackages import Depmap
 
 class TagBuilder:
     def __init__ (self, filelist=None):
@@ -41,44 +43,20 @@ class TagBuilder:
             filelist = sys.stdin
         paths = map (lambda x: x.rstrip (), filelist.readlines ())
         for path in paths:
-	        self.print_mvn_provides(path)
+            depmap = Depmap(path)
 
-    def get_fragment_doc(self, fragment_path):
-        with open(fragment_path) as f:
-            content = f.read()
-
-            start, end = "", ""
-            if not fragment_path[-4:] == '.xml':
-                start = "<fragments>"
-                end = "</fragments>"
-
-            fragments = "{start}{content}{end}".format(start=start,
-                                                       content=content,
-                                                       end=end)
-            return fromstring(fragments)
-
-
-    def print_mvn_provides(self, path):
-        doc = self.get_fragment_doc(path)
-        versioned_provides = False
-        if doc.find('.//skipProvides') is not None:
-            # this is compat package, generate versioned provides
-            # yes, the naming is weird
-            versioned_provides = True
-
-        for mpart in doc.findall('.//maven'):
-            groupId = mpart.find('groupId').text
-            artifactId = mpart.find('artifactId').text
-            version = mpart.find('version').text
-            if versioned_provides:
-                print "mvn({gid}:{aid}:{version}) = {version}".format(gid=groupId,
-                                                                       aid=artifactId,
-                                                                       version=version)
-            else:
-                print "mvn({gid}:{aid}) = {version}".format(gid=groupId,
-                                                            aid=artifactId,
-                                                            version=version)
+            for artifact in depmap.get_provided_artifacts():
+                print("{rpmstr} = {version}".format(
+                        rpmstr=artifact.get_rpm_str(depmap.is_compat()),
+                        version=artifact.version))
 
 
 if __name__ == "__main__":
-    builder = TagBuilder ()
+    try:
+        builder = TagBuilder ()
+    except Exception, e:
+        traceback.print_exc(file=sys.stderr)
+        sys.stderr.write(str(e))
+        # rpmbuild ignores non-zero exit codes but this that is bad. Make sure
+        # the build fails and doesn't silently ignore problems
+        os.kill(os.getppid(), signal.SIGKILL)
