@@ -1,0 +1,8 @@
+<artifact>
+    <groupId>g</groupId>
+    <artifactId>a</artifactId>
+    <version>v</version>
+    <classifier>c</classifier>
+    <extension>e</extension>
+    <namespace>n</namespace>
+</artifact>
