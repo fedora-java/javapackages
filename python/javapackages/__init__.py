@@ -40,8 +40,9 @@ Two main file types handled are:
 See pom and depmap modules for more information
 """
 
-__all__ = ["Depmap", "POM", "Artifact"]
+__all__ = ["Depmap", "POM", "Artifact", "XMvnConfig"]
 
 from javapackages.depmap import Depmap
 from javapackages.pom import POM
 from javapackages.artifact import Artifact
+from javapackages.xmvn_config import XMvnConfig
