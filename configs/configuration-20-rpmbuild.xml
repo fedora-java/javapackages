@@ -13,72 +13,72 @@
       <id>base-raw-pom</id>
       <type>flat</type>
       <properties>
-	<root>usr/share/maven-poms</root>
+        <root>usr/share/maven-poms</root>
       </properties>
       <stereotypes>
-	<stereotype>
-	  <extension>pom</extension>
-	</stereotype>
+        <stereotype>
+          <extension>pom</extension>
+        </stereotype>
       </stereotypes>
     </repository>
     <repository>
       <id>base-effective-pom</id>
       <type>flat</type>
       <properties>
-	<root>usr/share/maven-effective-poms</root>
+        <root>usr/share/maven-effective-poms</root>
       </properties>
       <stereotypes>
-	<stereotype>
-	  <extension>pom</extension>
-	</stereotype>
+        <stereotype>
+          <extension>pom</extension>
+        </stereotype>
       </stereotypes>
     </repository>
     <repository>
       <id>base-jar</id>
       <type>jpp</type>
       <properties>
-	<root>usr/share/java</root>
+        <root>usr/share/java</root>
       </properties>
       <stereotypes>
-	<stereotype>
-	  <extension>jar</extension>
-	</stereotype>
+        <stereotype>
+          <extension>jar</extension>
+        </stereotype>
       </stereotypes>
     </repository>
     <repository>
       <id>base-jni</id>
       <type>jpp</type>
       <properties>
-	<root>usr/lib/java</root>
+        <root>usr/lib/java</root>
       </properties>
       <stereotypes>
-	<stereotype>
-	  <extension>jar</extension>
-	</stereotype>
+        <stereotype>
+          <extension>jar</extension>
+        </stereotype>
       </stereotypes>
     </repository>
     <repository>
       <id>base-resolve</id>
       <type>compound</type>
       <configuration>
-	<repositories>
-	  <repository>base-effective-pom</repository>
-	  <repository>base-raw-pom</repository>
-	  <repository>base-jar</repository>
-	  <repository>base-jni</repository>
-	</repositories>
+        <repositories>
+          <repository>base-effective-pom</repository>
+          <repository>base-raw-pom</repository>
+          <repository>base-jar</repository>
+          <repository>base-jni</repository>
+        </repositories>
       </configuration>
     </repository>
     <repository>
       <id>resolve</id>
       <type>compound</type>
       <properties>
-	<prefix>/</prefix>
+        <prefix>/</prefix>
       </properties>
       <configuration>
-	<repositories>
-	  <repository>base-resolve</repository>
-	</repositories>
+        <repositories>
+          <repository>base-resolve</repository>
+        </repositories>
       </configuration>
     </repository>
   </repositories>
