@@ -1,5 +1,5 @@
-#!/bin/sh -e
-# Copyright (c) 2013 Red Hat, Inc.
+#!/usr/bin/python
+# Copyright (c) 2013, Red Hat, Inc
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,21 +28,37 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
+# Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com
 
-if [ $# -ne 2 ]; then
-    echo "$0: Exactly 2 arguments are required." >&2
-    exit 1
-fi
+import optparse
+from javapackages.xmvn_config import XMvnConfig
 
-open=
-close=
-for node in $(sed "s|/| |g" <<<"${1}"); do
-    open="${open}<${node}>"
-    close="</${node}>${close}"
-done
-xml="${open}${2}${close}"
+class SaneParser(optparse.OptionParser):
+    def format_epilog(self, formatter):
+        return self.epilog
 
-. /usr/share/java-utils/xmvn_config_editor.sh
-_write_xmvn_config "%mvn_config macro" "$xml"
-exit 0
+usage="usage: %prog [options] <MVN spec> <package>"
+epilog="""
+MVN spec:
+Specification of Maven artifact in following format:
+
+      groupId:artifactId[:extension[:classifier][:version]
+
+Wildcards (*) and empty parts in specifications are allowed (treated as wildcard).
+
+Examples of valid specifications:
+commons-lang:commons-lang:1.2
+commons-lang:commons-lang:war:
+commons-lang:commons-lang:war:test-jar:
+commons-lang:commons-lang:war:test-jar:3.1
+*:commons-lang (equivalent to ':commons-lang')
+"""
+
+if __name__ == "__main__":
+    parser = SaneParser(usage=usage,
+                        epilog=epilog)
+    (options, args) = parser.parse_args()
+    if len(args) != 2:
+        parser.error("Exactly 2 arguments are required")
+
+    XMvnConfig().add_custom_option(args[0], args[1])

@@ -117,6 +117,11 @@ inst_config etc/font.properties "${sysconfdir}/java"
 inst_config target/java.conf "${sysconfdir}/java"
 
 inst_data java-utils/java-functions "${javadir}-utils"
+inst_exec java-utils/mvn_alias.py "${javadir}-utils"
+inst_exec java-utils/mvn_build.py "${javadir}-utils"
+inst_exec java-utils/mvn_config.py "${javadir}-utils"
+inst_exec java-utils/mvn_file.py "${javadir}-utils"
+inst_exec java-utils/mvn_package.py "${javadir}-utils"
 inst_data java-utils/maven_depmap.py "${javadir}-utils"
 inst_data java-utils/pom_editor.sh "${javadir}-utils"
 
@@ -164,14 +169,7 @@ inst_data etc/macros.xmvn "${sysconfdir}/rpm"
 inst_data metadata/metadata-org-apache-maven-plugins.xml "${sysconfdir}/maven"
 inst_data metadata/metadata-org-codehaus-mojo.xml "${sysconfdir}/maven"
 
-inst_data java-utils/xmvn_config_editor.sh "${javadir}-utils"
-
-inst_exec bin/mvn-alias "${bindir}"
-inst_exec bin/mvn-build "${bindir}"
-inst_exec bin/mvn-config "${bindir}"
-inst_exec bin/mvn-file "${bindir}"
 inst_exec bin/mvn-local "${bindir}"
-inst_exec bin/mvn-package "${bindir}"
 inst_exec bin/mvn-rpmbuild "${bindir}"
 
 inst_data configs/configuration-19.xml "${datadir}/xmvn"

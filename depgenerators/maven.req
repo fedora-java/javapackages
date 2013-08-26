@@ -34,8 +34,9 @@
 
 import os
 import sys
-from xml.etree.ElementTree import fromstring
-from StringIO import StringIO
+import signal
+import traceback
+from javapackages import Depmap
 
 class TagBuilder:
     def __init__ (self, filelist=None):
@@ -46,64 +47,43 @@ class TagBuilder:
         print("jpackage-utils")
         provided = []
         if paths:
-            # let's first read all fragment files for provided GAVs
-            provided = self.get_provided_GAVs(os.path.dirname(paths[0]))
+            # let's first read all fragment files for provided artifacts
+            fragment_dir = os.path.dirname(paths[0])
+            for dirname, dirnames, filenames in os.walk(fragment_dir):
+                for filename in filenames:
+                    if filename.endswith(".pom"):
+                        continue
+                    depmap = Depmap(os.path.join(dirname, filename))
+                    provided.extend(depmap.get_provided_artifacts())
         for path in paths:
+            if path.endswith(".pom"):
+                continue
             self.print_mvn_requires(path, provided)
 
-    def get_provided_GAVs(self, fragment_dir):
-        provided = []
-        for dirname, dirnames, filenames in os.walk(fragment_dir):
-            # print path to all filenames.
-            for filename in filenames:
-                doc = self.get_fragment_doc(os.path.join(dirname, filename))
-                for mpart in doc.findall('.//dependency/maven'):
-                    groupId = mpart.find('groupId').text
-                    artifactId = mpart.find('artifactId').text
-                    version = mpart.find('version').text
-                    provided.append((groupId, artifactId, version))
-        return provided
-
-    def get_fragment_doc(self, fragment_path):
-        with open(fragment_path) as f:
-            content = f.read()
-
-            start, end = "", ""
-            if not fragment_path[-4:] == '.xml':
-                start = "<fragments>"
-                end = "</fragments>"
-
-            fragments = "{start}{content}{end}".format(start=start,
-                                                       content=content,
-                                                       end=end)
-            return fromstring(fragments)
-
-    def print_mvn_requires(self, path, provided):
-        doc = self.get_fragment_doc(path)
-        for mpart in doc.findall('.//autoRequires'):
-            groupId = mpart.find('groupId').text
-            artifactId = mpart.find('artifactId').text
-            version = mpart.find('version')
-            for g, a, v in provided:
-                if g == groupId and a == artifactId:
-                    # generate versioned requires for our subpackages
-                    print("mvn(%s:%s) = %s" %(groupId, artifactId, v))
-                    break # skip the else branch
+    def print_mvn_requires(self, path, providedArtifacts):
+        depmap = Depmap(path)
+        for dependency in depmap.get_required_artifacts():
+            for provided in providedArtifacts:
+                if (provided.groupId == dependency.groupId and
+                    provided.artifactId == dependency.artifactId and
+                    provided.classifier == dependency.classifier and
+                    provided.extension == dependency.extension):
+                    # requires on subpackages are always versioned
+                    print("{rpmstr} = {version}".format(
+                        rpmstr=provided.get_rpm_str(depmap.is_compat()),
+                        version=provided.version))
+                    break
             else:
-                if version:
-                    print("mvn(%s:%s:%s)" %(groupId, artifactId, version.text))
-                else:
-                    print("mvn(%s:%s)" %(groupId, artifactId))
+                print(dependency.get_rpm_str(dependency.version))
 
-        jreq = doc.find('.//requiresJava')
+
+        jreq = depmap.get_java_requires()
         if jreq is not None:
-            jreq = jreq.text
-            jsplit = jreq.split('.')
-            if len(jsplit) != 2:
-                # if we don't have major.minor format, just ignore version
-                print("java")
-                return
             try:
+                jsplit = jreq.split('.')
+                if len(jsplit) != 2:
+                    # if we don't have major.minor format, just ignore version
+                    raise ValueError("Required Java version not in major.minor format")
                 major = int(jsplit[0])
                 minor = int(jsplit[1])
                 if major > 1 or minor > 5:
@@ -112,8 +92,15 @@ class TagBuilder:
                     print("java >= %s.%s" % (major, minor))
             except ValueError:
                 # what? not a numbered major/minor java release?
-                print "java"
+                print("java")
 
 
 if __name__ == "__main__":
-    builder = TagBuilder ()
+    try:
+        builder = TagBuilder ()
+    except Exception, e:
+        traceback.print_exc(file=sys.stderr)
+        sys.stderr.write(str(e))
+        # rpmbuild ignores non-zero exit codes but this that is bad. Make sure
+        # the build fails and doesn't silently ignore problems
+        os.kill(os.getppid(), signal.SIGKILL)

@@ -1,5 +1,5 @@
-#!/bin/sh -e
-# Copyright (c) 2013 Red Hat, Inc.
+#!/usr/bin/python
+# Copyright (c) 2013, Red Hat, Inc
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,31 +28,21 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
+# Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
+"""
+Module for handling, manipulating and querying various files related to Java
+packaging in Linux distributions.
 
-if [ $# -lt 2 ]; then
-    echo "$0: At least 2 arguments are required." >&2
-    exit 1
-fi
+Two main file types handled are:
+  - Apache Maven pom.xml files
+  - Depmap files used for mapping between Maven artifacts and local files
 
-IFS=: read -a pattern <<<"$1"
-shift
+See pom and depmap modules for more information
+"""
 
-files=
-while [ $# -gt 0 ]; do
-    files="$files
-        <file>$1</file>"
-    shift
-done
+__all__ = ["Depmap", "POM", "Artifact", "XMvnConfig"]
 
-xml="<artifactGlob>
-        <groupId>${pattern[0]}</groupId>
-        <artifactId>${pattern[1]}</artifactId>
-        <version>${pattern[2]}</version>
-      </artifactGlob>
-      <files>$files
-      </files>"
-
-. /usr/share/java-utils/xmvn_config_editor.sh
-_write_xmvn_config "%mvn_file macro" "artifactManagement" "rule" "$xml"
-exit 0
+from javapackages.depmap import Depmap
+from javapackages.pom import POM
+from javapackages.artifact import Artifact
+from javapackages.xmvn_config import XMvnConfig
