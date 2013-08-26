@@ -164,8 +164,6 @@ inst_data etc/macros.xmvn "${sysconfdir}/rpm"
 inst_data metadata/metadata-org-apache-maven-plugins.xml "${sysconfdir}/maven"
 inst_data metadata/metadata-org-codehaus-mojo.xml "${sysconfdir}/maven"
 
-inst_data java-utils/xmvn_config_editor.sh "${javadir}-utils"
-
 inst_exec bin/mvn-alias "${bindir}"
 inst_exec bin/mvn-build "${bindir}"
 inst_exec bin/mvn-config "${bindir}"
