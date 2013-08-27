@@ -30,6 +30,8 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 
+import sys
+
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 class ArtifactFormatException(Exception):
@@ -52,12 +54,15 @@ class Artifact(object):
         self.version = version.strip()
         self.namespace = namespace.strip()
 
+    def __unicode__(self):
+        return u"{gid}:{aid}:{ext}:{cls}:{ver}".format(gid=self.groupId,
+                                                       aid=self.artifactId,
+                                                       ext=self.extension,
+                                                       cls=self.classifier,
+                                                       ver=self.version)
+
     def __str__(self):
-        return "{gid}:{aid}:{ext}:{cls}:{ver}".format(gid=self.groupId,
-                                                      aid=self.artifactId,
-                                                      ext=self.extension,
-                                                      cls=self.classifier,
-                                                      ver=self.version)
+        return unicode(self).encode(sys.getfilesystemencoding())
 
     def get_rpm_str(self, versioned=False):
         """Return representation of artifact as used in RPM dependencies
