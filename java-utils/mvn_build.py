@@ -96,20 +96,16 @@ if __name__ == "__main__":
     if 'RPM_PACKAGE_NAME' in env:
         xc.add_custom_option("installerSettings/packageName", env['RPM_PACKAGE_NAME'])
 
-    env['XMVN_RESOLV_POM_REPOS']=",".join(["/usr/share/maven2/poms/",
-                                           "/usr/share/maven-effective-poms/",
-                                           "/usr/share/maven-poms/"])
     base_goal="verify"
     mvn_args = ["xmvn", "--offline", "--batch-mode"]
 
     if options.disable_effective_poms:
-        env['XMVN_RESOLV_POM_REPOS']=",".join(["/usr/share/maven2/poms/",
-                                               "/usr/share/maven-poms/"])
+        mvn_args.append("-Dxmvn.compat=20-rpmbuild-raw")
 
     if options.debug:
         mvn_args.append("-X")
 
-    if options.xmvn_debug:
+    if options.xmvn_debug or options.debug:
         xc.add_custom_option("resolverSettings/debug", 'true')
         xc.add_custom_option("installerSettings/debug", 'true')
 
