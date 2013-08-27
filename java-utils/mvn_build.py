@@ -87,6 +87,9 @@ if __name__ == "__main__":
                       action="store_true",
                       help="Enable Maven debugging output (implies -d).")
 
+    for index, arg in enumerate(sys.argv):
+        sys.argv[index] = arg.decode(sys.getfilesystemencoding())
+
     (options, args) = parser.parse_args()
     xc = XMvnConfig()
     env = os.environ

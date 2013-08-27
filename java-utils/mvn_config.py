@@ -30,7 +30,9 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com
 
+import sys
 import optparse
+
 from javapackages.xmvn_config import XMvnConfig
 
 class SaneParser(optparse.OptionParser):
@@ -57,6 +59,9 @@ commons-lang:commons-lang:war:test-jar:3.1
 if __name__ == "__main__":
     parser = SaneParser(usage=usage,
                         epilog=epilog)
+    for index, arg in enumerate(sys.argv):
+        sys.argv[index] = arg.decode(sys.getfilesystemencoding())
+
     (options, args) = parser.parse_args()
     if len(args) != 2:
         parser.error("Exactly 2 arguments are required")

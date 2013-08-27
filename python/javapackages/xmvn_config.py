@@ -30,6 +30,7 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com
 
+import codecs
 import os
 from StringIO import StringIO
 import xml.dom.minidom
@@ -95,7 +96,7 @@ class XMvnConfig(object):
 
     def __write_xml(self, path, root):
         xmlstr = self.__prettify_element(root)
-        with open(path, 'w+') as fout:
+        with codecs.open(path, 'w+', "utf-8") as fout:
             fout.write(xmlstr)
 
 
