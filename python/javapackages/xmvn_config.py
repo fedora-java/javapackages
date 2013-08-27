@@ -148,6 +148,21 @@ class XMvnConfig(object):
         elems.append(aelem)
         self.__add_config("artifactManagement", "rule", content=elems)
 
+    def add_compat_versions(self, artifact, versions):
+        """
+        Change where on filesystem given artifact is installed
+
+        artifact -- Artifact to be modified
+        paths -- list of paths for given artifact
+        """
+        elems = [artifact.get_xml_element(root="artifactGlob")]
+        velem = Element("versions")
+        for version in versions:
+            ve = SubElement(velem, "version")
+            ve.text = version
+        elems.append(velem)
+        self.__add_config("artifactManagement", "rule", content=elems)
+
     def add_file_mapping(self, artifact, paths):
         """
         Change where on filesystem given artifact is installed

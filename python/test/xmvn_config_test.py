@@ -105,6 +105,23 @@ class TestXMvnConfig(unittest.TestCase):
         self.assertEqual(files[0].text, "path1")
         self.assertEqual(files[1].text, "path2")
 
+    def test_compat_versions(self):
+        xc = XMvnConfig()
+        a = Artifact('gId', 'aId')
+        xc.add_compat_versions(a, ['version1','version2'])
+
+        et = self._read_current_conf()
+        root = et.getroot()
+        rule = self.__find(root, "xmvn:artifactManagement/xmvn:rule")
+
+        aglob = self.__find(rule, "xmvn:artifactGlob")
+        self.assertEqual(self.__find(aglob, "xmvn:groupId").text, "gId")
+        self.assertEqual(self.__find(aglob, "xmvn:artifactId").text, "aId")
+
+        files = self.__findall(rule, "xmvn:versions/xmvn:version")
+        self.assertEqual(files[0].text, "version1")
+        self.assertEqual(files[1].text, "version2")
+
     def test_package_mappings(self):
         xc = XMvnConfig()
         a = Artifact('gId', 'aId')

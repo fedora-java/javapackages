@@ -81,6 +81,22 @@
 #
 %mvn_file python %{_datadir}/java-utils/mvn_file.py
 
+# %mvn_compat_version - specify file name(s) for Maven artifact(s)
+#
+# Usage: %mvn_compat_version [gId]:[aId[:ver]] <version1> [version2 ...]
+#
+# GId, aId and ver can contain wildcards and alternatives, which allows
+# multiple artifacts to be matched. If any of gId, aId or ver is omited
+# then any value will match the respective part. In particular a bare :
+# symbol will match any artifact.
+#
+# Versions can contain backreferences in form @n. If multiple versions are
+# given then the first one will be primary version of the artifact and
+# additional versions will be symbolic links pointing to the primary
+# version.
+#
+%mvn_compat_version python %{_datadir}/java-utils/mvn_compat_version.py
+
 
 # %mvn_config - set XMvn configuration option
 #
