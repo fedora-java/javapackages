@@ -32,6 +32,7 @@
 
 import codecs
 import os
+import errno
 from StringIO import StringIO
 import xml.dom.minidom
 
@@ -55,11 +56,20 @@ class XMvnConfig(object):
 </configuration>
 """
         try:
+            os.makedirs(".xmvn/config.d", 0755)
+        except IOError:
+            # If directory already exists then it's OK.  If it doesn't
+            # then creating the index file below will fail anyways.
+            pass
+
+        try:
             with open(XMvnConfig.INDEX_PATH) as index:
                 self.index = int(index.read()) + 1
-        except IOError:
-            os.makedirs(".xmvn/config.d", 0755)
-            self.index = 1
+        except IOError as e:
+            if e.errno == errno.ENOENT:
+                self.index = 1
+            else:
+                raise e
 
     def __write_index(self):
         with open(XMvnConfig.INDEX_PATH, 'w') as index:
