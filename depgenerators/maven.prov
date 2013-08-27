@@ -35,7 +35,7 @@ import os
 import signal
 import sys
 import traceback
-from javapackages import Depmap
+from javapackages import Depmap, Artifact
 
 class TagBuilder:
     def __init__ (self, filelist=None):
@@ -50,7 +50,7 @@ class TagBuilder:
                 if l_artifact.version:
                     prov_artifact = Artifact(m_artifact.groupId,
                                              m_artifact.artifactId,
-                                             l_artifact.version)
+                                             version=l_artifact.version)
 
                 print("{rpmstr} = {version}".format(
                         rpmstr=prov_artifact.get_rpm_str(depmap.is_compat()),
