@@ -45,10 +45,16 @@ class TagBuilder:
         for path in paths:
             depmap = Depmap(path)
 
-            for artifact in depmap.get_provided_artifacts():
+            for m_artifact, l_artifact in depmap.get_provided_mappings():
+                prov_artifact = m_artifact
+                if l_artifact.version:
+                    prov_artifact = Artifact(m_artifact.groupId,
+                                             m_artifact.artifactId,
+                                             l_artifact.version)
+
                 print("{rpmstr} = {version}".format(
-                        rpmstr=artifact.get_rpm_str(depmap.is_compat()),
-                        version=artifact.version))
+                        rpmstr=prov_artifact.get_rpm_str(depmap.is_compat()),
+                        version=m_artifact.version ))
 
 
 if __name__ == "__main__":
