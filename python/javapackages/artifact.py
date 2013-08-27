@@ -117,7 +117,7 @@ class Artifact(object):
         Return XML formatted string representation of the Artifact
         """
         root = self.get_xml_element(root)
-        return tostring(root)
+        return tostring(root, pretty_print=True)
 
     @classmethod
     def from_xml_element(cls, xmlnode, namespace=""):
