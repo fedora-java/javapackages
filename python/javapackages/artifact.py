@@ -163,7 +163,7 @@ class Artifact(object):
         Create Artifact from Maven-style definition
 
         The string should be in the format of:
-           groupId:artifactId[:extension[:classifier][:version]
+           groupId:artifactId[:extension[:classifier]][:version]
 
         Where last part is always considered to be version unless empty
         """

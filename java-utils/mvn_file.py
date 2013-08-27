@@ -45,7 +45,7 @@ epilog="""
 MVN spec:
 Specification of Maven artifact in following format:
 
-      groupId:artifactId[:extension[:classifier][:version]
+      groupId:artifactId[:extension[:classifier]][:version]
 
 Wildcards (*) and empty parts in specifications are allowed (treated as wildcard).
 
