@@ -43,6 +43,7 @@ class TestDepmap(unittest.TestCase):
 
     @depmapfile("depmap_compat_old")
     def test_multiple_provides(self, d):
+        self.assertTrue(d.is_compat())
         prov = d.get_provided_artifacts()
         self.assertEqual(len(prov), 5)
         for p in prov:
@@ -56,6 +57,7 @@ class TestDepmap(unittest.TestCase):
 
     @depmapfile("depmap_new_versioned.xml")
     def test_provided_mappings(self, d):
+        self.assertFalse(d.is_compat())
         maps = d.get_provided_mappings()
         self.assertEqual(len(maps), 1)
         for m, l in maps:
@@ -68,6 +70,7 @@ class TestDepmap(unittest.TestCase):
 
     @depmapfile("depmap_new_compat.xml")
     def test_provided_versioned(self, d):
+        self.assertTrue(d.is_compat())
         maps = d.get_provided_mappings()
         self.assertEqual(len(maps), 2)
         for m, l in maps:

@@ -80,6 +80,11 @@ class Depmap(object):
          """Return true if depmap is for compatibility package
 
          This means package should have versioned provides"""
+
+         provided_maps = self.get_provided_mappings()
+         for m, l in provided_maps:
+             if l.version:
+                 return True
          return self.__doc.find(".//skipProvides") is not None
 
     def get_provided_artifacts(self):
