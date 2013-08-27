@@ -31,7 +31,7 @@ class TestDepmap(unittest.TestCase):
 
     @depmapfile("depmap_compat_old")
     def test_missing_java_requires(self, d):
-        self.assertIsNone(d.get_java_requires())
+        self.assertEqual(d.get_java_requires(), None)
 
     @depmapfile("depmap_compat_new.xml")
     def test_java_requires(self, d):
@@ -65,7 +65,7 @@ class TestDepmap(unittest.TestCase):
     @depmapfile("depmap_compat_old")
     def test_no_requires(self, d):
         reqs = d.get_required_artifacts()
-        self.assertIsInstance(reqs, list)
+        self.assertTrue(type(reqs) == list)
         self.assertEqual(len(reqs), 0)
 
     @depmapfile("depmap_compat_new.xml")
@@ -81,12 +81,12 @@ class TestDepmap(unittest.TestCase):
 
         self.assertEqual(reqs[1].version, "")
         self.assertEqual(reqs[1].extension, "")
-        self.assertIsNotNone(reqs[1].classifier)
+        self.assertNotEqual(reqs[1].classifier, None)
         self.assertEqual(reqs[1].groupId, "org.apache.maven.wagon")
         self.assertEqual(reqs[1].artifactId, "wagon-provider-api")
         self.assertEqual(reqs[1].classifier, "test-jar")
 
-        self.assertIsNotNone(reqs[2].version)
+        self.assertNotEqual(reqs[2].version, None)
         self.assertEqual(reqs[2].extension, "")
         self.assertEqual(reqs[2].classifier, "")
         self.assertEqual(reqs[2].groupId, "org.codehaus.plexus")
@@ -95,7 +95,7 @@ class TestDepmap(unittest.TestCase):
 
         self.assertEqual(reqs[3].version, "")
         self.assertEqual(reqs[3].classifier, "")
-        self.assertIsNotNone(reqs[3].extension)
+        self.assertNotEqual(reqs[3].extension, None)
         self.assertEqual(reqs[3].groupId, "org.codehaus.plexus")
         self.assertEqual(reqs[3].artifactId, "plexus-utils")
         self.assertEqual(reqs[3].extension, "war")

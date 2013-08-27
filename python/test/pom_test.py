@@ -33,7 +33,7 @@ class TestPOM(unittest.TestCase):
         self.assertNotEqual(p.artifactId, "commons-parent")
         self.assertNotEqual(p.groupId, "org.apache.commons")
         self.assertNotEqual(p.version, "17")
-        self.assertIsNone(p.packaging)
+        self.assertEqual(p.packaging, None)
 
     @pomfile("xmlrpc.pom")
     def test_parent_pom(self, p):

@@ -67,11 +67,14 @@ class TestXMvnConfig(unittest.TestCase):
 
         aglob = self.__find(rule, "xmvn:artifactGlob")
         self.assertEqual(self.__find(aglob, "xmvn:groupId").text, "gId")
-        self.assertEqual(self.__find(aglob, "xmvn:artifactId").text, "aId")
+        self.assertEqual(self.__find(aglob,
+                                     "xmvn:artifactId").text, "aId")
 
         aliases = self.__findall(rule, "xmvn:aliases/xmvn:alias")
-        self.assertEqual(self.__find(aliases[0], "xmvn:groupId").text, "gIda1")
-        self.assertEqual(self.__find(aliases[0], "xmvn:artifactId").text, "aIda1")
+        self.assertEqual(self.__find(aliases[0],
+                                     "xmvn:groupId").text, "gIda1")
+        self.assertEqual(self.__find(aliases[0],
+                                     "xmvn:artifactId").text, "aIda1")
 
         self.assertEqual(self.__find(aliases[1], "xmvn:groupId").text, "gIda2")
         self.assertEqual(self.__find(aliases[1], "xmvn:artifactId").text, "aIda2")
