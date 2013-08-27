@@ -56,8 +56,10 @@ usage="usage: %prog [options] [-- maven-arguments]"
 
 if __name__ == "__main__":
     parser = optparse.OptionParser(usage=usage)
+    parser.add_option("-b", "--bootstrap", action="store_true",
+                      help="Enable bootstrap mode letting XMvn download artifacts online.")
     parser.add_option("-d", "--xmvn-debug", action="store_true",
-                      help="Enable debugging output for Maven local resolver.")
+                      help="Enable debugging output for maven local resolver.")
     parser.add_option("-E", "--disable-effective-poms",
                       action="store_true",
                       help="Disable resolution of effective POMs.")
@@ -97,7 +99,10 @@ if __name__ == "__main__":
         xc.add_custom_option("installerSettings/packageName", env['RPM_PACKAGE_NAME'])
 
     base_goal="verify"
-    mvn_args = ["xmvn", "--offline", "--batch-mode"]
+    mvn_args = ["xmvn", "--batch-mode"]
+
+    if not options.bootstrap:
+         mvn_args.append("--offline")
 
     if options.disable_effective_poms:
         mvn_args.append("-Dxmvn.compat=20-rpmbuild-raw")
