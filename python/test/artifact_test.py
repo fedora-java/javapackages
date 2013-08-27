@@ -1,6 +1,6 @@
 import os
 import unittest
-from xml.etree.ElementTree import fromstring, parse
+from lxml.etree import fromstring, parse
 
 from javapackages.artifact import Artifact, ArtifactFormatException
 

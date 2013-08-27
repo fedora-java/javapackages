@@ -32,7 +32,7 @@
 
 import sys
 
-from xml.etree.ElementTree import Element, SubElement, tostring
+from lxml.etree import Element, SubElement, tostring
 
 class ArtifactFormatException(Exception):
     pass

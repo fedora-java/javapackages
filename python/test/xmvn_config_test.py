@@ -1,7 +1,7 @@
 import os
 import unittest
 from shutil import rmtree
-import xml.etree.ElementTree as ET
+import lxml.etree as ET
 
 from javapackages.artifact import Artifact
 from javapackages.xmvn_config import XMvnConfig
@@ -13,18 +13,27 @@ class TestXMvnConfig(unittest.TestCase):
         rmtree(".xmvn", ignore_errors=True)
 
     def __find(self, elem, xpath):
-        return elem.find(xpath, namespaces=dict(xmvn=XMvnConfig.XMLNS))
+        ret = None
+        ret = elem.xpath(xpath, namespaces=dict(xmvn=XMvnConfig.XMLNS))
+        if not ret:
+            ret = elem.xpath(xpath.replace('xmvn:',XMvnConfig.XMLNS))[0]
+        else:
+            ret = ret[0]
+        return ret
 
     def __findall(self, elem, xpath):
-        return elem.findall(xpath, namespaces=dict(xmvn=XMvnConfig.XMLNS))
+        ret = elem.xpath(xpath, namespaces=dict(xmvn=XMvnConfig.XMLNS))
+        if not ret:
+           ret = elem.xpath(xpath.replace('xmvn:',XMvnConfig.XMLNS))
+        return ret
 
     def _read_current_conf(self):
         ind = self._read_index()
 
         fname = 'javapackages-config-{index:05d}.xml'.format(index=ind)
         confpath = os.path.join(".xmvn", "config.d", fname)
-        ET.register_namespace('xmvn', XMvnConfig.XMLNS)
-        et = ET.parse(confpath)
+        parser = ET.XMLParser(remove_blank_text=True)
+        et = ET.parse(confpath, parser)
         return et
 
 

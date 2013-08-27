@@ -30,7 +30,7 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 
-from xml.etree.ElementTree import fromstring
+from lxml.etree import fromstring
 
 from javapackages.artifact import Artifact
 

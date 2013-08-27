@@ -30,7 +30,7 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 
-from xml.etree.ElementTree import ElementTree
+from lxml.etree import ElementTree
 
 class PomLoadingException(Exception):
     pass
@@ -48,10 +48,15 @@ class POM(object):
 
 
     def __find(self, xpath):
-        ret = self.__doc.find(xpath, namespaces=dict(pom='http://maven.apache.org/POM/4.0.0'))
+        ret = self.__doc.xpath(xpath, namespaces=dict(pom='http://maven.apache.org/POM/4.0.0'))
         # perhaps there is no namespace?
-        if ret is None:
-            ret = self.__doc.find(xpath.replace('pom:',''))
+        if len(ret) == 0:
+            ret = self.__doc.xpath(xpath.replace('pom:',''))
+        if len(ret) > 0:
+            ret = ret[0]
+        else:
+            ret = None
+
         return ret
 
     @property
