@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from javapackages import Depmap
+from javapackages.depmap import Depmap, DepmapInvalidException
 
 from misc import exception_expected
 
@@ -54,13 +54,42 @@ class TestDepmap(unittest.TestCase):
         self.assertEqual(prov[3].version, "2.0.7")
         self.assertEqual(prov[4].version, "2.0.8")
 
-    @depmapfile("depmap_new_nover.xml")
-    def test_no_version(self, d):
-        prov = d.get_provided_artifacts()
-        self.assertEqual(len(prov), 1)
-        self.assertEqual(prov[0].version, "")
-        self.assertEqual(prov[0].groupId, "org.apache.maven.plugins")
-        self.assertEqual(prov[0].artifactId, "maven-idea-plugin")
+    @depmapfile("depmap_new_versioned.xml")
+    def test_provided_mappings(self, d):
+        maps = d.get_provided_mappings()
+        self.assertEqual(len(maps), 1)
+        for m, l in maps:
+            self.assertEqual(m.groupId, "org.apache.maven.plugins")
+            self.assertEqual(m.artifactId, "maven-idea-plugin")
+            self.assertEqual(m.version, "1.4")
+            self.assertEqual(l.groupId, "JPP/maven-idea-plugin")
+            self.assertEqual(l.artifactId, "maven-idea-plugin")
+            self.assertEqual(l.version, "")
+
+    @depmapfile("depmap_new_compat.xml")
+    def test_provided_versioned(self, d):
+        maps = d.get_provided_mappings()
+        self.assertEqual(len(maps), 2)
+        for m, l in maps:
+            self.assertEqual(m.groupId, "org.apache.maven.plugins")
+            self.assertEqual(m.artifactId, "maven-idea-plugin")
+            self.assertEqual(m.version, "1.4")
+            self.assertEqual(l.groupId, "JPP/maven-idea-plugin")
+            self.assertEqual(l.artifactId, "maven-idea-plugin")
+            self.assertNotEqual(l.version, "")
+
+        self.assertEqual(maps[0][1].version, '1.4')
+        self.assertEqual(maps[1][1].version, '1.5')
+
+    @exception_expected(DepmapInvalidException)
+    @depmapfile("depmap_invalid_nover.xml")
+    def test_no_maven_version(self, d):
+        d.get_provided_artifacts()
+
+    @exception_expected(DepmapInvalidException)
+    @depmapfile("depmap_invalid_nover.xml")
+    def test_no_maven_version_mappings(self, d):
+        d.get_provided_mappings()
 
     @depmapfile("depmap_compat_old")
     def test_no_requires(self, d):

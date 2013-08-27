@@ -37,6 +37,9 @@ from javapackages.artifact import Artifact
 class DepmapLoadingException(Exception):
     pass
 
+class DepmapInvalidException(Exception):
+    pass
+
 class Depmap(object):
     """
     Class for working with depmap files (dependency maps). These are files used
@@ -52,9 +55,10 @@ class Depmap(object):
     """
 
     def __init__(self, path):
+        self.__path = path
         self.__load_depmap(path)
         if self.__doc is None:
-            raise DepmapLoadingException("Failed to load fragment. You have a problem")
+            raise DepmapLoadingException("Failed to load fragment {path} You have a problem".format(path=path))
 
     def __load_depmap(self, fragment_path):
         with open(fragment_path) as f:
@@ -83,8 +87,25 @@ class Depmap(object):
         artifacts = []
         for dep in self.__doc.findall('.//dependency/maven'):
             artifact = Artifact.from_xml_element(dep)
+            if not artifact.version:
+                raise DepmapInvalidException("Depmap {path} does not have version in maven provides".format(path=self.__path))
             artifacts.append(artifact)
         return artifacts
+
+    def get_provided_mappings(self):
+        """Return list of (Artifact, Artifact) tuples.
+
+        First part of returned tuple is Maven artifact identification
+        Second part of returned tuple is local artifact identification
+        """
+        mappings = []
+        for dep in self.__doc.findall('.//dependency'):
+            m_artifact = Artifact.from_xml_element(dep.find("./maven"))
+            if not m_artifact.version:
+                raise DepmapInvalidException("Depmap {path} does not have version in maven provides".format(path=self.__path))
+            l_artifact = Artifact.from_xml_element(dep.find("./jpp"))
+            mappings.append((m_artifact, l_artifact))
+        return mappings
 
     def get_required_artifacts(self):
         """Returns list of Artifact required by given depmap."""
