@@ -50,6 +50,8 @@ class TagBuilder:
                 if l_artifact.version:
                     prov_artifact = Artifact(m_artifact.groupId,
                                              m_artifact.artifactId,
+                                             extension=m_artifact.extension,
+                                             classifier=m_artifact.classifier,
                                              version=l_artifact.version)
 
                 print("{rpmstr} = {version}".format(
