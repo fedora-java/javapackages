@@ -55,6 +55,13 @@ class TagBuilder:
                 print("{rpmstr} = {version}".format(
                         rpmstr=prov_artifact.get_rpm_str(depmap.is_compat()),
                         version=m_artifact.version ))
+                # preserve compatibility and generate simple mvn(g:a) provides
+                # for pom artifacts
+                if prov_artifact.extension == 'pom':
+                    print("mvn({gid}:{aid}) = {version}".format(
+                            gid=prov_artifact.groupId,
+                            aid=prov_artifact.artifactId,
+                            version=m_artifact.version))
 
 
 if __name__ == "__main__":
