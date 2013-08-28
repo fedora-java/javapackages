@@ -173,8 +173,8 @@ inst_data metadata/metadata-org-codehaus-mojo.xml "${sysconfdir}/maven"
 inst_exec bin/mvn-local "${bindir}"
 inst_exec bin/mvn-rpmbuild "${bindir}"
 
-inst_data configs/configuration-19.xml "${datadir}/xmvn"
-inst_data configs/configuration-19-rpmbuild.xml "${datadir}/xmvn"
-inst_data configs/configuration-19-rpmbuild-raw.xml "${datadir}/xmvn"
+inst_data configs/configuration-20.xml "${datadir}/xmvn"
+inst_data configs/configuration-20-rpmbuild.xml "${datadir}/xmvn"
+inst_data configs/configuration-20-rpmbuild-raw.xml "${datadir}/xmvn"
 
-link "${datadir}/xmvn/configuration-19.xml" "${datadir}/xmvn/configuration.xml"
+link "${datadir}/xmvn/configuration-20.xml" "${datadir}/xmvn/configuration.xml"
