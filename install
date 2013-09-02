@@ -178,3 +178,5 @@ inst_data configs/configuration-20-rpmbuild.xml "${datadir}/xmvn"
 inst_data configs/configuration-20-rpmbuild-raw.xml "${datadir}/xmvn"
 
 link "${datadir}/xmvn/configuration-20.xml" "${datadir}/xmvn/configuration.xml"
+
+inst_data fedora-review/java_guidelines.py "${datadir}/fedora-review/plugins"
