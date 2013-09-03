@@ -52,7 +52,8 @@ class TagBuilder:
                                              m_artifact.artifactId,
                                              extension=m_artifact.extension,
                                              classifier=m_artifact.classifier,
-                                             version=l_artifact.version)
+                                             version=l_artifact.version
+                                             namespace=l_artifact.namespace)
 
                 print("{rpmstr} = {version}".format(
                         rpmstr=prov_artifact.get_rpm_str(depmap.is_compat()),
