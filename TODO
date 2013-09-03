@@ -1,5 +1,6 @@
 -*- outline -*-
 
+
 * BUGS
 
 ** xmvn-bisect regression
@@ -9,5 +10,50 @@
       at ClassRealm[plexus.core, parent: null]
         while locating org.apache.maven.Maven
 
+** add_maven_depmap.py fix
+
+   echo kljsgcfi >%{buildroot}/usr/lib/java/this-is-1.2.3-some.test1
+   %add_maven_depmap foo:bar:test1:some:1.2.3 this-is-1.2.3-some.test1
+
 
 * FEATURES
+
+** %mvn_artifact macro
+
+   The macro should generate reactor information in format compatible
+   with .xmvn-reactor.  If file already exists then append, don't
+   overwrite.   Example usage:
+
+   %mvn_artifact maven/project.pom mylib-1.2.3.jar
+   (that installs only main artifact and POM, attached artifacts
+   are not installed)
+
+   %mvn_artifact gId:aId:ext:cla:ver build/myapp.war
+   (OK, but no POM will be installed -- no dependency information)
+
+   %mvn_artifact pom.xml
+   (that's OK -- installs only POM)
+
+   %mvn_artifact gId:aId:ext:cla:ver
+   (fail the build)
+
+** SCL support
+
+   find_jar (impolementation behind build-classpath,
+   build-jar-repository et al.) needs to support different prefixes,
+   preferably using XDG style env variables
+
+   SCL Java config should take precedence over standard config (/etc/java),
+   but user settings (~/.java/java.conf) should have highest precedence
+
+   JVMs that are part of SCL should be located properly
+
+   %jpackage_script should check SCL, perhaps automatically activate SCL?
+   Then you could just run /opt/rh/maven31/bin/mvn and Maven would be ran
+   with maven31 SCL activated (just an idea, I'm not sure about that)
+
+** support for maven artifacts in build-classpath et al.
+
+   build-classpath xpp3 org.apache.maven:maven-artifact:2.0.7
+
+   /usr/share/java/xpp3.jar:/usr/share/java/maven/maven-artifact-2.0.7.jar
