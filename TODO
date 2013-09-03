@@ -1,0 +1,13 @@
+-*- outline -*-
+
+* BUGS
+
+** xmvn-bisect regression
+
+   1) Error notifying ProvisionListener org.eclipse.sisu.plexus.PlexusLifecycleManager of org.apache.maven.Maven.
+    Reason: java.lang.RuntimeException: Repository 'bisect' is not configured.
+      at ClassRealm[plexus.core, parent: null]
+        while locating org.apache.maven.Maven
+
+
+* FEATURES
