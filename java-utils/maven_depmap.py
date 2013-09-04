@@ -45,17 +45,17 @@ from zipfile import ZipFile
 from time import gmtime, strftime
 
 from javapackages import POM
-from javapackages import Artifact
 
 
 class Fragment:
     """simple structure to hold fragment information"""
-    def __init__(self, gid, aid, version, local_gid, local_aid):
+    def __init__(self, gid, aid, version, local_gid, local_aid, packaging):
         self.gid = gid.strip()
         self.aid = aid.strip()
         self.version = version.strip()
         self.local_gid = local_gid
         self.local_aid = local_aid
+        self.packaging = packaging
 
     def __getitem__(self, index):
         return self.__dict__[index]
@@ -97,17 +97,21 @@ def _get_jpp_from_filename(pom_path, jar_path = None):
         if not jarpart:
             raise MissingJarFile()
 
-        if '/' in jarpart:
+        if pomname[3] == '.':
+            if '/' not in jarpart:
+                raise IncompatibleFilenames(pom_path, jar_path)
             jpp_gid = "JPP/%s" % dirname(jarpart)
             jpp_aid = splitext(basename(jarpart))[0]
             # we assert that jar and pom parts match
-            if ':' not in pom_path and not pomname == "JPP.%s-%s.pom" % (jpp_gid[4:], jpp_aid):
+            if not pomname == "JPP.%s-%s.pom" % (jpp_gid[4:], jpp_aid):
                 raise IncompatibleFilenames(pom_path, jar_path)
         else:
+            if '/' in jarpart:
+                raise IncompatibleFilenames(pom_path, jar_path)
             jpp_gid = "JPP"
             jpp_aid = splitext(basename(jarpart))[0]
             # we assert that jar and pom parts match
-            if ':' not in pom_path and not pomname == "JPP-%s.pom" % jpp_aid:
+            if not pomname == "JPP-%s.pom" % jpp_aid:
                 raise IncompatibleFilenames(pom_path, jar_path)
     else:
         if pomname[3] == ".":
@@ -122,13 +126,14 @@ def _get_jpp_from_filename(pom_path, jar_path = None):
 
 def parse_pom(pom_file, jar_file = None):
     """Returns Fragment class or None if POM file is invalid"""
-    pom = Artifact.from_mvn_str(pom_file) if ':' in pom_file else POM(pom_file)
+    pom = POM(pom_file)
 
     # if project packaging is undefined => jar
     # only "pom" packaging type can be without jar_file path otherwise
     # we bail
-    if not (jar_file or hasattr(pom, 'packaging') and pom.packaging and pom.packaging == "pom"):
-        raise PackagingTypeMissingFile(pom_path)
+    if not jar_file:
+        if not pom.packaging or pom.packaging != "pom":
+            raise PackagingTypeMissingFile(pom_path)
 
     jpp_gid, jpp_aid = _get_jpp_from_filename(pom_file, jar_file)
 
@@ -136,7 +141,8 @@ def parse_pom(pom_file, jar_file = None):
          pom.artifactId,
          pom.version,
          jpp_gid,
-         jpp_aid
+         jpp_aid,
+         pom.packaging or "jar"
     )
 
 def
