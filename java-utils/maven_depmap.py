@@ -71,7 +71,7 @@ class IncompatibleFilenames(Exception):
 
 class MissingJarFile(Exception):
     def __init__(self):
-        self.args=("JAR seems to be missing in standard directories. Make sure you have installed it")
+        self.args=("JAR seems to be missing in standard directories. Make sure you have installed it",)
 
 def _get_jpp_from_filename(pom_path, jar_path = None):
     """Get resolved (groupId,artifactId) tuple from POM and JAR path.
