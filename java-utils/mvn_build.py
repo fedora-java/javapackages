@@ -34,6 +34,8 @@ import optparse
 import subprocess
 import sys
 
+from javapackages import Artifact
+
 def goal_callback(option, opt_str, value, parser):
      assert value is None
      value = []
@@ -138,7 +140,7 @@ if __name__ == "__main__":
         mvn_args.extend(options.goal_after)
 
     if options.singleton:
-        xc.add_package_mapping("{*}", "@1")
+        xc.add_package_mapping(Artifact.from_mvn_str(":{*}"), "@1")
 
     p = subprocess.Popen(" ".join(mvn_args), shell=True, env=env)
     p.wait()
