@@ -1,5 +1,6 @@
 import os
 import unittest
+import lxml
 
 from javapackages import POM
 
@@ -49,6 +50,10 @@ class TestPOM(unittest.TestCase):
         self.assertEqual(p.artifactId, "xmlrpc")
         self.assertEqual(p.version, "3.1.3")
 
+    @exception_expected(lxml.etree.XMLSyntaxError)
+    @pomfile("unparsable_xml.pom")
+    def test_unparsable_xml(self, p):
+        self.fail("Unparsable xml successfully parsed")
 
 
 if __name__ == '__main__':

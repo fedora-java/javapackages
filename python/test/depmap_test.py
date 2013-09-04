@@ -132,7 +132,45 @@ class TestDepmap(unittest.TestCase):
         self.assertEqual(reqs[3].artifactId, "plexus-utils")
         self.assertEqual(reqs[3].extension, "war")
 
+    @depmapfile("depmap_namespace.xml")
+    def test_namespace(self, d):
+        maps = d.get_provided_mappings()
+        for m, l in maps:
+            self.assertEqual(m.namespace, "ns")
+            self.assertEqual(m.namespace, "ns")
 
+    @depmapfile("depmap_multiple_namespaces.xml")
+    def test_multiple_namespaces(self, d):
+        prov = d.get_provided_artifacts()
+
+        self.assertEqual(len(prov), 3)
+        self.assertEqual(prov[0].namespace, "codehaus-plexus")
+        self.assertEqual(prov[1].namespace, "plexus")
+        self.assertEqual(prov[2].namespace, "codehaus")
+
+    @depmapfile("depmap_namespace_requires.xml")
+    def test_requires_namespace(self, d):
+        reqs = d.get_required_artifacts()
+
+        self.assertTrue(len(reqs), 5)
+        self.assertEqual(reqs[0].namespace, "")
+        self.assertEqual(reqs[1].namespace, "")
+        self.assertEqual(reqs[2].namespace, "plexus")
+        self.assertEqual(reqs[3].namespace, "codehaus")
+        self.assertEqual(reqs[4].namespace, "test")
+
+    @depmapfile("depmap_incorrect_provides.xml")
+    def test_incorrect_provides(self, d):
+        maps = d.get_provided_mappings()
+        for m, l in maps:
+            self.assertEqual(m.groupId, "commons-io")
+            self.assertEqual(l.groupId, "JPP/commons-io")
+            self.assertEqual(m.artifactId, "commons-io")
+            self.assertEqual(l.artifactId, "commons-io")
+            self.assertEqual(m.version, "1.5")
+            self.assertEqual(l.version, "")
+            self.assertEqual(m.namespace, "")
+            self.assertEqual(l.namespace, "ns")
 
 if __name__ == '__main__':
     unittest.main()
