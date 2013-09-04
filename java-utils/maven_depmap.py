@@ -40,7 +40,7 @@ import sys
 import os
 import re
 
-from os.path import basename, dirname
+from os.path import basename, dirname, splitext
 from zipfile import ZipFile
 from time import gmtime, strftime
 
@@ -99,13 +99,13 @@ def _get_jpp_from_filename(pom_path, jar_path = None):
 
         if '/' in jarpart:
             jpp_gid = "JPP/%s" % dirname(jarpart)
-            jpp_aid = basename(jarpart)[:-4]
+            jpp_aid = splitext(basename(jarpart))[0]
             # we assert that jar and pom parts match
             if ':' not in pom_path and not pomname == "JPP.%s-%s.pom" % (jpp_gid[4:], jpp_aid):
                 raise IncompatibleFilenames(pom_path, jar_path)
         else:
             jpp_gid = "JPP"
-            jpp_aid = basename(jarpart)[:-4]
+            jpp_aid = splitext(basename(jarpart))[0]
             # we assert that jar and pom parts match
             if ':' not in pom_path and not pomname == "JPP-%s.pom" % jpp_aid:
                 raise IncompatibleFilenames(pom_path, jar_path)
@@ -138,6 +138,8 @@ def parse_pom(pom_file, jar_file = None):
          jpp_gid,
          jpp_aid
     )
+
+def
 
 def create_mappings(fragment, additions = None):
     maps = [(fragment.gid, fragment.aid)]
@@ -227,11 +229,8 @@ if __name__ == "__main__":
     # These will fail when incorrect number of arguments is given.
     fragment_path = args[0].strip()
     pom_path = args[1].strip()
-    print fragment_path
-    print pom_path
     if len(args) == 3:
         jar_path = args[2].strip()
-        print jar_path
         fragment = parse_pom(pom_path, jar_path)
         if fragment:
             inject_pom_properties(jar_path, fragment)
