@@ -52,6 +52,10 @@
    Then you could just run /opt/rh/maven31/bin/mvn and Maven would be ran
    with maven31 SCL activated (just an idea, I'm not sure about that)
 
+   generated quto-requires should include SCL-specific metapackage
+   instead of jpackage-utils.  The SCL package is assumed to own all
+   the directories like /opt/rh/scl/usr/share/maven-fragments etc.
+
 ** support for maven artifacts in build-classpath et al.
 
    build-classpath xpp3 org.apache.maven:maven-artifact:2.0.7
