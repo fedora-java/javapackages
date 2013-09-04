@@ -15,6 +15,17 @@
    echo kljsgcfi >%{buildroot}/usr/lib/java/this-is-1.2.3-some.test1
    %add_maven_depmap foo:bar:test1:some:1.2.3 this-is-1.2.3-some.test1
 
+** singleton packaging does not work:
+
+   python /usr/share/java-utils/mvn_build.py -s -- -Dmaven.test.failure.ignore=true
+   Traceback (most recent call last):
+     File "/usr/share/java-utils/mvn_build.py", line 141, in <module>
+        xc.add_package_mapping("{*}", "@1")
+     File "/usr/lib/python2.7/site-packages/javapackages/xmvn_config.py", line 188, in add_package_mapping
+        elems = [artifact.get_xml_element(root="artifactGlob")]
+   AttributeError :  'str' object has no attribute 'get_xml_element' 
+
+
 
 * FEATURES
 
