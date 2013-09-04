@@ -39,23 +39,24 @@ from optparse import OptionParser
 import sys
 import os
 import re
+from StringIO import StringIO
+import xml.dom.minidom
+import codecs
 
 from os.path import basename, dirname, splitext
 from zipfile import ZipFile
 from time import gmtime, strftime
 
-from javapackages import POM
+from lxml.etree import SubElement, Element, ElementTree, XMLParser
+
+from javapackages import POM, Artifact
 
 
 class Fragment:
     """simple structure to hold fragment information"""
-    def __init__(self, gid, aid, version, local_gid, local_aid, packaging):
-        self.gid = gid.strip()
-        self.aid = aid.strip()
-        self.version = version.strip()
-        self.local_gid = local_gid
-        self.local_aid = local_aid
-        self.packaging = packaging
+    def __init__(self, upstream_artifact, local_artifact):
+        self.upstream_artifact = upstream_artifact
+        self.local_artifact = local_artifact
 
     def __getitem__(self, index):
         return self.__dict__[index]
@@ -73,6 +74,21 @@ class MissingJarFile(Exception):
     def __init__(self):
         self.args=("JAR seems to be missing in standard directories. Make sure you have installed it",)
 
+def _get_javadir_part(jar_path):
+    # This is not nice, because macros can change but handling these
+    # in RPM macros is ugly as hell.
+    javadirs=["/usr/share/java", "/usr/share/java-jni", "/usr/lib/java",
+              "/usr/lib64/java"]
+
+    jarpart = None
+    for jdir in javadirs:
+        if jdir in jar_path:
+            javadir_re = re.compile(".*%s/" % jdir)
+            jarpart = re.sub(javadir_re, "", jar_path)
+    if not jarpart:
+        raise MissingJarFile()
+    return jarpart
+
 def _get_jpp_from_filename(pom_path, jar_path = None):
     """Get resolved (groupId,artifactId) tuple from POM and JAR path.
 
@@ -81,21 +97,11 @@ def _get_jpp_from_filename(pom_path, jar_path = None):
     is "xbean-main". Therefore for JAR name to be compatible it has be
     in %{_javadir}/xbean/xbean-main.jar.
     """
-    # This is not nice, because macros can change but handling these
-    # in RPM macros is ugly as hell.
-    javadirs=["/usr/share/java", "/usr/share/java-jni", "/usr/lib/java",
-              "/usr/lib64/java"]
     pomname = basename(pom_path)
     if jar_path:
         if not os.path.isfile(jar_path):
             raise IOError("JAR path doesn't exist")
-        jarpart = None
-        for jdir in javadirs:
-            if jdir in jar_path:
-                javadir_re = re.compile(".*%s/" % jdir)
-                jarpart = re.sub(javadir_re, "", jar_path)
-        if not jarpart:
-            raise MissingJarFile()
+        jarpart = _get_javadir_part(jar_path)
 
         if pomname[3] == '.':
             if '/' not in jarpart:
@@ -124,6 +130,38 @@ def _get_jpp_from_filename(pom_path, jar_path = None):
             jpp_aid = pomname[4:-4]
     return(jpp_gid, jpp_aid)
 
+
+def get_local_artifact(upstream_artifact, jar_path=None):
+    if not jar_path:
+        # does this even make sense? There is no pom, no dependencies...
+        return Artifact("JPP", upstream_artifact.artifactId,
+                        upstream_artifact.extension,
+                        upstream_artifact.classifier,
+                        upstream_artifact.version)
+
+    jarpart = _get_javadir_part(jar_path)
+    local_gid = "JPP"
+    fname, ext = splitext(basename(jarpart))
+
+    if upstream_artifact.extension:
+        if ext[1:] != upstream_artifact.extension:
+            raise IncompatibleFilenames(str(upstream_artifact), jar_path)
+    else:
+        if ext[1:] != "jar":
+            raise IncompatibleFilenames(str(upstream_artifact), jar_path)
+
+    local_aid = fname
+    if upstream_artifact.classifier:
+        local_aid = fname[:fname.rfind('-')]
+        if fname[fname.rfind('-')+1:] != upstream_artifact.classifier:
+            raise IncompatibleFilenames(str(upstream_artifact), jar_path)
+    if '/' in jarpart:
+        local_gid = "JPP/{gid}".format(gid=dirname(jarpart))
+
+    return Artifact(local_gid, local_aid, upstream_artifact.extension,
+                    upstream_artifact.classifier, upstream_artifact.version)
+
+
 def parse_pom(pom_file, jar_file = None):
     """Returns Fragment class or None if POM file is invalid"""
     pom = POM(pom_file)
@@ -137,58 +175,65 @@ def parse_pom(pom_file, jar_file = None):
 
     jpp_gid, jpp_aid = _get_jpp_from_filename(pom_file, jar_file)
 
-    return Fragment(pom.groupId,
-         pom.artifactId,
-         pom.version,
-         jpp_gid,
-         jpp_aid,
-         pom.packaging or "jar"
-    )
-
-def
+    upstream_artifact = Artifact(pom.groupId, pom.artifactId, version=pom.version)
+    local_artifact = Artifact(jpp_gid, jpp_aid)
+    return Fragment(upstream_artifact, local_artifact)
 
 def create_mappings(fragment, additions = None):
-    maps = [(fragment.gid, fragment.aid)]
+    maps = [fragment]
     if additions:
         adds = additions.split(',')
         for add in adds:
-            g, a = add.strip().split(':')
-            maps.append((g, a))
+            maps.append(Fragment(Artifact.from_mvn_str(add), fragment.local_artifact))
     return maps
+
+def prettify_element(elem):
+    xmlbuf = StringIO()
+    et = ElementTree()
+    et._setroot(elem)
+    et.write(xmlbuf,
+             xml_declaration=True,
+             encoding = 'utf-8',
+             method = "xml")
+    return xml.dom.minidom.parseString(xmlbuf.getvalue()).toprettyxml()
 
 def output_fragment(fragment_path, fragment, mappings, add_versions):
     """Writes fragment into fragment_path in specialised format
     compatible with jpp"""
-    with open(fragment_path, "aw") as ffile:
+    root = None
+    try:
+        et = ElementTree()
+        parser = XMLParser(remove_blank_text=True)
+        root = et.parse(fragment_path, parser=parser)
+    except IOError:
+        root = Element("dependencyMap")
 
-        if not add_versions:
-            versions = []
-        else:
-            versions = add_versions.split(',')
+    if not add_versions:
+        versions = []
+    else:
+        versions = add_versions.split(',')
 
-        if add_versions or add_versions == "":
-            # skip RPM provides in compat packages
-            ffile.write("<skipProvides/>\n")
+    if add_versions or add_versions == "":
+        # skip RPM provides in compat packages
+        SubElement(root, "skipProvides")
 
-        versions.insert(0, fragment.version)
-        for ver in versions:
-            for m in mappings:
-                gid, aid = m
-                ffile.write("""
-<dependency>
-    <maven>
-        <groupId>%s</groupId>
-        <artifactId>%s</artifactId>
-        <version>%s</version>
-    </maven>
-    <jpp>
-        <groupId>%s</groupId>
-        <artifactId>%s</artifactId>
-        <version>%s</version>
-    </jpp>
-</dependency>
-""" % (gid, aid, ver, fragment.local_gid,
-       fragment.local_aid, ver) )
+    versions.insert(0, fragment.upstream_artifact.version)
+    for ver in versions:
+        for fragment in mappings:
+            dep = SubElement(root, "dependency")
+            if add_versions or add_versions == "":
+                fragment.local_artifact.version = ver
+            else:
+                fragment.local_artifact.version = ""
+            mvn_xml = fragment.upstream_artifact.get_xml_element(root="maven")
+            local_xml = fragment.local_artifact.get_xml_element(root="jpp")
+
+            dep.append(mvn_xml)
+            dep.append(local_xml)
+    xmlstr = prettify_element(root)
+    with codecs.open(fragment_path, 'w', "utf-8") as fout:
+        fout.write(xmlstr)
+
 
 
 # Add a file to a ZIP archive (or JAR, WAR, ...) unless the file
@@ -201,16 +246,15 @@ def append_if_missing(archive_name, file_name, file_contents):
 # Inject pom.properties if JAR doesn't have one.  This is necessary to
 # identify the origin of JAR files that are present in the repository.
 def inject_pom_properties(jar_path, fragment):
-    props_path = "META-INF/maven/%(gid)s/%(aid)s/pom.properties" % fragment
+    props_path = "META-INF/maven/{f.groupId}/{f.artifactId}/pom.properties".format(f=fragment.upstream_artifact)
     timestamp = strftime("%a %b %d %H:%M:%S UTC %Y", gmtime())
     properties = """#Generated by Java Packages Tools
-#%%s
-version=%(version)s
-groupId=%(gid)s
-artifactId=%(aid)s
-""" % fragment % timestamp
+#{timestamp}
+version={f.upstream_artifact.version}
+groupId={f.upstream_artifact.groupId}
+artifactId={f.upstream_artifact.artifactId}""".format(timestamp=timestamp,
+                                                      f=fragment)
     append_if_missing(jar_path, props_path, properties)
-
 
 if __name__ == "__main__":
 
@@ -237,7 +281,19 @@ if __name__ == "__main__":
     pom_path = args[1].strip()
     if len(args) == 3:
         jar_path = args[2].strip()
-        fragment = parse_pom(pom_path, jar_path)
+        local = None
+        fragment = None
+        if ':' in pom_path:
+            upstream = Artifact.from_mvn_str(pom_path)
+            if upstream.extension == 'jar':
+                upstream.extension = ''
+            if not upstream.version:
+                print "Artifact definition has to include version"
+                sys.exit(1)
+            local = get_local_artifact(upstream, jar_path)
+            fragment = Fragment(upstream, local)
+        else:
+            fragment = parse_pom(pom_path, jar_path)
         if fragment:
             inject_pom_properties(jar_path, fragment)
     else:
