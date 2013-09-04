@@ -1,0 +1,1 @@
+--batch-mode --offline verify org.apache.maven.plugins:maven-javadoc-plugin:aggregate org.fedoraproject.xmvn:xmvn-mojo:builddep

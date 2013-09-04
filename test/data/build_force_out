@@ -1,0 +1,1 @@
+--batch-mode --offline -Dmaven.test.skip=true package org.fedoraproject.xmvn:xmvn-mojo:install org.apache.maven.plugins:maven-javadoc-plugin:aggregate org.fedoraproject.xmvn:xmvn-mojo:builddep

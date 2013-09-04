@@ -1,0 +1,1 @@
+--batch-mode --offline verify org.fedoraproject.xmvn:xmvn-mojo:install org.fedoraproject.xmvn:xmvn-mojo:builddep
