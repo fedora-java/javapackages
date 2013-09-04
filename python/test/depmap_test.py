@@ -137,7 +137,7 @@ class TestDepmap(unittest.TestCase):
         maps = d.get_provided_mappings()
         for m, l in maps:
             self.assertEqual(m.namespace, "ns")
-            self.assertEqual(m.namespace, "ns")
+            self.assertEqual(l.namespace, "ns")
 
     @depmapfile("depmap_multiple_namespaces.xml")
     def test_multiple_namespaces(self, d):
