@@ -134,6 +134,13 @@
       </configuration>
     </repository>
     <repository>
+      <id>bisect</id>
+      <type>maven</type>
+      <properties>
+        <root>.m2-bisect</root>
+      </properties>
+    </repository>
+    <repository>
       <id>install</id>
       <type>compound</type>
       <configuration>
