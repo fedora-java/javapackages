@@ -37,10 +37,10 @@ export TYCHO_MVN_RPMBUILD
 
 # Allow -Dmaven.local.effective.pom=false to be used to disable
 # resolution from effective POM repository.
-XMVN_COMPAT=19-rpmbuild
+XMVN_COMPAT=20-rpmbuild
 for arg in "$@"; do
     if egrep -q '^-Dmaven\.local\.effective\.pom=false' <<<"$arg"; then
-	XMVN_COMPAT=19-rpmbuild-raw
+	XMVN_COMPAT=20-rpmbuild-raw
     fi
 done
 export XMVN_COMPAT
