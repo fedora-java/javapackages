@@ -50,6 +50,13 @@ class TestPOM(unittest.TestCase):
         self.assertEqual(p.artifactId, "xmlrpc")
         self.assertEqual(p.version, "3.1.3")
 
+    @pomfile("parent-version.pom")
+    def test_no_xmlns(self, p):
+        self.assertEqual(p.packaging, None)
+        self.assertEqual(p.groupId, "commons-lang")
+        self.assertEqual(p.artifactId, "commons-lang")
+        self.assertEqual(p.version, "17")
+
     @exception_expected(lxml.etree.XMLSyntaxError)
     @pomfile("unparsable_xml.pom")
     def test_unparsable_xml(self, p):

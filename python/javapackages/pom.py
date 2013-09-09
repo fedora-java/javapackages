@@ -84,7 +84,8 @@ class POM(object):
         """
         version = self.__find('./pom:version')
         if version is None:
-            version = self.__find('./pom:parent/pom:version').text
+            version = self.__find('./pom:parent/pom:version')
+            assert version is not None
         return version.text
 
     @property
