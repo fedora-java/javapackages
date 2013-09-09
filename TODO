@@ -15,6 +15,11 @@
    echo kljsgcfi >%{buildroot}/usr/lib/java/this-is-1.2.3-some.test1
    %add_maven_depmap foo:bar:test1:some:1.2.3 this-is-1.2.3-some.test1
 
+** Unable to install jar to directory outside %{_javadir} via mvn_file
+
+   rhbz#986909
+   https://bugzilla.redhat.com/show_bug.cgi?id=986909
+
 
 * FEATURES
 
