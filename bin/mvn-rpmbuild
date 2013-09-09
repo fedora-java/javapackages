@@ -40,11 +40,17 @@ depmap=
 for arg in "$@"; do
     if egrep -q '^-Dmaven\.local\.depmap\.file=' <<<"$arg"; then
 	depmap=$(sed 's/[^=]*=//' <<<"$arg")
-	depmap="
-    <!-- Use local depmap file. -->
+
+	mkdir -p .xmvn/config.d
+	cat >>.xmvn/config.d/mvn-rpmbuild-config.xml <<EOF
+<configuration>
+  <resolverSettings>
     <metadataRepositories>
       <repository>$depmap</repository>
-    </metadataRepositories>"
+    </metadataRepositories>
+  </resolverSettings>
+</configuration>
+EOF
     fi
 done
 
@@ -59,19 +65,6 @@ for arg in "$@"; do
 done
 
 export MAVEN_OPTS="$MAVEN_OPTS $repo_arg"
-
-mkdir -p .xmvn/config.d
-cat >>.xmvn/config.d/mvn-rpmbuild-config.xml <<EOF
-<configuration>
-  <resolverSettings>
-    <!-- XMvn default repo location is .xm2, but for backwards-compatibility
-         we use $repo if called as mvn-rpmbuild. -->
-    <localRepositories>
-      <repository>$repo</repository>
-    </localRepositories>$depmap
-  </resolverSettings>
-</configuration>
-EOF
 
 # Allow -Dmaven.local.effective.pom=false to be used to disable
 # resolution from effective POM repository.
