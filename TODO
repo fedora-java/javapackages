@@ -23,6 +23,11 @@
 
 * FEATURES
 
+** %mvn_config support for XML contents
+
+   mvn_config currently doesn't support XML contents (they will be escaped).
+   This should be changed so that we can set arbitrary configuration options
+
 ** %mvn_artifact macro
 
    The macro should generate reactor information in format compatible
