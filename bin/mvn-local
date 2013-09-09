@@ -30,11 +30,6 @@
 #
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
-# A marker informing Tycho that mvn-local was ran.
-export TYCHO_MVN_LOCAL=true
-unset TYCHO_MVN_RPMBUILD
-export TYCHO_MVN_RPMBUILD
-
 # Allow -Dmaven.local.effective.pom=false to be used to disable
 # resolution from effective POM repository.
 XMVN_COMPAT=20-rpmbuild
