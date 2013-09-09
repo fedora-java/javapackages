@@ -105,7 +105,7 @@
       </configuration>
     </repository>
     <repository>
-      <id>resolve</id>
+      <id>resolve-system</id>
       <type>compound</type>
       <properties>
         <prefix>/</prefix>
@@ -113,6 +113,23 @@
       <configuration>
         <repositories>
           <repository>base-resolve</repository>
+        </repositories>
+      </configuration>
+    </repository>
+    <repository>
+      <id>resolve-local</id>
+      <type>maven</type>
+      <properties>
+        <root>.m2</root>
+      </properties>
+    </repository>
+    <repository>
+      <id>resolve</id>
+      <type>compound</type>
+      <configuration>
+        <repositories>
+          <repository>resolve-local</repository>
+          <repository>resolve-system</repository>
         </repositories>
       </configuration>
     </repository>
