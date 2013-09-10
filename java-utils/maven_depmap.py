@@ -141,6 +141,9 @@ def get_local_artifact(upstream_artifact, jar_path=None):
 
     jarpart = _get_javadir_part(jar_path)
     local_gid = "JPP"
+    if '/' in jarpart:
+        local_gid = "JPP/{gid}".format(gid=dirname(jarpart))
+
     fname, ext = splitext(basename(jarpart))
 
     if upstream_artifact.extension:
@@ -155,9 +158,6 @@ def get_local_artifact(upstream_artifact, jar_path=None):
         local_aid = fname[:fname.rfind('-')]
         if fname[fname.rfind('-')+1:] != upstream_artifact.classifier:
             raise IncompatibleFilenames(str(upstream_artifact), jar_path)
-    if '/' in jarpart:
-        local_gid = "JPP/{gid}".format(gid=dirname(jarpart))
-
     return Artifact(local_gid, local_aid, upstream_artifact.extension,
                     upstream_artifact.classifier, upstream_artifact.version)
 
