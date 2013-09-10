@@ -70,7 +70,7 @@ class TagBuilder:
                     provided.extension == dependency.extension):
                     # requires on subpackages are always versioned
                     print("{rpmstr} = {version}".format(
-                        rpmstr=provided.get_rpm_str(depmap.is_compat()),
+                        rpmstr=dependency.get_rpm_str(dependency.version),
                         version=provided.version))
                     break
             else:
