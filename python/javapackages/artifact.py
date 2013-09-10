@@ -125,6 +125,20 @@ class Artifact(object):
         return tostring(root, pretty_print=True)
 
     @classmethod
+    def merge_artifacts(cls, dominant, recessive):
+        """
+        Merge two artifacts into one. Information missing in dominant artifact will
+        be copied from recessive artifact. Returns new merged artifact
+        """
+        ret = cls(dominant.groupId, dominant.artifactId, dominant.extension,
+                  dominant.classifier, dominant.version, dominant.namespace)
+        for key in ("artifactId", "groupId", "extension", "version",
+                    "classifier", "namespace"):
+            if not getattr(ret, key):
+                setattr(ret, key, getattr(recessive, key))
+        return ret
+
+    @classmethod
     def from_xml_element(cls, xmlnode, namespace=""):
         """
         Create Artifact from xml.etree.ElementTree.Element as contained

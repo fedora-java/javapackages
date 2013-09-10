@@ -370,5 +370,18 @@ class TestArtifact(unittest.TestCase):
         self.assertEqual(a.version, "v")
         self.assertEqual(a.namespace, "n")
 
+    def test_merge(self):
+        a = Artifact.from_mvn_str("g1:a1:v1", 'n')
+        b = Artifact.from_mvn_str("g2:a2:e2::", 'n2')
+        m = Artifact.merge_artifacts(a, b)
+
+        self.assertEqual(m.groupId, "g1")
+        self.assertEqual(m.artifactId, "a1")
+        self.assertEqual(m.extension, "e2")
+        self.assertEqual(m.classifier, "")
+        self.assertEqual(m.version, "v1")
+        self.assertEqual(m.namespace, "n")
+
+
 if __name__ == '__main__':
     unittest.main()
