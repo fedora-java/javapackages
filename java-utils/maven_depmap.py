@@ -184,7 +184,9 @@ def create_mappings(fragment, additions = None):
     if additions:
         adds = additions.split(',')
         for add in adds:
-            maps.append(Fragment(Artifact.from_mvn_str(add), fragment.local_artifact))
+            mpart = Artifact.from_mvn_str(add)
+            full = Artifact.merge_artifacts(mpart, fragment.upstream_artifact)
+            maps.append(Fragment(full, fragment.local_artifact))
     return maps
 
 def prettify_element(elem):
