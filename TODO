@@ -18,6 +18,12 @@
    The unversioned jar is listed in .mfiles even though it should not be there
    (it is moved in the macro)
 
+** Add testcase for maven.req when package contains both compat and non-compat
+   subpackages
+
+   This was fixed in 2bb8f05 but needs a testcase
+
+** Fix version in python/setup.py
 
 * FEATURES
 
