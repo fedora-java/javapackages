@@ -62,18 +62,7 @@ class Depmap(object):
 
     def __load_depmap(self, fragment_path):
         with open(fragment_path) as f:
-            content = f.read()
-
-            start, end = "", ""
-            # backward compatibility with JPP fragments
-            if not fragment_path[-4:] == '.xml':
-                start = "<fragments>"
-                end = "</fragments>"
-
-            fragments = "{start}{content}{end}".format(start=start,
-                                                       content=content,
-                                                       end=end)
-            self.__doc = fromstring(fragments)
+            self.__doc = fromstring(f.read())
 
 
     def is_compat(self):
