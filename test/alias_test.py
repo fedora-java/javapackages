@@ -172,11 +172,8 @@ class TestMvnalias(unittest.TestCase):
 
     @xmvnconfig('alias',[':', ':', ])
     def test_wildcard7(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
-        filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('alias', 'wildcard7'))
-        for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'wildcard7'))
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
 
     def test_wildcard8(self):
         (stdout, stderr, return_value) = call_script('alias', ['x:y', 'a:b:c:*:1', ])
