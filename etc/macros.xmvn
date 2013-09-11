@@ -123,7 +123,7 @@
 #
 # For summary of accepted options execute `mvn-build --help` command.
 #
-%mvn_build python %{_datadir}/java-utils/mvn_build.py %{?xmvn_bootstrap: -b}
+%mvn_build python %{_datadir}/java-utils/mvn_build.py %{?xmvn_bootstrap: -b} %{?_without_javadoc: -j $(> .mfiles-javadoc)}%{?_without_tests: -f}
 
 
 # %mvn_install - install Maven project
