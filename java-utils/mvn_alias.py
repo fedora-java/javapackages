@@ -33,7 +33,8 @@
 import optparse
 import sys
 
-from javapackages.artifact import Artifact, ArtifactFormatException
+from javapackages.artifact import (Artifact, ArtifactFormatException,
+                                   ArtifactValidationException)
 from javapackages.xmvn_config import XMvnConfig
 
 class SaneParser(optparse.OptionParser):
@@ -69,12 +70,15 @@ if __name__ == "__main__":
 
     try:
         orig = Artifact.from_mvn_str(args[0])
+        orig.validate(allow_backref=False)
         aliases = []
         for alias in args[1:]:
-            aliases.append(Artifact.from_mvn_str(alias))
+            aa = Artifact.from_mvn_str(alias)
+            aa.validate(allow_empty=False, allow_wildcards=False)
+            aliases.append(aa)
 
         XMvnConfig().add_aliases(orig, aliases)
-    except ArtifactFormatException:
-        parser.error("Provided artifact strings were invalid. Please see help "
-                     " and check your arguments.")
+    except (ArtifactValidationException, ArtifactFormatException), e:
+        parser.error("{e}: Provided artifact strings were invalid. "
+                     "Please see help  and check your arguments".format(e=e))
         sys.exit(1)
