@@ -153,7 +153,7 @@ class XMvnConfig(object):
         Change where on filesystem given artifact is installed
 
         artifact -- Artifact to be modified
-        paths -- list of paths for given artifact
+        versions -- list of compat versions for given artifact
         """
         elems = [artifact.get_xml_element(root="artifactGlob")]
         velem = Element("versions")
