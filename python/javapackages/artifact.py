@@ -30,11 +30,18 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 
+import re
 import sys
 
 from lxml.etree import Element, SubElement, tostring
 
-class ArtifactFormatException(Exception):
+class ArtifactException(Exception):
+    pass
+
+class ArtifactFormatException(ArtifactException):
+    pass
+
+class ArtifactValidationException(ArtifactException):
     pass
 
 class Artifact(object):
@@ -123,6 +130,35 @@ class Artifact(object):
         """
         root = self.get_xml_element(root)
         return tostring(root, pretty_print=True)
+
+    def validate(self, allow_empty=True, allow_wildcards=True, allow_backref=True):
+        """
+        Function to validate current state of artifact with regards to
+        wildcards, empty parts and backreference usage
+        """
+        all_empty = True
+        wildcard_used = False
+        backref_used = False
+        backref_re = re.compile('@\d')
+        for key in ("artifactId", "groupId", "extension", "version",
+                    "classifier", "namespace"):
+            val = getattr(self, key)
+            if not val:
+                continue
+            if val:
+               all_empty = False
+            if val.find('*') != -1:
+                wildcard_used = True
+            if backref_re.match(val):
+                backref_used = True
+
+        if not allow_empty and all_empty:
+            raise ArtifactValidationException("All parts of artifact are empty")
+        if not allow_wildcards and wildcard_used:
+            raise ArtifactValidationException("Wildcard used in artifact")
+        if not allow_backref and backref_used:
+            raise ArtifactValidationException("Backreference used in artifact")
+        return True
 
     @classmethod
     def merge_artifacts(cls, dominant, recessive):
