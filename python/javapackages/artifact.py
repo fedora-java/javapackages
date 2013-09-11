@@ -222,7 +222,7 @@ class Artifact(object):
         # groupId and artifactId are always present
         if not (2 <= len(tup) <= 5):
             raise ArtifactFormatException("Unable to create Artifact from "
-                                          " supplied arguments. Please file a bug and include {rpmstr} ")
+                                          "supplied arguments ({mvnstr})".format(mvnstr=mvnstr))
 
         groupId = tup[0]
         artifactId = tup[1]
