@@ -136,10 +136,13 @@ class TestMvnalias(unittest.TestCase):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    def test_wildcard4(self):
-        (stdout, stderr, return_value) = call_script('alias', ['aaa:bbb', 'xxx:', ])
-        self.assertNotEqual(return_value, 0)
-        self.assertTrue(stderr)
+    @xmvnconfig('alias',['aaa:bbb', 'xxx:', ])
+    def test_wildcard4(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'wildcard4'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'wildcard4'))
 
     def test_invalid5(self):
         (stdout, stderr, return_value) = call_script('alias', ['a:b:c:d:e:f', 'x:y', ])
@@ -167,15 +170,26 @@ class TestMvnalias(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'odd'))
 
-    def test_wildcard7(self):
-        (stdout, stderr, return_value) = call_script('alias', [':', ':', ])
-        self.assertNotEqual(return_value, 0)
-        self.assertTrue(stderr)
+    @xmvnconfig('alias',[':', ':', ])
+    def test_wildcard7(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'wildcard7'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'wildcard7'))
 
     def test_wildcard8(self):
         (stdout, stderr, return_value) = call_script('alias', ['x:y', 'a:b:c:*:1', ])
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
+
+    @xmvnconfig('alias',['x:y', 'a:b:c::1', ])
+    def test_wildcard9(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'wildcard9'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'wildcard9'))
 
 if __name__ == '__main__':
     unittest.main()
