@@ -158,6 +158,8 @@ inst_data depgenerators/fileattrs/maven.attr "${rpmconfigdir}/fileattrs"
 inst_data depgenerators/fileattrs/osgi.attr "${rpmconfigdir}/fileattrs"
 inst_data depgenerators/fileattrs/javadoc.attr "${rpmconfigdir}/fileattrs"
 
+inst_data etc/javapackages-depmap.xml "${mavendepmapfragdir}"
+
 
 exec >files-maven
 
@@ -178,4 +180,3 @@ inst_data configs/configuration-20-rpmbuild-raw.xml "${datadir}/xmvn"
 link "${datadir}/xmvn/configuration-20.xml" "${datadir}/xmvn/configuration.xml"
 
 inst_data fedora-review/java_guidelines.py "${datadir}/fedora-review/plugins"
-inst_data etc/javapackages-depmap.xml "${mavendepmapfragdir}"
