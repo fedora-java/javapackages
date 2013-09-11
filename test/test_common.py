@@ -1,16 +1,18 @@
 import os
 import sys
 import subprocess
-import shutil
 import unittest
+import re
 
-import lxml.etree as etree
+from lxml import etree
 
-script_env = dict()
-script_env['PYTHONPATH'] = os.environ['PYTHONPATH']
-script_env['PATH'] = '.'
+dirpath = os.path.dirname(os.path.realpath(__file__))
+pythonpath = os.path.join(dirpath, '../python')
+sys.path.append(pythonpath)
+script_env = {'PATH':'.', 'PYTHONPATH':pythonpath}
 
-def callScript(name, args):
+def call_script(name, args):
+    name = os.path.join(dirpath, "../java-utils/mvn_" + name + ".py")
     outfile = open("tmpout", 'w')
     errfile = open("tmperr", 'w')
     proc = subprocess.Popen([sys.executable, name] + args, shell = False, 
@@ -24,65 +26,36 @@ def callScript(name, args):
     os.remove('tmperr')
     return (out, err, ret)
 
-def getScriptOutput(testclass, args):
-    (stdout, stderr, return_value) = callScript(testclass.path(), args)
-    testclass.assertEqual("", stderr)
-    testclass.assertEqual(0, return_value)
-    testclass.assertTrue(os.path.exists(".xmvn/config.d/"))
-    filenames = os.listdir(".xmvn/config.d/")
-    testclass.assertEquals(1, len(filenames))
-    return open(".xmvn/config.d/" + filenames[0], 'r')
+def get_config_file_list():
+    try:
+        return os.listdir('.xmvn/config.d/')
+    except OSError:
+        return []
 
-def compareXmvnConfig(args):
+def get_actual_config(filename):
+    actfile = open('.xmvn/config.d/' + filename)
+    return etree.tostring(etree.parse(actfile), pretty_print=True)
+
+def get_expected_config(filename, scriptname, testname):
+    expfname = '{}_{}_{}.xml'.format(scriptname, testname, re.findall('[0-9]+', filename)[-1])
+    expfile =  open(os.path.join(dirpath, 'data', expfname))
+    return etree.tostring(etree.parse(expfile), pretty_print=True)
+
+def get_expected_file_count(scriptname, testname):
+    filelist = os.listdir(os.path.join(dirpath, 'data'))
+    return len([file for file in filelist if file.startswith("{}_{}_".format(scriptname, testname))])
+
+def get_actual_args():
+    return open('.xmvn/out').read()
+
+def get_expected_args(scriptname, testname):
+   return open(os.path.join(dirpath, 'data', "{}_{}_out".format(scriptname, testname))).read()
+
+
+def xmvnconfig(name, fnargs):
     def test_decorator(fn):
-        def test_decorated(self):
-            (stdout, stderr, return_value) = callScript(self.path(), args)
-            self.assertEqual("", stderr)
-            self.assertEqual(0, return_value)
-            self.assertTrue(os.path.exists(".xmvn/config.d/"))
-            filenames = os.listdir(".xmvn/config.d/")
-            for i in range(len(filenames)):
-                exppath = 'data/{}_{}_{:05d}.xml'.format(self.path()[18:-3], fn.__name__[5:], i + 1) 
-                expfile = open(exppath, 'r')
-                actfile = open(".xmvn/config.d/" + filenames[i], 'r')
-                actual = etree.tostring(etree.parse(actfile), pretty_print=True)
-                expected = etree.tostring(etree.parse(expfile), pretty_print=True)
-                self.assertEquals(expected, actual)
+        def test_decorated(self, *args, **kwargs):
+            (stdout, stderr, return_value) = call_script(name, fnargs)
+            fn(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
-
-def compareXmvnArgs(args):
-    def test_decorator(fn):
-        def test_decorated(self):
-            (stdout, stderr, return_value) = callScript(self.path(), args)
-            self.assertEqual("", stderr)
-            self.assertEqual(0, return_value)
-            self.assertTrue(os.path.exists(".xmvn/out"))
-            actfile = open(".xmvn/out", 'r');
-            expfile = open("data/" + self.path()[18:-3] + '_' + fn.__name__[5:] + '_out')
-            self.assertEquals(expfile.read(), actfile.read())
-        return test_decorated
-    return test_decorator
-
-class ScriptTest:
-    def setUp(self):
-        try:
-            shutil.rmtree(".xmvn/")
-        except OSError:
-            pass
-
-    def tearDown(self):
-        try:
-            shutil.rmtree(".xmvn/")
-        except OSError:
-            pass
-
-    def test_run_no_args(self):
-        (out, err, ret) = callScript(self.path(), [])
-        self.assertNotEqual(ret, 0)
-        self.assertEqual("Usage:", err[:6])
-
-    def test_help(self):
-        (out, err, ret) = callScript(self.path(), ['-h'])
-        self.assertTrue(out)
-

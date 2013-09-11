@@ -1,103 +1,179 @@
 import unittest
+import shutil
 from test_common import *
 
-class TestMvnalias(ScriptTest, unittest.TestCase):
-    def path(self):
-        return "../java-utils/mvn_alias.py"
+class TestMvnalias(unittest.TestCase):
 
-    @compareXmvnConfig(['aaa:bbb', 'xxx:yyy', ])
-    def test_simple(self):
-        pass
+    def setUp(self):
+        try:
+            shutil.rmtree(".xmvn/")
+        except OSError:
+            pass
 
-    @compareXmvnConfig(['aaa:bbb', 'xxx:yyy:1.2', ])
-    def test_version(self):
-        pass
+    def tearDown(self):
+        try:
+            shutil.rmtree(".xmvn/")
+        except OSError:
+            pass
 
-    @compareXmvnConfig(['aaa:bbb', 'xxx:yyy:zzz', ])
-    def test_extension(self):
-        pass
+    def test_run_no_args(self):
+        (out, err, ret) = call_script("alias", [])
+        self.assertNotEqual(ret, 0)
+        self.assertEqual("Usage:", err[:6])
 
-    @compareXmvnConfig(['aaa:bbb', 'xxx:yyy:zzz:www', ])
-    def test_classifier(self):
-        pass
+    def test_help(self):
+        (out, err, ret) = call_script("alias", ['-h'])
+        self.assertTrue(out)
 
-    @compareXmvnConfig(['aaa:bbb:3.1', 'xxx:yyy:zzz:3.0', ])
-    def test_comb1(self):
-        pass
+    @xmvnconfig('alias',['aaa:bbb', 'xxx:yyy', ])
+    def test_simple(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'simple'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'simple'))
 
-    @compareXmvnConfig(['aaa:bbb:ccc:ddd:2.1', 'xxx:yyy', ])
-    def test_comb2(self):
-        pass
+    @xmvnconfig('alias',['aaa:bbb', 'xxx:yyy:1.2', ])
+    def test_version(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'version'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'version'))
 
-    @compareXmvnConfig(['aaa:bbb:ccc', 'xxx:yyy:zzz:www:2.1', ])
-    def test_comb3(self):
-        pass
+    @xmvnconfig('alias',['aaa:bbb', 'xxx:yyy:zzz', ])
+    def test_extension(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'extension'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'extension'))
 
-    @compareXmvnConfig(['aaa:bbb:ccc:4.1', 'xxx:yyy:zzz', ])
-    def test_comb4(self):
-        pass
+    @xmvnconfig('alias',['aaa:bbb', 'xxx:yyy:zzz:www', ])
+    def test_classifier(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'classifier'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'classifier'))
 
-    @compareXmvnConfig(['aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:1111111111111111111111111111111111111', 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy:zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz:wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww:33333333333333333333333333333333333333333333', ])
-    def test_longopt(self):
-        pass
+    @xmvnconfig('alias',['aaa:bbb:3.1', 'xxx:yyy:zzz:3.0', ])
+    def test_comb1(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'comb1'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'comb1'))
 
-    @compareXmvnConfig(['*:aaa', 'xxx:yyy', ])
-    def test_wildcard1(self):
-        pass
+    @xmvnconfig('alias',['aaa:bbb:ccc:ddd:2.1', 'xxx:yyy', ])
+    def test_comb2(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'comb2'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'comb2'))
 
-    @compareXmvnConfig([':aaa', 'xxx:yyy', ])
-    def test_wildcard2(self):
-        pass
+    @xmvnconfig('alias',['aaa:bbb:ccc', 'xxx:yyy:zzz:www:2.1', ])
+    def test_comb3(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'comb3'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'comb3'))
 
-    @compareXmvnConfig(['aaa::ccc', 'xxx:yyy', ])
-    def test_wildcard3(self):
-        pass
+    @xmvnconfig('alias',['aaa:bbb:ccc:4.1', 'xxx:yyy:zzz', ])
+    def test_comb4(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'comb4'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'comb4'))
+
+    @xmvnconfig('alias',['aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:1111111111111111111111111111111111111', 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy:zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz:wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww:33333333333333333333333333333333333333333333', ])
+    def test_longopt(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'longopt'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'longopt'))
+
+    @xmvnconfig('alias',['*:aaa', 'xxx:yyy', ])
+    def test_wildcard1(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'wildcard1'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'wildcard1'))
+
+    @xmvnconfig('alias',[':aaa', 'xxx:yyy', ])
+    def test_wildcard2(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'wildcard2'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'wildcard2'))
+
+    @xmvnconfig('alias',['aaa::ccc', 'xxx:yyy', ])
+    def test_wildcard3(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'wildcard3'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'wildcard3'))
 
     def test_one_argument(self):
-        (stdout, stderr, return_value) = callScript(self.path(), ['aaa:bbb', ])
+        (stdout, stderr, return_value) = call_script('alias', ['aaa:bbb', ])
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
     def test_invalid1(self):
-        (stdout, stderr, return_value) = callScript(self.path(), ['aaa:bbb', 'xxx', ])
+        (stdout, stderr, return_value) = call_script('alias', ['aaa:bbb', 'xxx', ])
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
     def test_invalid2(self):
-        (stdout, stderr, return_value) = callScript(self.path(), ['aaa', 'xxx:yyy', ])
+        (stdout, stderr, return_value) = call_script('alias', ['aaa', 'xxx:yyy', ])
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
     def test_wildcard4(self):
-        (stdout, stderr, return_value) = callScript(self.path(), ['aaa:bbb', 'xxx:', ])
+        (stdout, stderr, return_value) = call_script('alias', ['aaa:bbb', 'xxx:', ])
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
     def test_invalid5(self):
-        (stdout, stderr, return_value) = callScript(self.path(), ['a:b:c:d:e:f', 'x:y', ])
+        (stdout, stderr, return_value) = call_script('alias', ['a:b:c:d:e:f', 'x:y', ])
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
     def test_invalid6(self):
-        (stdout, stderr, return_value) = callScript(self.path(), ['a:b', 'x:y:z:w:1:e', ])
+        (stdout, stderr, return_value) = call_script('alias', ['a:b', 'x:y:z:w:1:e', ])
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @compareXmvnConfig(['aaa:bbb', 'ccc:ddd', 'eee:fff', 'ggg:hhh', ])
-    def test_multi(self):
-        pass
+    @xmvnconfig('alias',['aaa:bbb', 'ccc:ddd', 'eee:fff', 'ggg:hhh', ])
+    def test_multi(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'multi'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'multi'))
 
-    @compareXmvnConfig(['aaa:bbb', 'ccc:ddd', 'eee:fff', ])
-    def test_odd(self):
-        pass
+    @xmvnconfig('alias',['aaa:bbb', 'ccc:ddd', 'eee:fff', ])
+    def test_odd(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'odd'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'odd'))
 
     def test_wildcard7(self):
-        (stdout, stderr, return_value) = callScript(self.path(), [':', ':', ])
+        (stdout, stderr, return_value) = call_script('alias', [':', ':', ])
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
     def test_wildcard8(self):
-        (stdout, stderr, return_value) = callScript(self.path(), ['x:y', 'a:b:c:*:1', ])
+        (stdout, stderr, return_value) = call_script('alias', ['x:y', 'a:b:c:*:1', ])
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
