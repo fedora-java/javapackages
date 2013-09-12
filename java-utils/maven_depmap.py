@@ -74,12 +74,13 @@ class MissingJarFile(Exception):
     def __init__(self):
         self.args=("JAR seems to be missing in standard directories. Make sure you have installed it",)
 
-def _get_javadir_part(jar_path):
+def _get_javadir_part(jar_path, prefix):
     # This is not nice, because macros can change but handling these
     # in RPM macros is ugly as hell.
-    javadirs=["/usr/share/java", "/usr/share/java-jni", "/usr/lib/java",
-              "/usr/lib64/java"]
-
+    javadirs=[os.path.join(prefix, part) for part in ["usr/share/java",
+                                                      "usr/share/java-jni",
+                                                      "usr/lib/java",
+                                                      "usr/lib64/java"]]
     jarpart = None
     for jdir in javadirs:
         if jdir in jar_path:
@@ -89,7 +90,7 @@ def _get_javadir_part(jar_path):
         raise MissingJarFile()
     return jarpart
 
-def _get_jpp_from_filename(pom_path, jar_path = None):
+def _get_jpp_from_filename(pom_path, prefix, jar_path = None):
     """Get resolved (groupId,artifactId) tuple from POM and JAR path.
 
     POM name and JAR name have to be compatible.
@@ -101,7 +102,7 @@ def _get_jpp_from_filename(pom_path, jar_path = None):
     if jar_path:
         if not os.path.isfile(jar_path):
             raise IOError("JAR path doesn't exist")
-        jarpart = _get_javadir_part(jar_path)
+        jarpart = _get_javadir_part(jar_path, prefix)
 
         if pomname[3] == '.':
             if '/' not in jarpart:
@@ -131,7 +132,7 @@ def _get_jpp_from_filename(pom_path, jar_path = None):
     return(jpp_gid, jpp_aid)
 
 
-def get_local_artifact(upstream_artifact, jar_path=None):
+def get_local_artifact(upstream_artifact, prefix, jar_path=None):
     if not jar_path:
         # does this even make sense? There is no pom, no dependencies...
         return Artifact("JPP", upstream_artifact.artifactId,
@@ -139,7 +140,7 @@ def get_local_artifact(upstream_artifact, jar_path=None):
                         upstream_artifact.classifier,
                         upstream_artifact.version)
 
-    jarpart = _get_javadir_part(jar_path)
+    jarpart = _get_javadir_part(jar_path, prefix)
     local_gid = "JPP"
     if '/' in jarpart:
         local_gid = "JPP/{gid}".format(gid=dirname(jarpart))
@@ -162,7 +163,7 @@ def get_local_artifact(upstream_artifact, jar_path=None):
                     upstream_artifact.classifier, upstream_artifact.version)
 
 
-def parse_pom(pom_file, jar_file = None):
+def parse_pom(pom_file, prefix, jar_file = None):
     """Returns Fragment class or None if POM file is invalid"""
     pom = POM(pom_file)
 
@@ -173,7 +174,7 @@ def parse_pom(pom_file, jar_file = None):
         if not pom.packaging or pom.packaging != "pom":
             raise PackagingTypeMissingFile(pom_path)
 
-    jpp_gid, jpp_aid = _get_jpp_from_filename(pom_file, jar_file)
+    jpp_gid, jpp_aid = _get_jpp_from_filename(pom_file, prefix, jar_file)
 
     upstream_artifact = Artifact(pom.groupId, pom.artifactId, version=pom.version)
     local_artifact = Artifact(jpp_gid, jpp_aid)
@@ -262,7 +263,7 @@ artifactId={f.upstream_artifact.artifactId}""".format(timestamp=timestamp,
 
 if __name__ == "__main__":
 
-    usage="usage: %prog [options] fragment_path pom_path [jar_path]"
+    usage="usage: %prog [options] fragment_path pom_path|<MVN spec> [jar_path]"
     parser = OptionParser(usage=usage)
     parser.add_option("-a","--append",type="str",
                       help="Additional depmaps to add (gid:aid)  [default: %default]")
@@ -270,7 +271,8 @@ if __name__ == "__main__":
                       help='Additional versions to add for each depmap')
     parser.add_option('-n', '--namespace', type="str",
                       help='Namespace to use for generated fragments', default="")
-
+    parser.add_option('-p', '--prefix', type="str",
+                      help='Prefix where artifacts are expected to be installed', default="/")
 
 
 
@@ -280,6 +282,7 @@ if __name__ == "__main__":
     append_deps = options.append
     add_versions = options.versions
     namespace = options.namespace
+    prefix = options.prefix
 
     if len(args) < 2:
         parser.error("Incorrect number of arguments")
@@ -297,16 +300,15 @@ if __name__ == "__main__":
             if upstream.extension == 'jar':
                 upstream.extension = ''
             if not upstream.version:
-                print "Artifact definition has to include version"
-                sys.exit(1)
-            local = get_local_artifact(upstream, jar_path)
+                parser.error("Artifact definition has to include version")
+            local = get_local_artifact(upstream, prefix, jar_path)
             fragment = Fragment(upstream, local)
         else:
-            fragment = parse_pom(pom_path, jar_path)
+            fragment = parse_pom(pom_path, prefix, jar_path)
         if fragment:
             inject_pom_properties(jar_path, fragment)
     else:
-        fragment = parse_pom(pom_path)
+        fragment = parse_pom(pom_path, prefix)
 
     # output file paths for file lists
     print fragment_path
@@ -319,7 +321,7 @@ if __name__ == "__main__":
         mappings = create_mappings(fragment, append_deps, namespace)
         output_fragment(fragment_path, fragment, mappings, add_versions)
     else:
-        print "Problem parsing POM file. Is it valid maven POM? Send bugreport \
+        parser.error("Problem parsing POM file. Is it valid maven POM? Send bugreport \
         to https://fedorahosted.org/javapackages/ and attach %s to \
-        this bugreport" % pom_path
+        this bugreport" % pom_path)
         sys.exit(1)
