@@ -16,14 +16,14 @@ class TestMvnpackage(unittest.TestCase):
         except OSError:
             pass
 
-    def test_run_no_args(self):
-        (out, err, ret) = call_script("package", [])
-        self.assertNotEqual(ret, 0)
-        self.assertEqual("Usage:", err[:6])
+    @xmvnconfig('package', [])
+    def test_run_no_args(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertEqual("Usage:", stderr[:6])
 
-    def test_help(self):
-        (out, err, ret) = call_script("package", ['-h'])
-        self.assertTrue(out)
+    @xmvnconfig('package', ['-h'])
+    def test_help(self, stdout, stderr, return_value):
+        self.assertTrue(stdout)
 
     @xmvnconfig('package',['aaa:bbb', 'pack', ])
     def test_simple(self, stdout, stderr, return_value):
@@ -105,13 +105,13 @@ class TestMvnpackage(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'package', 'braces2'))
 
-    def test_single(self):
-        (stdout, stderr, return_value) = call_script('package', ['aaa:bbb', ])
+    @xmvnconfig('package',['aaa:bbb', ])
+    def test_single(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    def test_more(self):
-        (stdout, stderr, return_value) = call_script('package', ['aaa:bbb', 'pack', 'evil', ])
+    @xmvnconfig('package',['aaa:bbb', 'pack', 'evil', ])
+    def test_more(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 

@@ -16,26 +16,26 @@ class TestMvnbuild(unittest.TestCase):
         except OSError:
             pass
 
-    def test_run_no_args(self):
-        (out, err, ret) = call_script("build", [])
-        self.assertNotEqual(ret, 0)
-        self.assertEqual("Usage:", err[:6])
-
-    def test_help(self):
-        (out, err, ret) = call_script("build", ['-h'])
-        self.assertTrue(out)
-
     @xmvnconfig('build', [])
+    def test_run_no_args(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertEqual("Usage:", stderr[:6])
+
+    @xmvnconfig('build', ['-h'])
+    def test_help(self, stdout, stderr, return_value):
+        self.assertTrue(stdout)
+
+    @xmvnconfig('build',[])
     def test_run_no_args(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(get_actual_args(), get_expected_args('build', 'run_no_args'))
 
-    @xmvnconfig('build', ['-b', ])
+    @xmvnconfig('build',['-b', ])
     def test_bootstrap(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(get_actual_args(), get_expected_args('build', 'bootstrap'))
 
-    @xmvnconfig('build', ['-d', ])
+    @xmvnconfig('build',['-d', ])
     def test_xmvn_debug(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(get_actual_args(), get_expected_args('build', 'xmvn_debug'))
@@ -48,7 +48,7 @@ class TestMvnbuild(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'build', 'xmvn_debug1'))
 
-    @xmvnconfig('build', ['-f', ])
+    @xmvnconfig('build',['-f', ])
     def test_force(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(get_actual_args(), get_expected_args('build', 'force'))
@@ -61,27 +61,27 @@ class TestMvnbuild(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'build', 'force1'))
 
-    @xmvnconfig('build', ['-g', ])
+    @xmvnconfig('build',['-g', ])
     def test_goal_before(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(get_actual_args(), get_expected_args('build', 'goal_before'))
 
-    @xmvnconfig('build', ['-G', ])
+    @xmvnconfig('build',['-G', ])
     def test_goal_after(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(get_actual_args(), get_expected_args('build', 'goal_after'))
 
-    @xmvnconfig('build', ['-i', ])
+    @xmvnconfig('build',['-i', ])
     def test_skip_install(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(get_actual_args(), get_expected_args('build', 'skip_install'))
 
-    @xmvnconfig('build', ['-j', ])
+    @xmvnconfig('build',['-j', ])
     def test_skip_javadoc(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(get_actual_args(), get_expected_args('build', 'skip_javadoc'))
 
-    @xmvnconfig('build', ['-s', ])
+    @xmvnconfig('build',['-s', ])
     def test_singleton(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(get_actual_args(), get_expected_args('build', 'singleton'))
@@ -94,7 +94,7 @@ class TestMvnbuild(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'build', 'singleton1'))
 
-    @xmvnconfig('build', ['-X', ])
+    @xmvnconfig('build',['-X', ])
     def test_debug(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(get_actual_args(), get_expected_args('build', 'debug'))

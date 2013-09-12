@@ -16,14 +16,14 @@ class TestMvnalias(unittest.TestCase):
         except OSError:
             pass
 
-    def test_run_no_args(self):
-        (out, err, ret) = call_script("alias", [])
-        self.assertNotEqual(ret, 0)
-        self.assertEqual("Usage:", err[:6])
+    @xmvnconfig('alias', [])
+    def test_run_no_args(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertEqual("Usage:", stderr[:6])
 
-    def test_help(self):
-        (out, err, ret) = call_script("alias", ['-h'])
-        self.assertTrue(out)
+    @xmvnconfig('alias', ['-h'])
+    def test_help(self, stdout, stderr, return_value):
+        self.assertTrue(stdout)
 
     @xmvnconfig('alias',['aaa:bbb', 'xxx:yyy', ])
     def test_simple(self, stdout, stderr, return_value):
@@ -121,18 +121,18 @@ class TestMvnalias(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'wildcard3'))
 
-    def test_one_argument(self):
-        (stdout, stderr, return_value) = call_script('alias', ['aaa:bbb', ])
+    @xmvnconfig('alias',['aaa:bbb', ])
+    def test_one_argument(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    def test_invalid1(self):
-        (stdout, stderr, return_value) = call_script('alias', ['aaa:bbb', 'xxx', ])
+    @xmvnconfig('alias',['aaa:bbb', 'xxx', ])
+    def test_invalid1(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    def test_invalid2(self):
-        (stdout, stderr, return_value) = call_script('alias', ['aaa', 'xxx:yyy', ])
+    @xmvnconfig('alias',['aaa', 'xxx:yyy', ])
+    def test_invalid2(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
@@ -144,13 +144,13 @@ class TestMvnalias(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'wildcard4'))
 
-    def test_invalid5(self):
-        (stdout, stderr, return_value) = call_script('alias', ['a:b:c:d:e:f', 'x:y', ])
+    @xmvnconfig('alias',['a:b:c:d:e:f', 'x:y', ])
+    def test_invalid5(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    def test_invalid6(self):
-        (stdout, stderr, return_value) = call_script('alias', ['a:b', 'x:y:z:w:1:e', ])
+    @xmvnconfig('alias',['a:b', 'x:y:z:w:1:e', ])
+    def test_invalid6(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
@@ -175,8 +175,8 @@ class TestMvnalias(unittest.TestCase):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    def test_wildcard8(self):
-        (stdout, stderr, return_value) = call_script('alias', ['x:y', 'a:b:c:*:1', ])
+    @xmvnconfig('alias',['x:y', 'a:b:c:*:1', ])
+    def test_wildcard8(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 

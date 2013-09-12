@@ -16,14 +16,14 @@ class TestMvncompat_version(unittest.TestCase):
         except OSError:
             pass
 
-    def test_run_no_args(self):
-        (out, err, ret) = call_script("compat_version", [])
-        self.assertNotEqual(ret, 0)
-        self.assertEqual("Usage:", err[:6])
+    @xmvnconfig('compat_version', [])
+    def test_run_no_args(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertEqual("Usage:", stderr[:6])
 
-    def test_help(self):
-        (out, err, ret) = call_script("compat_version", ['-h'])
-        self.assertTrue(out)
+    @xmvnconfig('compat_version', ['-h'])
+    def test_help(self, stdout, stderr, return_value):
+        self.assertTrue(stdout)
 
     @xmvnconfig('compat_version',['aaa:bbb', '1', ])
     def test_simple(self, stdout, stderr, return_value):
@@ -33,8 +33,8 @@ class TestMvncompat_version(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'compat_version', 'simple'))
 
-    def test_single(self):
-        (stdout, stderr, return_value) = call_script('compat_version', ['aaa:bbb', ])
+    @xmvnconfig('compat_version',['aaa:bbb', ])
+    def test_single(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 

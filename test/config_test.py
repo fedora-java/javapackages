@@ -16,22 +16,22 @@ class TestMvnconfig(unittest.TestCase):
         except OSError:
             pass
 
-    def test_run_no_args(self):
-        (out, err, ret) = call_script("config", [])
-        self.assertNotEqual(ret, 0)
-        self.assertEqual("Usage:", err[:6])
+    @xmvnconfig('config', [])
+    def test_run_no_args(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertEqual("Usage:", stderr[:6])
 
-    def test_help(self):
-        (out, err, ret) = call_script("config", ['-h'])
-        self.assertTrue(out)
+    @xmvnconfig('config', ['-h'])
+    def test_help(self, stdout, stderr, return_value):
+        self.assertTrue(stdout)
 
-    def test_single(self):
-        (stdout, stderr, return_value) = call_script('config', ['aaa', ])
+    @xmvnconfig('config',['aaa', ])
+    def test_single(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    def test_more(self):
-        (stdout, stderr, return_value) = call_script('config', ['a', 'b', 'c', ])
+    @xmvnconfig('config',['a', 'b', 'c', ])
+    def test_more(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
