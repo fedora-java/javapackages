@@ -188,5 +188,31 @@ class TestMvnalias(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'wildcard9'))
 
+    @xmvnconfig('alias',['*:{aaa,bbb}*', ':@1', ])
+    def test_backref(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'backref'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'backref'))
+
+    @xmvnconfig('alias',['aaa', ':@1', ])
+    def test_backref1(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
+
+    @xmvnconfig('alias',['{aa,bb}:{cc,dd}', '@1:@2', ])
+    def test_backref2(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('alias', 'backref2'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'backref2'))
+
+    @xmvnconfig('alias',[':{aaa,bbb}', '@1:@2', ])
+    def test_backref3(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
+
 if __name__ == '__main__':
     unittest.main()
