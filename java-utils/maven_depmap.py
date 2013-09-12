@@ -179,7 +179,9 @@ def parse_pom(pom_file, jar_file = None):
     local_artifact = Artifact(jpp_gid, jpp_aid)
     return Fragment(upstream_artifact, local_artifact)
 
-def create_mappings(fragment, additions = None):
+def create_mappings(fragment, additions=None, namespace=""):
+    fragment.upstream_artifact.namespace = namespace
+    fragment.local_artifact.namespace = namespace
     maps = [fragment]
     if additions:
         adds = additions.split(',')
@@ -266,6 +268,8 @@ if __name__ == "__main__":
                       help="Additional depmaps to add (gid:aid)  [default: %default]")
     parser.add_option('-r', '--versions', type="str",
                       help='Additional versions to add for each depmap')
+    parser.add_option('-n', '--namespace', type="str",
+                      help='Namespace to use for generated fragments', default="")
 
 
 
@@ -275,6 +279,7 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
     append_deps = options.append
     add_versions = options.versions
+    namespace = options.namespace
 
     if len(args) < 2:
         parser.error("Incorrect number of arguments")
@@ -311,7 +316,7 @@ if __name__ == "__main__":
         print jar_path
 
     if fragment:
-        mappings = create_mappings(fragment, append_deps)
+        mappings = create_mappings(fragment, append_deps, namespace)
         output_fragment(fragment_path, fragment, mappings, add_versions)
     else:
         print "Problem parsing POM file. Is it valid maven POM? Send bugreport \
