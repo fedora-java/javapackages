@@ -68,7 +68,7 @@ _filelist=".mfiles%{-f*:-%{-f*}}" \
 install -dm 755 $RPM_BUILD_ROOT/%{_mavendepmapfragdir}\
 for _dir in %{_jnidir} %{_javajnidir} %{_javadir}; do \
     if [ -f %{buildroot}/$_dir/$_jarpart ]; then \
-	_jpath="%{buildroot}/$_dir/$_jarpart" \
+	_jpath="%{buildroot}$_dir/$_jarpart" \
     fi \
 done \
 python -m /usr/share/java-utils/maven_depmap %{-a} %{-v*:-r %{-v*}} \\\
