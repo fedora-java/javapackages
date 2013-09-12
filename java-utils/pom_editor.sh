@@ -94,21 +94,19 @@ _pom_patch()
     # them don't. In order to be able to process all POMs in a uniform
     # way we force explicit namespace declaration here. (An assumption
     # is made that model version is 4.0.0.)
-    sed -i 's|<project\s*\(/\)>|<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"\1>|' "${pom}"
+    sed -i 's|<project\s*>|<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">|' "${pom}"
 
     # Apply identity transformation.
-    cp "${pom}" "${pom}.tmp"
-    (xsltproc --nonet - "${pom}" <<<"${_pom_xslt_header}${_pom_xslt_trailer}")|diff -uwZE "${pom}" - |patch "${pom}.tmp" >/dev/null
+    (xsltproc --nonet - "${pom}" >"${pom}.tmp" <<<"${_pom_xslt_header}${_pom_xslt_trailer}")
 
     # Try to apply the patch.
-    xsltproc --nonet - "${pom}".tmp |diff -uwZE "${pom}" - |patch "${pom}" >/dev/null
+    xsltproc --nonet - "${pom}.tmp" > "${pom}" 
 
     # Bail out if the resulting file is identical to the patched one.
     # This is to help maintainers detect unneeded patches.
     if [ "x${2}" != "xallow-noop" ]; then
        cmp -s "${pom}"{,.tmp} && _pom_bailout Operation on POM has no effect.
     fi
-    rm -f "${pom}".tmp
 }
 
 # Returns whitespace preceding the node
