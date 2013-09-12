@@ -281,6 +281,8 @@ if __name__ == "__main__":
     # These will fail when incorrect number of arguments is given.
     fragment_path = args[0].strip()
     pom_path = args[1].strip()
+    jar_path = None
+
     if len(args) == 3:
         jar_path = args[2].strip()
         local = None
@@ -300,6 +302,13 @@ if __name__ == "__main__":
             inject_pom_properties(jar_path, fragment)
     else:
         fragment = parse_pom(pom_path)
+
+    # output file paths for file lists
+    print fragment_path
+    if ':' not in pom_path:
+        print pom_path
+    if jar_path:
+        print jar_path
 
     if fragment:
         mappings = create_mappings(fragment, append_deps)
