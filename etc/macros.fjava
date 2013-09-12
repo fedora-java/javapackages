@@ -101,8 +101,10 @@ for ver in $(echo %{-v*} | tr ',' '\\n');do \
  fi \
 done \
 # remove unversioned jar and pom from .mfiles \
-_jpath=${_jpath#%{buildroot}} \
-sed -i "s:${_jpath/-%{version}.jar/.jar}::" ${_filelist} \
+if [[ -n ${_jpath} ]]; then \
+ _jpath="${_jpath#%{buildroot}}" \
+ sed -i "s:${_jpath/-%{version}.jar/.jar}::" ${_filelist} \
+fi \
 sed -i "s:%{_mavenpomdir}/${_pompart/-$ver.pom/.pom}::" ${_filelist} \
 fi \
 sed -i 's:%{buildroot}::' ${_filelist} \
