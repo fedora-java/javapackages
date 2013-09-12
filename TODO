@@ -13,11 +13,6 @@
    rhbz#986909
    https://bugzilla.redhat.com/show_bug.cgi?id=986909
 
-** add_maven_depmap creates broken .mfiles when compat packages are involved
-
-   The unversioned jar is listed in .mfiles even though it should not be there
-   (it is moved in the macro)
-
 ** Add testcase for maven.req when package contains both compat and non-compat
    subpackages
 
