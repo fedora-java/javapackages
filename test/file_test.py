@@ -120,5 +120,41 @@ class TestMvnfile(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'file', 'more_symlinks'))
 
+    @xmvnconfig('file',[':{aa,bb}', '@1', ])
+    def test_backref(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('file', 'backref'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'file', 'backref'))
+
+    @xmvnconfig('file',['{aa,bb}:{cc,dd}', '@2', '@1', ])
+    def test_backref1(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('file', 'backref1'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'file', 'backref1'))
+
+    @xmvnconfig('file',[':a', '@1', ])
+    def test_backref2(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
+
+    @xmvnconfig('file',[':{a,b}', '@1', '@4', ])
+    def test_backref3(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
+
+    @xmvnconfig('file',['{aa,bb}:{x,y', '@1', ])
+    def test_odd_braces1(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
+
+    @xmvnconfig('file',['{aa,bb}:{x,y}}', '@1', ])
+    def test_odd_braces2(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
+
 if __name__ == '__main__':
     unittest.main()

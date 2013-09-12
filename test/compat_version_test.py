@@ -62,5 +62,28 @@ class TestMvncompat_version(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'compat_version', 'wildcard'))
 
+    @xmvnconfig('compat_version',['aa:bb:{1,2}', '@1', ])
+    def test_backref1(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('compat_version', 'backref1'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'compat_version', 'backref1'))
+
+    @xmvnconfig('compat_version',['aaa:bb:{1,2}', '@3', ])
+    def test_backref2(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
+
+    @xmvnconfig('compat_version',['aaa:bbb:{1,2', '@1', ])
+    def test_odd_braces1(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
+
+    @xmvnconfig('compat_version',['aaa:bbb:1,2}', '@3', ])
+    def test_odd_braces2(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
+
 if __name__ == '__main__':
     unittest.main()

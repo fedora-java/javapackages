@@ -214,5 +214,20 @@ class TestMvnalias(unittest.TestCase):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
+    @xmvnconfig('alias',[':{aaa,bbb', '@1', ])
+    def test_odd_braces1(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
+
+    @xmvnconfig('alias',[':{aaa,bbb}}', '@1', ])
+    def test_odd_braces2(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
+
+    @xmvnconfig('alias',['{aaa:bbb}:ccc', '@1', ])
+    def test_braces(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
+
 if __name__ == '__main__':
     unittest.main()
