@@ -136,7 +136,7 @@
 #   %{javadir}-ext/foo.jar
 #   %{javadir}-*/bar.jar
 #
-%add_jvm_extension JAVA_LIBDIR=%{buildroot}/%{_javadir} %{_bindir}/jvmjar -l
+%add_jvm_extension JAVA_LIBDIR=%{buildroot}%{_javadir} %{_bindir}/jvmjar -l
 
 
 #
@@ -152,8 +152,8 @@
 # %6    whether to prefer a jre over a sdk when finding a jvm
 #
 %jpackage_script() \
-install -d -m 755 $RPM_BUILD_ROOT%{_bindir}\
-cat > $RPM_BUILD_ROOT%{_bindir}/%5 << EOF \
+install -d -m 755 %{buildroot}%{_bindir} \
+cat > %{buildroot}%{_bindir}/%5 << EOF \
 #!/bin/sh\
 #\
 # %{name} script\
@@ -188,5 +188,5 @@ set_options \\$BASE_OPTIONS\
 # Let's start\
 run "\\$@"\
 EOF\
-chmod 755 $RPM_BUILD_ROOT%{_bindir}/%5\
+chmod 755 %{buildroot}%{_bindir}/%5\
 %{nil}

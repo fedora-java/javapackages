@@ -144,8 +144,8 @@
 xmvn-install %{?-X} -R .xmvn-reactor -n "${RPM_PACKAGE_NAME}" -d "%{buildroot}" \
 jdir="%{-J*:%{-J*}}%{!-J*:target/site/apidocs}" \
 if [ -d "${jdir}" ]; then \
-   install -dm755 $RPM_BUILD_ROOT/%{_javadocdir}/%{name} \
-   cp -pr "${jdir}"/* $RPM_BUILD_ROOT%{_javadocdir}/%{name} \
-   echo '/%{_javadocdir}/%{name}' >>.mfiles-javadoc \
+   install -dm755 %{buildroot}%{_javadocdir}/%{name} \
+   cp -pr "${jdir}"/* %{buildroot}%{_javadocdir}/%{name} \
+   echo '%{_javadocdir}/%{name}' >>.mfiles-javadoc \
 fi \
 %{nil}

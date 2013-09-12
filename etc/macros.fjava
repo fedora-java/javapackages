@@ -59,7 +59,7 @@ set -e \
    _jarpart="%2" \
 %endif \
 _filelist=".mfiles%{-f*:-%{-f*}}" \
-install -dm 755 %{buildroot}%{_mavendepmapfragdir}\
+install -dm 755 %{buildroot}%{_mavendepmapfragdir} \
 for _dir in %{_jnidir} %{_javajnidir} %{_javadir}; do \
     if [ -f %{buildroot}$_dir/$_jarpart ]; then \
 	_jpath="%{buildroot}$_dir/$_jarpart" \
