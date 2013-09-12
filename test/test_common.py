@@ -11,12 +11,16 @@ pythonpath = os.path.join(dirpath, '../python')
 sys.path.append(pythonpath)
 script_env = {'PATH':'.', 'PYTHONPATH':pythonpath}
 
-def call_script(name, args):
-    name = os.path.join(dirpath, "../java-utils/mvn_" + name + ".py")
+def call_script(name, args, stdin = None, wrapped = False):
     outfile = open("tmpout", 'w')
     errfile = open("tmperr", 'w')
-    proc = subprocess.Popen([sys.executable, name] + args, shell = False, 
-        stdout = outfile, stderr = errfile, env = script_env)
+    if wrapped:
+        procargs = [sys.executable, os.path.join(dirpath, 'wrapper.py'), name]
+    else:
+        procargs = [sys.executable, name]
+    proc = subprocess.Popen(procargs + args, shell = False, 
+        stdout = outfile, stderr = errfile, env = script_env, stdin = subprocess.PIPE)
+    proc.communicate(stdin)
     ret = proc.wait()
     outfile = open("tmpout", 'r+')
     errfile = open("tmperr", 'r+')
@@ -55,7 +59,20 @@ def get_expected_args(scriptname, testname):
 def xmvnconfig(name, fnargs):
     def test_decorator(fn):
         def test_decorated(self, *args, **kwargs):
-            (stdout, stderr, return_value) = call_script(name, fnargs)
+            path = os.path.join(dirpath, '..', 'java-utils', 'mvn_' + name + '.py')
+            (stdout, stderr, return_value) = call_script(path, fnargs)
             fn(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
+
+def mavenprov(filelist):
+    def test_decorator(fn):
+        def test_decorated(self, *args, **kwargs):
+            path = os.path.join(dirpath, '..', 'depgenerators', 'maven.prov')
+            input = ' '.join([os.path.join(dirpath, 'depmaps', filename) for filename in filelist])
+            (stdout, stderr, return_value) = call_script(path, [], stdin=input, wrapped=True)
+            fn(self, stdout, stderr, return_value)
+        return test_decorated
+    return test_decorator
+
+
