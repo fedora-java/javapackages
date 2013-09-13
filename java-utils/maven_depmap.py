@@ -167,17 +167,22 @@ def parse_pom(pom_file, prefix, jar_file = None):
     """Returns Fragment class or None if POM file is invalid"""
     pom = POM(pom_file)
 
+    extension = ''
     # if project packaging is undefined => jar
     # only "pom" packaging type can be without jar_file path otherwise
     # we bail
     if not jar_file:
         if not pom.packaging or pom.packaging != "pom":
             raise PackagingTypeMissingFile(pom_path)
+    else:
+        extension = re.search('.*/%s.(.*)$' % (pom.artifactId), jar_path).group(1)
+        if extension == "jar":
+            extension = ''
 
     jpp_gid, jpp_aid = _get_jpp_from_filename(pom_file, prefix, jar_file)
 
     upstream_artifact = Artifact(pom.groupId, pom.artifactId, version=pom.version)
-    local_artifact = Artifact(jpp_gid, jpp_aid)
+    local_artifact = Artifact(jpp_gid, jpp_aid, extension)
     return Fragment(upstream_artifact, local_artifact)
 
 def create_mappings(fragment, additions=None, namespace=""):
