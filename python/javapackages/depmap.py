@@ -59,6 +59,8 @@ class Depmap(object):
         self.__load_depmap(path)
         if self.__doc is None:
             raise DepmapLoadingException("Failed to load fragment {path} You have a problem".format(path=path))
+        if not self.get_provided_artifacts():
+            raise DepmapLoadingException("Depmap {path} does not contain any provided artifacts ".format(path=path))
 
     def __load_depmap(self, fragment_path):
         with open(fragment_path) as f:
