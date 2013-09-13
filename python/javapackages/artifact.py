@@ -163,7 +163,7 @@ class Artifact(object):
         all_empty = True
         wildcard_used = False
         backref_used = False
-        backref_re = re.compile('@\d')
+        backref_re = re.compile('@\d+')
         for key in ("artifactId", "groupId", "extension", "version",
                     "classifier", "namespace"):
             val = getattr(self, key)
