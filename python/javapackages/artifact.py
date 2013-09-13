@@ -111,29 +111,6 @@ class Artifact(object):
         return "{namespace}({mvnstr})".format(namespace=namespace,
                                               mvnstr=mvnstr)
 
-    def count_backreferences(self):
-        """
-        Return number of backreferences used in this artifact
-        """
-        s = self.get_rpm_str()
-        backref_re = re.compile('@\d')
-        return len(backref_re.findall(s))
-
-    def count_wildcard_groups(self):
-        """
-        Return number of wildcard groups used in this artifact
-        """
-        s = self.get_rpm_str()
-        left = s.count('{')
-        right = s.count('}')
-
-        if left != right:
-            raise ArtifactFormatException("Number of opening and closing "
-                                          "parenthesis for groups of wildcard "
-                                          "matching is different.")
-
-        return left
-
 
     def get_xml_element(self, root="artifact"):
         """

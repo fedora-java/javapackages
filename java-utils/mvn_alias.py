@@ -70,18 +70,9 @@ if __name__ == "__main__":
 
     try:
         orig = Artifact.from_mvn_str(args[0])
-        orig.validate(allow_backref=False)
-        wild_groups = orig.count_wildcard_groups()
         aliases = []
         for alias in args[1:]:
-            aa = Artifact.from_mvn_str(alias)
-            aa.validate(allow_empty=False, allow_wildcards=False)
-            backrefs = aa.count_backreferences()
-            if backrefs > wild_groups:
-                raise ArtifactValidationException("Number of backrefenreces "
-                                                  "is higher than wildcard "
-                                                  "groups.")
-            aliases.append(aa)
+            aliases.append(Artifact.from_mvn_str(alias))
 
         XMvnConfig().add_aliases(orig, aliases)
     except (ArtifactValidationException, ArtifactFormatException), e:
