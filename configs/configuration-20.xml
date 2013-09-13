@@ -32,6 +32,15 @@
     <metadataDir>usr/share/maven-fragments</metadataDir>
     <installRoot>.xmvn/root</installRoot>
   </installerSettings>
+  <artifactManagement>
+    <rule>
+      <optional>true</optional>
+      <artifactGlob>
+        <classifier>*?</classifier>
+      </artifactGlob>
+      <targetPackage>__noinstall</targetPackage>
+    </rule>
+  </artifactManagement>
   <repositories>
     <repository>
       <id>base-raw-pom</id>
