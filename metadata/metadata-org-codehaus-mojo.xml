@@ -17,7 +17,7 @@
       <artifactId>antlr3-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven Application Assembler Plugin</name>
+      <name>Appassembler :: Maven Plug-In</name>
       <prefix>appassembler</prefix>
       <artifactId>appassembler-maven-plugin</artifactId>
     </plugin>
@@ -117,7 +117,7 @@
       <artifactId>clirr-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven Cobertura Plugin</name>
+      <name>Mojo's Maven plugin for Cobertura</name>
       <prefix>cobertura</prefix>
       <artifactId>cobertura-maven-plugin</artifactId>
     </plugin>
@@ -165,6 +165,11 @@
       <name>DITA Open Toolkit Maven Plugin</name>
       <prefix>dita</prefix>
       <artifactId>dita-maven-plugin</artifactId>
+    </plugin>
+    <plugin>
+      <name>DITA Open Toolkit Maven Plugin</name>
+      <prefix>ditaot</prefix>
+      <artifactId>ditaot-maven-plugin</artifactId>
     </plugin>
     <plugin>
       <name>Maven Docbook plugin</name>
@@ -562,7 +567,7 @@
       <artifactId>solaris-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Sonar Maven Plugin</name>
+      <name>SonarQube Maven Plugin</name>
       <prefix>sonar</prefix>
       <artifactId>sonar-maven-plugin</artifactId>
     </plugin>

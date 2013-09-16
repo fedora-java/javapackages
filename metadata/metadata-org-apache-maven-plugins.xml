@@ -122,6 +122,11 @@
       <artifactId>maven-enforcer-plugin</artifactId>
     </plugin>
     <plugin>
+      <name>Apache Maven Enforcer Plugin</name>
+      <prefix>enforcer</prefix>
+      <artifactId>maven-enforcer-plugin</artifactId>
+    </plugin>
+    <plugin>
       <name>Maven Failsafe Plugin</name>
       <prefix>failsafe</prefix>
       <artifactId>maven-failsafe-plugin</artifactId>
@@ -147,7 +152,17 @@
       <artifactId>maven-idea-plugin</artifactId>
     </plugin>
     <plugin>
+      <name>Apache Maven IDEA Plugin (RETIRED)</name>
+      <prefix>idea</prefix>
+      <artifactId>maven-idea-plugin</artifactId>
+    </plugin>
+    <plugin>
       <name>Maven Install Plugin</name>
+      <prefix>install</prefix>
+      <artifactId>maven-install-plugin</artifactId>
+    </plugin>
+    <plugin>
+      <name>Apache Maven Install Plugin</name>
       <prefix>install</prefix>
       <artifactId>maven-install-plugin</artifactId>
     </plugin>
@@ -199,6 +214,11 @@
     <plugin>
       <name>Maven One Plugin</name>
       <prefix>maven-one-plugin</prefix>
+      <artifactId>maven-one-plugin</artifactId>
+    </plugin>
+    <plugin>
+      <name>Apache Maven One Plugin (RETIRED)</name>
+      <prefix>one</prefix>
       <artifactId>maven-one-plugin</artifactId>
     </plugin>
     <plugin>
@@ -268,6 +288,11 @@
     </plugin>
     <plugin>
       <name>Maven Remote Resources Plugin</name>
+      <prefix>remote-resources</prefix>
+      <artifactId>maven-remote-resources-plugin</artifactId>
+    </plugin>
+    <plugin>
+      <name>Apache Maven Remote Resources Plugin</name>
       <prefix>remote-resources</prefix>
       <artifactId>maven-remote-resources-plugin</artifactId>
     </plugin>
