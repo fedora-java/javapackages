@@ -1,5 +1,8 @@
 # Functions library for Java applications.                           -*- sh -*-
 #
+# Fedora Project <http://www.fedoraproject.org/>
+#   Mikolaj Izdebski <mizdebsk@redhat.com>
+#
 # JPackage Project <http://www.jpackage.org/>
 #   Guillaume Rousse <guillomovitch@sourceforge.net>
 #   Ville Skyttä <scop at jpackage.org>
@@ -276,26 +279,39 @@ link_jar_repository() {
 # Requires a correct $JAVA_LIBDIR, $JAVAVER_LIBDIR and $JVM_LIBDIR
 find_jar() {
 
-   # Remove jar extension if present
-   extension=$(echo "$1" | sed 's+\.jar$++g')
+   # If extension contains semicolon then assume it specifies Maven
+   # artifact coordinates.
+   if echo "$1" | grep -q ':'; then
+      if ! [ -x "${M2_HOME:-/usr/share/xmvn}/bin/xmvn-resolve" ]; then
+         echo "$0: Unable to execute xmvn-resolve." >&2
+         echo "$0: Make sure that XMvn is installed and M2_HOME is set correctly." >&2
+         return 1
+      fi
 
-   found_extension=$(do_find_jar $extension)
-   found=$?
+      found_extension=$("${M2_HOME:-/usr/share/xmvn}/bin/xmvn-resolve" -c "$1")
+      found=$?
+   else
+      # Remove jar extension if present
+      extension=$(echo "$1" | sed 's+\.jar$++g')
 
-   # Version-less fallback
-   if [ $found != 0 ] && $(echo $extension | grep -q -e "-[\.[:digit:]]*$")
-      then
-      # 's+++g' breaks here for some reason (GNU sed 4.1.5), 's///g' works
-      extension=$(echo $extension | sed 's/-[\.[:digit:]]\+$//g')
       found_extension=$(do_find_jar $extension)
       found=$?
-   fi
 
-   # Root directory fallback
-   if [ $found != 0 ] && $(echo $extension | grep -q "/") ; then
-      extension=$(dirname $extension)
-      found_extension=$(do_find_jar $extension)
-      found=$?
+      # Version-less fallback
+      if [ $found != 0 ] && $(echo $extension | grep -q -e "-[\.[:digit:]]*$")
+         then
+         # 's+++g' breaks here for some reason (GNU sed 4.1.5), 's///g' works
+         extension=$(echo $extension | sed 's/-[\.[:digit:]]\+$//g')
+         found_extension=$(do_find_jar $extension)
+         found=$?
+      fi
+
+      # Root directory fallback
+      if [ $found != 0 ] && $(echo $extension | grep -q "/") ; then
+         extension=$(dirname $extension)
+         found_extension=$(do_find_jar $extension)
+         found=$?
+      fi
    fi
 
    if [ $found = 0 ] ; then
