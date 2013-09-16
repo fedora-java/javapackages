@@ -3,8 +3,6 @@
 
 * BUGS
 
-** fix pom_editor.sh breaking pom_ macros (all of them)
-
 ** add_maven_depmap.py fix
 
    echo kljsgcfi >%{buildroot}/usr/lib/java/this-is-1.2.3-some.test1
