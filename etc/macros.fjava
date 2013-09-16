@@ -31,10 +31,6 @@
 #          Mikolaj Izdebski <mizdebsk@redhat.com>
 
 
-# directory that can contain a proper maven repository usable by upstream
-# maven one day
-%_maven_repository %{_datadir}/maven-repository
-
 #==============================================================================
 #
 # add_maven_depmap is simplified version of jpackage-style add_to_maven_depmap
@@ -43,8 +39,6 @@
 # -v is "v1,v2" formatted string with additional compatibility versions
 #    supposed to be provided (jar,pom will be renamed to -%{version} variants
 #    and additional symlinks optionally created)
-# -m If included a Maven repository layout will be generated in %_maven_repository
-#    and files will be symlinked there as well
 # %1 is the pom filename relative to mavenpomdir
 # %2 is the path to jar file (when omitted we deal with parent pom file without jar)
 #
@@ -54,7 +48,7 @@
 # in the end add_maven_depmap optionally moves jar and pom file to
 # -%{version} variant and can create additional versioned symlinks
 
-%add_maven_depmap(f:a:v:m) \
+%add_maven_depmap(f:a:v:) \
 set -e \
 # default values \
 %if %# == 0 \
@@ -65,14 +59,14 @@ set -e \
    _jarpart="%2" \
 %endif \
 _filelist=".mfiles%{-f*:-%{-f*}}" \
-install -dm 755 $RPM_BUILD_ROOT/%{_mavendepmapfragdir}\
+install -dm 755 %{buildroot}%{_mavendepmapfragdir}\
 for _dir in %{_jnidir} %{_javajnidir} %{_javadir}; do \
-    if [ -f %{buildroot}/$_dir/$_jarpart ]; then \
+    if [ -f %{buildroot}$_dir/$_jarpart ]; then \
 	_jpath="%{buildroot}$_dir/$_jarpart" \
     fi \
 done \
 python -m %{javadir}-utils/maven_depmap %{-a} %{-v*:-r %{-v*}} \\\
-          %{-m:-m %{buildroot}%{_maven_repository}} \\\
+          -p "%{_prefix}" -n "%{?scl}" \\\
           %{buildroot}%{_mavendepmapfragdir}/%{name}%{-f*:-%{-f*}} \\\
           %{buildroot}%{_mavenpomdir}/$_pompart \\\
 %if %# == 2 \
@@ -83,7 +77,7 @@ python -m %{javadir}-utils/maven_depmap %{-a} %{-v*:-r %{-v*}} \\\
 %endif \
         >> ${_filelist} \
 # this part only works for jars for now (now war/other compat support) \
-if [[ "%{-v}" != "" ]];then \
+if [[ -n "%{-v}" ]]; then \
 mv %{buildroot}%{_mavenpomdir}/$_pompart \\\
    %{buildroot}%{_mavenpomdir}/${_pompart/.pom/-%{version}.pom} \
 if [ -f "${_jpath}" ]; then \
@@ -91,17 +85,17 @@ if [ -f "${_jpath}" ]; then \
 fi \
 for ver in $(echo %{-v*} | tr ',' '\\n');do \
  ln -s ${_pompart/.pom/-%{version}.pom} \\\
-       %{buildroot}/%{_mavenpomdir}/${_pompart/.pom/-$ver.pom} \
+       %{buildroot}%{_mavenpomdir}/${_pompart/.pom/-$ver.pom} \
  echo %{_mavenpomdir}/${_pompart/.pom/-$ver.pom} >>${_filelist} \
  # we can have pom-only artifacts \
  if [ -f "${_jpath/.jar/-%{version}.jar}" ];then \
-       ln -s `basename ${_jpath/.jar/-%{version}.jar}` \\\
+       ln -s $(basename ${_jpath/.jar/-%{version}.jar}) \\\
              ${_jpath/.jar/-$ver.jar} \
        echo ${_jpath/.jar/-$ver.jar} >>${_filelist} \
  fi \
 done \
 # remove unversioned jar and pom from .mfiles \
-if [[ -n ${_jpath} ]]; then \
+if [[ -n "${_jpath}" ]]; then \
  _jpath="${_jpath#%{buildroot}}" \
  sed -i "s:${_jpath/-%{version}.jar/.jar}::" ${_filelist} \
 fi \
