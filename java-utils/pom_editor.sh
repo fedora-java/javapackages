@@ -105,7 +105,8 @@ _pom_patch()
     # Bail out if the resulting file is identical to the patched one.
     # This is to help maintainers detect unneeded patches.
     if [ "x${2}" != "xallow-noop" ]; then
-       cmp -s "${pom}"{,.tmp} && _pom_bailout Operation on POM has no effect.
+       ! cmp -s "${pom}"{,.tmp} && return
+       _pom_bailout Operation on POM has no effect.
     fi
 }
 
