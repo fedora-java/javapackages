@@ -1,0 +1,93 @@
+mvn_build(7)
+============
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+mvn_build - build Maven project with XMvn
+
+SYNOPSIS
+--------
+*%mvn_build* [options] [-- Maven-arguments]
+
+DESCRIPTION
+-----------
+*mvn_build* macro builds Maven project by calling XMvn and generates
+reactor structure information to be used by *mvn_install*.
+
+By default Maven phase *verify* and goal *javadoc:aggregate* are
+executed, as well as some additional XMvn-specific goals or phases.
+If *-f* is specified then phase *package* is executed instead of
+*verify*.  If *-j* is given then goal *javadoc:aggregate* is skipped.
+
+Any arguments after *--* are passed directly to XMvn.  See *xmvn(1)*
+for more information on availability of XMvn options.
+
+OPTIONS
+-------
+*-d, --xmvn-debug*::
+    Enable XMvn debugging output.  This option causes XMvn to write
+    verbose debugging information to standard output.  Debugging
+    information includes at least details about artifact resolution
+    from system repositories.
+
+*-f, --force*::
+    Skip compilation and execution of unit and integration tests, as
+    well as resolution of build dependencies with scope *test*.  This
+    option causes Maven phase *package* to be executed instead of
+    default phase *verify*, defines property *maven.test.skip=true*
+    which disables compilation and execution of tests and causes XMvn
+    to remove any project dependencies with scope *test*.
+
+*-i, --skip-install*::
+    Skip artifact installation.  This option disables generation of
+    reactor structure information so that future calls to
+    *mvn_install* will not result in installation of artifacts
+    produced in current Maven reactor.
+
+*-j, --skip-javadoc*::
+    Skip javadoc generation.  This option skips running Maven Javadoc
+    Plugin.  Useful for packages which don't want to produce Java API
+    documentation.
+
+*-s, --singleton*::
+    Enable singleton packaging (one artifact per package).  This
+    option causes artifacts with identical *artifactId* to be
+    installed as part of the same subpackage.  This behavior can be
+    further customized by adding more specific packaging rules with
+    *mvn_package*.
+
+*-X, --debug*::
+    Enable Maven debugging output.  Implies *-d*.  This option causes
+    Maven to write verbose debugging information to standard output.
+
+ENVIRONMENT
+-----------
+*xmvn_bootstrap*::
+    Run XMvn in online mode.  If *xmvn_bootstrap* RPM macro is defined
+    to any value then XMvn is ran in online mode.  Otherwise XMvn is
+    ran in offline mode.  Online mode of XMvn allows missing
+    dependency artifacts to be fetched from remote repositories.  This
+    behavior is mostly useful when bootstrapping new packages, which
+    dependecies have not yet been packaged.
+
+AUTHOR
+------
+Originally written by Mikolaj Izdebski.
+Versions 3.0.0 and later were written by Stanislav Ochotnicky.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*mvn_alias*(7),
+*mvn_compat_version*(7),
+*mvn_config*(7),
+*mvn_file*(7),
+*mvn_package*(7),
+*xmvn*(1).

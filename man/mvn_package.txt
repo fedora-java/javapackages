@@ -1,0 +1,61 @@
+mvn_package(7)
+==============
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+mvn_package - specify target package for Maven artifact(s)
+
+SYNOPSIS
+--------
+*%mvn_package* artifact-coordinates target-package
+
+DESCRIPTION
+-----------
+*mvn_package* macro causes instructions for artifact installation to
+be added to XMvn reactor configuration.  It is used to specify target
+package to which Maven artifacts should be installed.
+
+Specified artifact coordinates must match at least one artifact.  If
+not then behavior is unspecified.  It is possible to specify artifact
+coordinates matching multiple artifacts, so one call to *mvn_package*
+can affect installation of more than one artifact.
+
+OPERANDS
+--------
+*artifact-coordinates*::
+    Artifact coordinates specify artifact(s) that this rule applies
+    to.  Coordinates are in format
+    *groupId:artifactId[:extension[:classifier]][:version]*.  If
+    extension is specified then version must be specified too.  If any
+    part is omitted or equal to empty string then it matches any
+    string.  Wildcards and brace expansions are supported in each
+    part.  For more information see XMvn Configuration Reference.
+
+*target-package*::
+    Name of target (sub-)package to which matching artifacts will be
+    installed.  Backreferences are supported in form *@n*, where *n*
+    is an integer corresponding to brace in *artifact-coordinates*.  A
+    special value of *__noinstall* means that matching artifact(s)
+    should not be installed to any package.
+
+AUTHOR
+------
+Originally written by Mikolaj Izdebski.
+Versions 3.0.0 and later were written by Stanislav Ochotnicky.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*mvn_alias*(7),
+*mvn_build*(7),
+*mvn_compat_version*(7),
+*mvn_config*(7),
+*mvn_file*(7),
+*xmvn*(1).

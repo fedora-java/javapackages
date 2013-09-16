@@ -1,0 +1,72 @@
+mvn_file(7)
+===========
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+mvn_file - set installation location(s) for Maven artifact(s)
+
+SYNOPSIS
+--------
+*%mvn_file* artifact-coordinates primary-file [secondary-file ...]
+
+DESCRIPTION
+-----------
+*mvn_file* macro causes instructions for artifact installation to be
+added to XMvn reactor configuration.  It is used to control locations
+of artifact files in file system.  (The exact meaning of artifact
+location is dependant on particular implementation of XMvn repository
+into which artifacts will be installed.)
+
+Specified artifact coordinates must match at least one artifact.  If
+not then behavior is unspecified.  It is possible to specify artifact
+coordinates matching multiple artifacts, so one call to *mvn_file* can
+affect installation of more than one artifact.
+
+OPERANDS
+--------
+*artifact-coordinates*::
+    Artifact coordinates specify artifact(s) that this rule applies
+    to.  Coordinates are in format
+    *groupId:artifactId[:extension[:classifier]][:version]*.  If
+    extension is specified then version must be specified too.  If any
+    part is omitted or equal to empty string then it matches any
+    string.  Wildcards and brace expansions are supported in each
+    part.  For more information see XMvn Configuration Reference.
+
+*primary-file*::
+    Primary location of artifact file.  This operand is passed
+    directly to XMvn installer.  Its exact meaning is specific to
+    particular repository implementation used to install given
+    artifact.  Backreferences are supported in form *@n*, where *n* is
+    an integer corresponding to brace in *artifact-coordinates*.
+
+*secondary-file*::
+    Secondary location of artifact file.  There can be any number
+    (zero or more) of secondary artifact files.  These operands are
+    passed directly to XMvn installer.  Their exact meaning is
+    specific to particular repository implementation used to install
+    given artifact.  Backreferences are supported in form *@n*, where
+    *n* is an integer corresponding to brace in
+    *artifact-coordinates*.
+
+AUTHOR
+------
+Originally written by Mikolaj Izdebski.
+Versions 3.0.0 and later were written by Stanislav Ochotnicky.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*mvn_alias*(7),
+*mvn_build*(7),
+*mvn_compat_version*(7),
+*mvn_config*(7),
+*mvn_package*(7),
+*xmvn*(1).

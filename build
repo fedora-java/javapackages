@@ -54,6 +54,13 @@ sed -e "s|%{javadir}|'${javadir}'|" \
 
 manpage abs2rel
 manpage find-jar
+manpage mvn_alias
+manpage mvn_build
+manpage mvn_config
+manpage mvn_compat_version
+manpage mvn_file
+manpage mvn_install
+manpage mvn_package
 manpage pom_add_dep
 manpage pom_add_parent
 manpage pom_add_plugin

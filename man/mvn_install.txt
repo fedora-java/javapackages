@@ -1,0 +1,55 @@
+mvn_install(7)
+==============
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+mvn_install - install Maven artifacts
+
+SYNOPSIS
+--------
+*%mvn_install* [-J directory]
+
+DESCRIPTION
+-----------
+*mvn_install* macro installs Maven artifacts into *%buildroot*.
+
+Specification of artifacts to be installed is taken from
+*.xmvn-reactor* file.  This file can be populated using *mvn_build*
+and/or *mvn_artifact* macros.
+
+Specification how artifacts should be installed is taken from
+installer settings section in XMvn configuration.  See XMvn
+Configuration Reference for more information.  Macros *mvn_alias*(7),
+*mvn_build*(7), *mvn_compat_version*(7), *mvn_config*(7),
+*mvn_file*(7) and *mvn_package*(7) are capable of writing
+configuration that can affect behavior of *mvn_install*.
+
+OPTIONS
+-------
+*-J* directory::
+    Specify alternative API documentation directory.  By default API
+    documentation is searched for in *target/site/apidocs* directory.
+    The *-J* option allows to override this default location.
+
+AUTHOR
+------
+Written by Mikolaj Izdebski.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*mvn_alias*(7),
+*mvn_artifact*(7),
+*mvn_build*(7),
+*mvn_compat_version*(7),
+*mvn_config*(7),
+*mvn_file*(7),
+*mvn_package*(7),
+*xmvn*(1).

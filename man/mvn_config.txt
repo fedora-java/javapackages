@@ -1,0 +1,48 @@
+mvn_config(7)
+=============
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+mvn_config - specify custom XMvn configuration option
+
+SYNOPSIS
+--------
+*%mvn_config* key value
+
+DESCRIPTION
+-----------
+*mvn_config* macro causes custom configuration options to be added to
+XMvn reactor configuration.
+
+OPERANDS
+--------
+*key*::
+    Configuration option key (unique name).  This is XPath-like
+    address of XML configuration node - list of XML nodes delimited by
+    '/'.  For list of available keys see XMvn Configuration Reference.
+
+*value*::
+    Text value of specified option.  If XML is passed here, behavior
+    is unspecified.
+
+AUTHOR
+------
+Originally written by Mikolaj Izdebski.
+Versions 3.0.0 and later were written by Stanislav Ochotnicky.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*mvn_alias*(7),
+*mvn_build*(7),
+*mvn_compat_version*(7),
+*mvn_file*(7),
+*mvn_package*(7),
+*xmvn*(1).

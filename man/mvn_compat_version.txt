@@ -1,0 +1,59 @@
+mvn_compat_version(7)
+=====================
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+mvn_compat_version - set version(s) for Maven artifact(s)
+
+SYNOPSIS
+--------
+*%mvn_compat_version* artifact-coordinates version [version ...]
+
+DESCRIPTION
+-----------
+*mvn_compat_version* macro causes instructions for artifact
+installation to be added to XMvn reactor configuration.  It is used to
+specify versions for Maven artifacts.
+
+Specified artifact coordinates must match at least one artifact.  If
+not then behavior is unspecified.  It is possible to specify artifact
+coordinates matching multiple artifacts, so one call to
+*mvn_compat_version* can affect installation of more than one
+artifact.
+
+OPERANDS
+--------
+*artifact-coordinates*::
+    Artifact coordinates specify artifact(s) that this rule applies
+    to.  Coordinates are in format
+    *groupId:artifactId[:extension[:classifier]][:version]*.  If
+    extension is specified then version must be specified too.  If any
+    part is omitted or equal to empty string then it matches any
+    string.  Wildcards and brace expansions are supported in each
+    part.  For more information see XMvn Configuration Reference.
+
+*version*::
+    Strings specifying artifact version.  Backreferences are supported
+    in form *@n*, where *n* is an integer corresponding to brace in
+    *artifact-coordinates*.
+
+AUTHOR
+------
+Written by Stanislav Ochotnicky.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*mvn_alias*(7),
+*mvn_build*(7),
+*mvn_config*(7),
+*mvn_file*(7),
+*mvn_package*(7),
+*xmvn*(1).
