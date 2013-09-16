@@ -40,6 +40,8 @@ prefix
 sysconfdir
 rpmconfigdir
 
+m2home
+
 javadir
 javadocdir
 jnidir
@@ -68,6 +70,8 @@ test -z "${datadir}" && datadir="${prefix}/share"
 test -z "${mandir}" && mandir="${datadir}/man"
 test -z "${sysconfdir}" && sysconfdir="${prefix}/etc"
 test -z "${rpmconfigdir}" && rpmconfigdir="${prefix}/lib/rpm"
+
+test -z "${m2home}" && m2home="${datadir}/xmvn"
 
 eval $(sed -n 's/^%_\('"$vars_re"'\)\ *\(.*\)$/\1="\2"/;T;s/%{_\(.*}\)/${\1/;p' etc/macros.jpackage)
 

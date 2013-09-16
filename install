@@ -170,7 +170,7 @@ inst_data etc/javapackages-depmap.xml "${mavendepmapfragdir}"
 
 exec >files-maven
 
-dir "${datadir}/xmvn"
+dir "${m2home}"
 
 inst_data etc/macros.xmvn "${sysconfdir}/rpm"
 
@@ -180,10 +180,10 @@ inst_data metadata/metadata-org-codehaus-mojo.xml "${sysconfdir}/maven"
 inst_exec target/mvn-local "${bindir}"
 inst_exec target/mvn-rpmbuild "${bindir}"
 
-inst_data configs/configuration-20.xml "${datadir}/xmvn"
-inst_data configs/configuration-20-rpmbuild.xml "${datadir}/xmvn"
-inst_data configs/configuration-20-rpmbuild-raw.xml "${datadir}/xmvn"
+inst_data configs/configuration-20.xml "${m2home}"
+inst_data configs/configuration-20-rpmbuild.xml "${m2home}"
+inst_data configs/configuration-20-rpmbuild-raw.xml "${m2home}"
 
-link "${datadir}/xmvn/configuration-20.xml" "${datadir}/xmvn/configuration.xml"
+link "${m2home}/configuration-20.xml" "${m2home}/configuration.xml"
 
 inst_data fedora-review/java_guidelines.py "${datadir}/fedora-review/plugins"

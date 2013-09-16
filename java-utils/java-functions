@@ -282,13 +282,13 @@ find_jar() {
    # If extension contains semicolon then assume it specifies Maven
    # artifact coordinates.
    if echo "$1" | grep -q ':'; then
-      if ! [ -x "${M2_HOME:-%{datadir}/xmvn}/bin/xmvn-resolve" ]; then
+      if ! [ -x "${M2_HOME:-%{m2home}}/bin/xmvn-resolve" ]; then
          echo "$0: Unable to execute xmvn-resolve." >&2
          echo "$0: Make sure that XMvn is installed and M2_HOME is set correctly." >&2
          return 1
       fi
 
-      found_extension=$("${M2_HOME:-%{datadir}/xmvn}/bin/xmvn-resolve" -c "$1")
+      found_extension=$("${M2_HOME:-%{m2home}}/bin/xmvn-resolve" -c "$1")
       found=$?
    else
       # Remove jar extension if present
