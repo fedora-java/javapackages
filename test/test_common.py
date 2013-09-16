@@ -74,3 +74,14 @@ def mavenprov(filelist):
             fn(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
+
+def mavenreq(filelist):
+    def test_decorator(fn):
+        def test_decorated(self, *args, **kwargs):
+            path = os.path.join(dirpath, '..', 'depgenerators', 'maven.req')
+            input = '\n'.join([os.path.join(dirpath, 'depmaps', filename) for filename in filelist])
+            (stdout, stderr, return_value) = call_script(path, [], stdin=input, wrapped=True)
+            fn(self, stdout, stderr, return_value)
+        return test_decorated
+    return test_decorator
+
