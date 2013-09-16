@@ -15,7 +15,29 @@ class TestMavenProv(unittest.TestCase):
     def test_invalid(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
 
+    @mavenprov(["not_xml.xml"])
+    def test_not_xml(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+
     @mavenprov(["nonexistent_file_blablabla"])
     def test_nonexistent(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
 
+    @mavenprov(["single_ns.xml"])
+    def test_single_ns(self, stdout, stderrr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(stdout, "ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0\nns-mvn(org.mortbay.jetty:jsp-2.1-glassfish:6.0.18) = 9.1.1.B60.25.p2\n")
+
+    @mavenprov(["multi_ns.xml"])
+    def test_multi_ns(self, stdout, stderrr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(stdout, "ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0\nns2-mvn(org.mortbay.jetty:jsp-2.1-glassfish:6.0.18) = 9.1.1.B60.25.p2\n")
+
+    @mavenprov(["no_version.xml"])
+    def test_no_version(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+
+    @mavenprov(["simple.xml", "simple2.xml"])
+    def test_more_files(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(stdout, "ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0\nns-mvn(org.mortbay.jetty:jsp-2.1-glassfish:6.0.18) = 9.1.1.B60.25.p2\n")

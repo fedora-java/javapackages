@@ -1,0 +1,16 @@
+<dependencies>
+<dependency>
+<maven>
+<groupId>org.mortbay.jetty</groupId>
+<artifactId>jsp-2.1-glassfish</artifactId>
+<version>9.1.1.B60.25.p2</version>
+<namespace>ns</namespace>
+</maven>
+<jpp>
+<groupId>JPP</groupId>
+<artifactId>tomcat6-jsp-2.1-api</artifactId>
+<version>6.0.18</version>
+<namespace>ns</namespace>
+</jpp>
+</dependency>
+</dependencies>
