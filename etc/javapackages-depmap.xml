@@ -13,4 +13,15 @@
       <artifactId>../lib/tools</artifactId>
     </jpp>
   </dependency>
+  <dependency>
+    <maven>
+      <groupId>sun.jdk</groupId>
+      <artifactId>jconsole</artifactId>
+      <version>SYSTEM</version>
+    </maven>
+    <jpp>
+      <groupId>JAVA_HOME</groupId>
+      <artifactId>../lib/jconsole</artifactId>
+    </jpp>
+  </dependency>
 </dependencyMap>
