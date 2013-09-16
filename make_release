@@ -42,6 +42,22 @@ fi
 git archive -v --prefix="javapackages-$last_tag/" $last_tag | xz > \
     javapackages-$last_tag.tar.xz
 
+
+# run testsuite before allowing upload/final release
+pushd python
+python setup.py test
+t1=$?
+popd
+pushd "test"
+./run_tests.sh
+t2=$?
+popd
+
+if [[ $t1 -ne 0 || $t2 -ne 0 ]]; then
+    echo "Tests failed, release aborted"
+    exit 1
+fi
+
 read -i 'n' -e -p "Do you want to upload file javapackages-$last_tag.tar.xz to fedorahosted? (y/n): "
 
 if [ "$REPLY" = "y" ];then
