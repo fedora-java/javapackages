@@ -42,11 +42,6 @@ EXAMPLES
 *%pom_add_dep foo:bar baz* - this call adds dependency on artifact
 *foo:bar* to *baz/pom.xml* file.
 
-BUGS
-----
-If *build/dependencies* XML node does not exist in target file this
-macro will fail.
-
 AUTHOR
 ------
 Written by Mikolaj Izdebski.
