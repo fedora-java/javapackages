@@ -52,14 +52,31 @@ expand()
 {
     local target=target/$(basename "${1}")
 
-    sed -e "s|%{javadir}|${javadir}|" \
+    sed \
+        -e "s|%{bindir}|${bindir}|" \
+        -e "s|%{datadir}|${datadir}|" \
+        -e "s|%{javadir}|${javadir}|" \
         -e "s|%{jnidir}|${jnidir}|" \
         -e "s|%{jvmdir}|${jvmdir}|" \
         -e "s|%{sysconfdir}|${sysconfdir}|" \
         "${1}" >"${target}"
 }
 
+expand bin/abs2rel
+expand bin/build-classpath
+expand bin/build-classpath-directory
+expand bin/build-jar-repository
+expand bin/check-binary-files
+expand bin/clean-binary-files
+expand bin/create-jar-links
+expand bin/diff-jars
+expand bin/find-jar
+expand bin/jvmjar
+expand bin/mvn-local
+expand bin/mvn-rpmbuild
+expand bin/rebuild-jar-repository
 expand etc/java.conf
+expand java-utils/java-functions
 
 manpage abs2rel
 manpage find-jar

@@ -7,12 +7,12 @@
 # $Id: create-jar-links,v 1.1 2006/09/19 19:39:37 fnasser Exp $
 
 # Import java functions
-[ -r /usr/share/java-utils/java-functions ] \
- &&  . /usr/share/java-utils/java-functions || exit 1
+[ -r "%{javadir}-utils/java-functions" ] \
+ &&  . "%{javadir}-utils/java-functions" || exit 1
 
 # Prints help message
 usage() {
-	/bin/cat >&2 << EOF_USAGE
+	cat >&2 << EOF_USAGE
 
 Usage: $0 -f instructions_file [-a archive_file] [-p]
 
@@ -34,7 +34,7 @@ check_java_env || exit 4
 set_jvm_dirs || exit 5
 
 # Default jar map
-_JAR_MAP_FILE=/usr/share/java-utils/jarname-jpp-map
+_JAR_MAP_FILE="%{javadir}-utils/jarname-jpp-map"
 
 # Directory in which script was invoked
 _WORKING_DIR=`pwd`

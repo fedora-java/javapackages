@@ -6,12 +6,12 @@
 # $Id: find-jar,v 1.2 2005/09/17 07:06:19 david Exp $
 
 # Import java functions
-[ -r /usr/share/java-utils/java-functions ] \
- &&  . /usr/share/java-utils/java-functions || exit 1
+[ -r "%{javadir}-utils/java-functions" ] \
+ &&  . "%{javadir}-utils/java-functions" || exit 1
 
 # Prints help message
 usage() {
-/bin/cat << EOF_USAGE
+cat << EOF_USAGE
 Usage: $0 <jar>
 jarX: name of a jar or a jar directory
       Example: javamail

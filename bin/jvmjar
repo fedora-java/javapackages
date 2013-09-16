@@ -7,14 +7,14 @@
 # $Id: jvmjar,v 1.1 2004/12/15 16:23:45 robert Exp $
 
 # System-wide java configuration
-JAVA_CONF=/etc/java/java.conf
+JAVA_CONF="%{sysconfdir}/java/java.conf"
 
 if [ -z "$JAVA_LIBDIR" ] ; then 
-	[ -r "$JAVA_CONF" ] && . "$JAVA_CONF" || JAVA_LIBDIR=/usr/share/java
+	[ -r "$JAVA_CONF" ] && . "$JAVA_CONF" || JAVA_LIBDIR="%{javadir}"
 fi
 
 usage() {
-/bin/cat << EOF_USAGE
+cat << EOF_USAGE
 Usage: $0 <l|u> <jar> <extension> <version> [<versionB> ... <versionZ>]
 - l|u: link/unlink jars
 - jar: name of the jar present in $JAVA_LIBDIR-ext to install as a jvm extension
@@ -57,10 +57,10 @@ shift
 
 for version in "$@" ; do
     if [ $LINK = "true" ] ; then
-	[ -d $JAVA_LIBDIR-$version ] || /usr/bin/install -d -m 755 $JAVA_LIBDIR-$version
-	/bin/ln -fs "../java-ext/$ORIGINAL_JAR_NAME.jar" \
+	[ -d $JAVA_LIBDIR-$version ] || install -d -m 755 $JAVA_LIBDIR-$version
+	ln -fs "../java-ext/$ORIGINAL_JAR_NAME.jar" \
 	    $JAVA_LIBDIR-$version/$EXTENSION_NAME.jar
     else
-	/bin/rm -f "$JAVA_LIBDIR-$version/$EXTENSION_NAME.jar"
+	rm -f "$JAVA_LIBDIR-$version/$EXTENSION_NAME.jar"
     fi
 done

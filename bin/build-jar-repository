@@ -7,12 +7,12 @@
 # $Id: build-jar-repository,v 1.2 2005/09/17 07:06:19 david Exp $
 
 # Import java functions
-[ -r /usr/share/java-utils/java-functions ] \
- &&  . /usr/share/java-utils/java-functions || exit 1
+[ -r "%{javadir}-utils/java-functions" ] \
+ &&  . "%{javadir}-utils/java-functions" || exit 1
 
 # Prints help message
 usage() {
-/bin/cat >&2 << EOF_USAGE
+cat >&2 << EOF_USAGE
 Usage: $0 [<linktype>] <directory> <jar1> [<jar2> .. <jarn>]
 
 With:

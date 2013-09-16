@@ -7,12 +7,12 @@
 # $Id: clean-binary-files,v 1.1 2006/09/19 19:39:37 fnasser Exp $
 
 # Import java functions
-[ -r /usr/share/java-utils/java-functions ] \
- &&  . /usr/share/java-utils/java-functions || exit 1
+[ -r "%{javadir}-utils/java-functions" ] \
+ &&  . "%{javadir}-utils/java-functions" || exit 1
 
 # Prints help message
 usage() {
-	/bin/cat >&2 << EOF_USAGE
+	cat >&2 << EOF_USAGE
 
 Usage: $0 {[-f {-, instructions_file}], [-e exclusion_file] [-l]} [-a archive_file] [-d custom_jar_map] [-n] [-p] [-s] 
 
@@ -44,7 +44,7 @@ set_jvm_dirs || exit 5
 _WORKING_DIR=`pwd`
 
 # Default jar map
-_JAR_MAP_FILE=/usr/share/java-utils/jarname-jpp-map
+_JAR_MAP_FILE="%{javadir}-utils/jarname-jpp-map"
 
 # Variables used for comparing file lists
 _TEMP_COMPARISON_FILE=/tmp/_temp_comparison_file.$$

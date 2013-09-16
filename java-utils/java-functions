@@ -14,8 +14,8 @@
 _JAVA_HOME="$JAVA_HOME"
 
 # Read configuration or die.
-if [ -f /etc/java/java.conf ] ; then
-  . /etc/java/java.conf
+if [ -f "%{sysconfdir}/java/java.conf" ] ; then
+  . "%{sysconfdir}/java/java.conf"
 else
   echo "Can't find configuration file, aborting"
   exit 1
@@ -89,7 +89,7 @@ set_classpath() {
   if [ -n "$ADDITIONAL_JARS" ] ; then
       jars="$jars $ADDITIONAL_JARS"
   fi
-  LOCAL_CLASSPATH=$(/usr/bin/build-classpath $jars)
+  LOCAL_CLASSPATH=$("%{bindir}/build-classpath" $jars)
   # append original classpath if defined
   CLASSPATH=$LOCAL_CLASSPATH:$CLASSPATH
 }
@@ -210,17 +210,17 @@ link_jar_repository() {
    while [ $# -gt 0 ] ; do
       case "$1" in
          -h|--hard)
-            _LINK_CMD="/bin/ln -f"
+            _LINK_CMD="ln -f"
             ;;
          -s|--soft|--symbolic)
-            _LINK_CMD="/bin/ln -fs"
+            _LINK_CMD="ln -fs"
             ;;
          -c|--copy)
-            _LINK_CMD="/bin/cp -f"
+            _LINK_CMD="cp -f"
             ;;
          -p|--preserve-naming)
             _PRESERVE_NAMING="true"
-            [ -z "$_LINK_CMD" ] && _LINK_CMD="/bin/cp -f"
+            [ -z "$_LINK_CMD" ] && _LINK_CMD="cp -f"
             ;;
          --|-)
             break
@@ -240,7 +240,7 @@ link_jar_repository() {
       shift
    done
 
-   [ -z "$_LINK_CMD" ] && _LINK_CMD="/bin/ln -fs"
+   [ -z "$_LINK_CMD" ] && _LINK_CMD="ln -fs"
    extension_list="$extension_list $@"
 
    pushd $repository > /dev/null
@@ -255,18 +255,18 @@ link_jar_repository() {
          if [ $found -eq 0 ] ; then
             if [ -d "$found_extension" ] ; then
                for jar in $(find "$found_extension" -follow -name "*.jar") ; do
-                  /bin/rm -fr "$extension$(basename $jar)"
+                  rm -fr "$extension$(basename $jar)"
                   $_LINK_CMD $jar "$extension$(basename $jar)"
                done
             else
-               /bin/rm -fr $extension.jar
+               rm -fr $extension.jar
                $_LINK_CMD $found_extension $extension.jar
             fi
          else
             # Defer failure to get list of all errors in one shot
             # Do create a symlink so we can recover with another jvm
-            /bin/rm -fr $extension.jar
-            /bin/ln -fs /could/not/find/extension/for/this/jvm $extension.jar
+            rm -fr $extension.jar
+            ln -fs /could/not/find/extension/for/this/jvm $extension.jar
             _ALLFOUND=1
          fi
       done
@@ -282,13 +282,13 @@ find_jar() {
    # If extension contains semicolon then assume it specifies Maven
    # artifact coordinates.
    if echo "$1" | grep -q ':'; then
-      if ! [ -x "${M2_HOME:-/usr/share/xmvn}/bin/xmvn-resolve" ]; then
+      if ! [ -x "${M2_HOME:-%{datadir}/xmvn}/bin/xmvn-resolve" ]; then
          echo "$0: Unable to execute xmvn-resolve." >&2
          echo "$0: Make sure that XMvn is installed and M2_HOME is set correctly." >&2
          return 1
       fi
 
-      found_extension=$("${M2_HOME:-/usr/share/xmvn}/bin/xmvn-resolve" -c "$1")
+      found_extension=$("${M2_HOME:-%{datadir}/xmvn}/bin/xmvn-resolve" -c "$1")
       found=$?
    else
       # Remove jar extension if present
