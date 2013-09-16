@@ -156,15 +156,15 @@ def get_local_artifact(upstream_artifact, prefix, jar_path=None):
     if '/' in jarpart:
         local_gid = "JPP/{gid}".format(gid=dirname(jarpart))
 
-    ext = _get_file_extension(jar_path, upstream_artifact.artifactId)
-    fname = basename(jarpart)[:-(len(ext)+1)]
+    ext = upstream_artifact.extension
+    if not ext:
+        ext = "jar"
 
-    if upstream_artifact.extension:
-        if ext != upstream_artifact.extension:
-            raise IncompatibleFilenames(str(upstream_artifact), jar_path)
-    else:
-        if ext != "jar":
-            raise IncompatibleFilenames(str(upstream_artifact), jar_path)
+    if not jarpart.endswith(".{ext}".format(ext=ext)):
+        raise IncompatibleFilenames(str(upstream_artifact), jar_path)
+
+    fname = basename(jarpart).replace(".{ext}".format(ext=ext),
+                                      "")
 
     local_aid = fname
     if upstream_artifact.classifier:
