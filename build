@@ -48,10 +48,18 @@ manpage()
     (cd ./target && xmlto man --skip-validation "${1}.xml") 2>/dev/null
 }
 
-sed -e "s|%{javadir}|'${javadir}'|" \
-    -e "s|%{jnidir}|'${jnidir}'|" \
-    -e "s|%{jvmdir}|'${jvmdir}'|" \
-    etc/java.conf >target/java.conf
+expand()
+{
+    local target=target/$(basename "${1}")
+
+    sed -e "s|%{javadir}|${javadir}|" \
+        -e "s|%{jnidir}|${jnidir}|" \
+        -e "s|%{jvmdir}|${jvmdir}|" \
+        -e "s|%{sysconfdir}|${sysconfdir}|" \
+        "${1}" >"${target}"
+}
+
+expand etc/java.conf
 
 manpage abs2rel
 manpage find-jar
