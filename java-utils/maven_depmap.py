@@ -74,6 +74,10 @@ class MissingJarFile(Exception):
     def __init__(self):
         self.args=("JAR seems to be missing in standard directories. Make sure you have installed it",)
 
+class UnknownFileExtension(Exception):
+    def __init__(self, jar_path):
+        self.args=("Unknown file extension: %s" % (jar_path),)
+
 def _get_javadir_part(jar_path, prefix):
     # This is not nice, because macros can change but handling these
     # in RPM macros is ugly as hell.
@@ -90,7 +94,7 @@ def _get_javadir_part(jar_path, prefix):
         raise MissingJarFile()
     return jarpart
 
-def _get_jpp_from_filename(pom_path, prefix, jar_path = None):
+def _get_jpp_from_filename(pom_path, prefix, jar_path = None, extension = "jar"):
     """Get resolved (groupId,artifactId) tuple from POM and JAR path.
 
     POM name and JAR name have to be compatible.
@@ -108,7 +112,7 @@ def _get_jpp_from_filename(pom_path, prefix, jar_path = None):
             if '/' not in jarpart:
                 raise IncompatibleFilenames(pom_path, jar_path)
             jpp_gid = "JPP/%s" % dirname(jarpart)
-            jpp_aid = splitext(basename(jarpart))[0]
+            jpp_aid = basename(jarpart[:-(len(extension)+1)])
             # we assert that jar and pom parts match
             if not pomname == "JPP.%s-%s.pom" % (jpp_gid[4:], jpp_aid):
                 raise IncompatibleFilenames(pom_path, jar_path)
@@ -116,7 +120,7 @@ def _get_jpp_from_filename(pom_path, prefix, jar_path = None):
             if '/' in jarpart:
                 raise IncompatibleFilenames(pom_path, jar_path)
             jpp_gid = "JPP"
-            jpp_aid = splitext(basename(jarpart))[0]
+            jpp_aid = basename(jarpart[:-(len(extension)+1)])
             # we assert that jar and pom parts match
             if not pomname == "JPP-%s.pom" % jpp_aid:
                 raise IncompatibleFilenames(pom_path, jar_path)
@@ -131,6 +135,13 @@ def _get_jpp_from_filename(pom_path, prefix, jar_path = None):
             jpp_aid = pomname[4:-4]
     return(jpp_gid, jpp_aid)
 
+def _get_file_extension(jar_path, artifactId):
+    """Get file extension from JAR path"""
+    extension = re.search('.*/%s.(.*)$' % (artifactId), jar_path)
+    if extension:
+        return extension.group(1)
+    else:
+        raise UnknownFileExtension(jar_path)
 
 def get_local_artifact(upstream_artifact, prefix, jar_path=None):
     if not jar_path:
@@ -145,13 +156,14 @@ def get_local_artifact(upstream_artifact, prefix, jar_path=None):
     if '/' in jarpart:
         local_gid = "JPP/{gid}".format(gid=dirname(jarpart))
 
-    fname, ext = splitext(basename(jarpart))
+    ext = _get_file_extension(jar_path, upstream_artifact.artifactId)
+    fname = basename(jarpart)[:-(len(ext)+1)]
 
     if upstream_artifact.extension:
-        if ext[1:] != upstream_artifact.extension:
+        if ext != upstream_artifact.extension:
             raise IncompatibleFilenames(str(upstream_artifact), jar_path)
     else:
-        if ext[1:] != "jar":
+        if ext != "jar":
             raise IncompatibleFilenames(str(upstream_artifact), jar_path)
 
     local_aid = fname
@@ -175,11 +187,12 @@ def parse_pom(pom_file, prefix, jar_file = None):
         if not pom.packaging or pom.packaging != "pom":
             raise PackagingTypeMissingFile(pom_path)
     else:
-        extension = re.search('.*/%s.(.*)$' % (pom.artifactId), jar_path).group(1)
-        if extension == "jar":
-            extension = ''
+        extension = _get_file_extension(jar_path, pom.artifactId)
 
-    jpp_gid, jpp_aid = _get_jpp_from_filename(pom_file, prefix, jar_file)
+    jpp_gid, jpp_aid = _get_jpp_from_filename(pom_file, prefix, jar_file, extension)
+
+    if extension == "jar":
+        extension = ''
 
     upstream_artifact = Artifact(pom.groupId, pom.artifactId, version=pom.version)
     local_artifact = Artifact(jpp_gid, jpp_aid, extension)
