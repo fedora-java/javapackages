@@ -18,4 +18,14 @@
 <artifactId>plexus-ant-factory</artifactId>
 <namespace>ns</namespace>
 </autoRequires>
+<autoRequires>
+<groupId>codehaus</groupId>
+<artifactId>plexus-utils</artifactId>
+<namespace>ns</namespace>
+</autoRequires>
+<autoRequires>
+<groupId>org.apache.maven.wagon</groupId>
+<artifactId>wagon-provider-api</artifactId>
+<classifier>test-jar</classifier>
+</autoRequires>
 </dependencies>

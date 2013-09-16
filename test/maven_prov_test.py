@@ -41,3 +41,7 @@ class TestMavenProv(unittest.TestCase):
     def test_more_files(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(stdout, "ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0\nns-mvn(org.mortbay.jetty:jsp-2.1-glassfish:6.0.18) = 9.1.1.B60.25.p2\n")
+
+    @mavenprov(["two_in_one.xml"])
+    def test_two_in_one(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
