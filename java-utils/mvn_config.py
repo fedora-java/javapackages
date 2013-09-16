@@ -28,7 +28,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com
+# Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 
 import sys
 import optparse
@@ -39,21 +39,15 @@ class SaneParser(optparse.OptionParser):
     def format_epilog(self, formatter):
         return self.epilog
 
-usage="usage: %prog [options] <MVN spec> <package>"
+usage="usage: %prog [options] <optionstr> <content>"
 epilog="""
-MVN spec:
-Specification of Maven artifact in following format:
+Add custom configuration option
 
-      groupId:artifactId[:extension[:classifier]][:version]
+optionstr -- XPath-like expression for specifying XMvn configuration
+             option location with '/' used as delimiter
+             example: buildSettings/compilerSource
 
-Wildcards (*) and empty parts in specifications are allowed (treated as wildcard).
-
-Examples of valid specifications:
-commons-lang:commons-lang:1.2
-commons-lang:commons-lang:war:
-commons-lang:commons-lang:war:test-jar:
-commons-lang:commons-lang:war:test-jar:3.1
-*:commons-lang (equivalent to ':commons-lang')
+content -- text to which the option will be set (no XML allowed)
 """
 
 if __name__ == "__main__":

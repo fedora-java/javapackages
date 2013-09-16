@@ -28,7 +28,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com
+# Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 
 import optparse
 import sys
@@ -46,7 +46,7 @@ epilog="""
 MVN spec:
 Specification of Maven artifact in following format:
 
-      groupId:artifactId[:extension[:classifier][:version]
+      groupId:artifactId[:extension[:classifier]][:version]
 
 Wildcards (*) and empty parts in specifications are allowed (treated as wildcard).
 

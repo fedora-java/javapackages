@@ -28,7 +28,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com
+# Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 import os
 import optparse
 import subprocess
