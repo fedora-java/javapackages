@@ -135,17 +135,18 @@ set_jvm()
 
 # Set the classpath
 # This requires a valid JAVA_HOME, JAVACMD, and JAVA_LIBDIR
-set_classpath() {
-  _set_java_home
+set_classpath()
+{
+    local IFS
 
-  # get local classpath first
-  jars=$@
-  if [ -n "$ADDITIONAL_JARS" ] ; then
-      jars="$jars $ADDITIONAL_JARS"
-  fi
-  LOCAL_CLASSPATH=$("%{bindir}/build-classpath" $jars)
-  # append original classpath if defined
-  CLASSPATH=$LOCAL_CLASSPATH:$CLASSPATH
+    _set_java_home
+
+    # get local classpath first
+    set -- ${@} ${ADDITIONAL_JARS}
+    LOCAL_CLASSPATH=$("%{bindir}/build-classpath" ${@})
+
+    # append original classpath if defined
+    CLASSPATH=${LOCAL_CLASSPATH}${CLASSPATH:=:}${CLASSPATH}
 }
 
 set_javacmd() {
