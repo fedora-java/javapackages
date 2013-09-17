@@ -337,73 +337,44 @@ link_jar_repository() {
 
 # Finds a specific extention (jar or directory)
 # Requires a correct $JAVA_LIBDIR, $JAVAVER_LIBDIR and $JVM_LIBDIR
-find_jar() {
+find_jar()
+{
+    local IFS=:
+    local artifact="${1}"
 
-   # If extension contains semicolon then assume it specifies Maven
-   # artifact coordinates.
-   if echo "$1" | grep -q ':'; then
-      if ! [ -x "${M2_HOME:-%{m2home}}/bin/xmvn-resolve" ]; then
-         echo "$0: Unable to execute xmvn-resolve." >&2
-         echo "$0: Make sure that XMvn is installed and M2_HOME is set correctly." >&2
-         return 1
-      fi
+    # If artifact contains semicolon then assume it specifies Maven
+    # artifact coordinates.
+    set -- ${artifact}
+    if [ ${#} -gt 1 ]; then
+	if ! [ -x "${M2_HOME:-%{m2home}}/bin/xmvn-resolve" ]; then
+            echo "${0}: Unable to execute xmvn-resolve." >&2
+            echo "${0}: Make sure that XMvn is installed and M2_HOME is set correctly." >&2
+            return 1
+	fi
 
-      found_extension=$("${M2_HOME:-%{m2home}}/bin/xmvn-resolve" -c "$1")
-      found=$?
-   else
-      # Remove jar extension if present
-      extension=$(echo "$1" | sed 's+\.jar$++g')
+	"${M2_HOME:-%{m2home}}/bin/xmvn-resolve" -c "${artifact}"
+	return ${?}
+    fi
 
-      found_extension=$(do_find_jar $extension)
-      found=$?
+    set -- ${JVM_LIBDIR} ${_javaverdirs} ${_javadirs}
 
-      # Version-less fallback
-      if [ $found != 0 ] && $(echo $extension | grep -q -e "-[\.[:digit:]]*$")
-         then
-         # 's+++g' breaks here for some reason (GNU sed 4.1.5), 's///g' works
-         extension=$(echo $extension | sed 's/-[\.[:digit:]]\+$//g')
-         found_extension=$(do_find_jar $extension)
-         found=$?
-      fi
+    for artifact in ${artifact%.jar} ${artifact%-*} ${artifact%/*}; do
+	for dir; do
+	    if [ -d "${dir}" ] ; then
+		if [ -r "${dir}/${artifact}.jar" ] ; then
+		    echo "${dir}/${artifact}.jar"
+		    return 0
+		fi
+		if [ -d "${dir}/${artifact}" ] ; then
+		    echo "${dir}/${artifact}"
+		    return 0
+		fi
+	    fi
+	done
+    done
 
-      # Root directory fallback
-      if [ $found != 0 ] && $(echo $extension | grep -q "/") ; then
-         extension=$(dirname $extension)
-         found_extension=$(do_find_jar $extension)
-         found=$?
-      fi
-   fi
-
-   if [ $found = 0 ] ; then
-      echo "$found_extension"
-      return 0
-   else
-      echo "$0: error: Could not find $1 Java extension for this JVM" >&2
-      return 1
-   fi
-}
-
-
-# Core routine used by find_jar
-do_find_jar() {
-
-   extension=$1
-
-   for jardir in "$JVM_LIBDIR" "$JAVAVER_JNIDIR" "$JAVAVER_LIBDIR" \
-                 "$JAVAAPP_LIBDIR" "$JNI_LIBDIR" "$JAVA_LIBDIR" ; do
-      if [ -d "$jardir" ] ; then
-         if [ -r "$jardir/$extension.jar" ] ; then
-            echo "$jardir/$extension.jar"
-            return 0
-         fi
-         if [ -d "$jardir/$extension" ] ; then
-            echo "$jardir/$extension"
-            return 0
-         fi
-      fi
-   done
-
-   return 1
+    echo "$0: error: Could not find $1 Java extension for this JVM" >&2
+    return 1
 }
 
 
