@@ -26,10 +26,13 @@ _load_java_conf_file()
     local JVM_ROOT
 
     if [ -f "${1}" ]; then
+	_log "Loading config file: ${1}"
 	. "${1}"
 
-	_javadirs="${_javadirs}${_javadirs:=:}${JAVA_LIBDIR}:${JNI_LIBDIR}"
-	_jvmdirs="${_jvmdirs}${_jvmdirs:=:}${JVM_ROOT}"
+	_javadirs="${_javadirs}${_javadirs:+:}${JAVA_LIBDIR}:${JNI_LIBDIR}"
+	_jvmdirs="${_jvmdirs}${_jvmdirs:+:}${JVM_ROOT}"
+    else
+	_log "Skipping config file ${1}: file does not exist"
     fi
 }
 
@@ -40,23 +43,17 @@ _load_java_conf()
     local java_home_save="${JAVA_HOME}"
     local java_opts_save="${JAVACMD_OPTS}"
     local prefix
-    local reversed
 
     unset _javadirs
     unset _jvmdirs
 
-    set -- "${PREFIXES:-%{prefix}}"
+    set -- ${PREFIXES:-%{prefix}}
 
     _log "Prefixes are:"
     for prefix; do
 	_log "  * ${prefix}"
     done
 
-    for prefix; do
-	reversed="${prefix}${reversed:+:}${reversed}"
-    done
-
-    set -- "${reversed}"
     for prefix; do
 	_load_java_conf_file "${prefix}/etc/java/java.conf"
     done
@@ -84,7 +81,9 @@ _set_java_home()
     local subdirs
 
     if [ -n "${JAVA_HOME}" ]; then
-	_log "Using predefined JAVA_HOME: ${JAVA_HOME}"
+	if [ -z "${JVM_ROOT}" ]; then
+	    JVM_ROOT="${JAVA_HOME}"/..
+	fi
 	return
     fi
 
@@ -109,7 +108,7 @@ _set_java_home()
 	done
     done
 
-    unset JVM_HOME
+    unset JVM_ROOT
     unset JAVA_HOME
 }
 
@@ -166,7 +165,7 @@ set_classpath()
     LOCAL_CLASSPATH=$("%{bindir}/build-classpath" ${@})
 
     # append original classpath if defined
-    CLASSPATH=${LOCAL_CLASSPATH}${CLASSPATH:=:}${CLASSPATH}
+    CLASSPATH=${LOCAL_CLASSPATH}${CLASSPATH:+:}${CLASSPATH}
 }
 
 set_javacmd()
@@ -184,14 +183,16 @@ set_javacmd()
     for cmd in jre/sh/java bin/java; do
 	JAVACMD="${JAVA_HOME}/${cmd}"
 	if [ -x "${JAVACMD}" ]; then
-	    JAVACMD="${JAVACMD}${JAVACMD_OPTS:= }${JAVACMD_OPTS}"
+	    _log "Using configured JAVACMD: $JAVACMD"
+	    JAVACMD="${JAVACMD}${JAVACMD_OPTS:+ }${JAVACMD_OPTS}"
 	    return 0
 	fi
     done
 
     JAVACMD=$(which java 2>/dev/null || :)
     if [ -x "${JAVACMD}" ]; then
-	JAVACMD="${JAVACMD}${JAVACMD_OPTS:= }${JAVACMD_OPTS}"
+	_log "Using JAVACMD from PATH: $JAVACMD"
+	JAVACMD="${JAVACMD}${JAVACMD_OPTS:+ }${JAVACMD_OPTS}"
 	return 0
     fi
 
@@ -202,13 +203,13 @@ set_javacmd()
 # Set flags
 set_flags()
 {
-    FLAGS="${@}${ADDITIONAL_FLAGS:= }${ADDITIONAL_FLAGS}"
+    FLAGS="${@}${ADDITIONAL_FLAGS:+ }${ADDITIONAL_FLAGS}"
 }
 
 # Set options
 set_options()
 {
-    OPTIONS="${@}${ADDITIONAL_OPTIONS:= }${ADDITIONAL_OPTIONS}"
+    OPTIONS="${@}${ADDITIONAL_OPTIONS:+ }${ADDITIONAL_OPTIONS}"
 }
 
 # Run application
@@ -233,6 +234,7 @@ run()
 # Set JVM-related directories
 set_jvm_dirs()
 {
+    local IFS
     local re
     local option
     local version
@@ -249,14 +251,16 @@ set_jvm_dirs()
     #   java full version "J2RE 1.4.1 IBM build cxia321411-20030930"
     #   java full version "Blackdown-1.4.1-01"
     #   java version "1.5.0"
+
     re='\([[:digit:]]\{1,\}\.[[:digit:]]\{1,\}\(\.[[:digit:]]\{1,\}\)*\)'
     for option in -fullversion -version; do
         # Yuck, "grep -o" would be cleaner, but requires GNU grep >= 2.5.
         # This could be improved/simplified if sed had non-greedy matching.
-        version=$("${JAVACMD}" $option 2>&1 | sed -n \
+        version=$(${JAVACMD} $option 2>&1 | sed -n \
             -e '/\(openjdk\|java\) \(full \)*version "/s/'$re'/<<<\1>>>/' \
             -e '/\(openjdk\|java\) \(full \)*version "/s/.*<<<\([^>]\{1,\}\)>>>.*/\1/p')
         if [ -n "${version}" ]; then
+	    _log "Determined Java version to be ${version}"
             break
         fi
     done
@@ -267,10 +271,11 @@ set_jvm_dirs()
     fi
 
     # Jar repository for this Java standard
+    IFS=:
     _javaverdirs=
     for dir in ${_javadirs}; do
-	_javaverdirs="${dir}-${version}${_javaverdirs:=:}${_javaverdirs}"
-    done
+	_javaverdirs="${_javaverdirs}${_javaverdirs:+:}${dir}-${version}"
+   done
 
     return 0
 }
@@ -358,18 +363,20 @@ find_jar()
 {
     local IFS=:
     local artifact="${1}"
+    local m2home="${M2_HOME:-%{m2home}}"
 
     # If artifact contains semicolon then assume it specifies Maven
     # artifact coordinates.
     set -- ${artifact}
     if [ ${#} -gt 1 ]; then
-	if ! [ -x "${M2_HOME:-%{m2home}}/bin/xmvn-resolve" ]; then
+	_log "Using XMvn location: ${m2home}"
+	if ! [ -x "${m2home}/bin/xmvn-resolve" ]; then
             echo "${0}: Unable to execute xmvn-resolve." >&2
             echo "${0}: Make sure that XMvn is installed and M2_HOME is set correctly." >&2
             return 1
 	fi
 
-	"${M2_HOME:-%{m2home}}/bin/xmvn-resolve" -c "${artifact}"
+	"${m2home}/bin/xmvn-resolve" -c "${artifact}"
 	return ${?}
     fi
 
@@ -383,10 +390,12 @@ find_jar()
     for artifact in ${artifact%.jar} ${artifact%-*} ${artifact%/*}; do
 	for dir; do
 	    if [ -d "${dir}" ] ; then
+		_log "Trying file ${dir}/${artifact}.jar"
 		if [ -r "${dir}/${artifact}.jar" ] ; then
 		    echo "${dir}/${artifact}.jar"
 		    return 0
 		fi
+		_log "Trying directory ${dir}/${artifact}/"
 		if [ -d "${dir}/${artifact}" ] ; then
 		    echo "${dir}/${artifact}"
 		    return 0
@@ -395,7 +404,7 @@ find_jar()
 	done
     done
 
-    echo "$0: error: Could not find $1 Java extension for this JVM" >&2
+    echo "$0: error: Could not find ${artifact} Java extension for this JVM" >&2
     return 1
 }
 

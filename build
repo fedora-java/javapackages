@@ -58,6 +58,8 @@ expand()
         -e "s|%{javadir}|${javadir}|" \
         -e "s|%{jnidir}|${jnidir}|" \
         -e "s|%{jvmdir}|${jvmdir}|" \
+        -e "s|%{m2home}|${m2home}|" \
+        -e "s|%{prefix}|${prefix}|" \
         -e "s|%{sysconfdir}|${sysconfdir}|" \
         "${1}" >"${target}"
 }
