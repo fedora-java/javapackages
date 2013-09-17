@@ -192,18 +192,22 @@ set_options()
 }
 
 # Run application
-run() {
-  set_javacmd
-  if [ -n "$VERBOSE" ]; then
-    echo "java virtual machine used: $JAVACMD"
-    echo "classpath used: $CLASSPATH"
-    echo "main class used: $MAIN_CLASS"
-    echo "flags used: $FLAGS"
-    echo "options used: $OPTIONS"
-    echo "arguments used: $@"
-  fi
-  # let's start
-  exec "$JAVACMD" $FLAGS -classpath "$CLASSPATH" $OPTIONS "$MAIN_CLASS" "$@"
+run()
+{
+    set_javacmd
+
+    if [ -n "${VERBOSE}" ]; then
+	echo "Java virtual machine used: ${JAVACMD}"
+	echo "classpath used: ${CLASSPATH}"
+	echo "main class used: ${MAIN_CLASS}"
+	echo "flags used: ${FLAGS}"
+	echo "options used: ${OPTIONS}"
+	echo "arguments used: ${@}"
+    fi
+
+    # let's start
+    exec "${JAVACMD}" ${FLAGS} -classpath "${CLASSPATH}" \
+	${OPTIONS} "${MAIN_CLASS}" "${@}"
 }
 
 # Set JVM-related directories
