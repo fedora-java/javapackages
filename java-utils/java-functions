@@ -93,39 +93,44 @@ _set_java_home()
 }
 
 # Set the java virtual machine
-set_jvm() {
-  _set_java_home
+set_jvm()
+{
+    local IFS=:
+    local cmd
+    local cmds
 
-  # use $JAVA_HOME if defined
-  if [ -n "$JAVA_HOME" ] ; then
-    return
-  fi
+    _set_java_home
 
-  # try to find it from java command
+    # use $JAVA_HOME if defined
+    if [ -n "${JAVA_HOME}" ]; then
+	return
+    fi
 
-  # try javac first, or we might get the location of the jre instead - djw
-  # if JRE is prefered then don't try javac - mizdebsk
-  case "$_prefer_jre" in
-    1|[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]) java= ;;
-    *) java=`which javac 2>/dev/null || :` ;;
-  esac
+    # try to find it from java command
 
-  # if we don't have the jdk, then maybe we have the jre - djw
-  if [ -z "$java" ] ; then
-    java=`which java 2>/dev/null || :`
-  fi
+    # try javac first, or we might get the location of the jre instead - djw
+    # if JRE is prefered then don't try javac - mizdebsk
+    case "${_prefer_jre}" in
+	1|[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee])
+	    cmds=java
+	    ;;
+	*)
+	    cmds=javac:java
+	    ;;
+    esac
 
-  if [ -n "$java" ] ; then
-    while [ -h "$java" ] ; do
-      java=`readlink $java 2>/dev/null`
+    for cmd in $cmds; do
+	cmd=$(which "${cmd}" 2>/dev/null || :)
+
+	if [ -n "${cmd}" ]; then
+	    cmd=$(readlink -f "${cmd}")
+	    export JAVA_HOME=$(dirname "${cmd}")/..
+	    return
+	fi
     done
-    JAVA_HOME="`dirname $java`/.."
-    export JAVA_HOME
-    return
-  fi
 
-  echo "Can't find java virtual machine, aborting."
-  exit 1
+    echo "Can't find Java virtual machine, aborting."
+    exit 1
 }
 
 # Set the classpath
