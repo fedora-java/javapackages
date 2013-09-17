@@ -85,6 +85,7 @@ _set_java_home()
 
     for subdir in $subdirs; do
 	for jvmdir in $_jvmdirs; do
+	    JVM_ROOT="${jvmdir}"
 	    JAVA_HOME="${jvmdir}/${subdir}"
 	    if [ -d "${JAVA_HOME}" ]; then
 		return
@@ -221,7 +222,6 @@ set_jvm_dirs()
 
     _set_java_home
 
-    # FIXME: Currently this won't work as expected
     # Jar repository provided by the JVM
     JVM_LIBDIR=${JVM_ROOT}-exports/$(echo "${JAVA_HOME}" |\
         sed -n "s+${JVM_ROOT}/\([-_[:alnum:].]*\)\(.*\)+\1+p")
@@ -382,12 +382,12 @@ find_jar()
 check_java_env()
 {
     # This is usually set by set_jvm
-    if [ -z "${JAVA_HOME}" ] ; then
+    if [ -z "${JAVA_HOME}" ]; then
 	echo "$0: error: JAVA_HOME must be set" >&2
 	return 1
     fi
 
-    if [ -z "${JAVACMD}" ] ; then
+    if [ -z "${JAVACMD}" ]; then
 	echo "$0: error: JAVACMD must be set" >&2
 	return 2
     fi
