@@ -9,22 +9,55 @@
 #   David Walluck <david@jpackage.org>
 #   Nicolas Mailhot <Nicolas.Mailhot at laPoste.net>
 
-# Allow user to override JAVA_HOME
-# in his environment
-_JAVA_HOME="$JAVA_HOME"
 
-# Read configuration or die.
-if [ -f "%{sysconfdir}/java/java.conf" ] ; then
-  . "%{sysconfdir}/java/java.conf"
-else
-  echo "Can't find configuration file, aborting"
-  exit 1
-fi
+# Load a single Java configuration file.
+_load_java_conf_file()
+{
+    local IFS
+    local JAVA_LIBDIR
+    local JNI_LIBDIR
+    local JVM_ROOT
 
-# Read user configuration file if it exists
-[ -f ~/.java/java.conf ] && . ~/.java/java.conf
+    if [ -f "${1}" ]; then
+	. "${1}"
 
-[ ! -z "$_JAVA_HOME" -a -d "$_JAVA_HOME" ] && JAVA_HOME="$_JAVA_HOME"
+	_javadirs="${_javadirs}${_javadirs:=:}${JAVA_LIBDIR}:${JNI_LIBDIR}"
+	_jvmdirs="${_jvmdirs}${_jvmdirs:=:}${JVM_ROOT}"
+    fi
+}
+
+# Load system and user Java configuration.
+_load_java_conf()
+{
+    local IFS=:
+    local java_home_save="${JAVA_HOME}"
+    local java_opts_save="${JAVACMD_OPTS}"
+    local prefix
+    local reversed
+
+    unset _javadirs
+    unset _jvmdirs
+
+    set -- "${PREFIXES:-%{prefix}}"
+    for prefix; do
+	reversed="${prefix}${reversed:+:}${reversed}"
+    done
+
+    set -- "${reversed}"
+    for prefix; do
+	_load_java_conf_file "${prefix}/etc/java/java.conf"
+    done
+
+    _load_java_conf_file "${HOME}/.java/java.conf"
+
+    if [ -d "${java_home_save}" ]; then
+	JAVA_HOME="${java_home_save}"
+    fi
+    if [ -n "${java_opts_save}" ]; then
+	JAVACMD_OPTS="${java_opts_save}"
+    fi
+}
+
 
 # Test default JRE/JVM roots if nothing is defined yet
 _set_java_home() {
@@ -373,3 +406,6 @@ check_java_env() {
 
    return 0
 }
+
+
+_load_java_conf
