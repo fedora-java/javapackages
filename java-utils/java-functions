@@ -10,6 +10,13 @@
 #   Nicolas Mailhot <Nicolas.Mailhot at laPoste.net>
 
 
+_log()
+{
+    if [ -n "${JAVAPACKAGES_DEBUG}" ]; then
+	echo "${@}" >&2
+    fi
+}
+
 # Load a single Java configuration file.
 _load_java_conf_file()
 {
@@ -39,6 +46,12 @@ _load_java_conf()
     unset _jvmdirs
 
     set -- "${PREFIXES:-%{prefix}}"
+
+    _log "Prefixes are:"
+    for prefix; do
+	_log "  * ${prefix}"
+    done
+
     for prefix; do
 	reversed="${prefix}${reversed:+:}${reversed}"
     done
@@ -71,6 +84,7 @@ _set_java_home()
     local subdirs
 
     if [ -n "${JAVA_HOME}" ]; then
+	_log "Using predefined JAVA_HOME: ${JAVA_HOME}"
 	return
     fi
 
@@ -87,12 +101,15 @@ _set_java_home()
 	for jvmdir in $_jvmdirs; do
 	    JVM_ROOT="${jvmdir}"
 	    JAVA_HOME="${jvmdir}/${subdir}"
-	    if [ -d "${JAVA_HOME}" ]; then
+	    if [ -d "${JVM_ROOT}" -a -d "${JAVA_HOME}" ]; then
+		_log "Using configured JVM_ROOT: ${JVM_ROOT}"
+		_log "Using configured JAVA_HOME: ${JAVA_HOME}"
 		return
 	    fi
 	done
     done
 
+    unset JVM_HOME
     unset JAVA_HOME
 }
 
@@ -357,6 +374,11 @@ find_jar()
     fi
 
     set -- ${JVM_LIBDIR} ${_javaverdirs} ${_javadirs}
+
+    _log "JAR search path is:"
+    for dir; do
+	_log "  * ${dir}"
+    done
 
     for artifact in ${artifact%.jar} ${artifact%-*} ${artifact%/*}; do
 	for dir; do
