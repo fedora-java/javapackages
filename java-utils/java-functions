@@ -50,6 +50,9 @@ _load_java_conf()
 
     _load_java_conf_file "${HOME}/.java/java.conf"
 
+    _javadirs=${_javadirs:-%{javadir}:%{jnidir}}
+    _jvmdirs=${_jvmdirs:-%{jvmdir}}
+
     if [ -d "${java_home_save}" ]; then
 	JAVA_HOME="${java_home_save}"
     fi
@@ -390,16 +393,6 @@ check_java_env() {
    if [ -z "$JAVACMD" ] ; then
       echo "$0: error: JAVACMD must be set" >&2
       return 2
-   fi
-
-   if [ -z "$JAVA_LIBDIR" ] ; then
-      echo "$0: error: JAVA_LIBDIR must be set" >&2
-      return 3
-   fi
-
-   if [ -z "$JNI_LIBDIR" ] ; then
-      echo "$0: error: JNI_LIBDIR must be set" >&2
-      return 4
    fi
 
    return 0
