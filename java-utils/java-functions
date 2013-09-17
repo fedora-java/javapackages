@@ -180,19 +180,15 @@ set_javacmd()
 }
 
 # Set flags
-set_flags() {
-  FLAGS=$@
-  if [ -n "$ADDITIONAL_FLAGS" ] ; then
-    FLAGS="$FLAGS $ADDITIONAL_FLAGS"
-  fi
+set_flags()
+{
+    FLAGS="${@}${ADDITIONAL_FLAGS:= }${ADDITIONAL_FLAGS}"
 }
 
 # Set options
-set_options() {
-  OPTIONS=$@
-  if [ -n "$ADDITIONAL_OPTIONS" ] ; then
-    OPTIONS="$OPTIONS $ADDITIONAL_OPTIONS"
-  fi
+set_options()
+{
+    OPTIONS="${@}${ADDITIONAL_OPTIONS:= }${ADDITIONAL_OPTIONS}"
 }
 
 # Run application
