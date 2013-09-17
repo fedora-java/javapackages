@@ -149,30 +149,34 @@ set_classpath()
     CLASSPATH=${LOCAL_CLASSPATH}${CLASSPATH:=:}${CLASSPATH}
 }
 
-set_javacmd() {
-  if [ -x "$JAVACMD" ]; then
-    return
-  fi
-  set_jvm
-  # Add all sorts of jvm layouts here
-  if [ -x "$JAVA_HOME/jre/sh/java" ]; then
-    JAVACMD="$JAVA_HOME/jre/sh/java"
-  elif [ -x "$JAVA_HOME/bin/java" ]; then
-    JAVACMD="$JAVA_HOME/bin/java"
-  else
-    JAVACMD=`which java 2>/dev/null`
-  fi
+set_javacmd()
+{
+    local IFS
+    local cmd
 
-  if [ ! -x "$JAVACMD" ]; then
-    echo "$0: error: Failed to set JAVACMD"
+    if [ -x "${JAVACMD}" ]; then
+	return
+    fi
+
+    set_jvm
+
+    # Add all sorts of jvm layouts here
+    for cmd in jre/sh/java bin/java; do
+	JAVACMD="${JAVA_HOME}/${cmd}"
+	if [ -x "${JAVACMD}" ]; then
+	    JAVACMD="${JAVACMD}${JAVACMD_OPTS:= }${JAVACMD_OPTS}"
+	    return 0
+	fi
+    done
+
+    JAVACMD=$(which java 2>/dev/null || :)
+    if [ -x "${JAVACMD}" ]; then
+	JAVACMD="${JAVACMD}${JAVACMD_OPTS:= }${JAVACMD_OPTS}"
+	return 0
+    fi
+
+    echo "${0}: error: Failed to set JAVACMD"
     return 1
-  fi
-
-  if [ -n "$JAVACMD_OPTS" ]; then
-    JAVACMD="$JAVACMD $JAVACMD_OPTS"
-  fi
-
-  return 0
 }
 
 # Set flags
