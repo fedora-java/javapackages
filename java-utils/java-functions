@@ -60,20 +60,36 @@ _load_java_conf()
 
 
 # Test default JRE/JVM roots if nothing is defined yet
-_set_java_home() {
-  if [ -z "$JAVA_HOME" ] ; then
-    local _java_dirs="java"
-    case "$_prefer_jre" in
-      1|[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]) _java_dirs="jre $_java_dirs" ;;
-      *)                               _java_dirs="$_java_dirs jre" ;;
+_set_java_home()
+{
+    local IFS=:
+    local jvmdir
+    local subdir
+    local subdirs
+
+    if [ -n "${JAVA_HOME}" ]; then
+	return
+    fi
+
+    case "${_prefer_jre}" in
+	1|[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee])
+	    subdirs=jre:java
+	    ;;
+	*)
+            subdirs=java:jre
+	    ;;
     esac
-    for d in $_java_dirs ; do
-      if [ -d "$JVM_ROOT/$d" ] ; then
-        JAVA_HOME="$JVM_ROOT/$d"
-        break
-      fi
+
+    for subdir in $subdirs; do
+	for jvmdir in $_jvmdirs; do
+	    JAVA_HOME="${jvmdir}/${subdir}"
+	    if [ -d "${JAVA_HOME}" ]; then
+		return
+	    fi
+	done
     done
-  fi
+
+    unset JAVA_HOME
 }
 
 # Set the java virtual machine
