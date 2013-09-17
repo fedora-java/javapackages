@@ -212,12 +212,18 @@ run()
 
 # Set JVM-related directories
 # Requires a correct $JAVA_LIBDIR, $JAVA_HOME and $JAVA_CMD
-set_jvm_dirs() {
+set_jvm_dirs()
+{
+    local re
+    local option
+    local version
+
     _set_java_home
 
+    # FIXME: Currently this won't work as expected
     # Jar repository provided by the JVM
-    JVM_LIBDIR=$JVM_ROOT-exports/$(echo "$JAVA_HOME" |\
-        sed -n "s+$JVM_ROOT/\([-_[:alnum:].]*\)\(.*\)+\1+p")
+    JVM_LIBDIR=${JVM_ROOT}-exports/$(echo "${JAVA_HOME}" |\
+        sed -n "s+${JVM_ROOT}/\([-_[:alnum:].]*\)\(.*\)+\1+p")
 
     # Java standard version of the JVM.  -fullversion seems to be lot faster
     # to invoke than -version.  Some examples:
@@ -225,33 +231,28 @@ set_jvm_dirs() {
     #   java full version "J2RE 1.4.1 IBM build cxia321411-20030930"
     #   java full version "Blackdown-1.4.1-01"
     #   java version "1.5.0"
-    JAVA_VERSION=
     re='\([[:digit:]]\{1,\}\.[[:digit:]]\{1,\}\(\.[[:digit:]]\{1,\}\)*\)'
-    for opt in -fullversion -version ; do
+    for option in -fullversion -version; do
         # Yuck, "grep -o" would be cleaner, but requires GNU grep >= 2.5.
         # This could be improved/simplified if sed had non-greedy matching.
-        JAVA_VERSION=$($JAVACMD $opt 2>&1 | sed -n \
+        version=$("${JAVACMD}" $option 2>&1 | sed -n \
             -e '/\(openjdk\|java\) \(full \)*version "/s/'$re'/<<<\1>>>/' \
             -e '/\(openjdk\|java\) \(full \)*version "/s/.*<<<\([^>]\{1,\}\)>>>.*/\1/p')
-        if [ -n "$JAVA_VERSION" ] ; then
+        if [ -n "${version}" ]; then
             break
         fi
     done
 
-    # Jar repository for this Java standard
-    JAVAVER_LIBDIR=$JAVA_LIBDIR-$JAVA_VERSION
-    JAVAVER_JNIDIR=$JNI_LIBDIR-$JAVA_VERSION
-
-    if [ ! -d "$JVM_LIBDIR" ]; then
-        echo "$0: error: JVM_LIBDIR $JVM_LIBDIR does not exist or is not a directory"
-        return 1
-    elif [ ! -d "$JAVAVER_LIBDIR" ]; then
-        echo "$0: error: JAVAVER_LIBDIR $JAVAVER_LIBDIR does not exist or is not a directory"
-        return 1
-    elif [ ! -d "$JAVAVER_JNIDIR" ]; then
-        echo "$0: error: JAVAVER_JNIDIR $JAVAVER_JNIDIR does not exist or is not a directory"
-        return 1
+    if [ -z "${version}" ]; then
+	echo "$0: Unable to determine Java version"
+	return 1
     fi
+
+    # Jar repository for this Java standard
+    _javaverdirs=
+    for dir in ${_javadirs}; do
+	_javaverdirs="${dir}-${version}${_javaverdirs:=:}${_javaverdirs}"
+    done
 
     return 0
 }
