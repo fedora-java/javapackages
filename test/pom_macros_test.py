@@ -6,19 +6,22 @@ from shutil import copytree
 from shutil import rmtree
 from lxml import etree
 
-def bash():
+pe = '. ../java-utils/pom_editor.sh; '
+ns = dict(a='http://maven.apache.org/POM/4.0.0')
+data_dir = 'data/_pomtestdir/'
+
+def exec_macro(command = "", pom = "pom.xml"):
     def test_decorator(fn):
         def test_decorated(self, *args, **kwargs):
             bash = subprocess.Popen(['bash'],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 stdin=subprocess.PIPE)
-            fn(self, bash)
+            stdin, stderr = bash.communicate("%s %s %s%s" % (pe, command, data_dir, pom))
+
+            fn(self, stdin, stderr, bash.returncode, os.path.join(data_dir, pom))
         return test_decorated
     return test_decorator
 
-
-pe = '. ../java-utils/pom_editor.sh; '
-ns = dict(a='http://maven.apache.org/POM/4.0.0')
 
 class PomMacrosTest(unittest.TestCase):
 
@@ -30,352 +33,258 @@ class PomMacrosTest(unittest.TestCase):
     def tearDownClass(cls):
         rmtree('data/_pomtestdir')
 
-    @bash()
-    def test_sanity(self, bash):
-        stdin, stderr = bash.communicate(pe)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("ls", "pom_remove_dep.xml")
+    def test_sanity(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-    @bash()
-    def test_remove_dep(self, bash):
-        data = "data/_pomtestdir/pom_remove_dep.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_remove_dep :commons-io %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_remove_dep :commons-io", "pom_remove_dep.xml")
+    def test_remove_dep(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:dependencies/a:dependency', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_remove_deps(self, bash):
-        data = "data/_pomtestdir/pom_remove_dep2.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_remove_dep commons-io:commons-io %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_remove_dep commons-io:commons-io", "pom_remove_dep2.xml")
+    def test_remove_deps(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:dependencies/a:dependency', namespaces=ns)
         self.assertEqual(len(r), 2)
 
-    @bash()
-    def test_remove_dep_nons(self, bash):
+    @exec_macro("pom_remove_dep junit:", "pom_remove_dep_nons.xml")
+    def test_remove_dep_nons(self, stdin, stderr, returncode, pom_path):
         # no namespace
-        data = "data/_pomtestdir/pom_remove_dep_nons.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_remove_dep junit: %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:dependencies/a:dependency', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_remove_dep_no_effect(self, bash):
-        data = "data/_pomtestdir/pom_remove_dep_ret1.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_remove_dep not:there %s" % data)
-        self.assertEqual(bash.returncode, 1, stderr)
+    @exec_macro("pom_remove_dep not:there", "pom_remove_dep_ret1.xml")
+    def test_remove_dep_no_effect(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 1, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:dependencies/a:dependency', namespaces=ns)
         self.assertEqual(len(r), 2)
 
-    @bash()
-    def test_remove_plugin(self, bash):
-        data = "data/_pomtestdir/pom_remove_plugin.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_remove_plugin :my-plugin %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_remove_plugin :my-plugin", "pom_remove_plugin.xml")
+    def test_remove_plugin(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:build/a:plugins/a:plugin', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_remove_plugins(self, bash):
-        data = "data/_pomtestdir/pom_remove_plugin2.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_remove_plugin my.group:my-plugin %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_remove_plugin my.group:my-plugin", "pom_remove_plugin2.xml")
+    def test_remove_plugins(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:build/a:plugins/a:plugin', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_remove_plugin_nons(self, bash):
-        data = "data/_pomtestdir/pom_remove_plugin_nons.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_remove_plugin :my-plugin %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_remove_plugin :my-plugin", "pom_remove_plugin_nons.xml")
+    def test_remove_plugin_nons(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:build/a:plugins/a:plugin', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_remove_plugin_nons(self, bash):
-        data = "data/_pomtestdir/pom_remove_plugin_ret1.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_remove_plugin not:there %s" % data)
-        self.assertEqual(bash.returncode, 1)
+    @exec_macro("pom_remove_plugin not:there", "pom_remove_plugin_ret1.xml")
+    def test_remove_plugin_nons(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 1)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:build/a:plugins/a:plugin', namespaces=ns)
         self.assertEqual(len(r), 2)
 
-    @bash()
-    def test_disable_module(self, bash):
-        data = "data/_pomtestdir/pom_disable_module.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_disable_module module %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_disable_module module", "pom_disable_module.xml")
+    def test_disable_module(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:modules/a:module', namespaces=ns)
         self.assertEqual(len(r), 6)
 
-    @bash()
-    def test_disable_module_nons(self, bash):
-        data = "data/_pomtestdir/pom_disable_module_nons.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_disable_module module %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_disable_module module", "pom_disable_module_nons.xml")
+    def test_disable_module_nons(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:modules/a:module', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_disable_module_no_effect(self, bash):
-        data = "data/_pomtestdir/pom_disable_module_ret1.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_disable_module notthere %s" % data)
-        self.assertEqual(bash.returncode, 1)
+    @exec_macro("pom_disable_module notthere", "pom_disable_module_ret1.xml")
+    def test_disable_module_no_effect(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 1)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:modules/a:module', namespaces=ns)
         self.assertEqual(len(r), 7)
 
-    @bash()
-    def test_add_dep(self, bash):
-        data = "data/_pomtestdir/pom_add_dep.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_add_dep gdep:adep:3.2:test %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_add_dep gdep:adep:3.2:test", "pom_add_dep.xml")
+    def test_add_dep(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:dependencies/a:dependency', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_add_dep2(self, bash):
-        data = "data/_pomtestdir/pom_add_dep2.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_add_dep gdep:adep %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_add_dep gdep:adep", "pom_add_dep2.xml")
+    def test_add_dep2(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:dependencies/a:dependency', namespaces=ns)
         self.assertEqual(len(r), 2)
 
-    @bash()
-    def test_add_dep_nons(self, bash):
-        data = "data/_pomtestdir/pom_add_dep_nons.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_add_dep A:B::compile %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_add_dep A:B::compile", "pom_add_dep_nons.xml")
+    def test_add_dep_nons(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:dependencies/a:dependency', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_add_dep_mgmt(self, bash):
-        data = "data/_pomtestdir/pom_add_dep_mgmt.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_add_dep_mgmt gdep:adep:3.2:test %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_add_dep_mgmt gdep:adep:3.2:test", "pom_add_dep_mgmt.xml")
+    def test_add_dep_mgmt(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:dependencyManagement/a:dependencies/a:dependency', namespaces=ns)
         self.assertEqual(len(r), 2)
 
-    @bash()
-    def test_add_dep_mgmt2(self, bash):
-        data = "data/_pomtestdir/pom_add_dep_mgmt2.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_add_dep_mgmt gdep:adep %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_add_dep_mgmt gdep:adep", "pom_add_dep_mgmt2.xml")
+    def test_add_dep_mgmt2(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:dependencyManagement/a:dependencies/a:dependency', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_add_dep_mgmt_nons(self, bash):
-        data = "data/_pomtestdir/pom_add_dep_mgmt_nons.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_add_dep_mgmt gdep:adep %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_add_dep_mgmt gdep:adep", "pom_add_dep_mgmt_nons.xml")
+    def test_add_dep_mgmt_nons(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:dependencyManagement/a:dependencies/a:dependency', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_add_plugin(self, bash):
-        data = "data/_pomtestdir/pom_add_plugin.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_add_plugin plugin:plug:3 %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_add_plugin plugin:plug:3", "pom_add_plugin.xml")
+    def test_add_plugin(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:build/a:plugins/a:plugin', namespaces=ns)
         self.assertEqual(len(r), 3)
 
-    @bash()
-    def test_add_plugin2(self, bash):
-        data = "data/_pomtestdir/pom_add_plugin2.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_add_plugin plug:plug %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_add_plugin plug:plug", "pom_add_plugin2.xml")
+    def test_add_plugin2(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:build/a:plugins/a:plugin', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_add_plugin_nons(self, bash):
-        data = "data/_pomtestdir/pom_add_plugin_nons.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_add_plugin g:a:15 %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_add_plugin g:a:15", "pom_add_plugin_nons.xml")
+    def test_add_plugin_nons(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:build/a:plugins/a:plugin', namespaces=ns)
         self.assertEqual(len(r), 2)
 
-    @bash()
-    def test_add_plugin_default_gid(self, bash):
-        data = "data/_pomtestdir/pom_add_plugin_default_gid.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_add_plugin :A-A %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_add_plugin :A-A", "pom_add_plugin_default_gid.xml")
+    def test_add_plugin_default_gid(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:build/a:plugins/a:plugin', namespaces=ns)
         self.assertEqual(len(r), 1)
         r = doc.xpath('./a:build/a:plugins/a:plugin/a:groupId', namespaces=ns)
         self.assertEqual(len(r), 1)
         self.assertEqual(r[0].text, "org.apache.maven.plugins")
 
-    @bash()
-    def test_remove_parent(self, bash):
-        data = "data/_pomtestdir/pom_remove_parent.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_remove_parent %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_remove_parent", "pom_remove_parent.xml")
+    def test_remove_parent(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:parent', namespaces=ns)
         self.assertEqual(len(r), 0)
 
-    @bash()
-    def test_remove_parent_nons(self, bash):
-        data = "data/_pomtestdir/pom_remove_parent_nons.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_remove_parent %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_remove_parent", "pom_remove_parent_nons.xml")
+    def test_remove_parent_nons(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:parent', namespaces=ns)
         self.assertEqual(len(r), 0)
 
-    @bash()
-    def test_remove_parent_fail(self, bash):
-        data = "data/_pomtestdir/pom_remove_parent_fail.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_remove_parent %s" % data)
-        self.assertEqual(bash.returncode, 1)
+    @exec_macro("pom_remove_parent", "pom_remove_parent_fail.xml")
+    def test_remove_parent_fail(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 1)
 
-    @bash()
-    def test_add_parent(self, bash):
-        data = "data/_pomtestdir/pom_add_parent.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_add_parent pg:pa:21 %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_add_parent pg:pa:21", "pom_add_parent.xml")
+    def test_add_parent(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:parent', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_add_parent_nons(self, bash):
-        data = "data/_pomtestdir/pom_add_parent_nons.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_add_parent pg:pa %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_add_parent pg:pa", "pom_add_parent_nons.xml")
+    def test_add_parent_nons(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:parent', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_add_parent_second(self, bash):
-        data = "data/_pomtestdir/pom_add_parent_second.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_add_parent pg:p-a:1 %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_add_parent pg:p-a:1", "pom_add_parent_second.xml")
+    def test_add_parent_second(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:parent', namespaces=ns)
         self.assertEqual(len(r), 2)
 
-    @bash()
-    def test_set_parent(self, bash):
-        data = "data/_pomtestdir/pom_set_parent.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_set_parent pg:aa:5 %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_set_parent pg:aa:5", "pom_set_parent.xml")
+    def test_set_parent(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:parent', namespaces=ns)
         self.assertEqual(len(r), 1)
         r = doc.xpath('./a:parent/a:groupId', namespaces=ns)
         self.assertEqual(len(r), 1)
         self.assertEqual(r[0].text, "pg")
 
-    @bash()
-    def test_set_parent_nons(self, bash):
-        data = "data/_pomtestdir/pom_set_parent_nons.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_set_parent pg:aa %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_set_parent pg:aa", "pom_set_parent_nons.xml")
+    def test_set_parent_nons(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:parent', namespaces=ns)
         self.assertEqual(len(r), 1)
 
-    @bash()
-    def test_set_parent_fail(self, bash):
-        data = "data/_pomtestdir/pom_set_parent_fail.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_set_parent pg:aa %s" % data)
-        self.assertEqual(bash.returncode, 1, stderr)
+    @exec_macro("pom_set_parent pg:aa", "pom_set_parent_fail.xml")
+    def test_set_parent_fail(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 1, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:parent', namespaces=ns)
         self.assertEqual(len(r), 0)
 
-    @bash()
-    def test_xpath_remove(self, bash):
-        data = "data/_pomtestdir/pom_xpath_remove.xml"
-        stdin, stderr = bash.communicate(pe +
-                "pom_xpath_remove pom:maven-old %s" % data)
-        self.assertEqual(bash.returncode, 0, stderr)
+    @exec_macro("pom_xpath_remove pom:maven-old", "pom_xpath_remove.xml")
+    def test_xpath_remove(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
 
-        doc = etree.parse(data)
+        doc = etree.parse(pom_path)
         r = doc.xpath('./a:prerequisities/a:maven-old', namespaces=ns)
         self.assertEqual(len(r), 0)
 
