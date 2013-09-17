@@ -13,8 +13,13 @@
 _log()
 {
     if [ -n "${JAVAPACKAGES_DEBUG}" ]; then
-	echo "${@}" >&2
+	echo "${0}: ${@}" >&2
     fi
+}
+
+_err()
+{
+    echo "${0}: ${@}" >&2
 }
 
 # Load a single Java configuration file.
@@ -43,6 +48,7 @@ _load_java_conf()
     local java_home_save="${JAVA_HOME}"
     local java_opts_save="${JAVACMD_OPTS}"
     local prefix
+    local conf
 
     unset _javadirs
     unset _jvmdirs
@@ -55,7 +61,12 @@ _load_java_conf()
     done
 
     for prefix; do
-	_load_java_conf_file "${prefix}/etc/java/java.conf"
+	conf="${prefix}/etc/java/java.conf"
+	if [ ! -f "${conf}" ]; then
+	    _err "Java prefix ${prefix} was ignored because configuration file ${conf} does not exist"
+	else
+	    _load_java_conf_file "${conf}"
+	fi
     done
 
     _load_java_conf_file "${HOME}/.java/java.conf"
@@ -82,7 +93,7 @@ _set_java_home()
 
     if [ -n "${JAVA_HOME}" ]; then
 	if [ -z "${JVM_ROOT}" ]; then
-	    JVM_ROOT="${JAVA_HOME}"/..
+	    JVM_ROOT=$(readlink -f "${JAVA_HOME}"/.. || :)
 	fi
 	return
     fi
@@ -144,7 +155,7 @@ set_jvm()
 
 	if [ -n "${cmd}" ]; then
 	    cmd=$(readlink -f "${cmd}")
-	    export JAVA_HOME=$(dirname "${cmd}")/..
+	    export JAVA_HOME=$(readlink -f "${cmd%/*}"/.. || :)
 	    return
 	fi
     done
@@ -196,7 +207,7 @@ set_javacmd()
 	return 0
     fi
 
-    echo "${0}: error: Failed to set JAVACMD"
+    _err "Failed to set JAVACMD"
     return 1
 }
 
@@ -312,7 +323,7 @@ link_jar_repository() {
             if [ -z "$repository" ] ; then
                repository=$1
                if ! [ -d "$repository" -a -w "$repository" ] ; then
-                  echo "$0: error: $1 must be a writable directory" >&2
+                  _err "$1 must be a writable directory"
                   exit 1
                fi
             else
@@ -389,22 +400,20 @@ find_jar()
 
     for artifact in ${artifact%.jar} ${artifact%-*} ${artifact%/*}; do
 	for dir; do
-	    if [ -d "${dir}" ] ; then
-		_log "Trying file ${dir}/${artifact}.jar"
-		if [ -r "${dir}/${artifact}.jar" ] ; then
-		    echo "${dir}/${artifact}.jar"
-		    return 0
-		fi
-		_log "Trying directory ${dir}/${artifact}/"
-		if [ -d "${dir}/${artifact}" ] ; then
-		    echo "${dir}/${artifact}"
-		    return 0
-		fi
+	    _log "Trying file ${dir}/${artifact}.jar"
+	    if [ -r "${dir}/${artifact}.jar" ]; then
+		echo "${dir}/${artifact}.jar"
+		return 0
+	    fi
+	    _log "Trying dir  ${dir}/${artifact}/"
+	    if [ -d "${dir}/${artifact}" ]; then
+		echo "${dir}/${artifact}"
+		return 0
 	    fi
 	done
     done
 
-    echo "$0: error: Could not find ${artifact} Java extension for this JVM" >&2
+    _err "Could not find ${artifact} Java extension for this JVM"
     return 1
 }
 
@@ -414,12 +423,12 @@ check_java_env()
 {
     # This is usually set by set_jvm
     if [ -z "${JAVA_HOME}" ]; then
-	echo "$0: error: JAVA_HOME must be set" >&2
+	_err "JAVA_HOME must be set"
 	return 1
     fi
 
     if [ -z "${JAVACMD}" ]; then
-	echo "$0: error: JAVACMD must be set" >&2
+	_err "JAVACMD must be set"
 	return 2
     fi
 
