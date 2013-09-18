@@ -1,5 +1,5 @@
-#!/bin/bash
-# Copyright (c) 2011, 2013 Red Hat, Inc.
+#!/bin/sh
+# Copyright (c) 2013 Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,32 +28,21 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Authors: Stanislav Ochotnicky <sochotnicky@redhat.com>
+# Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
-# takes last tag and creates a release from it
+set -e
 
-last_tag=`git tag | sort -V | tail -n1`
-
-if [ -z $last_tag ];then
-    echo "Nothing to do, no tags exist"
-    exit
-fi
-
-git archive -v --prefix="javapackages-$last_tag/" $last_tag | xz > \
-    javapackages-$last_tag.tar.xz
-
-
-# run testsuite before allowing upload/final release
-if ! ./check; then
-    echo "Tests failed, release aborted"
+if ! test -f config.status; then
+    echo config.status does not exist. Run configure first. >&2
     exit 1
 fi
+. ./config.status
 
-read -i 'n' -e -p "Do you want to upload file javapackages-$last_tag.tar.xz to fedorahosted? (y/n): "
+(cd ./python && python setup.py test; r1=${?})
+(cd ./test && ./run_tests.sh; r2=${?})
 
-if [ "$REPLY" = "y" ];then
-    git push --tags
-    scp javapackages-$last_tag.tar.xz fedorahosted.org:javapackages
+if [ ${r1} -lt ${r2} ]; then
+    r1=${r2}
 fi
 
-
+exit ${r1}
