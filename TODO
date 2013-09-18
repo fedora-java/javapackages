@@ -17,10 +17,6 @@
 
 ** Fix version in python/setup.py
 
-** pom_xpath_inject macro should fail if provided XML code is not valid XML
-
-   Currently the macro adds only "code added by maintainer" comments, nothing else.
-
 * FEATURES
 
 ** %mvn_config support for XML contents

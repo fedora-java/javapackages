@@ -159,7 +159,8 @@ EOF
 EOF
 )|tail -n +3| head -n -1| sed "s/^  //" |sed -e "s/  /${tab}/g"|sed -e "s/^\s\+$//"
 )
-   rm -f .input
+   rm -f .input.xml
+   test -n "${injected}"|| _pom_bailout Injected XML is not well-formed
    sed -e  "s|\(\s*\)\(.*\)|<xsl:text>\n${indent}\1${tab}</xsl:text>\2|" <<EOF
 <xsl:comment> begin of code added by maintainer </xsl:comment>
 ${injected}
@@ -174,6 +175,7 @@ EOF
 _pom_replace_xpath()
 {
     local code=$(_pom_reformat_injected "${1}" "${2}" "${3}") 
+    test -n "${code}" || exit 1
     _pom_patch "${1}" <<EOF
 ${_pom_xslt_header}
   <xsl:template match="${2}">
@@ -207,7 +209,8 @@ EOF
 #  $3 - code to inject
 _pom_inject_xpath()
 {
-    local code=$(_pom_reformat_injected "${1}" "${2}" "${3}") 
+    local code=$(_pom_reformat_injected "${1}" "${2}" "${3}")
+    test -n "${code}" || exit 1
     _pom_patch "${1}" <<EOF
 ${_pom_xslt_header}
   <xsl:template match="${2}">
