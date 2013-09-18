@@ -62,7 +62,7 @@ class TestMvnfile(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'file', 'version'))
 
-    @xmvnconfig('file',['a:b:c', 'file', ])
+    @xmvnconfig('file',['a:b:c:', 'file', ])
     def test_extension(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
@@ -104,7 +104,7 @@ class TestMvnfile(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'file', 'classifier'))
 
-    @xmvnconfig('file',['a::c', 'sym', ])
+    @xmvnconfig('file',['a::c:', 'sym', ])
     def test_wildcard2(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()

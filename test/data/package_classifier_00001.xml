@@ -10,7 +10,7 @@
 				<artifactId>bbb</artifactId>
 				<groupId>aaa</groupId>
 				<extension>ccc</extension>
-				<version>ddd</version>
+				<classifier>ddd</classifier>
 			</artifactGlob>
 			<targetPackage>pack</targetPackage>
 		</rule>

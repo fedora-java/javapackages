@@ -15,7 +15,7 @@
 					<artifactId>yyy</artifactId>
 					<groupId>xxx</groupId>
 					<extension>zzz</extension>
-					<version>www</version>
+					<classifier>www</classifier>
 				</alias>
 			</aliases>
 		</rule>

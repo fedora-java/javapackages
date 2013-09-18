@@ -8,7 +8,7 @@
 		<rule>
 			<artifactGlob>
 				<groupId>a</groupId>
-				<version>c</version>
+				<extension>c</extension>
 			</artifactGlob>
 			<files>
 				<file>sym</file>

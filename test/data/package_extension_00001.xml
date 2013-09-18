@@ -9,7 +9,7 @@
 			<artifactGlob>
 				<artifactId>bbb</artifactId>
 				<groupId>aaa</groupId>
-				<version>ccc</version>
+				<extension>ccc</extension>
 			</artifactGlob>
 			<targetPackage>pack</targetPackage>
 		</rule>

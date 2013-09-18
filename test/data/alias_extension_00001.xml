@@ -14,7 +14,7 @@
 				<alias>
 					<artifactId>yyy</artifactId>
 					<groupId>xxx</groupId>
-					<version>zzz</version>
+					<extension>zzz</extension>
 				</alias>
 			</aliases>
 		</rule>

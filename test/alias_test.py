@@ -41,7 +41,7 @@ class TestMvnalias(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'version'))
 
-    @xmvnconfig('alias',['aaa:bbb', 'xxx:yyy:zzz', ])
+    @xmvnconfig('alias',['aaa:bbb', 'xxx:yyy:zzz:', ])
     def test_extension(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
@@ -49,7 +49,7 @@ class TestMvnalias(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'extension'))
 
-    @xmvnconfig('alias',['aaa:bbb', 'xxx:yyy:zzz:www', ])
+    @xmvnconfig('alias',['aaa:bbb', 'xxx:yyy:zzz:www:', ])
     def test_classifier(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
@@ -65,7 +65,7 @@ class TestMvnalias(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'comb1'))
 
-    @xmvnconfig('alias',['aaa:bbb:ccc:ddd:2.1', 'xxx:yyy', ])
+    @xmvnconfig('alias',['aaa:bbb:ccc:ddd:2.1', 'xxx:yyy:', ])
     def test_comb2(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
@@ -73,7 +73,7 @@ class TestMvnalias(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'comb2'))
 
-    @xmvnconfig('alias',['aaa:bbb:ccc', 'xxx:yyy:zzz:www:2.1', ])
+    @xmvnconfig('alias',['aaa:bbb:ccc:', 'xxx:yyy:zzz:www:2.1', ])
     def test_comb3(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
@@ -81,7 +81,7 @@ class TestMvnalias(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'alias', 'comb3'))
 
-    @xmvnconfig('alias',['aaa:bbb:ccc:4.1', 'xxx:yyy:zzz', ])
+    @xmvnconfig('alias',['aaa:bbb:ccc:4.1', 'xxx:yyy:zzz:', ])
     def test_comb4(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()

@@ -9,7 +9,7 @@
 			<artifactGlob>
 				<artifactId>b</artifactId>
 				<groupId>a</groupId>
-				<version>c</version>
+				<extension>c</extension>
 			</artifactGlob>
 			<files>
 				<file>file</file>
