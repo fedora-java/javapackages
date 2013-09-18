@@ -27,7 +27,7 @@ class PomMacrosTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        copytree('data/pom_macros', 'data/_pomtestdir')
+        copytree('data/pom_macros', data_dir)
 
     @classmethod
     def tearDownClass(cls):
