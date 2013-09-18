@@ -3,6 +3,8 @@
 
 * BUGS
 
+** test_two_in_one is failing
+
 ** Unable to install jar to directory outside %{_javadir} via mvn_file
 
    rhbz#986909
