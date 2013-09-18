@@ -1,0 +1,19 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>plexus</groupId>
+  <artifactId>plexus-root</artifactId>
+  <packaging>pom</packaging>
+  <name>Plexus</name>
+  <version>1.0.3</version>
+
+  <developers>
+    <developer>
+      <name>Trygve Laugst&oslash;l</name>
+      <id>trygvis</id>
+      <email>trygvis@codehaus.org</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+</project>

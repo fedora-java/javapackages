@@ -5,6 +5,7 @@ from shutil import copyfile
 from shutil import copytree
 from shutil import rmtree
 from lxml import etree
+from formencode import doctest_xml_compare
 
 pe = '. ../java-utils/pom_editor.sh; '
 ns = dict(a='http://maven.apache.org/POM/4.0.0')
@@ -32,6 +33,16 @@ class PomMacrosTest(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         rmtree('data/_pomtestdir')
+
+    def xml_compare_reporter(self, report):
+        print report
+
+    def check_result(self, pom_path, want_suffix = "-want"):
+        got = etree.parse(pom_path).getroot()
+        want = etree.parse(pom_path + want_suffix).getroot()
+        res = doctest_xml_compare.xml_compare(got, want, self.xml_compare_reporter)
+        return got, want, res
+
 
     @exec_macro("ls", "pom_remove_dep.xml")
     def test_sanity(self, stdin, stderr, returncode, pom_path):
@@ -287,6 +298,145 @@ class PomMacrosTest(unittest.TestCase):
         doc = etree.parse(pom_path)
         r = doc.xpath('./a:prerequisities/a:maven-old', namespaces=ns)
         self.assertEqual(len(r), 0)
+
+    @exec_macro("pom_xpath_remove \"pom:dependency[pom:artifactId[text()='m-m']]\"",
+            "pom_xpath_remove2.xml")
+    def test_xpath_remove2(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_remove pom:dependencies", "pom_xpath_remove_nons.xml")
+    def test_xpath_remove_nons(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_remove pom:not/pom:there", "pom_xpath_remove_fail.xml")
+    def test_xpath_remove_fail(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 1, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_inject pom:parent '<version>1.2</version>'",
+            "pom_xpath_inject.xml")
+    def test_xpath_inject(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_inject pom:build/pom:plugins '<plugin>\
+            <groupId>some</groupId><artifactId>plugin</artifactId></plugin>'",
+            "pom_xpath_inject2.xml")
+    def test_xpath_inject2(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_inject pom:project '<name>Commons Lang</name>'",
+            "pom_xpath_inject_nons.xml")
+    def test_xpath_inject_nons(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_inject pom:project '<name>Commons Lang<name>'",
+            "pom_xpath_inject_fail.xml")
+    def test_xpath_inject_fail(self, stdin, stderr, returncode, pom_path):
+        # invalid XML code
+        self.assertEqual(returncode, 1, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_replace pom:parent/pom:groupId '<groupId>commons</groupId>'",
+            "pom_xpath_replace.xml")
+    def test_xpath_replace(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_replace \"pom:dependency[pom:artifactId[text()='junit']]/pom:version\"\
+            '<version>commons</version>'", "pom_xpath_replace2.xml")
+    def test_xpath_replace2(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_replace pom:parent '<groupId>org.apache.commons</groupId>'",
+            "pom_xpath_replace_nons.xml")
+    def test_xpath_replace_nons(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_replace pom:project/pom:not/pom:there '<groupId>commons</groupId>'",
+            "pom_xpath_replace_fail.xml")
+    def test_xpath_replace_fail(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 1, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_replace pom:project/pom:groupId '<groupId>commons<groupId>'",
+            "pom_xpath_replace_invalid.xml")
+    def test_xpath_replace_invalid_xml(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 1, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_set pom:project/pom:groupId 'commons'",
+            "pom_xpath_set.xml")
+    def test_xpath_set(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_set \"pom:build/pom:plugins/pom:plugin[pom:groupId\
+            [text()='org.codehaus.mojo']]/pom:version\" 2", "pom_xpath_set2.xml")
+    def test_xpath_set2(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_set pom:parent/pom:artifactId 'a-Id'", "pom_xpath_set_nons.xml")
+    def test_xpath_set_nons(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_set pom:project/pom:parent/pom:notThere Project",
+            "pom_xpath_set_fail.xml")
+    def test_xpath_set_fail(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 1, stderr)
+
+        got, want, res = self.check_result(pom_path)
+        self.assertEqual(res, True)
+
+    @exec_macro("pom_remove_parent", "unparsable_xml.pom")
+    def test_unparsable_xml(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 1, stderr)
+
+    # disabled for now, pom macros need to be fixed first. see TODO
+    #@exec_macro("pom_remove_parent", "nonexistent_pom.xml")
+    #def test_no_pom(self, stdin, stderr, returncode, pom_path):
+    #    self.assertEqual(returncode, 1, stderr)
+
+    #    got, want, res = self.check_result(pom_path)
+    #    self.assertEqual(res, True)
 
 if __name__ == '__main__':
     unittest.main()
