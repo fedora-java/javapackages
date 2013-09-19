@@ -121,7 +121,7 @@ sort -u -o ${_filelist} ${_filelist} \
 #
 
 # Private macro, shouldn't be used directly
-%__pom_call           . %{javadir}-utils/pom_editor.sh; pom_
+%__pom_call           . %{_javadir}-utils/pom_editor.sh; pom_
 
 
 # %pom_remove_dep - remove dependency on Maven artifact from POM file
