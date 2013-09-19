@@ -59,7 +59,7 @@ class Depmap(object):
         self.__load_depmap(path)
         if self.__doc is None:
             raise DepmapLoadingException("Failed to load fragment {path} You have a problem".format(path=path))
-        if not self.get_provided_artifacts():
+        if not self.get_provided_mappings():
             raise DepmapLoadingException("Depmap {path} does not contain any provided artifacts ".format(path=path))
 
     def __load_depmap(self, fragment_path):
@@ -81,8 +81,11 @@ class Depmap(object):
     def get_provided_artifacts(self):
         """Returns list of Artifact provided by given depmap."""
         artifacts = []
-        for dep in self.__doc.findall('.//dependency/maven'):
-            artifact = Artifact.from_xml_element(dep)
+        for dep in self.__doc.findall('.//dependency'):
+            artifact = dep.findall('./maven')
+            if len(artifact) != 1:
+                raise DepmapInvalidException("Multiple maven nodes in dependency")
+            artifact = Artifact.from_xml_element(artifact[0])
             if not artifact.version:
                 raise DepmapInvalidException("Depmap {path} does not have version in maven provides".format(path=self.__path))
             artifacts.append(artifact)
@@ -96,10 +99,16 @@ class Depmap(object):
         """
         mappings = []
         for dep in self.__doc.findall('.//dependency'):
-            m_artifact = Artifact.from_xml_element(dep.find("./maven"))
+            m_artifact = dep.findall('./maven')
+            if len(m_artifact) != 1:
+                raise DepmapInvalidException("Multiple maven nodes in dependency")
+            m_artifact = Artifact.from_xml_element(m_artifact[0])
             if not m_artifact.version:
                 raise DepmapInvalidException("Depmap {path} does not have version in maven provides".format(path=self.__path))
-            l_artifact = Artifact.from_xml_element(dep.find("./jpp"))
+            l_artifact = dep.findall('./jpp')
+            if len(l_artifact) != 1:
+                raise DepmapInvalidException("Multiple jpp nodes in dependency")
+            l_artifact = Artifact.from_xml_element(l_artifact[0])
             mappings.append((m_artifact, l_artifact))
         return mappings
 
