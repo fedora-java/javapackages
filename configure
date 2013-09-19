@@ -42,6 +42,7 @@ rpmconfigdir
 
 m2home
 
+javaconfdir
 javadir
 javadocdir
 jnidir

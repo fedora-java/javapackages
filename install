@@ -70,9 +70,9 @@ inst_config() { inst "%config(noreplace)" "${@}"; }
 exec >files-common
 
 dir "${datadir}/maven-effective-poms"
-dir "${sysconfdir}/java"
-dir "${sysconfdir}/java/security"
-dir "${sysconfdir}/java/security/security.d"
+dir "${javaconfdir}"
+dir "${javaconfdir}/security"
+dir "${javaconfdir}/security/security.d"
 dir "${jvmdir}"
 dir "${jvmjardir}"
 dir "${jvmprivdir}"
@@ -113,8 +113,8 @@ inst_exec target/rebuild-jar-repository "${bindir}"
 
 link "${bindir}/abs2rel" "${javadir}-utils/abs2rel.sh"
 
-inst_config etc/font.properties "${sysconfdir}/java"
-inst_config target/java.conf "${sysconfdir}/java"
+inst_config etc/font.properties "${javaconfdir}"
+inst_config target/java.conf "${javaconfdir}"
 
 inst_data target/java-functions "${javadir}-utils"
 inst_exec java-utils/mvn_alias.py "${javadir}-utils"

@@ -76,23 +76,23 @@ _load_java_conf()
     local IFS=:
     local java_home_save="${JAVA_HOME}"
     local java_opts_save="${JAVACMD_OPTS}"
-    local prefix
+    local javaconfdir
     local conf
 
     unset _javadirs
     unset _jvmdirs
 
-    set -- ${PREFIXES:-%{prefix}}
+    set -- ${JAVACONFDIRS:-%{javaconfdir}}
 
-    _log "Prefixes are:"
-    for prefix; do
-	_log "  * ${prefix}"
+    _log "Java config directories are:"
+    for javaconfdir; do
+	_log "  * ${javaconfdir}"
     done
 
-    for prefix; do
-	conf="${prefix}/etc/java/java.conf"
+    for javaconfdir; do
+	conf="${javaconfdir}/java.conf"
 	if [ ! -f "${conf}" ]; then
-	    _err "Java prefix ${prefix} was ignored because configuration file ${conf} does not exist"
+	    _err "Java configuration directory ${javaconfdir} was ignored because configuration file ${conf} does not exist"
 	else
 	    _load_java_conf_file "${conf}"
 	fi

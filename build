@@ -55,6 +55,7 @@ expand()
     sed \
         -e "s|%{bindir}|${bindir}|" \
         -e "s|%{datadir}|${datadir}|" \
+        -e "s|%{javaconfdir}|${javaconfdir}|" \
         -e "s|%{javadir}|${javadir}|" \
         -e "s|%{jnidir}|${jnidir}|" \
         -e "s|%{jvmdir}|${jvmdir}|" \

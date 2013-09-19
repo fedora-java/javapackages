@@ -56,6 +56,11 @@
 %_jvmcommonsysconfdir %{_sysconfdir}/jvm-commmon
 
 #
+# Directory containing Java configuration file (java.conf)
+#
+%_javaconfdir %{_sysconfdir}/java
+
+#
 # Directory where arch and version independent jars are installed.
 # This has already been integrated in RH macros following our request.
 #
