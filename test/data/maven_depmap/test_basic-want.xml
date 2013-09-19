@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<dependencyMap>
+  <dependency>
+    <maven>
+      <artifactId>bndlib</artifactId>
+      <groupId>biz.aQute</groupId>
+      <version>1.50.0</version>
+    </maven>
+    <jpp>
+      <artifactId>bndlib</artifactId>
+      <groupId>JPP</groupId>
+    </jpp>
+  </dependency>
+</dependencyMap>
