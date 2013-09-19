@@ -28,12 +28,17 @@ class TestMavenReq(unittest.TestCase):
         self.assertEquals(return_value, 0)
         self.assertEquals(stdout, "jpackage-utils\nmvn(org.apache.maven:maven-project)\njava >= 1:1.6\n")
 
-    @mavenreq(["require2/require.xml"])
+    @mavenreq(["require_parent/require.xml"])
     def test_require_parent(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(stdout, "jpackage-utils\nns-mvn(org.codehaus.plexus:plexus-ant-factory) = 1.0\n")
 
-    @mavenreq(["require3/require.xml"])
+    @mavenreq(["require_multi/require.xml"])
     def test_require_multi(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(stdout, "jpackage-utils\nns-mvn(org.codehaus.plexus:plexus-ant-factory) = 1.0\nns-mvn(codehaus:plexus-utils) = 1.2\nmvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)\n")
+
+    @mavenreq(["require_mixed/require.xml"])
+    def test_mixed(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(stdout, "jpackage-utils\nns-mvn(org.codehaus.plexus:plexus-ant-factory) = 1.0\nns-mvn(codehaus:plexus-utils) = 1.2\nmvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)\nmvn(org.apache.maven.plugins:maven-idea-plugin) = 1.4\n")

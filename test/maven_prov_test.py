@@ -45,3 +45,14 @@ class TestMavenProv(unittest.TestCase):
     @mavenprov(["two_in_one.xml"])
     def test_two_in_one(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
+
+    @mavenprov(["skip_provides.xml"])
+    def test_skip_provides(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(stdout, "ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0\n")
+
+    @mavenprov(["non_compat.xml"])
+    def test_non_compat(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(stdout, "ns-mvn(org.codehaus.plexus:plexus-ant-factory) = 1.0\n")
+
