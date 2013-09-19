@@ -394,13 +394,9 @@ class PomMacrosTest(unittest.TestCase):
     def test_unparsable_xml(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 1, stderr)
 
-    # disabled for now, pom macros need to be fixed first. see TODO
-    #@exec_macro("pom_remove_parent", "nonexistent_pom.xml")
-    #def test_no_pom(self, stdin, stderr, returncode, pom_path):
-    #    self.assertEqual(returncode, 1, stderr)
-
-    #    got, want, res = self.check_result(pom_path)
-    #    self.assertEqual(res, True)
+    @exec_macro("pom_remove_parent", "nonexistent_pom.xml")
+    def test_no_pom(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 1, stderr)
 
 if __name__ == '__main__':
     unittest.main()
