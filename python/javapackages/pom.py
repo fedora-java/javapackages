@@ -67,14 +67,14 @@ class POM(object):
         gId = self.__find('./pom:groupId')
         if gId is None:
             gId = self.__find('./pom:parent/pom:groupId')
-        return gId.text
+        return gId.text.strip()
 
     @property
     def artifactId(self):
         """
         Effective artifactId of the pom Artifact
         """
-        return self.__find('./pom:artifactId').text
+        return self.__find('./pom:artifactId').text.strip()
 
     @property
     def version(self):
@@ -86,7 +86,7 @@ class POM(object):
         if version is None:
             version = self.__find('./pom:parent/pom:version')
             assert version is not None
-        return version.text
+        return version.text.strip()
 
     @property
     def packaging(self):
@@ -95,5 +95,5 @@ class POM(object):
         """
         p = self.__find('./pom:packaging')
         if p is not None:
-            return p.text
+            return p.text.strip()
         return None
