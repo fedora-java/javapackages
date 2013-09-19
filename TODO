@@ -40,15 +40,6 @@
 
 ** SCL support
 
-   find_jar (impolementation behind build-classpath,
-   build-jar-repository et al.) needs to support different prefixes,
-   preferably using XDG style env variables
-
-   SCL Java config should take precedence over standard config (/etc/java),
-   but user settings (~/.java/java.conf) should have highest precedence
-
-   JVMs that are part of SCL should be located properly
-
    %jpackage_script should check SCL, perhaps automatically activate SCL?
    Then you could just run /opt/rh/maven31/bin/mvn and Maven would be ran
    with maven31 SCL activated (just an idea, I'm not sure about that)
