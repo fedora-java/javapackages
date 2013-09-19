@@ -81,10 +81,10 @@ class UnknownFileExtension(Exception):
 def _get_javadir_part(jar_path, prefix):
     # This is not nice, because macros can change but handling these
     # in RPM macros is ugly as hell.
-    javadirs=[os.path.join(prefix, part) for part in ["usr/share/java",
-                                                      "usr/share/java-jni",
-                                                      "usr/lib/java",
-                                                      "usr/lib64/java"]]
+    javadirs=[os.path.join(prefix, part) for part in ["share/java",
+                                                      "share/java-jni",
+                                                      "lib/java",
+                                                      "lib64/java"]]
     jarpart = None
     for jdir in javadirs:
         if jdir in jar_path:
