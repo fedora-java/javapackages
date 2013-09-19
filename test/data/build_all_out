@@ -1,0 +1,1 @@
+--batch-mode --offline -X -Dmaven.test.skip=true package org.fedoraproject.xmvn:xmvn-mojo:builddep

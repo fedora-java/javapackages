@@ -151,5 +151,13 @@ class TestMvnpackage(unittest.TestCase):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
+    @xmvnconfig('package',['aaa:bbb', '__noinstall', ])
+    def test_noinstall(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('package', 'noinstall'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'package', 'noinstall'))
+
 if __name__ == '__main__':
     unittest.main()

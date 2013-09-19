@@ -107,5 +107,23 @@ class TestMvnbuild(unittest.TestCase):
         for file in filelist:
             self.assertEquals(get_actual_config(file), get_expected_config(file, 'build', 'debug1'))
 
+    @xmvnconfig('build',['-ji', ])
+    def test_skip_both(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(get_actual_args(), get_expected_args('build', 'skip_both'))
+
+    @xmvnconfig('build',['-dfijsX', ])
+    def test_all(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(get_actual_args(), get_expected_args('build', 'all'))
+
+    @xmvnconfig('build',['-dfijsX', ])
+    def test_all1(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('build', 'all1'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'build', 'all1'))
+
 if __name__ == '__main__':
     unittest.main()
