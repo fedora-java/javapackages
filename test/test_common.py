@@ -1,7 +1,6 @@
 import os
 import sys
 import subprocess
-import unittest
 import re
 
 from lxml import etree
@@ -18,7 +17,7 @@ def call_script(name, args, stdin = None, wrapped = False):
         procargs = [sys.executable, os.path.join(dirpath, 'wrapper.py'), name]
     else:
         procargs = [sys.executable, name]
-    proc = subprocess.Popen(procargs + args, shell = False, 
+    proc = subprocess.Popen(procargs + args, shell = False,
         stdout = outfile, stderr = errfile, env = script_env, stdin = subprocess.PIPE)
     proc.communicate(stdin)
     ret = proc.wait()
@@ -85,3 +84,23 @@ def mavenreq(filelist):
         return test_decorated
     return test_decorator
 
+def mvn_depmap(pom, jar=None, fnargs=[]):
+    def test_decorator(fn):
+        def test_decorated(self, *args, **kwargs):
+            olddir = os.getcwd()
+            os.chdir(os.path.join(dirpath, 'data', 'maven_depmap'))
+            path = os.path.join(dirpath, '..', 'java-utils', 'maven_depmap.py')
+            args = ['.fragment_data', pom]
+            if jar:
+                args.append(os.path.join(os.getcwd(), jar))
+            args.extend(fnargs)
+            (stdout, stderr, return_value) = call_script(path, args)
+            frag = None
+            if return_value == 0:
+                with open('.fragment_data','r') as f:
+                    frag = f.read()
+                os.remove('.fragment_data')
+            os.chdir(olddir)
+            fn(self, stdout, stderr, return_value, depmap=frag)
+        return test_decorated
+    return test_decorator
