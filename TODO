@@ -15,10 +15,6 @@
 
    This was fixed in 2bb8f05 but needs a testcase
 
-** the macros don't really bail out if provided pom.xml doesn't exist
-
-   Tested on pom_remove_parent, this macro returns 0 even if pom doesn't exist
-
 ** Fix version in python/setup.py
 
 * FEATURES
