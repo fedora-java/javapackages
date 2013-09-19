@@ -1,4 +1,5 @@
 import os
+from shutil import copytree
 import sys
 import subprocess
 import re
@@ -87,8 +88,7 @@ def mavenreq(filelist):
 def mvn_depmap(pom, jar=None, fnargs=[]):
     def test_decorator(fn):
         def test_decorated(self, *args, **kwargs):
-            olddir = os.getcwd()
-            os.chdir(os.path.join(dirpath, 'data', 'maven_depmap'))
+            os.chdir(self.workdir)
             path = os.path.join(dirpath, '..', 'java-utils', 'maven_depmap.py')
             args = ['.fragment_data', pom]
             if jar:
@@ -100,7 +100,6 @@ def mvn_depmap(pom, jar=None, fnargs=[]):
                 with open('.fragment_data','r') as f:
                     frag = f.read()
                 os.remove('.fragment_data')
-            os.chdir(olddir)
             fn(self, stdout, stderr, return_value, depmap=frag)
         return test_decorated
     return test_decorator

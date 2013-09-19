@@ -1,12 +1,36 @@
-import unittest
-from test_common import *
 import inspect
+import os
+import unittest
+import shutil
+from test_common import *
+
 
 from lxml import etree
 from formencode import doctest_xml_compare
 
 class TestMavenDepmap(unittest.TestCase):
 
+    def setUp(self):
+        try:
+            dirpath = os.path.dirname(os.path.realpath(__file__))
+            self.olddir = os.getcwd()
+            self.datadir = os.path.join(dirpath,
+                                        'data',
+                                        'maven_depmap')
+            self.workdir = os.path.join(self.datadir, "..",
+                                        "maven_depmap_workdir")
+
+            shutil.copytree(self.datadir, self.workdir)
+            os.chdir(self.workdir)
+        except OSError:
+            pass
+
+    def tearDown(self):
+        try:
+            shutil.rmtree(self.workdir)
+            os.chdir(self.olddir)
+        except OSError:
+            pass
 
     def xml_compare_reporter(self, report):
         print report
@@ -14,10 +38,8 @@ class TestMavenDepmap(unittest.TestCase):
     def check_result(self, test_name, depmap):
         dirpath = os.path.dirname(os.path.realpath(__file__))
         got = etree.fromstring(depmap)
-        want = etree.parse(os.path.join(dirpath,
-                                       'data',
-                                       'maven_depmap',
-                                       test_name+"-want.xml")).getroot()
+        want = etree.parse(os.path.join(self.workdir,
+                                        test_name+"-want.xml")).getroot()
         res = doctest_xml_compare.xml_compare(got, want, self.xml_compare_reporter)
         return got, want, res
 
