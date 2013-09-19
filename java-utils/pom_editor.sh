@@ -85,7 +85,8 @@ _pom_find_file()
 _pom_patch()
 {
     # First try find the location of the POM file.
-    local pom=$(_pom_find_file "${1}")
+    local pom
+    pom=$(_pom_find_file "${1}") || exit 1
 
     # Create a backup file -- pom.xml.orig.
     test -f "${pom}".orig || cp -p "${pom}"{,.orig}
@@ -115,7 +116,8 @@ _pom_patch()
 #  $2 - XPath of the node
 _pom_get_indent()
 {
-    local pom=$(_pom_find_file "${1}")
+    local pom
+    pom=$(_pom_find_file "${1}") || exit 1
     (xsltproc --nonet - "${pom}" <<EOF
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
