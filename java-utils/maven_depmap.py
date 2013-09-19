@@ -187,7 +187,9 @@ def parse_pom(pom_file, prefix, jar_file = None):
         if not pom.packaging or pom.packaging != "pom":
             raise PackagingTypeMissingFile(pom_path)
     else:
-        extension = _get_file_extension(jar_path, pom.artifactId)
+        # let's just take last part of filename as extension
+        fname, ext = os.path.splitext(jar_path)
+        extension = ext[1:]
 
     jpp_gid, jpp_aid = _get_jpp_from_filename(pom_file, prefix, jar_file, extension)
 

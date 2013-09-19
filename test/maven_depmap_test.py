@@ -30,8 +30,10 @@ class TestMavenDepmap(unittest.TestCase):
 
     @mvn_depmap('JPP-aqute-bndlib.pom', 'usr/share/java/aqute-bndlib.jar')
     def test_different_artifactId(self, stdout, stderr, return_value, depmap):
-        print stderr
         self.assertEqual(return_value, 0)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
 
 if __name__ == '__main__':
     unittest.main()
