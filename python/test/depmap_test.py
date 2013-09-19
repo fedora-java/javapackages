@@ -159,18 +159,10 @@ class TestDepmap(unittest.TestCase):
         self.assertEqual(reqs[3].namespace, "codehaus")
         self.assertEqual(reqs[4].namespace, "test")
 
+    @exception_expected(DepmapInvalidException)
     @depmapfile("depmap_incorrect_provides.xml")
     def test_incorrect_provides(self, d):
-        maps = d.get_provided_mappings()
-        for m, l in maps:
-            self.assertEqual(m.groupId, "commons-io")
-            self.assertEqual(l.groupId, "JPP/commons-io")
-            self.assertEqual(m.artifactId, "commons-io")
-            self.assertEqual(l.artifactId, "commons-io")
-            self.assertEqual(m.version, "1.5")
-            self.assertEqual(l.version, "")
-            self.assertEqual(m.namespace, "")
-            self.assertEqual(l.namespace, "ns")
+        pass
 
 if __name__ == '__main__':
     unittest.main()
