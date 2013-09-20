@@ -118,6 +118,7 @@ inst_config target/java.conf "${javaconfdir}"
 
 inst_data target/java-functions "${javadir}-utils"
 inst_exec java-utils/mvn_alias.py "${javadir}-utils"
+inst_exec java-utils/mvn_artifact.py "${javadir}-utils"
 inst_exec java-utils/mvn_build.py "${javadir}-utils"
 inst_exec java-utils/mvn_compat_version.py "${javadir}-utils"
 inst_exec java-utils/mvn_config.py "${javadir}-utils"
