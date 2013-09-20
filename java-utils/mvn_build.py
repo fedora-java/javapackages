@@ -144,4 +144,13 @@ if __name__ == "__main__":
 
     p = subprocess.Popen(" ".join(mvn_args), shell=True, env=env)
     p.wait()
+
+    subprocess.Popen("""
+        if [ -f .xmvn-builddep ]; then
+            echo -----BEGIN MAVEN BUILD DEPENDENCIES-----
+            gzip -9nc <.xmvn-builddep | base64
+            echo -----END MAVEN BUILD DEPENDENCIES-----
+        fi
+        """, shell=True, env=env).wait()
+
     sys.exit(p.returncode)
