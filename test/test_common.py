@@ -103,3 +103,17 @@ def mvn_depmap(pom, jar=None, fnargs=[]):
             fn(self, stdout, stderr, return_value, depmap=frag)
         return test_decorated
     return test_decorator
+
+def mvn_artifact(pom, jar=None):
+    def test_decorator(fn):
+        def test_decorated(self, *args, **kwargs):
+            os.chdir(self.datadir)
+            path = os.path.join(dirpath, '..', 'java-utils', 'mvn_artifact.py')
+            os.chdir(self.workdir)
+            args = [pom]
+            if jar:
+                args.append(os.path.join(os.getcwd(), jar))
+            (stdout, stderr, return_value) = call_script(path, args)
+            fn(self, stdout, stderr, return_value)
+        return test_decorated
+    return test_decorator
