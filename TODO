@@ -12,6 +12,10 @@
 
 ** Fix version in python/setup.py
 
+** mvn_artifact: add man page
+
+** mvn_artifact: no tests so far
+
 * FEATURES
 
 ** %mvn_config support for XML contents
