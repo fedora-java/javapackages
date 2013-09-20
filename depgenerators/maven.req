@@ -74,6 +74,10 @@ class TagBuilder:
                         version=provided.version))
                     break
             else:
+                # TODO: remove when not needed
+                # do not generate requires like "a:b:pom:" yet
+                if dependency.extension == "pom":
+                    dependency.extension = ""
                 print(dependency.get_rpm_str(dependency.version))
 
 
