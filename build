@@ -78,6 +78,7 @@ expand bin/jvmjar
 expand bin/mvn-local
 expand bin/mvn-rpmbuild
 expand bin/rebuild-jar-repository
+expand bin/xmvn-builddep
 expand etc/java.conf
 expand java-utils/java-functions
 

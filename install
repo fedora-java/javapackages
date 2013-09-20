@@ -110,6 +110,7 @@ inst_exec target/diff-jars "${bindir}"
 inst_exec target/find-jar "${bindir}"
 inst_exec target/jvmjar "${bindir}"
 inst_exec target/rebuild-jar-repository "${bindir}"
+inst_exec target/xmvn-builddep "${bindir}"
 
 link "${bindir}/abs2rel" "${javadir}-utils/abs2rel.sh"
 
@@ -117,6 +118,7 @@ inst_config etc/font.properties "${javaconfdir}"
 inst_config target/java.conf "${javaconfdir}"
 
 inst_data target/java-functions "${javadir}-utils"
+inst_exec java-utils/builddep.py "${javadir}-utils"
 inst_exec java-utils/mvn_alias.py "${javadir}-utils"
 inst_exec java-utils/mvn_artifact.py "${javadir}-utils"
 inst_exec java-utils/mvn_build.py "${javadir}-utils"

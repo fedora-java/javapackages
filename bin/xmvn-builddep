@@ -1,0 +1,57 @@
+#!/bin/sh
+set -e
+
+case "${1}" in
+    -h|--help)
+	echo "Usage: ${0} [build.log | Koji-task-ID]"
+	exit 0
+	;;
+esac
+
+
+if [ ${#} -eq 0 ]; then
+    cfg=$(basename $(readlink -f /etc/mock/default.cfg))
+    set "/var/lib/mock/${cfg%.cfg}/result/build.log"
+fi
+
+case "${1}" in
+    [0-9][0-9][0-9][0-9][0-9][0-9][0-9])
+	cmd="curl -s"
+	p="${1#???}"
+	p="${p#0}"
+	p="${p#0}"
+	p="${p#0}"
+	set "http://kojipkgs.fedoraproject.org/work/tasks/${p}/${1}/build.log"
+	;;
+    *)
+	if [ -f "${1}" ]; then
+	    cmd="cat"
+	else
+	    echo "${0}: Unable to open file: ${1}" >&2
+	    exit 1
+	fi
+	;;
+esac
+
+$cmd "${1}" \
+    | sed -n '
+        /^-----BEGIN MAVEN BUILD DEPENDENCIES-----$/ {
+         :l
+          n
+          /^-----END MAVEN BUILD DEPENDENCIES-----$/ {
+            s/.*//
+            x
+            s/\n//g
+            p
+            b
+          }
+          H
+          bl
+        }' \
+    | tail -1 \
+    | base64 -d \
+    | zcat \
+    | python %{javadir}-utils/builddep.py /dev/stdin \
+    | sort -u \
+    | (echo maven-local && cat) \
+    | sed 's/./BuildRequires:  &/' \
