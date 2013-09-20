@@ -114,6 +114,13 @@
 %mvn_config python %{_datadir}/java-utils/mvn_config.py
 
 
+# %mvn_artifact - add Maven artifact to be installed
+#
+# Usage: %mvn_artifact <pom> [<artifact-file>]
+#
+%mvn_artifact python %{_datadir}/java-utils/mvn_artifact.py
+
+
 # %mvn_build - build Maven project
 #
 # Usage: %mvn_build [options]
