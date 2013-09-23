@@ -69,6 +69,9 @@ Path where JAR file is located.
 
 config = ".xmvn-reactor"
 
+class ExtensionsDontMatch(Exception):
+    pass
+
 if __name__ == "__main__":
     parser = SaneParser(usage=usage,
                         epilog=epilog)
@@ -93,7 +96,11 @@ if __name__ == "__main__":
     jar_path = None
     if len(args) > 1:
         jar_path = args[1]
-        orig.extension = (os.path.splitext(jar_path)[1])[1:]
+        extension = (os.path.splitext(jar_path)[1])[1:]
+        if hasattr(orig, "extension") and orig.extension and orig.extension != extension:
+            raise ExtensionsDontMatch("Extensions don't match: '%s' != '%s'" % (orig.extension, extension))
+        else:
+            orig.extension = extension
     else:
         orig.extension = "pom"
 
