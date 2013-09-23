@@ -121,6 +121,20 @@ class TestMvnArtifact(unittest.TestCase):
     def test_mvn_spec_nojar(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
 
+    @mvn_artifact('a:b:tar:javadoc:12', 'test-javadoc.war')
+    def test_extensions_dont_match(self, stdout, stderr, return_value):
+        # different extensions
+        self.assertNotEqual(return_value, 0, stderr)
+
+    @mvn_artifact('a:b:jar:javadoc:12', 'test-javadoc.war')
+    def test_extensions_dont_match2(self, stdout, stderr, return_value):
+        # jar != war
+        self.assertNotEqual(return_value, 0, stderr)
+
+    @mvn_artifact('a:b::javadoc:12', 'test-javadoc.war')
+    def test_extension_not_specified(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+
 
 if __name__ == '__main__':
     unittest.main()
