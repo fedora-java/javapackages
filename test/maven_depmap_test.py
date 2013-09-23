@@ -36,7 +36,6 @@ class TestMavenDepmap(unittest.TestCase):
         print report
 
     def check_result(self, test_name, depmap):
-        dirpath = os.path.dirname(os.path.realpath(__file__))
         got = etree.fromstring(depmap)
         want = etree.parse(os.path.join(self.workdir,
                                         test_name+"-want.xml")).getroot()
