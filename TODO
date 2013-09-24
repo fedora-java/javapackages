@@ -26,6 +26,7 @@
 
 ** add tests for mvn_file wrt prefix usage and relative paths
 
+** add tests for xmvn_config.add_custom_option with xml content
 
 * FEATURES
 

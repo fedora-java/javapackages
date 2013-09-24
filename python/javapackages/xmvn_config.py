@@ -37,6 +37,7 @@ import re
 from StringIO import StringIO
 import xml.dom.minidom
 
+import lxml
 import lxml.etree as ET
 from lxml.etree import ElementTree, Element, SubElement
 
@@ -258,7 +259,7 @@ class XMvnConfig(object):
                      option location with '/' used as delimiter
 
                      example: buildSettings/compilerSource
-        content -- text to which the option will be set (no XML allowed)
+        content -- text to which the option will be set
         """
         node_names = optionstr.split("/")
         confpath = self.__get_current_config()
@@ -267,5 +268,10 @@ class XMvnConfig(object):
         for node in node_names:
             par = SubElement(par, node)
 
-        par.text = content
+        try:
+            contentElement = ET.fromstring(content)
+            par.append(contentElement)
+        except lxml.etree.XMLSyntaxError:
+            # doesn't look like XML, just set it as content
+            par.text = content
         self.__write_xml(confpath, root)
