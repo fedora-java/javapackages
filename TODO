@@ -24,6 +24,8 @@
 
 ** expand 2 lonely maven_depmap.py tests
 
+** add tests for mvn_file wrt prefix usage and relative paths
+
 
 * FEATURES
 
