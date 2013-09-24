@@ -22,6 +22,8 @@
      File "/usr/lib/python2.7/site-packages/javapackages/artifact.py", line 193, in from_xml_element
        parts[key] = node.text.strip()
 
+** expand 2 lonely maven_depmap.py tests
+
 
 * FEATURES
 
