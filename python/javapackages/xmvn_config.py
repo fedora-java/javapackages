@@ -269,9 +269,12 @@ class XMvnConfig(object):
             par = SubElement(par, node)
 
         try:
-            contentElement = ET.fromstring(content)
-            par.append(contentElement)
+            #wrap content into something to allow text content
+            inserted = "<root>{}</root>".format(content);
+            contentRoot = ET.fromstring(inserted);
+            par.text = contentRoot.text
+            for element in contentRoot:
+                par.append(element)
         except lxml.etree.XMLSyntaxError:
-            # doesn't look like XML, just set it as content
-            par.text = content
+            raise Exception("content is not valid content for XML node")
         self.__write_xml(confpath, root)
