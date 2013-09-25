@@ -230,7 +230,7 @@ class XMvnConfig(object):
         elems.append(felem)
         self.__add_config("artifactManagement", "rule", content=elems)
 
-    def add_package_mapping(self, artifact, package):
+    def add_package_mapping(self, artifact, package, optional=False):
         """
         Change which package given artifact belongs to
 
@@ -246,6 +246,10 @@ class XMvnConfig(object):
                                               "is higher than wildcard "
                                               "groups.")
         elems = [main]
+        if optional:
+            opt = Element("optional")
+            opt.text = "true"
+            elems.append(opt)
         target = Element("targetPackage")
         target.text = package
         elems.append(target)
