@@ -140,6 +140,9 @@ if __name__ == "__main__":
         mvn_args.extend(options.goal_after)
 
     if options.singleton:
+        # make sure we don't install artifacts with non-empty classifiers
+        xc.add_package_mapping(Artifact.from_mvn_str(":::*?:"), "__noinstall",
+                optional=True)
         xc.add_package_mapping(Artifact.from_mvn_str(":{*}"), "@1")
 
     p = subprocess.Popen(" ".join(mvn_args), shell=True, env=env)
