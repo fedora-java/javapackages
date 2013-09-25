@@ -259,7 +259,11 @@ class XMvnConfig(object):
                      option location with '/' used as delimiter
 
                      example: buildSettings/compilerSource
-        content -- text to which the option will be set
+        content -- XML content to be added to specified node. Can be just text, XML node or multiple nodes.
+
+                   examples:
+                   someText
+                   <someNode>someText</someNode><someOtherNode/>
         """
         node_names = optionstr.split("/")
         confpath = self.__get_current_config()

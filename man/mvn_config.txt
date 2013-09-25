@@ -22,11 +22,10 @@ OPERANDS
 *key*::
     Configuration option key (unique name).  This is XPath-like
     address of XML configuration node - list of XML nodes delimited by
-    '/'.  For list of available keys see XMvn Configuration Reference.
+    /.  For list of available keys see XMvn Configuration Reference.
 
 *value*::
-    Text value of specified option.  If XML is passed here, behavior
-    is unspecified.
+    XML content to be added to specified node. Can be just text, XML node or multiple nodes.
 
 AUTHOR
 ------

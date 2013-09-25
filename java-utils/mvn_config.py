@@ -47,7 +47,11 @@ optionstr -- XPath-like expression for specifying XMvn configuration
              option location with '/' used as delimiter
              example: buildSettings/compilerSource
 
-content -- text to which the option will be set (no XML allowed)
+content -- XML content to be added to specified node. Can be just text, XML node or multiple nodes.
+
+           examples:
+           someText
+           <someNode>someText</someNode><someOtherNode/>
 """
 
 if __name__ == "__main__":
