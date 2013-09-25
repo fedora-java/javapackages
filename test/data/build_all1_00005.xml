@@ -7,10 +7,9 @@
 	<artifactManagement>
 		<rule>
 			<artifactGlob>
-				<classifier>*?</classifier>
+				<artifactId>{*}</artifactId>
 			</artifactGlob>
-			<optional>true</optional>
-			<targetPackage>__noinstall</targetPackage>
+			<targetPackage>@1</targetPackage>
 		</rule>
 	</artifactManagement>
 </configuration>
