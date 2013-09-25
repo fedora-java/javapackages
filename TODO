@@ -28,11 +28,6 @@
 
 * FEATURES
 
-** %mvn_config support for XML contents
-
-   mvn_config currently doesn't support XML contents (they will be escaped).
-   This should be changed so that we can set arbitrary configuration options
-
 ** SCL support
 
    %jpackage_script should check SCL, perhaps automatically activate SCL?
