@@ -156,5 +156,53 @@ class TestMvnfile(unittest.TestCase):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
+    @xmvnconfig('file',['a:b', 'a/file1', ])
+    def test_relative1(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('file', 'relative1'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'file', 'relative1'))
+
+    @xmvnconfig('file',['a:b', '../file1', ])
+    def test_relative2(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('file', 'relative2'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'file', 'relative2'))
+
+    @xmvnconfig('file',['a:{bb,cc}', 'a/@1', ])
+    def test_relative3(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('file', 'relative3'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'file', 'relative3'))
+
+    @xmvnconfig('file',['a:b', '/usr/share/java/sym', ])
+    def test_absolute1(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('file', 'absolute1'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'file', 'absolute1'))
+
+    @xmvnconfig('file',['-p', '/usr/share/', 'a:b', '/usr/share/sym', ])
+    def test_prefix1(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('file', 'prefix1'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'file', 'prefix1'))
+
+    @xmvnconfig('file',['-p', '/usr', 'a:b', '/usr/share/sym', ])
+    def test_prefix2(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('file', 'prefix2'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'file', 'prefix2'))
+
 if __name__ == '__main__':
     unittest.main()
