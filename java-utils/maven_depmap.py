@@ -136,14 +136,6 @@ def _get_jpp_from_filename(pom_path, prefix, jar_path = None, extension = "jar")
             jpp_aid = pomname[4:-4]
     return(jpp_gid, jpp_aid)
 
-def _get_file_extension(jar_path, artifactId):
-    """Get file extension from JAR path"""
-    extension = re.search('.*/%s.(.*)$' % (artifactId), jar_path)
-    if extension:
-        return extension.group(1)
-    else:
-        raise UnknownFileExtension(jar_path)
-
 def _make_files_versioned(versions, pom_path, jar_path):
     """Make pom and jar file versioned"""
     versions = set(versions.split(','))
