@@ -196,7 +196,7 @@ def parse_pom(pom_file, prefix, jar_file = None):
     if extension == "jar":
         extension = ''
 
-    upstream_artifact = Artifact(pom.groupId, pom.artifactId, version=pom.version)
+    upstream_artifact = Artifact(pom.groupId, pom.artifactId, extension=extension, version=pom.version)
     local_artifact = Artifact(jpp_gid, jpp_aid, extension)
     return Fragment(upstream_artifact, local_artifact)
 
