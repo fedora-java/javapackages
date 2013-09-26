@@ -39,6 +39,7 @@ from optparse import OptionParser
 import sys
 import os
 import re
+import shutil
 from StringIO import StringIO
 import xml.dom.minidom
 import codecs
@@ -142,6 +143,47 @@ def _get_file_extension(jar_path, artifactId):
         return extension.group(1)
     else:
         raise UnknownFileExtension(jar_path)
+
+def _make_files_versioned(versions, pom_path, jar_path):
+    """Make pom and jar file versioned"""
+    versions = set(versions.split(','))
+
+    vpom_path = pom_path
+    vjar_path = jar_path
+
+    # pom
+    if ':' not in vpom_path:
+        root, ext = os.path.splitext(vpom_path)
+        symlink = False
+        for ver in versions:
+            dest = "%s-%s%s" % (root, ver, ext)
+            if not symlink:
+                shutil.copy(os.path.realpath(vpom_path), dest)
+                symlink = True
+                vpom_path = dest
+            else:
+                os.symlink(basename(vpom_path), dest)
+            # output file path for file lists
+            print dest
+        # remove unversioned pom
+        os.remove(pom_path)
+
+    # jar
+    if vjar_path:
+        root, ext = os.path.splitext(vjar_path)
+        symlink = False
+        for ver in versions:
+            dest = "%s-%s%s" % (root, ver, ext)
+            if not symlink:
+                shutil.copy(os.path.realpath(vjar_path), dest)
+                symlink = True
+                vjar_path = dest
+            else:
+                os.symlink(basename(vjar_path), dest)
+            # output file path for file lists
+            print dest
+        # remove unversioned jar
+        os.remove(jar_path)
 
 def get_local_artifact(upstream_artifact, prefix, jar_path=None):
     if not jar_path:
@@ -330,16 +372,23 @@ if __name__ == "__main__":
     else:
         fragment = parse_pom(pom_path, prefix)
 
-    # output file paths for file lists
+    # output file path for file lists
     print fragment_path
-    if ':' not in pom_path:
-        print pom_path
-    if jar_path:
-        print jar_path
 
     if fragment:
         mappings = create_mappings(fragment, append_deps, namespace)
         output_fragment(fragment_path, fragment, mappings, add_versions)
+
+        if add_versions:
+            add_versions = "%s,%s" % (fragment.upstream_artifact.version, add_versions)
+            _make_files_versioned(add_versions, pom_path, jar_path)
+        else:
+            # output file paths for file lists
+            if ':' not in pom_path:
+                print pom_path
+            if jar_path:
+                print jar_path
+
     else:
         parser.error("Problem parsing POM file. Is it valid maven POM? Send bugreport \
         to https://fedorahosted.org/javapackages/ and attach %s to \
