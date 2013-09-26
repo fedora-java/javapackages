@@ -26,6 +26,8 @@
 
 ** add tests for xmvn_config.add_custom_option with xml content
 
+** add more tests for maven.prov (see rhbz#1012059)
+
 * FEATURES
 
 ** SCL support
