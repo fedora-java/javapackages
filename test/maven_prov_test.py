@@ -56,3 +56,18 @@ class TestMavenProv(unittest.TestCase):
         self.assertEquals(return_value, 0)
         self.assertEquals(stdout, "ns-mvn(org.codehaus.plexus:plexus-ant-factory) = 1.0\n")
 
+    @mavenprov(["extension1.xml"])
+    def test_extension1(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(stdout, "ns-mvn(org.mortbay.jetty:jsp-2.1-glassfish:war:6.0.18) = 9.1.1.B60.25.p2\n")
+
+    @mavenprov(["extension2.xml"])
+    def test_extension2(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(stdout, "ns-mvn(org.mortbay.jetty:jsp-2.1-glassfish:jar:6.0.18) = 9.1.1.B60.25.p2\n")
+
+    @mavenprov(["pom_extension.xml"])
+    def test__pom_extension(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(stdout, "ns-mvn(org.mortbay.jetty:jsp-2.1-glassfish:pom:6.0.18) = 9.1.1.B60.25.p2\nmvn(org.mortbay.jetty:jsp-2.1-glassfish) = 9.1.1.B60.25.p2\n")
+
