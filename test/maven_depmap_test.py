@@ -56,5 +56,63 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(res, True)
 
+    @mvn_depmap('JPP-commons-io.pom')
+    def test_missing_jar_arg(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 1, stderr)
+
+    @mvn_depmap('JPP-apache-commons-io.pom')
+    def test_packaging_pom_no_jar(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+
+    @mvn_depmap('JPP-noversion.pom')
+    def test_missing_version(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 1, stderr)
+
+    @mvn_depmap('JPP-commons-war.pom', 'usr/share/java/commons-war.war')
+    def test_war(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+
+    @mvn_depmap('JPP-commons-weird.pom', 'usr/share/java/commons-weird.war')
+    def test_weird_packaging(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+
+    @mvn_depmap('JPP-packaging-pom.pom', 'usr/share/java/packaging-pom.jar')
+    def test_packaging_pom_and_jar(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+
+    @mvn_depmap('JPP.commons-io-commons-io.pom', 'usr/share/java/commons-io/commons-io.jar')
+    def test_subdirectory(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+
+    @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar')
+    def test_mvn_spec(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+
+    @mvn_depmap('a:b:war::1', 'usr/share/java/commons-war.war')
+    def test_mvn_spec_war(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+
+
 if __name__ == '__main__':
     unittest.main()
