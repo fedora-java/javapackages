@@ -1,0 +1,9 @@
+<dependency><maven>
+  <groupId></groupId>
+  <artifactId>parent</artifactId>
+  <extension></extension>
+  <classifier></classifier>
+</maven><jpp>
+  <groupId>JPP</groupId>
+  <artifactId>foo</artifactId>
+</jpp></dependency>

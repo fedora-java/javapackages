@@ -1,0 +1,7 @@
+<dependency><maven>
+  <groupId>org.lbzip2</groupId>
+  <artifactId></artifactId>
+</maven><jpp>
+  <groupId>JPP</groupId>
+  <artifactId>foo</artifactId>
+</jpp></dependency>

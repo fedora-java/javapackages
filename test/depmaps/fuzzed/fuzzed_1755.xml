@@ -1,0 +1,7 @@
+<dependency><maven>
+  <groupId></groupId>
+  <extension>jar</extension>
+</maven><jpp>
+  <groupId>JPP</groupId>
+  <artifactId>foo</artifactId>
+</jpp></dependency>
