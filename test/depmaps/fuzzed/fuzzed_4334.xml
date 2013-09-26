@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="US-ASCII"?>
 <depMap>
 <dependency><maven>
-  <groupId>org.lbzip2</groupId>
-  <artifactId>parent</artifactId>
-  <extension>xyzzy</extension>
-  <classifier>tests</classifier>
+  <groupId>		  
+ 	org.lbzip2		  
+ 	</groupId>
+  <artifactId>		  
+ 	parent		  
+ 	</artifactId>
+  <classifier>		  
+ 	tests		  
+ 	</classifier>
   <version>2.3</version>
 </maven><jpp>
   <groupId>JPP</groupId>

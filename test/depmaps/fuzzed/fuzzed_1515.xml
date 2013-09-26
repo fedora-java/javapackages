@@ -3,7 +3,8 @@
 <dependency><maven>
   <groupId></groupId>
   <artifactId>parent</artifactId>
-  <extension></extension>
+  <extension>		  
+ 	</extension>
   <classifier></classifier>
   <version>2.3</version>
 </maven><jpp>

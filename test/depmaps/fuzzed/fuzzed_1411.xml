@@ -3,7 +3,7 @@
 <dependency><maven>
   <groupId></groupId>
   <artifactId>parent</artifactId>
-  <extension></extension>
+  <extension>jar</extension>
   <classifier></classifier>
 </maven><jpp>
   <groupId>JPP</groupId>

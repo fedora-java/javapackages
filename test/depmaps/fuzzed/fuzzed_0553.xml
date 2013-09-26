@@ -2,7 +2,9 @@
 <depMap>
 <dependency><maven>
   <artifactId>parent</artifactId>
-  <extension>xyzzy</extension>
+  <extension>		  
+ 	xyzzy		  
+ 	</extension>
   <classifier>tests</classifier>
 </maven><jpp>
   <groupId>JPP</groupId>

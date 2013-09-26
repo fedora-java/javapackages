@@ -3,7 +3,8 @@
 <dependency><maven>
   <groupId>org.lbzip2</groupId>
   <artifactId>parent</artifactId>
-  <extension></extension>
+  <extension>		  
+ 	</extension>
   <classifier></classifier>
 </maven><jpp>
   <groupId>JPP</groupId>

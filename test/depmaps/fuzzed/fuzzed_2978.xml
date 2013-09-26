@@ -2,8 +2,10 @@
 <depMap>
 <dependency><maven>
   <groupId>org.lbzip2</groupId>
-  <artifactId></artifactId>
-  <extension></extension>
+  <artifactId>		  
+ 	</artifactId>
+  <extension>		  
+ 	</extension>
 </maven><jpp>
   <groupId>JPP</groupId>
   <artifactId>foo</artifactId>

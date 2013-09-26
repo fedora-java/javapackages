@@ -3,7 +3,7 @@
 <dependency><maven>
   <groupId>org.lbzip2</groupId>
   <artifactId>parent</artifactId>
-  <extension>jar</extension>
+  <extension>xyzzy</extension>
   <classifier></classifier>
 </maven><jpp>
   <groupId>JPP</groupId>

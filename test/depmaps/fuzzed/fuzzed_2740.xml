@@ -2,7 +2,8 @@
 <depMap>
 <dependency><maven>
   <groupId>org.lbzip2</groupId>
-  <extension></extension>
+  <extension>		  
+ 	</extension>
   <classifier></classifier>
   <version>2.3</version>
 </maven><jpp>

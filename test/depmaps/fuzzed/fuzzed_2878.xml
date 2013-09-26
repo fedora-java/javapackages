@@ -3,8 +3,9 @@
 <dependency><maven>
   <groupId>org.lbzip2</groupId>
   <artifactId></artifactId>
-  <extension>xyzzy</extension>
-  <version></version>
+  <classifier></classifier>
+  <version>		  
+ 	</version>
 </maven><jpp>
   <groupId>JPP</groupId>
   <artifactId>foo</artifactId>

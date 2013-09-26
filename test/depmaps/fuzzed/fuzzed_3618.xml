@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="US-ASCII"?>
 <depMap>
 <dependency><maven>
-  <groupId>org.lbzip2</groupId>
-  <extension>jar</extension>
+  <groupId>		  
+ 	org.lbzip2		  
+ 	</groupId>
+  <extension>xyzzy</extension>
   <classifier></classifier>
   <version>2.3</version>
 </maven><jpp>

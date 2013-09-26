@@ -4,7 +4,9 @@
   <groupId>org.lbzip2</groupId>
   <artifactId>parent</artifactId>
   <extension></extension>
-  <classifier>tests</classifier>
+  <classifier>		  
+ 	tests		  
+ 	</classifier>
   <version>2.3</version>
 </maven><jpp>
   <groupId>JPP</groupId>

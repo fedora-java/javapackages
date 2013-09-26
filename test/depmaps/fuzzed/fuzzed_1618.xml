@@ -2,8 +2,10 @@
 <depMap>
 <dependency><maven>
   <groupId></groupId>
-  <artifactId>parent</artifactId>
-  <extension>xyzzy</extension>
+  <artifactId>		  
+ 	parent		  
+ 	</artifactId>
+  <classifier></classifier>
   <version></version>
 </maven><jpp>
   <groupId>JPP</groupId>

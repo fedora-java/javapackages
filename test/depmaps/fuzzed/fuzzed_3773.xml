@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="US-ASCII"?>
 <depMap>
 <dependency><maven>
-  <groupId>org.lbzip2</groupId>
+  <groupId>		  
+ 	org.lbzip2		  
+ 	</groupId>
   <artifactId></artifactId>
-  <extension>xyzzy</extension>
+  <extension>		  
+ 	xyzzy		  
+ 	</extension>
   <classifier>tests</classifier>
-  <version></version>
+  <version>		  
+ 	</version>
 </maven><jpp>
   <groupId>JPP</groupId>
   <artifactId>foo</artifactId>

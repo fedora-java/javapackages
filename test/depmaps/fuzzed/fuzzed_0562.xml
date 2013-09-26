@@ -2,6 +2,7 @@
 <depMap>
 <dependency><maven>
   <artifactId>parent</artifactId>
+  <extension></extension>
   <version></version>
 </maven><jpp>
   <groupId>JPP</groupId>

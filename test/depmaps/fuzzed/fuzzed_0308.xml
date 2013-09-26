@@ -2,7 +2,9 @@
 <depMap>
 <dependency><maven>
   <artifactId></artifactId>
-  <extension>xyzzy</extension>
+  <extension>		  
+ 	xyzzy		  
+ 	</extension>
   <classifier>tests</classifier>
   <version>2.3</version>
 </maven><jpp>

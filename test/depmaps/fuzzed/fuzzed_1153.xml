@@ -3,9 +3,14 @@
 <dependency><maven>
   <groupId></groupId>
   <artifactId></artifactId>
-  <extension>jar</extension>
-  <classifier>tests</classifier>
-  <version></version>
+  <extension>		  
+ 	jar		  
+ 	</extension>
+  <classifier>		  
+ 	tests		  
+ 	</classifier>
+  <version>		  
+ 	</version>
 </maven><jpp>
   <groupId>JPP</groupId>
   <artifactId>foo</artifactId>

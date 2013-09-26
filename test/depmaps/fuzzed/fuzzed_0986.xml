@@ -2,7 +2,7 @@
 <depMap>
 <dependency><maven>
   <groupId></groupId>
-  <extension>jar</extension>
+  <extension>xyzzy</extension>
   <version>2.3</version>
 </maven><jpp>
   <groupId>JPP</groupId>

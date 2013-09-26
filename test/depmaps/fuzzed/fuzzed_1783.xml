@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="US-ASCII"?>
 <depMap>
 <dependency><maven>
-  <groupId></groupId>
-  <extension>jar</extension>
-  <classifier>tests</classifier>
+  <groupId>		  
+ 	</groupId>
+  <extension>		  
+ 	jar		  
+ 	</extension>
+  <classifier>		  
+ 	tests		  
+ 	</classifier>
 </maven><jpp>
   <groupId>JPP</groupId>
   <artifactId>foo</artifactId>

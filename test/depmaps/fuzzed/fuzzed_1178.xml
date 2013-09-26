@@ -3,6 +3,7 @@
 <dependency><maven>
   <groupId></groupId>
   <artifactId></artifactId>
+  <extension></extension>
   <classifier>tests</classifier>
   <version>2.3</version>
 </maven><jpp>

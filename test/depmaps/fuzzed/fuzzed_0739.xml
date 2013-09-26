@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="US-ASCII"?>
 <depMap>
 <dependency><maven>
-  <artifactId>parent</artifactId>
-  <extension></extension>
+  <artifactId>		  
+ 	parent		  
+ 	</artifactId>
+  <extension>jar</extension>
   <version></version>
 </maven><jpp>
   <groupId>JPP</groupId>

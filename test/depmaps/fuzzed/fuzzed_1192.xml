@@ -3,7 +3,10 @@
 <dependency><maven>
   <groupId></groupId>
   <artifactId></artifactId>
-  <version>2.3</version>
+  <extension></extension>
+  <version>		  
+ 	2.3		  
+ 	</version>
 </maven><jpp>
   <groupId>JPP</groupId>
   <artifactId>foo</artifactId>

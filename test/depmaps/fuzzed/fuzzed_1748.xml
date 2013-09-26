@@ -2,10 +2,18 @@
 <depMap>
 <dependency><maven>
   <groupId></groupId>
-  <artifactId>parent</artifactId>
-  <extension>jar</extension>
-  <classifier>tests</classifier>
-  <version>2.3</version>
+  <artifactId>		  
+ 	parent		  
+ 	</artifactId>
+  <extension>		  
+ 	jar		  
+ 	</extension>
+  <classifier>		  
+ 	tests		  
+ 	</classifier>
+  <version>		  
+ 	2.3		  
+ 	</version>
 </maven><jpp>
   <groupId>JPP</groupId>
   <artifactId>foo</artifactId>

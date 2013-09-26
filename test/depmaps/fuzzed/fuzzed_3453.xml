@@ -2,7 +2,9 @@
 <depMap>
 <dependency><maven>
   <groupId>org.lbzip2</groupId>
-  <artifactId>parent</artifactId>
+  <artifactId>		  
+ 	parent		  
+ 	</artifactId>
   <extension></extension>
   <classifier>tests</classifier>
   <version>2.3</version>

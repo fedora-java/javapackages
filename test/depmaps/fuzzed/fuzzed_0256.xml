@@ -2,9 +2,10 @@
 <depMap>
 <dependency><maven>
   <artifactId></artifactId>
-  <extension></extension>
+  <extension>jar</extension>
   <classifier></classifier>
-  <version></version>
+  <version>		  
+ 	</version>
 </maven><jpp>
   <groupId>JPP</groupId>
   <artifactId>foo</artifactId>

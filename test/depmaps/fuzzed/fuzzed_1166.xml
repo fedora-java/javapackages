@@ -3,7 +3,7 @@
 <dependency><maven>
   <groupId></groupId>
   <artifactId></artifactId>
-  <extension></extension>
+  <extension>jar</extension>
   <classifier></classifier>
   <version>2.3</version>
 </maven><jpp>

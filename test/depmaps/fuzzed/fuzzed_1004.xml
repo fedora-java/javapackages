@@ -2,7 +2,8 @@
 <depMap>
 <dependency><maven>
   <groupId></groupId>
-  <extension></extension>
+  <extension>		  
+ 	</extension>
   <classifier>tests</classifier>
   <version>2.3</version>
 </maven><jpp>

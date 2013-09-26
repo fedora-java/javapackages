@@ -2,8 +2,11 @@
 <depMap>
 <dependency><maven>
   <groupId>org.lbzip2</groupId>
-  <artifactId></artifactId>
-  <extension>jar</extension>
+  <artifactId>		  
+ 	</artifactId>
+  <extension>		  
+ 	jar		  
+ 	</extension>
   <classifier>tests</classifier>
   <version></version>
 </maven><jpp>

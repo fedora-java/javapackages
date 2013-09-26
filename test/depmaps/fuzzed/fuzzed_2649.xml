@@ -2,7 +2,8 @@
 <depMap>
 <dependency><maven>
   <groupId>org.lbzip2</groupId>
-  <extension></extension>
+  <extension>		  
+ 	</extension>
   <classifier>tests</classifier>
 </maven><jpp>
   <groupId>JPP</groupId>

@@ -2,9 +2,9 @@
 <depMap>
 <dependency><maven>
   <groupId>org.lbzip2</groupId>
-  <artifactId></artifactId>
-  <extension>xyzzy</extension>
-  <classifier>tests</classifier>
+  <artifactId>		  
+ 	</artifactId>
+  <version></version>
 </maven><jpp>
   <groupId>JPP</groupId>
   <artifactId>foo</artifactId>

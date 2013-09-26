@@ -3,8 +3,7 @@
 <dependency><maven>
   <groupId></groupId>
   <artifactId></artifactId>
-  <extension>xyzzy</extension>
-  <classifier></classifier>
+  <classifier>tests</classifier>
 </maven><jpp>
   <groupId>JPP</groupId>
   <artifactId>foo</artifactId>

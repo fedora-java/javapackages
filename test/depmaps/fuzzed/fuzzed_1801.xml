@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="US-ASCII"?>
 <depMap>
 <dependency><maven>
-  <groupId></groupId>
-  <classifier></classifier>
+  <groupId>		  
+ 	</groupId>
+  <extension></extension>
+  <classifier>		  
+ 	</classifier>
   <version></version>
 </maven><jpp>
   <groupId>JPP</groupId>

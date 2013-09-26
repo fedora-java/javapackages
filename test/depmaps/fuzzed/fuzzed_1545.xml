@@ -3,8 +3,12 @@
 <dependency><maven>
   <groupId></groupId>
   <artifactId>parent</artifactId>
-  <extension>jar</extension>
-  <version>2.3</version>
+  <extension>		  
+ 	jar		  
+ 	</extension>
+  <version>		  
+ 	2.3		  
+ 	</version>
 </maven><jpp>
   <groupId>JPP</groupId>
   <artifactId>foo</artifactId>
