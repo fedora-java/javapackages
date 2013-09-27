@@ -113,6 +113,13 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(res, True)
 
+    @mvn_depmap('/builddir/build/BUILDROOT/pkg-2.5.2-2.fc21.x86_64/a:b:war::1', 'usr/share/java/commons-war.war')
+    def test_mvn_spec_buildroot(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+
 
 if __name__ == '__main__':
     unittest.main()

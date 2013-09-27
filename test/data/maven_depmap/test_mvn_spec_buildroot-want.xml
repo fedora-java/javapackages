@@ -1,0 +1,15 @@
+<dependencyMap>
+    <dependency>
+        <maven>
+            <artifactId>b</artifactId>
+            <groupId>a</groupId>
+            <extension>war</extension>
+            <version>1</version>
+        </maven>
+        <jpp>
+            <artifactId>commons-war</artifactId>
+            <groupId>JPP</groupId>
+            <extension>war</extension>
+        </jpp>
+    </dependency>
+</dependencyMap>
