@@ -350,7 +350,8 @@ if __name__ == "__main__":
         local = None
         fragment = None
         if ':' in pom_path:
-            upstream = Artifact.from_mvn_str(pom_path)
+            pom_str = pom_path.rsplit('/')[-1]
+            upstream = Artifact.from_mvn_str(pom_str)
             if upstream.extension == 'jar':
                 upstream.extension = ''
             if not upstream.version:
