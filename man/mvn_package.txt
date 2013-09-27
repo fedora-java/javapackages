@@ -39,7 +39,9 @@ OPERANDS
     installed.  Backreferences are supported in form *@n*, where *n*
     is an integer corresponding to brace in *artifact-coordinates*.  A
     special value of *__noinstall* means that matching artifact(s)
-    should not be installed to any package.
+    should not be installed to any package. Special value of empty 
+    string (*""*) means that matching artifact(s) should be installed
+    into main package.
 
 AUTHOR
 ------
