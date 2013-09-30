@@ -1,0 +1,51 @@
+mvn_artifact(7)
+==============
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+mvn_artifact - create configuration for installing Maven artifact
+
+SYNOPSIS
+--------
+*%mvn_package* artifact-coordinates|POM-path [JAR-path]
+
+DESCRIPTION
+-----------
+*mvn_artifact* macro generates configuration for installing specified
+Maven artifact. Resulting configuration is later used by *mvn_install*
+which performs actual installation of Maven artifacts.
+
+OPERANDS
+--------
+*artifact-coordinates*::
+    Artifact coordinates specify Maven artifact and are in following
+    format *groupId:artifactId[:extension[:classifier]][:version]*.
+    JAR-path is mandatory and must be specified together with
+    artifact-coordinates.
+
+*POM path*::
+    Path where POM file is located.
+
+*JAR path*::
+    Path where JAR file is located.
+
+AUTHOR
+------
+    Written by Michal Srb.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*mvn_install*(7),
+*mvn_alias*(7),
+*mvn_build*(7),
+*mvn_compat_version*(7),
+*mvn_config*(7),
+*mvn_file*(7),
+*xmvn*(1).
