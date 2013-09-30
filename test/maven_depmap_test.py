@@ -99,6 +99,14 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(res, True)
 
+    @mvn_depmap('JPP-commons-io-commons-io.pom', '/usr/share/java/commons-io.jar')
+    def test_incorrect_subdir1(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 1, stderr)
+
+    @mvn_depmap('JPP-commons-io.pom', '/usr/share/java/commons-io/commons-io.jar')
+    def test_incorrect_subdir2(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 1, stderr)
+
     @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar')
     def test_mvn_spec(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
@@ -115,6 +123,41 @@ class TestMavenDepmap(unittest.TestCase):
 
     @mvn_depmap('/builddir/build/BUILDROOT/pkg-2.5.2-2.fc21.x86_64/a:b:war::1', 'usr/share/java/commons-war.war')
     def test_mvn_spec_buildroot(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+
+    @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['-a', 'x:y'])
+    def test_append(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+
+    @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['-a', 'x:y,z:w'])
+    def test_append_multiple(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+
+    @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['-n', 'myns'])
+    def test_namespace(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+
+    @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['--namespace=myns', '--append=x:y'])
+    def test_append_and_namespace(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+
+    @mvn_depmap('a:b:12', 'usr/foo/share/java/foo.jar', ['-p', 'usr/foo'])
+    def test_prefix(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
         got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
                                            depmap)
