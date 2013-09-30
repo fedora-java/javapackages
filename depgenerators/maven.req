@@ -45,7 +45,8 @@ class TagBuilder:
         paths = map (lambda x: x.rstrip (), filelist.readlines ())
         # this is always required because jpackage-utils owns the directory
         print("jpackage-utils")
-        provided = []
+        self.provided_artifacts = []
+        self.skipped_artifacts = []
         if paths:
             # let's first read all fragment files for provided artifacts
             fragment_dir = os.path.dirname(paths[0])
@@ -54,16 +55,24 @@ class TagBuilder:
                     if filename.endswith(".pom"):
                         continue
                     depmap = Depmap(os.path.join(dirname, filename))
-                    provided.extend(depmap.get_provided_artifacts())
+                    self.provided_artifacts.extend(depmap.get_provided_artifacts())
+                    self.skipped_artifacts.extend(depmap.get_skipped_artifacts())
         for path in paths:
             if path.endswith(".pom"):
                 continue
-            self.print_mvn_requires(path, provided)
+            self.print_mvn_requires(path)
 
-    def print_mvn_requires(self, path, providedArtifacts):
+    def print_mvn_requires(self, path):
         depmap = Depmap(path)
+        skipped_but_required = []
         for dependency in depmap.get_required_artifacts():
-            for provided in providedArtifacts:
+            for skipped in self.skipped_artifacts:
+                if (skipped.groupId == dependency.groupId and
+                    skipped.artifactId == dependency.artifactId and
+                    skipped.classifier == dependency.classifier and
+                    skipped.extension == dependency.extension):
+                    skipped_but_required.append(skipped)
+            for provided in self.provided_artifacts:
                 if (provided.groupId == dependency.groupId and
                     provided.artifactId == dependency.artifactId and
                     provided.classifier == dependency.classifier and
@@ -80,6 +89,16 @@ class TagBuilder:
                     dependency.extension = ""
                 print(dependency.get_rpm_str(dependency.version))
 
+        if skipped_but_required:
+            skipped_msg = "Following artifacts were built " \
+                          "but are not being installed however other " \
+                          "artifacts require them. Either package these " \
+                          "artifacts or do not build them. To package " \
+                          "call %mvn_package in %prep:\n"
+            for skipped in skipped_but_required:
+                skipped_msg = skipped_msg + \
+                            "%mvn_package {art} <package_name>\n".format(art=skipped)
+            raise Exception(skipped_msg)
 
         jreq = depmap.get_java_requires()
         if jreq is not None:
@@ -107,4 +126,4 @@ if __name__ == "__main__":
         sys.stderr.write(str(e))
         # rpmbuild ignores non-zero exit codes but this that is bad. Make sure
         # the build fails and doesn't silently ignore problems
-        os.kill(os.getppid(), signal.SIGKILL)
+        os.kill(os.getppid(), signal.SIGTERM)
