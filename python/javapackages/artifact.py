@@ -189,7 +189,7 @@ class Artifact(object):
 
         for key in parts:
             node = xmlnode.find("./" + key)
-            if node is not None:
+            if node is not None and node.text is not None:
                 parts[key] = node.text.strip()
 
         if not parts['groupId'] or not parts['artifactId']:
