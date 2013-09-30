@@ -41,25 +41,25 @@ def get_actual_config(filename):
     return etree.tostring(etree.parse(actfile), pretty_print=True)
 
 def get_expected_config(filename, scriptname, testname):
-    expfname = '{}_{}_{}.xml'.format(scriptname, testname, re.findall('[0-9]+', filename)[-1])
-    expfile =  open(os.path.join(dirpath, 'data', expfname))
+    expfname = '{name}_{idx}.xml'.format(name=testname, idx=re.findall('[0-9]+', filename)[-1])
+    expfile =  open(os.path.join(dirpath, 'data', scriptname, expfname))
     return etree.tostring(etree.parse(expfile), pretty_print=True)
 
 def get_expected_file_count(scriptname, testname):
-    filelist = os.listdir(os.path.join(dirpath, 'data'))
-    return len([file for file in filelist if file.startswith("{}_{}_".format(scriptname, testname))])
+    filelist = os.listdir(os.path.join(dirpath, 'data', scriptname))
+    return len([file for file in filelist if file.startswith("{name}_".format(name=testname))])
 
 def get_actual_args():
     return open('.xmvn/out').read()
 
 def get_expected_args(scriptname, testname):
-   return open(os.path.join(dirpath, 'data', "{}_{}_out".format(scriptname, testname))).read()
+   return open(os.path.join(dirpath, 'data', scriptname, "{name}_out".format(name=testname))).read()
 
 
 def xmvnconfig(name, fnargs):
     def test_decorator(fn):
         def test_decorated(self, *args, **kwargs):
-            path = os.path.join(dirpath, '..', 'java-utils', 'mvn_' + name + '.py')
+            path = os.path.join(dirpath, '..', 'java-utils', name + '.py')
             (stdout, stderr, return_value) = call_script(path, fnargs)
             fn(self, stdout, stderr, return_value)
         return test_decorated
