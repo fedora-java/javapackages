@@ -300,6 +300,12 @@ def output_fragment(fragment_path, fragment, mappings, add_versions):
 def append_if_missing(archive_name, file_name, file_contents):
     with ZipFile(archive_name, 'a') as archive:
         if file_name not in archive.namelist():
+            path = file_name[0:file_name.rfind('/')]
+            subdir = ''
+            for part in path.split('/'):
+                subdir += part + '/'
+                if subdir not in archive.namelist():
+                    archive.writestr(subdir, '')
             archive.writestr(file_name, file_contents)
 
 # Inject pom.properties if JAR doesn't have one.  This is necessary to
@@ -311,7 +317,8 @@ def inject_pom_properties(jar_path, fragment):
 #{timestamp}
 version={f.upstream_artifact.version}
 groupId={f.upstream_artifact.groupId}
-artifactId={f.upstream_artifact.artifactId}""".format(timestamp=timestamp,
+artifactId={f.upstream_artifact.artifactId}
+""".format(timestamp=timestamp,
                                                       f=fragment)
     append_if_missing(jar_path, props_path, properties)
 
