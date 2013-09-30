@@ -120,6 +120,14 @@ class Depmap(object):
             artifacts.append(artifact)
         return artifacts
 
+    def get_skipped_artifacts(self):
+        """Returns list of Artifact that were build but not installed"""
+        artifacts = []
+        for dep in self.__doc.findall('.//skippedArtifact'):
+            artifact = Artifact.from_xml_element(dep)
+            artifacts.append(artifact)
+        return artifacts
+
     def get_java_requires(self):
         """Returns JVM version required by depmap or None"""
         jreq = self.__doc.find('.//requiresJava')
