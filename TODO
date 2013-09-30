@@ -39,3 +39,5 @@
    generated quto-requires should include SCL-specific metapackage
    instead of jpackage-utils.  The SCL package is assumed to own all
    the directories like /opt/rh/scl/usr/share/maven-fragments etc.
+
+** Support for compressed fragment files
