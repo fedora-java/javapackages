@@ -1,4 +1,5 @@
 import inspect
+from zipfile import ZipFile
 import os
 import unittest
 import shutil
@@ -41,6 +42,25 @@ class TestMavenDepmap(unittest.TestCase):
                                         test_name+"-want.xml")).getroot()
         res = doctest_xml_compare.xml_compare(got, want, self.xml_compare_reporter)
         return got, want, res
+
+    def check_archive(self, test_name, archive_path, keep_comments=False):
+        with ZipFile(archive_path, 'r') as got:
+            with ZipFile('{name}-want.{ext}'.format(name=test_name,
+                            ext=archive_path.split('.')[-1])) as want:
+                if got.testzip() is not None: return ("Not valid zip file", "")
+                got_mf = self.read_archive(got, keep_comments)
+                want_mf = self.read_archive(want, keep_comments)
+                return (got_mf, want_mf)
+
+    def read_archive(self, archive, keep_comments=False):
+        res = {}
+        for f in archive.namelist():
+            with archive.open(f) as mf_file:
+                if (keep_comments):
+                    res[f] = mf_file.readlines()
+                else:
+                    res[f] = [line for line in mf_file.readlines() if not line.startswith('#')]
+        return res
 
     @mvn_depmap('JPP-bndlib.pom', 'usr/share/java/bndlib.jar')
     def test_basic(self, stdout, stderr, return_value, depmap):
@@ -162,6 +182,27 @@ class TestMavenDepmap(unittest.TestCase):
         got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
                                            depmap)
         self.assertEqual(res, True)
+
+    @mvn_depmap('a:b:12', 'usr/foo/share/java/.out_archive.jar')
+    def test_compare_jar(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want = self.check_archive(inspect.currentframe().f_code.co_name,
+                'usr/foo/share/java/.out_archive.jar')
+        self.assertEqual(got, want)
+
+    @mvn_depmap('a:b:12', 'usr/share/java/already-has-pom-properties.jar')
+    def test_compare_jar_unmodified(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want = self.check_archive(inspect.currentframe().f_code.co_name,
+                'usr/share/java/already-has-pom-properties.jar', keep_comments=True)
+        self.assertEqual(got, want)
+
+    @mvn_depmap('x:y:0.1', 'usr/share/java/already-has-pom-properties.jar')
+    def test_compare_jar_modified(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want = self.check_archive(inspect.currentframe().f_code.co_name,
+                'usr/share/java/already-has-pom-properties.jar')
+        self.assertEqual(got, want)
 
 
 if __name__ == '__main__':
