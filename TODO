@@ -15,7 +15,7 @@
      File "/usr/lib/python2.7/site-packages/javapackages/artifact.py", line 193, in from_xml_element
        parts[key] = node.text.strip()
 
-** add more tests for maven.prov (see rhbz#1012059)
+** Fix man pages for build-classpath and build-jar-repository
 
 * FEATURES
 
