@@ -1,51 +1,54 @@
 mvn_artifact(7)
-==============
+===============
 :doctype:	manpage
 :man source:	JAVAPACKAGES
 :man manual:	Java Packages Tools
 
 NAME
 ----
-mvn_artifact - create configuration for installing Maven artifact
+mvn_artifact - request installation of Maven artifact
 
 SYNOPSIS
 --------
-*%mvn_package* artifact-coordinates|POM-path [JAR-path]
+*%mvn_artifact* model [artifact-file]
+*%mvn_artifact* artifact-coordinates artifact-file
 
 DESCRIPTION
 -----------
-*mvn_artifact* macro generates configuration for installing specified
-Maven artifact. Resulting configuration is later used by *mvn_install*
-which performs actual installation of Maven artifacts.
+*mvn_artifact* macro marks specified Maven artifact to be installed by
+further call to *mvn_install*.  Multiple calls to *mvn_artifact*
+and/or *mvn_build* can be made to request installation of multiple
+artifacts.
 
 OPERANDS
 --------
+*model*::
+    Path to raw project object model (POM) file to be associated and
+    installed with artifact.
+
+*artifact-file*::
+    Path to file to be used as artifact file.  If omitted then no
+    artifact file is installed.
+
 *artifact-coordinates*::
-    Artifact coordinates specify Maven artifact and are in following
-    format *groupId:artifactId[:extension[:classifier]][:version]*.
-    JAR-path is mandatory and must be specified together with
-    artifact-coordinates.
-
-*POM path*::
-    Path where POM file is located.
-
-*JAR path*::
-    Path where JAR file is located.
+    Artifact coordinates specify artifact to be installed. If
+    specified then no model file is installed with artifact.
+    Coordinates are in format
+    *groupId:artifactId[:extension[:classifier]]:version*.  If version
+    is omitted then "jar" is used.  If classifier is omitted then
+    empty classifier is used.  For more information see XMvn
+    Configuration Reference.
 
 AUTHOR
 ------
-    Written by Michal Srb.
+Written by Michal Srb.
 
 REPORTING BUGS
 --------------
-Bugs should be reported through Red Hat Bugzilla at http://bugzilla.redhat.com/.
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
 
 SEE ALSO
 --------
-*mvn_install*(7),
-*mvn_alias*(7),
 *mvn_build*(7),
-*mvn_compat_version*(7),
-*mvn_config*(7),
-*mvn_file*(7),
-*xmvn*(1).
+*mvn_install*(7).

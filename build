@@ -85,6 +85,7 @@ expand java-utils/java-functions
 manpage abs2rel
 manpage find-jar
 manpage mvn_alias
+manpage mvn_artifact
 manpage mvn_build
 manpage mvn_config
 manpage mvn_compat_version

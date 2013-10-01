@@ -171,6 +171,7 @@ dir "${m2home}"
 inst_data etc/macros.xmvn "${sysconfdir}/rpm"
 
 inst_data target/mvn_alias.7 "${mandir}/man7"
+inst_data target/mvn_artifact.7 "${mandir}/man7"
 inst_data target/mvn_build.7 "${mandir}/man7"
 inst_data target/mvn_config.7 "${mandir}/man7"
 inst_data target/mvn_compat_version.7 "${mandir}/man7"
