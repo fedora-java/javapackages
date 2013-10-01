@@ -15,8 +15,6 @@
      File "/usr/lib/python2.7/site-packages/javapackages/artifact.py", line 193, in from_xml_element
        parts[key] = node.text.strip()
 
-** add tests for xmvn_config.add_custom_option with xml content
-
 ** add more tests for maven.prov (see rhbz#1012059)
 
 * FEATURES

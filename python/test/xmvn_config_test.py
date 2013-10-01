@@ -146,6 +146,23 @@ class TestXMvnConfig(unittest.TestCase):
         cs = self.__find(root, "xmvn:buildSettings/xmvn:compilerSource")
         self.assertEqual(cs.text, "1.5")
 
+    def test_custom_config_xml(self):
+        xc = XMvnConfig()
+        xc.add_custom_option("buildSettings/compilerSource",
+                """<versions>
+                    <version>1.5</version>
+                    <version>1.6</version>
+                </versions>
+                """)
+        et = self._read_current_conf()
+        root = et.getroot()
+        versions = self.__find(root,
+                "xmvn:buildSettings/xmvn:compilerSource/xmvn:versions")
+        self.assertEqual(len(versions), 2)
+        v1, v2 = self.__findall(versions, "xmvn:version")
+        self.assertEqual(v1.text, "1.5")
+        self.assertEqual(v2.text, "1.6")
+
 
 if __name__ == '__main__':
     unittest.main()
