@@ -107,7 +107,7 @@
       <artifactId>chronos-surefire-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven Clirr Plugin</name>
+      <name>Clirr Maven Plugin</name>
       <prefix>clirr</prefix>
       <artifactId>clirr-maven-plugin</artifactId>
     </plugin>
