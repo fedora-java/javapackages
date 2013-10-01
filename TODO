@@ -3,16 +3,9 @@
 
 * BUGS
 
-** Unable to install jar to directory outside %{_javadir} via mvn_file
-
-   rhbz#986909
-   https://bugzilla.redhat.com/show_bug.cgi?id=986909
-
 ** Add testcase for pom properties with whitespace
 
 ** Fix version in python/setup.py
-
-** mvn_artifact: add man page
 
 ** builddep.py bug
 
@@ -21,8 +14,6 @@
        art = Artifact.from_xml_element(dep)
      File "/usr/lib/python2.7/site-packages/javapackages/artifact.py", line 193, in from_xml_element
        parts[key] = node.text.strip()
-
-** expand 2 lonely maven_depmap.py tests
 
 ** add tests for xmvn_config.add_custom_option with xml content
 
