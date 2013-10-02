@@ -1,0 +1,14 @@
+<dependencyMap>
+  <dependency>
+    <maven>
+      <groupId>group</groupId>
+      <artifactId>artifact</artifactId>
+      <extension>artifact</extension>
+      <version>1.2.3</version>
+    </maven>
+    <jpp>
+      <groupId>JPP</groupId>
+      <artifactId>commons-war</artifactId>
+    </jpp>
+  </dependency>
+</dependencyMap>

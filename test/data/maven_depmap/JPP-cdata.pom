@@ -1,0 +1,16 @@
+<project
+
+>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>	g<![CDATA[r]]>ou<!--
+-->p
+</groupId>
+  <artifactId>	ar<![CDATA[ti]]>fa<!--
+-->ct
+</artifactId>
+<packaging>
+	<![CDATA[p]]>o<!--
+-->m
+</packaging>
+  <version>1<![CDATA[.]]>2<![CDATA[.]]><!--4<![CDATA[.]]>-->3</version>
+</project>
