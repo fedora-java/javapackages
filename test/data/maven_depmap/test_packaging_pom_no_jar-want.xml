@@ -10,6 +10,7 @@
         <jpp>
             <artifactId>apache-commons-io</artifactId>
             <groupId>JPP</groupId>
+	    <extension>pom</extension>
         </jpp>
     </dependency>
 </dependencyMap>
