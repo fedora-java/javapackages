@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<dependencyMap>
+  <dependency>
+    <maven>
+      <artifactId>y</artifactId>
+      <groupId>x</groupId>
+      <version>1</version>
+    </maven>
+    <jpp>
+      <artifactId>commons-io</artifactId>
+      <groupId>JPP/commons-io</groupId>
+    </jpp>
+  </dependency>
+</dependencyMap>

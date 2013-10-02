@@ -78,7 +78,7 @@ class TestMavenDepmap(unittest.TestCase):
 
     @mvn_depmap('JPP-commons-io.pom')
     def test_missing_jar_arg(self, stdout, stderr, return_value, depmap):
-        self.assertEqual(return_value, 1, stderr)
+        self.assertNotEqual(return_value, 0)
 
     @mvn_depmap('JPP-apache-commons-io.pom')
     def test_packaging_pom_no_jar(self, stdout, stderr, return_value, depmap):
@@ -90,7 +90,7 @@ class TestMavenDepmap(unittest.TestCase):
 
     @mvn_depmap('JPP-noversion.pom')
     def test_missing_version(self, stdout, stderr, return_value, depmap):
-        self.assertEqual(return_value, 1, stderr)
+        self.assertNotEqual(return_value, 0)
 
     @mvn_depmap('JPP-commons-war.pom', 'usr/share/java/commons-war.war')
     def test_war(self, stdout, stderr, return_value, depmap):
@@ -124,13 +124,32 @@ class TestMavenDepmap(unittest.TestCase):
         self.assertEqual(report, [])
         self.assertEqual(res, True)
 
-    @mvn_depmap('JPP-commons-io-commons-io.pom', '/usr/share/java/commons-io.jar')
+    @mvn_depmap('JPP-commons-io-commons-io.pom', 'usr/share/java/commons-io.jar')
     def test_incorrect_subdir1(self, stdout, stderr, return_value, depmap):
-        self.assertEqual(return_value, 1, stderr)
+        self.assertNotEqual(return_value, 0)
 
-    @mvn_depmap('JPP-commons-io.pom', '/usr/share/java/commons-io/commons-io.jar')
+    @mvn_depmap('JPP-commons-io.pom', 'usr/share/java/commons-io/commons-io.jar')
     def test_incorrect_subdir2(self, stdout, stderr, return_value, depmap):
-        self.assertEqual(return_value, 1, stderr)
+        self.assertNotEqual(return_value, 0)
+
+    @mvn_depmap('FUU-commons-io.pom', 'usr/share/java/commons-io.jar')
+    def test_not_JPP(self, stdout, stderr, return_value, depmap):
+        self.assertNotEqual(return_value, 0)
+
+    def test_not_pom(self):
+        stdout, stderr, return_value = call_script(os.path.join(dirpath, '..', 'java-utils', 'maven_depmap.py'),
+                ['.out', 'usr/share/java/commons-io.jar', 'usr/share/java/commons-io.jar'])
+        self.assertNotEqual(return_value, 0)
+
+    def test_no_pom(self):
+        stdout, stderr, return_value = call_script(os.path.join(dirpath, '..', 'java-utils', 'maven_depmap.py'),
+                ['.out'])
+        self.assertNotEqual(return_value, 0)
+
+    def test_no_args(self):
+        stdout, stderr, return_value = call_script(os.path.join(dirpath, '..', 'java-utils', 'maven_depmap.py'),
+                [])
+        self.assertNotEqual(return_value, 0)
 
     @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar')
     def test_mvn_spec(self, stdout, stderr, return_value, depmap):
@@ -216,6 +235,69 @@ class TestMavenDepmap(unittest.TestCase):
         got, want = self.check_archive(inspect.currentframe().f_code.co_name,
                 'usr/share/java/already-has-pom-properties.jar')
         self.assertEqual(got, want)
+
+    @mvn_depmap('x:y:jar:z:0.1', 'usr/share/java/commons-io-z.jar', ['-a', 'a:b:war:c:12'])
+    def test_classifier(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res, report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, [])
+        self.assertEqual(res, True)
+
+    @mvn_depmap('x:y:0.1', 'usr/share/java/commons-io.jar', ['-r', '1,2,3'])
+    def test_version(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res, report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, [])
+        self.assertEqual(res, True)
+
+    @mvn_depmap('JPP/x:y:0.1', 'usr/share/java/commons-io.jar', ['--versions', '1,2,3'])
+    def test_version2(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res, report = self.check_result('test_version', depmap)
+        self.assertEqual(report, [])
+        self.assertEqual(res, True)
+
+    @mvn_depmap('x:y:0.1', 'usr/share/java/commons-io.jar', ['-r', '1,2,3', '-a', 'a:b:32'])
+    def test_version_append(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res, report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, [])
+        self.assertEqual(res, True)
+
+    @mvn_depmap('x:y:0.1', 'usr/share/java/commons-io.jar', ['-r', '1,2,3', '-n', 'ns', '-a', 'a:b:32'])
+    def test_version_namespace(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res, report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, [])
+        self.assertEqual(res, True)
+
+    @mvn_depmap('x:y', 'usr/share/java/commons-io.jar')
+    def test_missing_version2(self, stdout, stderr, return_value, depmap):
+        self.assertNotEqual(return_value, 0)
+
+    @mvn_depmap('x:y:war:1', 'usr/share/java/commons-io.jar')
+    def test_incorrect_extension(self, stdout, stderr, return_value, depmap):
+        self.assertNotEqual(return_value, 0)
+
+    @mvn_depmap('evil:', 'usr/share/java/commons-io.jar')
+    def test_incorrect_artifact(self, stdout, stderr, return_value, depmap):
+        self.assertNotEqual(return_value, 0)
+
+    @mvn_depmap('x:y::classfier:1', 'usr/share/java/commons-io.war')
+    def test_incorrect_classifier(self, stdout, stderr, return_value, depmap):
+        self.assertNotEqual(return_value, 0)
+
+    @mvn_depmap('x:y:1', 'usr/share/java/commons-io/commons-io.jar')
+    def test_group_id(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res, report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, [])
+        self.assertEqual(res, True)
 
 
 if __name__ == '__main__':
