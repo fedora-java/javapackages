@@ -33,7 +33,7 @@
 # this script is used by add_maven_depmap rpm macro to generate
 # mapping between maven groupId:artifactId and jar file in our local
 # filesystem (i.e. %{_javadir})
-# rpm macro expects to find this file as %{_datadir}/java-utils/maven_depmap.py
+# rpm macro expects to find this file as %{_javadir}-utils/maven_depmap.py
 
 from optparse import OptionParser
 import sys
