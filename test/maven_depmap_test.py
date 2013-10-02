@@ -314,6 +314,45 @@ class TestMavenDepmap(unittest.TestCase):
         self.assertEqual(report, [])
         self.assertEqual(res, True)
 
+    @mvn_depmap('g:a:war:1.2.3', 'usr/share/java/versioned.war', ['-r', '2.0.0'])
+    def test_versioned(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+        self.assertEqual(False, os.path.exists('usr/share/java/versioned.war'))
+        self.assertEqual(True, os.path.exists('usr/share/java/versioned-1.2.3.war'))
+        self.assertEqual(True, os.path.exists('usr/share/java/versioned-2.0.0.war'))
+
+    @mvn_depmap('g:a:1.2', 'usr/share/java/versioned2.jar', ['-r', '1.2'])
+    def test_versioned2(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+        self.assertEqual(False, os.path.exists('usr/share/java/versioned2.jar'))
+        self.assertEqual(True, os.path.exists('usr/share/java/versioned2-1.2.jar'))
+
+    @mvn_depmap('g:a:jar:tests:1', 'usr/share/java/versioned-3-tests.jar', ['-r', '1,1.2'])
+    def test_versioned_classifier(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+        self.assertEqual(False, os.path.exists('usr/share/java/versioned-3-tests.jar'))
+        self.assertEqual(True, os.path.exists('usr/share/java/versioned-3-tests-1.jar'))
+        self.assertEqual(True, os.path.exists('usr/share/java/versioned-3-tests-1.2.jar'))
+
+    @mvn_depmap('JPP-testversioned.pom', 'usr/share/java/testversioned.jar', ['-r', '2013.10'])
+    def test_versioned_with_pom(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(res, True)
+        self.assertEqual(False, os.path.exists('usr/share/java/testversioned.jar'))
+        self.assertEqual(True, os.path.exists('usr/share/java/testversioned-2012.jar'))
+        self.assertEqual(True, os.path.exists('usr/share/java/testversioned-2013.10.jar'))
+
 
 if __name__ == '__main__':
     unittest.main()

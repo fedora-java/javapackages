@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<dependencyMap>
+    <skipProvides/>
+    <dependency>
+        <maven>
+            <artifactId>a</artifactId>
+            <groupId>g</groupId>
+            <version>1.2</version>
+        </maven>
+        <jpp>
+            <artifactId>versioned2</artifactId>
+            <groupId>JPP</groupId>
+            <version>1.2</version>
+        </jpp>
+    </dependency>
+</dependencyMap>

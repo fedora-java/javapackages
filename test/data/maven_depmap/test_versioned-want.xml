@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<dependencyMap>
+    <skipProvides/>
+    <dependency>
+        <maven>
+            <artifactId>a</artifactId>
+            <groupId>g</groupId>
+            <extension>war</extension>
+            <version>1.2.3</version>
+        </maven>
+        <jpp>
+            <artifactId>versioned</artifactId>
+            <groupId>JPP</groupId>
+            <extension>war</extension>
+            <version>1.2.3</version>
+        </jpp>
+    </dependency>
+    <dependency>
+        <maven>
+            <artifactId>a</artifactId>
+            <groupId>g</groupId>
+            <extension>war</extension>
+            <version>1.2.3</version>
+        </maven>
+        <jpp>
+            <artifactId>versioned</artifactId>
+            <groupId>JPP</groupId>
+            <extension>war</extension>
+            <version>2.0.0</version>
+        </jpp>
+    </dependency>
+</dependencyMap>
