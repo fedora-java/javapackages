@@ -138,7 +138,7 @@ def _get_jpp_from_filename(pom_path, prefix, jar_path = None, extension = "jar")
 
 def _make_files_versioned(versions, pom_path, jar_path):
     """Make pom and jar file versioned"""
-    versions = set(versions.split(','))
+    versions = list(set(versions.split(',')))
 
     vpom_path = pom_path
     vjar_path = jar_path
@@ -147,7 +147,7 @@ def _make_files_versioned(versions, pom_path, jar_path):
     if ':' not in vpom_path:
         root, ext = os.path.splitext(vpom_path)
         symlink = False
-        for ver in versions:
+        for ver in sorted(versions):
             dest = "%s-%s%s" % (root, ver, ext)
             if not symlink:
                 shutil.copy(os.path.realpath(vpom_path), dest)
@@ -164,7 +164,7 @@ def _make_files_versioned(versions, pom_path, jar_path):
     if vjar_path:
         root, ext = os.path.splitext(vjar_path)
         symlink = False
-        for ver in versions:
+        for ver in sorted(versions):
             dest = "%s-%s%s" % (root, ver, ext)
             if not symlink:
                 shutil.copy(os.path.realpath(vjar_path), dest)
@@ -278,7 +278,8 @@ def output_fragment(fragment_path, fragment, mappings, add_versions):
         SubElement(root, "skipProvides")
 
     versions.add(fragment.upstream_artifact.version)
-    for ver in versions:
+    versions = list(versions)
+    for ver in sorted(versions):
         for fragment in mappings:
             dep = SubElement(root, "dependency")
             if add_versions or add_versions == "":
