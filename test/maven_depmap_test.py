@@ -309,8 +309,9 @@ class TestMavenDepmap(unittest.TestCase):
     @mvn_depmap('JPP-cdata.pom')
     def test_cdata(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
-        got, want, res = self.check_result(inspect.currentframe().f_code.co_name,
+        got, want, res, report = self.check_result(inspect.currentframe().f_code.co_name,
                                            depmap)
+        self.assertEqual(report, [])
         self.assertEqual(res, True)
 
 
