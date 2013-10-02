@@ -229,5 +229,10 @@ class TestMvnmvn_alias(unittest.TestCase):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
+    # for rhbz#1014301
+    @xmvnconfig('mvn_alias',[':{woodstox-core}-asl', '@1-lgpl' ])
+    def test_rhbz1014301(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0)
+
 if __name__ == '__main__':
     unittest.main()
