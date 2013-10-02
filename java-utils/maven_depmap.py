@@ -269,15 +269,15 @@ def output_fragment(fragment_path, fragment, mappings, add_versions):
         root = Element("dependencyMap")
 
     if not add_versions:
-        versions = []
+        versions = set()
     else:
-        versions = add_versions.split(',')
+        versions = set(add_versions.split(','))
 
     if add_versions or add_versions == "":
         # skip RPM provides in compat packages
         SubElement(root, "skipProvides")
 
-    versions.insert(0, fragment.upstream_artifact.version)
+    versions.add(fragment.upstream_artifact.version)
     for ver in versions:
         for fragment in mappings:
             dep = SubElement(root, "dependency")
