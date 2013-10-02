@@ -3,12 +3,13 @@
     <maven>
       <groupId>group</groupId>
       <artifactId>artifact</artifactId>
-      <extension>artifact</extension>
+      <extension>pom</extension>
       <version>1.2.3</version>
     </maven>
     <jpp>
       <groupId>JPP</groupId>
-      <artifactId>commons-war</artifactId>
+      <artifactId>cdata</artifactId>
+      <extension>pom</extension>
     </jpp>
   </dependency>
 </dependencyMap>
