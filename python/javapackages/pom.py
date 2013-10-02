@@ -30,7 +30,7 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 
-from lxml.etree import ElementTree
+from lxml.etree import ElementTree, XMLParser
 
 class PomLoadingException(Exception):
     pass
@@ -41,7 +41,9 @@ class POM(object):
     """
     def __init__(self, path):
         et = ElementTree ()
-        self.__doc = et.parse(path)
+        parser = XMLParser(remove_comments=True,
+                           strip_cdata=True)
+        self.__doc = et.parse(path, parser=parser)
 
         if self.__doc is None:
             raise PomLoadingException("Failed to load pom.xml. You have a problem")
@@ -67,6 +69,8 @@ class POM(object):
         gId = self.__find('./pom:groupId')
         if gId is None:
             gId = self.__find('./pom:parent/pom:groupId')
+        if len(gId) != 0:
+            raise PomLoadingException("Unexpected child nodes under groupId")
         return gId.text.strip()
 
     @property
@@ -74,7 +78,10 @@ class POM(object):
         """
         Effective artifactId of the pom Artifact
         """
-        return self.__find('./pom:artifactId').text.strip()
+        aId = self.__find('./pom:artifactId')
+        if len(aId) != 0:
+            raise PomLoadingException("Unexpected child nodes under artifactId")
+        return aId.text.strip()
 
     @property
     def version(self):
@@ -86,6 +93,8 @@ class POM(object):
         if version is None:
             version = self.__find('./pom:parent/pom:version')
             assert version is not None
+        if len(version) != 0:
+            raise PomLoadingException("Unexpected child nodes under version")
         return version.text.strip()
 
     @property
@@ -95,5 +104,7 @@ class POM(object):
         """
         p = self.__find('./pom:packaging')
         if p is not None:
+            if len(p) != 0:
+                raise PomLoadingException("Unexpected child nodes under packaging")
             return p.text.strip()
         return None
