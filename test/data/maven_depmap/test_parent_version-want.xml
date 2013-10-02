@@ -1,0 +1,15 @@
+<dependencyMap>
+  <dependency>
+    <maven>
+      <groupId>g</groupId>
+      <artifactId>a</artifactId>
+      <version>1</version>
+      <extension>pom</extension>
+    </maven>
+    <jpp>
+      <groupId>JPP</groupId>
+      <artifactId>parent-version</artifactId>
+      <extension>pom</extension>
+    </jpp>
+  </dependency>
+</dependencyMap>

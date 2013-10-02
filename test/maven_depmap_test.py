@@ -92,6 +92,14 @@ class TestMavenDepmap(unittest.TestCase):
     def test_missing_version(self, stdout, stderr, return_value, depmap):
         self.assertNotEqual(return_value, 0)
 
+    @mvn_depmap('JPP-parent-version.pom')
+    def test_parent_version(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res, report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, [])
+        self.assertEqual(res, True)
+
     @mvn_depmap('JPP-commons-war.pom', 'usr/share/java/commons-war.war')
     def test_war(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
