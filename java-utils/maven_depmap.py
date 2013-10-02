@@ -220,6 +220,7 @@ def parse_pom(pom_file, prefix, jar_file = None):
     if not jar_file:
         if not pom.packaging or pom.packaging != "pom":
             raise PackagingTypeMissingFile(pom_path)
+        extension = 'pom'
     else:
         # let's just take last part of filename as extension
         fname, ext = os.path.splitext(jar_path)
