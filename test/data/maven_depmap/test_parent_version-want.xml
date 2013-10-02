@@ -1,14 +1,14 @@
 <dependencyMap>
   <dependency>
     <maven>
-      <groupId>g</groupId>
       <artifactId>a</artifactId>
-      <version>1</version>
+      <groupId>g</groupId>
       <extension>pom</extension>
+      <version>1</version>
     </maven>
     <jpp>
-      <groupId>JPP</groupId>
       <artifactId>parent-version</artifactId>
+      <groupId>JPP</groupId>
       <extension>pom</extension>
     </jpp>
   </dependency>

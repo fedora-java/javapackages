@@ -10,7 +10,7 @@
         <jpp>
             <artifactId>testversioned</artifactId>
             <groupId>JPP</groupId>
-            <version>2013.10</version>
+            <version>2012</version>
         </jpp>
     </dependency>
     <dependency>
@@ -22,7 +22,7 @@
         <jpp>
             <artifactId>testversioned</artifactId>
             <groupId>JPP</groupId>
-            <version>2012</version>
+            <version>2013.10</version>
         </jpp>
     </dependency>
 </dependencyMap>
