@@ -51,7 +51,7 @@ class TestPOM(unittest.TestCase):
         self.assertEqual(p.version, "3.1.3")
 
     @pomfile("parent-version.pom")
-    def test_no_xmlns(self, p):
+    def test_parent_version(self, p):
         self.assertEqual(p.packaging, None)
         self.assertEqual(p.groupId, "commons-lang")
         self.assertEqual(p.artifactId, "commons-lang")
@@ -65,6 +65,7 @@ class TestPOM(unittest.TestCase):
     @exception_expected(PomLoadingException)
     @pomfile("junit-broken-subnode.pom")
     def test_pom_broken_subnode(self, p):
+        p.version
         self.fail("Broken POM succesfully loaded")
 
     @pomfile("junit-comments.pom")
