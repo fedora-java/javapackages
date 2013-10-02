@@ -17,6 +17,11 @@
 
 ** Fix man pages for build-classpath and build-jar-repository
 
+** Implement additional test cases
+
+   https://bugzilla.redhat.com/buglist.cgi?product=Fedora&component=javapackages-tools&keywords=NeedsTestCase
+
+
 * FEATURES
 
 ** SCL support
