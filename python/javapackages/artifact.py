@@ -221,9 +221,13 @@ class Artifact(object):
         tup = mvnstr.split(":")
 
         # groupId and artifactId are always present
-        if not (2 <= len(tup) <= 5):
-            raise ArtifactFormatException("Unable to create Artifact from "
-                                          "supplied arguments ({mvnstr})".format(mvnstr=mvnstr))
+        if len(tup) < 2:
+            raise ArtifactFormatException("Artifact string '{mvnstr}' does not "
+                                          "contain ':' character. Can not parse".format(mvnstr=mvnstr))
+
+        if len(tup) > 5:
+            raise ArtifactFormatException("Artifact string '{mvnstr}' contains "
+                                          "too many colons. Can not parse".format(mvnstr=mvnstr))
 
         groupId = tup[0]
         artifactId = tup[1]
