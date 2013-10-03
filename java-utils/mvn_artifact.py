@@ -43,7 +43,7 @@ class SaneParser(optparse.OptionParser):
     def format_epilog(self, formatter):
         return self.epilog
 
-usage="usage: %prog [options] <MVN spec | POM path> [JAR path]"
+usage="usage: %prog [options] <MVN spec | POM path> [artifact path]"
 epilog="""
 MVN spec:
 Specification of Maven artifact in following format:
@@ -63,8 +63,8 @@ commons-lang:commons-lang:war:test-jar:3.1
 POM path:
 Path where POM file is located.
 
-JAR path:
-Path where JAR file is located.
+Artifact path:
+Path where Artifact file (usually JAR) is located.
 """
 
 config = ".xmvn-reactor"
@@ -86,7 +86,8 @@ if __name__ == "__main__":
         orig = Artifact.from_mvn_str(args[0])
         orig.validate(allow_backref=False)
         if len(args) == 1:
-            parser.error("JAR path must be specified")
+            parser.error("When using artifact specification artifact path must be "
+                    "provided")
     except (ArtifactFormatException):
         orig = POM(args[0])
         pom_path = args[0]
