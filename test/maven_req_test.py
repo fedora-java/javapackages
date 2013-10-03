@@ -42,3 +42,13 @@ class TestMavenReq(unittest.TestCase):
     def test_mixed(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(stdout, "jpackage-utils\nns-mvn(org.codehaus.plexus:plexus-ant-factory) = 1.0\nns-mvn(codehaus:plexus-utils) = 1.2\nmvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)\nmvn(org.apache.maven.plugins:maven-idea-plugin) = 1.4\n")
+
+    #test for rhbz#1012980
+    @mavenreq(["require_skipped/require.xml"])
+    def test_require_skipped(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertNotEqual(stderr, '')
+        lines = stderr.split('\n');
+        self.assertGreater(len(lines), 1)
+        self.assertEquals(lines[-2], '%mvn_package org.codehaus.plexus:plexus-ant-factory:::1.0 <package_name>')
+
