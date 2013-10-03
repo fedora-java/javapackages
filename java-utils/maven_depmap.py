@@ -44,8 +44,8 @@ from StringIO import StringIO
 import xml.dom.minidom
 import codecs
 
-from os.path import basename, dirname, splitext
-from zipfile import ZipFile
+from os.path import basename, dirname
+import zipfile
 from time import gmtime, strftime
 
 from lxml.etree import SubElement, Element, ElementTree, XMLParser
@@ -300,14 +300,15 @@ def output_fragment(fragment_path, fragment, mappings, add_versions):
 # Add a file to a ZIP archive (or JAR, WAR, ...) unless the file
 # already exists in the archive.  Provided by Tomas Radej.
 def append_if_missing(archive_name, file_name, file_contents):
-    with ZipFile(archive_name, 'a') as archive:
+    with zipfile.ZipFile(archive_name, 'a') as archive:
         if file_name not in archive.namelist():
-            path = file_name[0:file_name.rfind('/')]
-            subdir = ''
-            for part in path.split('/'):
-                subdir += part + '/'
-                if subdir not in archive.namelist():
-                    archive.writestr(subdir, '')
+            path = os.path.dirname(file_name)
+            while True:
+                if not path:
+                    break
+                archive.writestr(path+os.path.sep,
+                                 '', compress_type=zipfile.ZIP_STORED)
+                path, tail = os.path.split(path)
             archive.writestr(file_name, file_contents)
 
 # Inject pom.properties if JAR doesn't have one.  This is necessary to
