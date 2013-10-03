@@ -12,6 +12,7 @@ from formencode import doctest_xml_compare
 class TestMavenDepmap(unittest.TestCase):
 
     def setUp(self):
+        self.maxDiff = 2048
         try:
             dirpath = os.path.dirname(os.path.realpath(__file__))
             self.olddir = os.getcwd()
@@ -228,6 +229,14 @@ class TestMavenDepmap(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         got, want = self.check_archive(inspect.currentframe().f_code.co_name,
                 'usr/foo/share/java/.out_archive.jar')
+        self.assertEqual(got, want)
+
+    #test case for rhbz#1012982
+    @mvn_depmap('x:y:war:z:0.1', 'usr/foo/share/java/.out_archive-z.war')
+    def test_compare_jar_class_ext(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want = self.check_archive(inspect.currentframe().f_code.co_name,
+                'usr/foo/share/java/.out_archive-z.war')
         self.assertEqual(got, want)
 
     @mvn_depmap('a:b:12', 'usr/share/java/already-has-pom-properties.jar')
