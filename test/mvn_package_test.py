@@ -107,8 +107,15 @@ class TestMvnmvn_package(unittest.TestCase):
 
     @xmvnconfig('mvn_package',['aaa:bbb', ])
     def test_single(self, stdout, stderr, return_value):
-        self.assertNotEqual(return_value, 0)
-        self.assertTrue(stderr)
+        self.assertEqual(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('mvn_package',
+                                                                 'single'))
+        for file in filelist:
+            self.assertEquals(get_actual_config(file),
+                              get_expected_config(file,
+                                                  'mvn_package',
+                                                  'single'))
 
     @xmvnconfig('mvn_package',['aaa:bbb', 'pack', 'evil', ])
     def test_more(self, stdout, stderr, return_value):

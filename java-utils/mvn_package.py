@@ -41,7 +41,7 @@ class SaneParser(optparse.OptionParser):
     def format_epilog(self, formatter):
         return self.epilog
 
-usage="usage: %prog [options] <MVN spec> <package>"
+usage="usage: %prog [options] <MVN spec> [<package>]"
 epilog="""
 MVN spec:
 Specification of Maven artifact in following format:
@@ -65,8 +65,13 @@ if __name__ == "__main__":
         sys.argv[index] = arg.decode(sys.getfilesystemencoding())
 
     (options, args) = parser.parse_args()
-    if len(args) != 2:
-        parser.error("Exactly 2 arguments are required")
+
+    if len(args) == 0:
+        parser.error("At least one argument required")
+    elif len(args) > 2:
+        parser.error("At most 2 arguments are expected")
+    elif len(args) == 1:
+        args.append("__default")
 
     try:
         orig = Artifact.from_mvn_str(args[0])
