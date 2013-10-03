@@ -232,7 +232,10 @@ class TestMvnmvn_alias(unittest.TestCase):
     # for rhbz#1014301
     @xmvnconfig('mvn_alias',[':{woodstox-core}-asl', '@1-lgpl' ])
     def test_rhbz1014301(self, stdout, stderr, return_value):
-        self.assertEqual(return_value, 0)
+        self.assertNotEqual(return_value, 0)
+        self.assertEqual(stderr.count("Artifact string '@1-lgpl' does not "
+            "contain ':' character. Can not parse"),
+                1)
 
 if __name__ == '__main__':
     unittest.main()
