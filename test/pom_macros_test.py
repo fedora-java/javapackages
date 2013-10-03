@@ -7,9 +7,16 @@ from shutil import rmtree
 from lxml import etree
 from formencode import doctest_xml_compare
 
-pe = '. ../java-utils/pom_editor.sh; '
 ns = dict(a='http://maven.apache.org/POM/4.0.0')
-data_dir = 'data/_pomtestdir/'
+dirpath = os.path.dirname(os.path.realpath(__file__))
+
+pepath = os.path.abspath(os.path.join(dirpath, "..",
+                                      "java-utils/pom_editor.sh"))
+pe = '. {pepath}; '.format(pepath=pepath)
+
+datadir = os.path.join(dirpath, "data", "pom_macros")
+workdir = os.path.join(datadir, "..", 'pom_macros_workdir')
+
 
 def exec_macro(command = "", pom = "pom.xml"):
     def test_decorator(fn):
@@ -17,22 +24,35 @@ def exec_macro(command = "", pom = "pom.xml"):
             bash = subprocess.Popen(['bash'],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 stdin=subprocess.PIPE)
-            stdin, stderr = bash.communicate("%s %s %s%s" % (pe, command, data_dir, pom))
+            pompath = os.path.join(workdir, pom)
+            stdin, stderr = bash.communicate("%s %s %s" % (pe, command,
+                pompath))
 
-            fn(self, stdin, stderr, bash.returncode, os.path.join(data_dir, pom))
+            fn(self, stdin, stderr, bash.returncode, pompath)
         return test_decorated
     return test_decorator
 
 
 class PomMacrosTest(unittest.TestCase):
+    olddir = os.getcwd()
 
     @classmethod
     def setUpClass(cls):
-        copytree('data/pom_macros', data_dir)
+        cls.tearDownClass()
+        try:
+            cls.olddir = os.getcwd()
+            copytree(datadir, workdir)
+            os.chdir(workdir)
+        except OSError:
+            pass
 
     @classmethod
     def tearDownClass(cls):
-        rmtree('data/_pomtestdir')
+        try:
+            rmtree(workdir)
+            os.chdir(cls.olddir)
+        except OSError:
+            pass
 
     def xml_compare_reporter(self, report):
         print report
