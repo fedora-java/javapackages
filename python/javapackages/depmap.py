@@ -29,6 +29,8 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
+import gzip
+import os.path
 
 from lxml.etree import fromstring
 
@@ -64,7 +66,17 @@ class Depmap(object):
 
     def __load_depmap(self, fragment_path):
         with open(fragment_path) as f:
-            self.__doc = fromstring(f.read())
+            try:
+                gzf = gzip.GzipFile(os.path.basename(fragment_path),
+                                    'rb',
+                                    fileobj=f)
+                data = gzf.read()
+            except IOError:
+                # not a compressed fragment, just rewind and read the data
+                f.seek(0)
+                data = f.read()
+
+            self.__doc = fromstring(data)
 
 
     def is_compat(self):
