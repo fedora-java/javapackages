@@ -324,7 +324,16 @@ version={f.upstream_artifact.version}
 groupId={f.upstream_artifact.groupId}
 artifactId={f.upstream_artifact.artifactId}
 """.format(timestamp=timestamp,
-                                                      f=fragment)
+           f=fragment)
+
+    artifact = fragment.upstream_artifact
+    if artifact.extension:
+        properties = properties + \
+            "extension={ext}\n".format(ext=artifact.extension)
+    if artifact.classifier:
+        properties = properties + \
+            "classifier={clas}\n".format(clas=artifact.classifier)
+
     append_if_missing(jar_path, props_path, properties)
 
 if __name__ == "__main__":
