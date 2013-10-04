@@ -306,8 +306,10 @@ def append_if_missing(archive_name, file_name, file_contents):
             while True:
                 if not path:
                     break
-                archive.writestr(path+os.path.sep,
-                                 '', compress_type=zipfile.ZIP_STORED)
+                subdir = path + os.path.sep
+                if subdir not in archive.namelist():
+                    archive.writestr(subdir,
+                                     '', compress_type=zipfile.ZIP_STORED)
                 path, tail = os.path.split(path)
             archive.writestr(file_name, file_contents)
 
