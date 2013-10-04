@@ -68,6 +68,19 @@ class TestDepmap(unittest.TestCase):
             self.assertEqual(l.artifactId, "maven-idea-plugin")
             self.assertEqual(l.version, "")
 
+    @depmapfile("depmap_new_versioned_compressed.xml.gz")
+    def test_compressed_depmap(self, d):
+        self.assertFalse(d.is_compat())
+        maps = d.get_provided_mappings()
+        self.assertEqual(len(maps), 1)
+        for m, l in maps:
+            self.assertEqual(m.groupId, "org.apache.maven.plugins")
+            self.assertEqual(m.artifactId, "maven-idea-plugin")
+            self.assertEqual(m.version, "1.4")
+            self.assertEqual(l.groupId, "JPP/maven-idea-plugin")
+            self.assertEqual(l.artifactId, "maven-idea-plugin")
+            self.assertEqual(l.version, "")
+
     @depmapfile("depmap_new_compat.xml")
     def test_provided_versioned(self, d):
         self.assertTrue(d.is_compat())
