@@ -61,9 +61,9 @@ class TestMavenDepmap(unittest.TestCase):
             mf_file = archive.open(f)
             try:
                 if (keep_comments):
-                    res[f] = mf_file.readlines()
+                    res[unicode(f)] = mf_file.readlines()
                 else:
-                    res[f] = [line for line in mf_file.readlines() if not line.startswith('#')]
+                    res[unicode(f)] = [line for line in mf_file.readlines() if not line.startswith('#')]
             finally:
                 mf_file.close()
         return res
