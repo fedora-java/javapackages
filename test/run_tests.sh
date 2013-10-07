@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
+
+nosetests --ignore-files=maven_prov_test_fuzzed.py
+
 if [ "x${1}" = "x--all" ]; then
-    python -m unittest discover -p '*_test*.py'
-else
-    python -m unittest discover -p '*_test.py'
+    nosetests maven_prov_test_fuzzed.py
 fi
+
