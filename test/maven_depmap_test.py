@@ -253,6 +253,14 @@ class TestMavenDepmap(unittest.TestCase):
                 'usr/share/java/already-has-pom-properties.jar')
         self.assertEqual(got, want)
 
+    @mvn_depmap('/builddir/build/BUILDROOT/pkg-2.5.2-2.fc21.x86_64/x:y:0.1',
+            'usr/share/java/already-has-pom-properties.jar')
+    def test_rhbz1012245(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want = self.check_archive('test_compare_jar_modified',
+                'usr/share/java/already-has-pom-properties.jar')
+        self.assertEqual(got, want)
+
     @mvn_depmap('x:y:jar:z:0.1', 'usr/share/java/commons-io-z.jar', ['-a', 'a:b:war:c:12'])
     def test_classifier(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
