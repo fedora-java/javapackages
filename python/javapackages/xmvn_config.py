@@ -103,8 +103,9 @@ class XMvnConfig(object):
         et.write(xmlbuf,
                  xml_declaration=True,
                  encoding = 'utf-8',
-                 method = "xml")
-        return xml.dom.minidom.parseString(xmlbuf.getvalue()).toprettyxml()
+                 method = "xml",
+                 pretty_print=True)
+        return  xmlbuf.getvalue()
 
 
     def __write_xml(self, path, root):
