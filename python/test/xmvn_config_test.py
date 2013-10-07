@@ -75,18 +75,18 @@ class TestXMvnConfig(unittest.TestCase):
         rule = self.__find(root, "xmvn:artifactManagement/xmvn:rule")
 
         aglob = self.__find(rule, "xmvn:artifactGlob")
-        self.assertEqual(self.__find(aglob, "xmvn:groupId").text, "gId")
+        self.assertEqual(self.__find(aglob, "xmvn:groupId").text.strip(), "gId")
         self.assertEqual(self.__find(aglob,
-                                     "xmvn:artifactId").text, "aId")
+                                     "xmvn:artifactId").text.strip(), "aId")
 
         aliases = self.__findall(rule, "xmvn:aliases/xmvn:alias")
         self.assertEqual(self.__find(aliases[0],
-                                     "xmvn:groupId").text, "gIda1")
+                                     "xmvn:groupId").text.strip(), "gIda1")
         self.assertEqual(self.__find(aliases[0],
-                                     "xmvn:artifactId").text, "aIda1")
+                                     "xmvn:artifactId").text.strip(), "aIda1")
 
-        self.assertEqual(self.__find(aliases[1], "xmvn:groupId").text, "gIda2")
-        self.assertEqual(self.__find(aliases[1], "xmvn:artifactId").text, "aIda2")
+        self.assertEqual(self.__find(aliases[1], "xmvn:groupId").text.strip(), "gIda2")
+        self.assertEqual(self.__find(aliases[1], "xmvn:artifactId").text.strip(), "aIda2")
 
     def test_file_mappings(self):
         xc = XMvnConfig()
@@ -98,12 +98,12 @@ class TestXMvnConfig(unittest.TestCase):
         rule = self.__find(root, "xmvn:artifactManagement/xmvn:rule")
 
         aglob = self.__find(rule, "xmvn:artifactGlob")
-        self.assertEqual(self.__find(aglob, "xmvn:groupId").text, "gId")
-        self.assertEqual(self.__find(aglob, "xmvn:artifactId").text, "aId")
+        self.assertEqual(self.__find(aglob, "xmvn:groupId").text.strip(), "gId")
+        self.assertEqual(self.__find(aglob, "xmvn:artifactId").text.strip(), "aId")
 
         files = self.__findall(rule, "xmvn:files/xmvn:file")
-        self.assertEqual(files[0].text, "path1")
-        self.assertEqual(files[1].text, "path2")
+        self.assertEqual(files[0].text.strip(), "path1")
+        self.assertEqual(files[1].text.strip(), "path2")
 
     def test_compat_versions(self):
         xc = XMvnConfig()
@@ -115,12 +115,12 @@ class TestXMvnConfig(unittest.TestCase):
         rule = self.__find(root, "xmvn:artifactManagement/xmvn:rule")
 
         aglob = self.__find(rule, "xmvn:artifactGlob")
-        self.assertEqual(self.__find(aglob, "xmvn:groupId").text, "gId")
-        self.assertEqual(self.__find(aglob, "xmvn:artifactId").text, "aId")
+        self.assertEqual(self.__find(aglob, "xmvn:groupId").text.strip(), "gId")
+        self.assertEqual(self.__find(aglob, "xmvn:artifactId").text.strip(), "aId")
 
         files = self.__findall(rule, "xmvn:versions/xmvn:version")
-        self.assertEqual(files[0].text, "version1")
-        self.assertEqual(files[1].text, "version2")
+        self.assertEqual(files[0].text.strip(), "version1")
+        self.assertEqual(files[1].text.strip(), "version2")
 
     def test_package_mappings(self):
         xc = XMvnConfig()
@@ -132,10 +132,10 @@ class TestXMvnConfig(unittest.TestCase):
         rule = self.__find(root, "xmvn:artifactManagement/xmvn:rule")
 
         aglob = self.__find(rule, "xmvn:artifactGlob")
-        self.assertEqual(self.__find(aglob, "xmvn:groupId").text, "gId")
-        self.assertEqual(self.__find(aglob, "xmvn:artifactId").text, "aId")
+        self.assertEqual(self.__find(aglob, "xmvn:groupId").text.strip(), "gId")
+        self.assertEqual(self.__find(aglob, "xmvn:artifactId").text.strip(), "aId")
 
-        self.assertEqual(self.__find(rule, "xmvn:targetPackage").text,
+        self.assertEqual(self.__find(rule, "xmvn:targetPackage").text.strip(),
                          "package")
 
     def test_custom_config(self):
@@ -144,7 +144,7 @@ class TestXMvnConfig(unittest.TestCase):
         et = self._read_current_conf()
         root = et.getroot()
         cs = self.__find(root, "xmvn:buildSettings/xmvn:compilerSource")
-        self.assertEqual(cs.text, "1.5")
+        self.assertEqual(cs.text.strip(), "1.5")
 
     def test_custom_config_xml(self):
         xc = XMvnConfig()
@@ -160,8 +160,8 @@ class TestXMvnConfig(unittest.TestCase):
                 "xmvn:buildSettings/xmvn:compilerSource/xmvn:versions")
         self.assertEqual(len(versions), 2)
         v1, v2 = self.__findall(versions, "xmvn:version")
-        self.assertEqual(v1.text, "1.5")
-        self.assertEqual(v2.text, "1.6")
+        self.assertEqual(v1.text.strip(), "1.5")
+        self.assertEqual(v2.text.strip(), "1.6")
 
 
 if __name__ == '__main__':
