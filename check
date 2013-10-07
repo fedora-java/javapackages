@@ -30,16 +30,16 @@
 #
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
-set -e
-
 if ! test -f config.status; then
     echo config.status does not exist. Run configure first. >&2
     exit 1
 fi
 . ./config.status
 
-(cd ./python && python setup.py test; r1=${?})
-(cd ./test && ./run_tests.sh --all; r2=${?})
+(cd ./python && python setup.py test)
+r1=$?
+(cd ./test && ./run_tests.sh --all)
+r2=$?
 
 if [ ${r1} -lt ${r2} ]; then
     r1=${r2}
