@@ -278,7 +278,7 @@ class XMvnConfig(object):
 
         try:
             #wrap content into something to allow text content
-            inserted = "<root>{}</root>".format(content);
+            inserted = "<root>{0}</root>".format(content);
             contentRoot = ET.fromstring(inserted);
             par.text = contentRoot.text
             for element in contentRoot:
