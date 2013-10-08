@@ -192,4 +192,5 @@ inst_data configs/configuration-20-rpmbuild-raw.xml "${m2home}"
 
 link "${m2home}/configuration-20.xml" "${m2home}/configuration.xml"
 
+exec >files-fedora-review
 inst_data fedora-review/java_guidelines.py "${datadir}/fedora-review/plugins"
