@@ -43,13 +43,17 @@ class TestMavenDepmap(unittest.TestCase):
         return got, want, res, report
 
     def check_archive(self, test_name, archive_path, keep_comments=False):
-        with ZipFile(archive_path, 'r') as got:
-            with ZipFile('{name}-want.{ext}'.format(name=test_name,
-                            ext=archive_path.split('.')[-1])) as want:
-                if got.testzip() is not None: return ("Not valid zip file", "")
-                got_mf = self.read_archive(got, keep_comments)
-                want_mf = self.read_archive(want, keep_comments)
-                return (got_mf, want_mf)
+        got = ZipFile(archive_path, 'r')
+        want = ZipFile('{name}-want.{ext}'.format(name=test_name,
+                       ext=archive_path.split('.')[-1]))
+        try:
+            if got.testzip() is not None: return ("Not valid zip file", "")
+            got_mf = self.read_archive(got, keep_comments)
+            want_mf = self.read_archive(want, keep_comments)
+        finally:
+            got.close()
+            want.close()
+        return (got_mf, want_mf)
 
     def read_archive(self, archive, keep_comments=False):
         res = {}
