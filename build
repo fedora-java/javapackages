@@ -104,3 +104,6 @@ manpage pom_xpath_inject
 manpage pom_xpath_remove
 manpage pom_xpath_replace
 manpage pom_xpath_set
+manpage build-classpath
+manpage build-jar-repository
+manpage rebuild-jar-repository
