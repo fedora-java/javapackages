@@ -300,7 +300,8 @@ def output_fragment(fragment_path, fragment, mappings, add_versions):
 # Add a file to a ZIP archive (or JAR, WAR, ...) unless the file
 # already exists in the archive.  Provided by Tomas Radej.
 def append_if_missing(archive_name, file_name, file_contents):
-    with zipfile.ZipFile(archive_name, 'a') as archive:
+    archive = zipfile.ZipFile(archive_name, 'a')
+    try:
         if file_name not in archive.namelist():
             path = os.path.dirname(file_name)
             while True:
@@ -312,6 +313,8 @@ def append_if_missing(archive_name, file_name, file_contents):
                                      '', compress_type=zipfile.ZIP_STORED)
                 path, tail = os.path.split(path)
             archive.writestr(file_name, file_contents)
+    finally:
+        archive.close()
 
 # Inject pom.properties if JAR doesn't have one.  This is necessary to
 # identify the origin of JAR files that are present in the repository.
