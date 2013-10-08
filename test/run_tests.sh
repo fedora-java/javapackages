@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 nosetests --exclude=maven_prov_test_fuzzed.py
 r1=$?
