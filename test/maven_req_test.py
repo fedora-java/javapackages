@@ -49,6 +49,6 @@ class TestMavenReq(unittest.TestCase):
         self.assertNotEqual(return_value, 0)
         self.assertNotEqual(stderr, '')
         lines = stderr.split('\n');
-        self.assertGreater(len(lines), 1)
+        self.assertEquals(True, len(lines) > 1)
         self.assertEquals(lines[-2], '%mvn_package org.codehaus.plexus:plexus-ant-factory:::1.0 <package_name>')
 
