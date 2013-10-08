@@ -58,11 +58,14 @@ class TestMavenDepmap(unittest.TestCase):
     def read_archive(self, archive, keep_comments=False):
         res = {}
         for f in archive.namelist():
-            with archive.open(f) as mf_file:
+            mf_file = archive.open(f)
+            try:
                 if (keep_comments):
                     res[f] = mf_file.readlines()
                 else:
                     res[f] = [line for line in mf_file.readlines() if not line.startswith('#')]
+            finally:
+                mf_file.close()
         return res
 
     @mvn_depmap('JPP-bndlib.pom', 'usr/share/java/bndlib.jar')
