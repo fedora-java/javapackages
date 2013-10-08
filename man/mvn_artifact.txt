@@ -34,7 +34,7 @@ OPERANDS
     Artifact coordinates specify artifact to be installed. If
     specified then no model file is installed with artifact.
     Coordinates are in format
-    *groupId:artifactId[:extension[:classifier]]:version*.  If version
+    *groupId:artifactId[:extension[:classifier]]:version*. If extension
     is omitted then "jar" is used.  If classifier is omitted then
     empty classifier is used.  For more information see XMvn
     Configuration Reference.
