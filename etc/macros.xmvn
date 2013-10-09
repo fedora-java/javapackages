@@ -43,7 +43,7 @@
 #
 # Subpackage name can contain backreferences in form @n.
 #
-%mvn_package python %{_datadir}/java-utils/mvn_package.py
+%mvn_package python %{_javadir}-utils/mvn_package.py
 
 
 # %mvn_alias - create alias(es) for given Maven artifact(s)
@@ -63,7 +63,7 @@
 # AliasGId, aliasAId and aliasVer can contain backreferences in form @n,
 # which can refer only to respective parts.
 #
-%mvn_alias python %{_datadir}/java-utils/mvn_alias.py
+%mvn_alias python %{_javadir}-utils/mvn_alias.py
 
 
 # %mvn_file - specify file name(s) for Maven artifact(s)
@@ -79,7 +79,7 @@
 # are given then the first one will be primary name of the artifact and
 # additional names will be symbolic links pointing to the primary file.
 #
-%mvn_file python %{_datadir}/java-utils/mvn_file.py
+%mvn_file python %{_javadir}-utils/mvn_file.py
 
 # %mvn_compat_version - specify file name(s) for Maven artifact(s)
 #
@@ -95,7 +95,7 @@
 # additional versions will be symbolic links pointing to the primary
 # version.
 #
-%mvn_compat_version python %{_datadir}/java-utils/mvn_compat_version.py
+%mvn_compat_version python %{_javadir}-utils/mvn_compat_version.py
 
 
 # %mvn_config - set XMvn configuration option
@@ -111,14 +111,14 @@
 # For information about available configuration options, see XMvn
 # configuration reference, available on XMvn website.
 #
-%mvn_config python %{_datadir}/java-utils/mvn_config.py
+%mvn_config python %{_javadir}-utils/mvn_config.py
 
 
 # %mvn_artifact - add Maven artifact to be installed
 #
 # Usage: %mvn_artifact <pom> [<artifact-file>]
 #
-%mvn_artifact python %{_datadir}/java-utils/mvn_artifact.py
+%mvn_artifact python %{_javadir}-utils/mvn_artifact.py
 
 
 # %mvn_build - build Maven project
@@ -130,7 +130,7 @@
 #
 # For summary of accepted options execute `mvn-build --help` command.
 #
-%mvn_build python %{_datadir}/java-utils/mvn_build.py %{?xmvn_bootstrap: -b} %{?_without_javadoc: -j $(> .mfiles-javadoc)}%{?_without_tests: -f}
+%mvn_build python %{_javadir}-utils/mvn_build.py %{?xmvn_bootstrap: -b} %{?_without_javadoc: -j $(> .mfiles-javadoc)}%{?_without_tests: -f}
 
 
 # %mvn_install - install Maven project
