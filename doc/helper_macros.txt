@@ -63,6 +63,29 @@ reasons and there is a need to disable them. This can be achieved by using
 %pom_disable_module grandchild-module child-module-2
 --------
 
+Macro `%pom_remove_parent` removes reference
+to a parent POM from Maven POM files. This can be useful when parent POM
+is not yet packaged (e.g. because of licensing issues) and at the same time it's
+not really needed for building of the project. There are also macros for adding
+parent POM reference (`%pom_add_parent`) and replacing existing reference
+with new one (`%pom_set_parent`).
+
+.Manipulating parent POM references
+[source,spec]
+--------
+# Remove reference to a parent POM from ./pom.xml
+%pom_remove_parent
+
+# Remove reference to a parent POM from ./submodule/pom.xml
+%pom_remove_parent submodule
+
+# Add parent POM reference to ./pom.xml
+%pom_set_parent groupId:artifactId
+
+# Replace existing parent POM reference in ./pom.xml
+%pom_set_parent groupId:artifactId:version
+--------
+
 The above macros cover the most common cases of modifying `pom.xml` files,
 however if there is a need to apply some less-common patches there are also two
 generic macros for modifying `pom.xml` files. `%pom_xpath_remove` can be used to
