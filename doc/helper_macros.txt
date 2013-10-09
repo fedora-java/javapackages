@@ -193,6 +193,14 @@ For a POM that maps directly to a JAR file, the following is the correct form:
 In addition to creating the POM mapping, this will also ensure that the correct
 JAR is associated with the groupId and artifactId from the POM.
 
+Even if there is no POM file from some reason, it is still possilbe to generate
+mapping between Maven artifact and corresponding JAR file:
+
+[source,spec]
+--------
+%add_maven_depmap groupId:artifactId[:extension[:classifier]]:version %{name}.jar
+--------
+
 .Providing additional artifact mappings
 [source,spec]
 --------
