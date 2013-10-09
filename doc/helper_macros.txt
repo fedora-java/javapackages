@@ -8,10 +8,13 @@ packages. One could use traditional patches to maintain changes, but package
 maintainers should use `%pom_*` macros developed specially to ease this
 task.
 
-These macros are designed to be called from `%prep` section of spec files. There
+These macros are designed to be called from `%prep` section of spec files. They
 are documented in `/etc/rpm/macros.fjava` configuration file, which is also
-link:http://git.fedorahosted.org/git/?p=javapackages.git;a=blob_plain;f=macros.fjava[available online]. See the documentation for technical details how to use these
-macros. Below are some examples added for convenience.
+link:http://git.fedorahosted.org/git/?p=javapackages.git;a=blob_plain;f=macros.fjava[available online]
+and all the macros also have their own manual page. See the manual pages
+for technical details how to use them. Below are some examples added for
+convenience.
+
 
 Often dependencies specified in Maven `pom.xml` files need to be removed because of different reasons. `%pom_remove_dep` macro can be used to ease this task:
 
