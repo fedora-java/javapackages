@@ -43,8 +43,6 @@ class TagBuilder:
         if filelist == None:
             filelist = sys.stdin
         paths = map (lambda x: x.rstrip (), filelist.readlines ())
-        # this is always required because jpackage-utils owns the directory
-        print("jpackage-utils")
         self.provided_artifacts = []
         self.skipped_artifacts = []
         if paths:
@@ -65,6 +63,12 @@ class TagBuilder:
     def print_mvn_requires(self, path):
         depmap = Depmap(path)
         skipped_but_required = []
+        base_package_requires="jpackage-utils"
+        for provided in self.provided_artifacts:
+            if provided.namespace:
+                base_package_requires="{ns}-runtime".format(ns=provided.namespace)
+                break
+        print base_package_requires
         for dependency in depmap.get_required_artifacts():
             for skipped in self.skipped_artifacts:
                 if (skipped.groupId == dependency.groupId and
