@@ -167,6 +167,34 @@ package won't be installed anywhere and the package itself won't be created.
 %mvn_package groupId:artifactId __noinstall
 -------
 
+==== Modifying XMvn configuration from within spec file ====
+Some packages might need to modify XMvn's configuration in order to build
+successfully or from other reasons. This can be achieved with `mvn_config`
+macro. For example, some old package can use `enum` as an identifier, but it is
+also keyword since Java 1.5. Such package will probably fail to build on current
+systems. This problem can be easily solved by passing `-source 1.4` to the
+compiler, so one could add following line to the spec file:
+
+.Overriding default XMvn configuration
+[source,spec]
+-------
+%prep
+...
+%mvn_config buildSettings/compilerSource 1.4
+-------
+
+XMvn's configuration is quite complex, but well documented at project's
+http://mizdebsk.fedorapeople.org/xmvn/site/[official website]. The website
+should always be used as a primary source of information about XMvn
+configuration.
+
+[TIP]
+======
+Read about XMvn's configuration
+http://mizdebsk.fedorapeople.org/xmvn/site/configuration.html[basics] and see
+full http://mizdebsk.fedorapeople.org/xmvn/site/config.html[configuration reference].
+======
+
 [TIP]
 ======
 All `%mvn_` macros have their own manual page which contains details on how to
