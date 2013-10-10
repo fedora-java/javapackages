@@ -80,6 +80,9 @@ expand bin/mvn-rpmbuild
 expand bin/rebuild-jar-repository
 expand bin/xmvn-builddep
 expand etc/java.conf
+expand etc/macros.jpackage
+expand etc/macros.fjava
+expand etc/macros.xmvn
 expand java-utils/java-functions
 
 manpage abs2rel
