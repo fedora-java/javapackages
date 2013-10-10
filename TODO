@@ -19,6 +19,9 @@
 
    https://bugzilla.redhat.com/buglist.cgi?product=Fedora&component=javapackages-tools&keywords=NeedsTestCase
 
+** Expand test cases for require generator & multiple provided artifacts, each with
+   different namespace (i.e. require jpackage-utils & nsX-runtime at the same
+   time)
 
 * FEATURES
 
