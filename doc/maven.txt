@@ -155,5 +155,17 @@ mentioned (e.g. some parent POMs), then these will all end up in package named
 `%mvn_package ":plexus-compiler-{jikes,eclipse,csharp}" plexus-compiler-extras`
 ======
 
+It is possible to assign artifacts into a package called `__noinstall`. This package
+name has a special meaning. And as you can guess, artifacts assigned into this
+package won't be installed anywhere and the package itself won't be created.
+
+.Skipping installation of an artifact
+[source,spec]
+-------
+%prep
+...
+%mvn_package groupId:artifactId __noinstall
+-------
+
 .XMvn package relationships
 image:images/xmvn.svg["XMvn related packages",width=600]
