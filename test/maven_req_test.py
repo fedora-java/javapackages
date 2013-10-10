@@ -52,3 +52,5 @@ class TestMavenReq(unittest.TestCase):
         self.assertEquals(True, len(lines) > 1)
         self.assertEquals(lines[-2], '%mvn_package org.codehaus.plexus:plexus-ant-factory:::1.0 <package_name>')
 
+if __name__ == '__main__':
+        unittest.main()

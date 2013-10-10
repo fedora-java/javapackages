@@ -17785,3 +17785,6 @@ class TestMavenProvFuzzed(unittest.TestCase):
     def test_fuzzed_4375(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
+
+if __name__ == '__main__':
+        unittest.main()

@@ -76,3 +76,6 @@ class TestMavenProv(unittest.TestCase):
         self.assertEquals(return_value, 0)
         self.assertEquals(stdout, "maven31-mvn(org.apache.maven:apache-maven:pom:) = 3.1.1\n"
                                   "maven31-mvn(org.apache.maven:apache-maven) = 3.1.1\n")
+
+if __name__ == '__main__':
+    unittest.main()
