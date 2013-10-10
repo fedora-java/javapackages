@@ -71,3 +71,8 @@ class TestMavenProv(unittest.TestCase):
         self.assertEquals(return_value, 0)
         self.assertEquals(stdout, "ns-mvn(org.mortbay.jetty:jsp-2.1-glassfish:6.0.18) = 9.1.1.B60.25.p2\n")
 
+    @mavenprov(["pom_namespace.xml"])
+    def test_namespace_rhbz1017271(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(stdout, "maven31-mvn(org.apache.maven:apache-maven:pom:) = 3.1.1\n"
+                                  "maven31-mvn(org.apache.maven:apache-maven) = 3.1.1\n")
