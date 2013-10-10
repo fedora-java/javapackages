@@ -10,7 +10,7 @@ mvn_install - install Maven artifacts
 
 SYNOPSIS
 --------
-*%mvn_install* [-J directory]
+*%mvn_install* [-X] [-J directory]
 
 DESCRIPTION
 -----------
@@ -29,6 +29,10 @@ configuration that can affect behavior of *mvn_install*.
 
 OPTIONS
 -------
+*-X*::
+    Enable debugging output.  This option causes XMvn installer to
+    write verbose debugging information to standard output.
+
 *-J* directory::
     Specify alternative API documentation directory.  By default API
     documentation is searched for in *target/site/apidocs* directory.
