@@ -167,5 +167,14 @@ package won't be installed anywhere and the package itself won't be created.
 %mvn_package groupId:artifactId __noinstall
 -------
 
+[TIP]
+======
+All `%mvn_` macros have their own manual page which contains details on how to
+use them. All possible options should be documented there. These manual pages
+should be considered most up to date documentation right after source code. Try
+for example `man mvn_file`.
+======
+
+
 .XMvn package relationships
 image:images/xmvn.svg["XMvn related packages",width=600]
