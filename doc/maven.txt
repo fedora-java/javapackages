@@ -37,6 +37,28 @@ The macros `%mvn_build` and `%mvn_install` automatically handle building of the
 JAR files and their subsequent installation to the correct directory. The
 corresponding POM and <<Xdepmap,depmap>> files are also installed.
 
+==== Installing additional artifacts ====
+It is possible to explicitly request an installation of any Maven artifact
+(JAR/POM file).  Macro `%mvn_install` only knows about Maven artifacts that were
+created during execution of `%mvn_build`. Normally, any other artifacts which
+were built by some other method would need to be installed manually.
+`%mvn_build` macro doesn't even need to be used at all. Luckily, all artifacts
+created outside of `%mvn_build` can be marked for installation with
+`%mvn_artifact` macro. This macro creates configuration for `%mvn_install`.
+
+.Requesting installation of Maven artifact
+[source,spec]
+-------
+%prep
+...
+# Request installation of POM and JAR file
+%mvn_artifact subpackage/pom.xml target/artifact.jar
+# Request installation of POM artifact (no JAR file)
+%mvn_artifact pom.xml
+# Request installation for JAR file specified by artifact coordinates
+%mvn_artifact webapp:webapp:war::3.1 webapp.war
+-------
+
 ==== Additional Mappings ====
 [[pom_jar_mapping]]
 
