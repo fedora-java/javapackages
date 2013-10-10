@@ -62,8 +62,10 @@ class TagBuilder:
                         version=m_artifact.version ))
                 # preserve compatibility and generate simple mvn(g:a) provides
                 # for pom artifacts
+                ns = l_artifact.namespace
                 if prov_artifact.extension == 'pom':
-                    print("mvn({gid}:{aid}) = {version}".format(
+                    print("{ns}mvn({gid}:{aid}) = {version}".format(
+                            ns=(ns + "-") if ns else "",
                             gid=prov_artifact.groupId,
                             aid=prov_artifact.artifactId,
                             version=m_artifact.version))
