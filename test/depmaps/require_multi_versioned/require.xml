@@ -13,29 +13,34 @@
       <namespace>ns</namespace>
     </jpp>
   </dependency>
+  <!-- ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0 -->
   <autoRequires>
     <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus-ant-factory</artifactId>
     <namespace>ns</namespace>
     <version>1.0</version>
   </autoRequires>
+  <!-- ns-mvn(codehaus:plexus-utils:1.2) -->
   <autoRequires>
     <groupId>codehaus</groupId>
     <artifactId>plexus-utils</artifactId>
     <version>1.2</version>
     <namespace>ns</namespace>
   </autoRequires>
+  <!-- ns-mvn(codehaus:plexus-cipher:1.0) = 1.1 -->
   <autoRequires>
     <groupId>codehaus</groupId>
     <artifactId>plexus-cipher</artifactId>
     <version>1.0</version>
     <namespace>ns</namespace>
   </autoRequires>
+  <!-- mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:) -->
   <autoRequires>
     <groupId>org.apache.maven.wagon</groupId>
     <artifactId>wagon-provider-api</artifactId>
     <classifier>test-jar</classifier>
   </autoRequires>
+  <!-- mvn(org.apache.maven.plugins:maven-idea-plugin:1.5) -->
   <autoRequires>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-idea-plugin</artifactId>
