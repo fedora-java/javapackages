@@ -63,12 +63,15 @@ class TagBuilder:
     def print_mvn_requires(self, path):
         depmap = Depmap(path)
         skipped_but_required = []
-        base_package_requires="jpackage-utils"
-        for m_provided, l_provided in self.provided_artifacts:
-            if m_provided.namespace:
-                base_package_requires="{ns}-runtime".format(ns=m_provided.namespace)
-                break
-        print base_package_requires
+        base_package_requires=set()
+        
+        for provided in depmap.get_provided_artifacts():
+            if provided.namespace:
+                base_package_requires.add("{ns}-runtime".format(ns=provided.namespace))
+            else:
+                base_package_requires.add("jpackage-utils")
+        for basereq in base_package_requires:
+            print basereq
         for dependency in depmap.get_required_artifacts():
             for skipped in self.skipped_artifacts:
                 if (skipped.groupId == dependency.groupId and
