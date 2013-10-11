@@ -1,16 +1,16 @@
 <?xml version="1.0" ?>
 <dependencyMap>
-    <dependency>
-        <maven>
-            <artifactId>commons-io</artifactId>
-            <groupId>commons-io</groupId>
-	    <extension>pom</extension>
-            <version>2</version>
-        </maven>
-        <jpp>
-            <artifactId>apache-commons-io</artifactId>
-            <groupId>JPP</groupId>
-	    <extension>pom</extension>
-        </jpp>
-    </dependency>
+  <dependency>
+    <maven>
+      <artifactId>commons-io</artifactId>
+      <groupId>commons-io</groupId>
+      <extension>pom</extension>
+      <version>2</version>
+    </maven>
+    <jpp>
+      <artifactId>apache-commons-io</artifactId>
+      <groupId>JPP</groupId>
+      <extension>pom</extension>
+    </jpp>
+  </dependency>
 </dependencyMap>

@@ -18,6 +18,6 @@
       <scope>test</scope>
     </dependency>
     <!-- dependency disabled by maintainer: commons-io:commons-io -->
-  </dependencies> 
+  </dependencies>
 
 </project>

@@ -1,18 +1,18 @@
 <?xml version="1.0" ?>
 <dependencyMap>
   <skipProvides/>
-    <dependency>
-        <maven>
-            <artifactId>y</artifactId>
-            <groupId>x</groupId>
-            <version>0.1</version>
-        </maven>
-        <jpp>
-            <artifactId>commons-io</artifactId>
-            <groupId>JPP</groupId>
-            <version>0.1</version>
-        </jpp>
-    </dependency>
+  <dependency>
+    <maven>
+      <artifactId>y</artifactId>
+      <groupId>x</groupId>
+      <version>0.1</version>
+    </maven>
+    <jpp>
+      <artifactId>commons-io</artifactId>
+      <groupId>JPP</groupId>
+      <version>0.1</version>
+    </jpp>
+  </dependency>
   <dependency>
     <maven>
       <artifactId>y</artifactId>

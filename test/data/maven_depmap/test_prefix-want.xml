@@ -1,14 +1,14 @@
 <?xml version="1.0" ?>
 <dependencyMap>
-	<dependency>
-		<maven>
-			<artifactId>b</artifactId>
-			<groupId>a</groupId>
-			<version>12</version>
-		</maven>
-		<jpp>
-			<artifactId>foo</artifactId>
-			<groupId>JPP</groupId>
-		</jpp>
-	</dependency>
+  <dependency>
+    <maven>
+      <artifactId>b</artifactId>
+      <groupId>a</groupId>
+      <version>12</version>
+    </maven>
+    <jpp>
+      <artifactId>foo</artifactId>
+      <groupId>JPP</groupId>
+    </jpp>
+  </dependency>
 </dependencyMap>

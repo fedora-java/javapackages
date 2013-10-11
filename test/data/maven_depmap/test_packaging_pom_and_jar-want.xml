@@ -1,14 +1,14 @@
 <?xml version="1.0" ?>
 <dependencyMap>
-    <dependency>
-        <maven>
-            <artifactId>commons-io</artifactId>
-            <groupId>commons</groupId>
-            <version>17</version>
-        </maven>
-        <jpp>
-            <artifactId>packaging-pom</artifactId>
-            <groupId>JPP</groupId>
-        </jpp>
-    </dependency>
+  <dependency>
+    <maven>
+      <artifactId>commons-io</artifactId>
+      <groupId>commons</groupId>
+      <version>17</version>
+    </maven>
+    <jpp>
+      <artifactId>packaging-pom</artifactId>
+      <groupId>JPP</groupId>
+    </jpp>
+  </dependency>
 </dependencyMap>

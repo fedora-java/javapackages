@@ -1,16 +1,16 @@
 <dependencies>
-<dependency>
-<skipProvides/>
-<maven>
-<groupId>org.codehaus.plexus</groupId>
-<artifactId>plexus-ant-factory</artifactId>
-<version>1.0</version>
-<namespace>ns</namespace>
-</maven>
-<jpp>
-<groupId>JPP/plexus</groupId>
-<artifactId>ant-factory</artifactId>
-<namespace>ns</namespace>
-</jpp>
-</dependency>
+  <dependency>
+    <skipProvides/>
+    <maven>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-ant-factory</artifactId>
+      <version>1.0</version>
+      <namespace>ns</namespace>
+    </maven>
+    <jpp>
+      <groupId>JPP/plexus</groupId>
+      <artifactId>ant-factory</artifactId>
+      <namespace>ns</namespace>
+    </jpp>
+  </dependency>
 </dependencies>

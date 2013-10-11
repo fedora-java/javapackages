@@ -1,16 +1,16 @@
 <whatever>
-<dependency>
-<maven>
-<groupId>org.apache.maven.plugins</groupId>
-<artifactId>maven-idea-plugin</artifactId>
-<version>1.4</version>
-<namespace>ns</namespace>
-</maven>
-<jpp>
-<groupId>JPP/maven-idea-plugin</groupId>
-<artifactId>maven-idea-plugin</artifactId>
-<version>1.5</version>
-<namespace>ns</namespace>
-</jpp>
-</dependency>
+  <dependency>
+    <maven>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-idea-plugin</artifactId>
+      <version>1.4</version>
+      <namespace>ns</namespace>
+    </maven>
+    <jpp>
+      <groupId>JPP/maven-idea-plugin</groupId>
+      <artifactId>maven-idea-plugin</artifactId>
+      <version>1.5</version>
+      <namespace>ns</namespace>
+    </jpp>
+  </dependency>
 </whatever>

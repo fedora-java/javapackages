@@ -1,16 +1,16 @@
 <?xml version="1.0" ?>
 <dependencyMap>
-	<dependency>
-		<maven>
-			<artifactId>b</artifactId>
-			<groupId>a</groupId>
-			<version>12</version>
-			<namespace>myns</namespace>
-		</maven>
-		<jpp>
-			<artifactId>commons-io</artifactId>
-			<groupId>JPP</groupId>
-			<namespace>myns</namespace>
-		</jpp>
-	</dependency>
+  <dependency>
+    <maven>
+      <artifactId>b</artifactId>
+      <groupId>a</groupId>
+      <version>12</version>
+      <namespace>myns</namespace>
+    </maven>
+    <jpp>
+      <artifactId>commons-io</artifactId>
+      <groupId>JPP</groupId>
+      <namespace>myns</namespace>
+    </jpp>
+  </dependency>
 </dependencyMap>
