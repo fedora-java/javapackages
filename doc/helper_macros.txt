@@ -16,7 +16,8 @@ for technical details how to use them. Below are some examples added for
 convenience.
 
 
-Often dependencies specified in Maven `pom.xml` files need to be removed because of different reasons. `%pom_remove_dep` macro can be used to ease this task:
+Often dependencies specified in Maven `pom.xml` files need to be removed because
+of different reasons. `%pom_remove_dep` macro can be used to ease this task:
 
 .Removing dependencies from pom.xml files
 [source,spec]
@@ -39,10 +40,13 @@ Often dependencies specified in Maven `pom.xml` files need to be removed because
 
 [TIP]
 =======
-Dependencies can also be added to pom.xml with `%pom_add_dep` macro, but this may be a bug in upstream project if one needs to add extra dependency in order to build the project.
+Dependencies can also be added to pom.xml with `%pom_add_dep` macro, but this
+may be a bug in upstream project if one needs to add extra dependency in order
+to build the project.
 =======
 
-`%pom_remove_plugin` macro works exactly as `%pom_remove_dep`, except it removes Maven plugin invocations. Some examples:
+`%pom_remove_plugin` macro works exactly as `%pom_remove_dep`, except it removes
+Maven plugin invocations. Some examples:
 
 .Removing Maven plugins from pom.xml files
 [source,spec]
@@ -134,7 +138,9 @@ names with `pom:`. For example, `pom:environment/pom:os` will work because it
 selects nodes from `pom` namespace, but `environment/os` won't find anything
 because it looks for nodes that don't belong to any XML namespace.
 =======
-Using `%pom_*` macros not only increases readability of the spec file, but also improves maintainability of the package as there are no patches that would need to be rebased with each upstream release.
+Using `%pom_*` macros not only increases readability of the spec file, but also
+improves maintainability of the package as there are no patches that would need
+to be rebased with each upstream release.
 
 ==== add_maven_depmap macro
 
@@ -166,7 +172,8 @@ suffix:
 %{_mavenpomdir}/JPP[.subdirectory]-jarname.pom
 --------
 
-Note that the subdirectory is only necessary if the JAR file is put into a subdirectory of `%{_javadir}`. For example:
+Note that the subdirectory is only necessary if the JAR file is put into a
+subdirectory of `%{_javadir}`. For example:
 
 * For junit, the JAR is `%{_javadir}/junit.jar`, so the POM would be
   `%{_mavenpomdir}/JPP-junit.pom`.
@@ -179,7 +186,8 @@ POM files -- the same convention should be followed:
 * The Apache commons parent POM is installed in
   `%{_mavenpomdir}/JPP-commons-parent.pom`.
 
-In its simplest form (a POM without a JAR file), `%add_maven_depmap` looks like this:
+In its simplest form (a POM without a JAR file), `%add_maven_depmap` looks like
+this:
 
 .Parent POM
 [source,spec]
