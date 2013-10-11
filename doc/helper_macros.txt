@@ -10,7 +10,7 @@ task.
 
 These macros are designed to be called from `%prep` section of spec files. They
 are documented in `/etc/rpm/macros.fjava` configuration file, which is also
-link:http://git.fedorahosted.org/git/?p=javapackages.git;a=blob_plain;f=macros.fjava[available online]
+link:https://git.fedorahosted.org/cgit/javapackages.git/plain/etc/macros.fjava[available online]
 and all the macros also have their own manual page. See the manual pages
 for technical details how to use them. Below are some examples added for
 convenience.
