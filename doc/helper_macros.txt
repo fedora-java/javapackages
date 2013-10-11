@@ -80,7 +80,7 @@ with new one (`%pom_set_parent`).
 %pom_remove_parent submodule
 
 # Add parent POM reference to ./pom.xml
-%pom_set_parent groupId:artifactId
+%pom_add_parent groupId:artifactId
 
 # Replace existing parent POM reference in ./pom.xml
 %pom_set_parent groupId:artifactId:version
