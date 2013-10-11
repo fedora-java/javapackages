@@ -41,7 +41,7 @@ class TestMavenReq(unittest.TestCase):
     @mavenreq(["require_multi_versioned/require.xml"])
     def test_require_multi_versioned(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
-        self.assertEquals(stdout, "ns-runtime\nns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0\nns-mvn(codehaus:plexus-utils:1.2) = 1.2\nns-mvn(codehaus:plexus-cipher:1.0)\nmvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)\nmvn(org.apache.maven.plugins:maven-idea-plugin:1.5) = 1.4\n")
+        self.assertEquals(stdout, "ns-runtime\nns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0\nns-mvn(codehaus:plexus-utils:1.2)\nns-mvn(codehaus:plexus-cipher:1.0) = 1.1\nmvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)\nmvn(org.apache.maven.plugins:maven-idea-plugin:1.5) = 1.4\n")
 
 
     @mavenreq(["require_mixed/require.xml"])
