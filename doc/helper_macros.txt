@@ -37,6 +37,11 @@ Often dependencies specified in Maven `pom.xml` files need to be removed because
 %pom_remove_dep :
 --------
 
+[TIP]
+=======
+Dependencies can also be added to pom.xml with `%pom_add_dep` macro, but this may be a bug in upstream project if one needs to add extra dependency in order to build the project.
+=======
+
 `%pom_remove_plugin` macro works exactly as `%pom_remove_dep`, except it removes Maven plugin invocations. Some examples:
 
 .Removing Maven plugins from pom.xml files
