@@ -53,7 +53,7 @@ class TagBuilder:
                     if filename.endswith(".pom"):
                         continue
                     depmap = Depmap(os.path.join(dirname, filename))
-                    self.provided_artifacts.extend(depmap.get_provided_artifacts())
+                    self.provided_artifacts.extend(depmap.get_provided_mappings())
                     self.skipped_artifacts.extend(depmap.get_skipped_artifacts())
         for path in paths:
             if path.endswith(".pom"):
@@ -64,9 +64,9 @@ class TagBuilder:
         depmap = Depmap(path)
         skipped_but_required = []
         base_package_requires="jpackage-utils"
-        for provided in self.provided_artifacts:
-            if provided.namespace:
-                base_package_requires="{ns}-runtime".format(ns=provided.namespace)
+        for m_provided, l_provided in self.provided_artifacts:
+            if m_provided.namespace:
+                base_package_requires="{ns}-runtime".format(ns=m_provided.namespace)
                 break
         print base_package_requires
         for dependency in depmap.get_required_artifacts():
@@ -76,15 +76,18 @@ class TagBuilder:
                     skipped.classifier == dependency.classifier and
                     skipped.extension == dependency.extension):
                     skipped_but_required.append(skipped)
-            for provided in self.provided_artifacts:
-                if (provided.groupId == dependency.groupId and
-                    provided.artifactId == dependency.artifactId and
-                    provided.classifier == dependency.classifier and
-                    provided.extension == dependency.extension):
+            for m_provided, l_provided in self.provided_artifacts:
+                if (m_provided.groupId == dependency.groupId and
+                    m_provided.artifactId == dependency.artifactId and
+                    m_provided.classifier == dependency.classifier and
+                    m_provided.extension == dependency.extension and
+                    dependency.version and 
+                    dependency.version == l_provided.version):
+
                     # requires on subpackages are always versioned
                     print("{rpmstr} = {version}".format(
                         rpmstr=dependency.get_rpm_str(dependency.version),
-                        version=provided.version))
+                        version=m_provided.version))
                     break
             else:
                 # TODO: remove when not needed
