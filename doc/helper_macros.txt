@@ -134,13 +134,17 @@ Using `%pom_*` macros not only increases readability of the spec file, but also 
 ==== add_maven_depmap macro
 
 Maven identifies JAR files by a set of strings: groupId, artifactId and version
-(mostly). To let mvn-rpmbuild know what groupId:artifactId corresponds to which
-POM or JAR file, we use the `%add_maven_depmap`
-macro. `%add_maven_depmap` reads the groupId and artifactId from the
-POM file and creates a file in `%{_mavendepmapfragdir}` that maps
-groupId:artifactId pairs to JAR files under `%{_javadir}`. All
-fragments in this directory are read by mvn-rpmbuild during startup, allowing
-the locally installed JAR and POM files to be used as a maven repository.
+(mostly). To let XMvn know what groupId:artifactId corresponds to which
+POM or JAR file, we may use the `%add_maven_depmap` macro. However, if package
+is build in standard way (i.e.: `%mvn_build` and `%mvn_install`), then calling
+`%add_maven_depmap` is neither needed nor recommended.  This macro is usually
+useful only for packages that use other build tool than Maven (e.g.: ant,
+gradle).  It creates files in `%{_mavendepmapfragdir}` that map
+groupId:artifactId pairs to JAR files under `%{_javadir}`. These files are
+called depmap fragments. The macro can read the groupId and artifactId from the
+POM file or maintainer can pass this information as an argument.  All fragments
+in `%{_mavendepmapfragdir}` directory are read by XMvn, allowing the
+locally installed JAR and POM files to be used as a maven repository.
 
 Note that -- unless you use the `-f` option as shown below -- all
 depmap fragments for a given package are written to the same file,
