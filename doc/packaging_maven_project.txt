@@ -136,7 +136,7 @@ This can be easily achieved with `%mvn_file` macro:
 %mvn_file : %{name}/%{name} %{name}
 ------
 
-See <<mvn_jar_filenames,Alternative JAR File Names>> section for more information.
+See <<mvn_file,Alternative JAR File Names>> section for more information.
 
 Another quite common thing to do is adding aliases to Maven artifact. Try to run `rpm
 -qp --provides` on your locally built RPM package:
@@ -164,7 +164,7 @@ Maven artifact.
 %mnv_alias org.example:simplemaven simplemaven:simplemaven
 ------
 
-See <<pom_jar_mapping,Additional Mappings>> for more information on `%mvn_alias`.
+See <<mvn_alias,Additional Mappings>> for more information on `%mvn_alias`.
 
 Rebuild the pacakge and check `rpm -qp --provides` output again:
 
