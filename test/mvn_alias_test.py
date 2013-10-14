@@ -1,6 +1,7 @@
 import unittest
 import shutil
 from test_common import *
+from xml_compare import compare_xml_files
 
 class Test_mvn_alias(unittest.TestCase):
 
@@ -34,7 +35,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'simple'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'simple'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'simple'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy:1.2', ])
     def test_version(self, stdout, stderr, return_value):
@@ -42,7 +46,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'version'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'version'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'version'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy:zzz:', ])
     def test_extension(self, stdout, stderr, return_value):
@@ -50,7 +57,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'extension'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'extension'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'extension'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy:zzz:www:', ])
     def test_classifier(self, stdout, stderr, return_value):
@@ -58,7 +68,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'classifier'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'classifier'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'classifier'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb:3.1', 'xxx:yyy:zzz:3.0', ])
     def test_comb1(self, stdout, stderr, return_value):
@@ -66,7 +79,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'comb1'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'comb1'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'comb1'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb:ccc:ddd:2.1', 'xxx:yyy:', ])
     def test_comb2(self, stdout, stderr, return_value):
@@ -74,7 +90,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'comb2'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'comb2'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'comb2'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb:ccc:', 'xxx:yyy:zzz:www:2.1', ])
     def test_comb3(self, stdout, stderr, return_value):
@@ -82,7 +101,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'comb3'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'comb3'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'comb3'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb:ccc:4.1', 'xxx:yyy:zzz:', ])
     def test_comb4(self, stdout, stderr, return_value):
@@ -90,7 +112,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'comb4'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'comb4'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'comb4'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd:1111111111111111111111111111111111111', 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy:zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz:wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww:33333333333333333333333333333333333333333333', ])
     def test_longopt(self, stdout, stderr, return_value):
@@ -98,7 +123,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'longopt'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'longopt'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'longopt'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['*:aaa', 'xxx:yyy', ])
     def test_wildcard1(self, stdout, stderr, return_value):
@@ -106,7 +134,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'wildcard1'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'wildcard1'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'wildcard1'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',[':aaa', 'xxx:yyy', ])
     def test_wildcard2(self, stdout, stderr, return_value):
@@ -114,7 +145,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'wildcard2'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'wildcard2'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'wildcard2'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa::ccc', 'xxx:yyy', ])
     def test_wildcard3(self, stdout, stderr, return_value):
@@ -122,7 +156,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'wildcard3'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'wildcard3'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'wildcard3'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb', ])
     def test_one_argument(self, stdout, stderr, return_value):
@@ -145,7 +182,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'wildcard4'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'wildcard4'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'wildcard4'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['a:b:c:d:e:f', 'x:y', ])
     def test_invalid5(self, stdout, stderr, return_value):
@@ -163,7 +203,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'multi'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'multi'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'multi'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'ccc:ddd', 'eee:fff', ])
     def test_odd(self, stdout, stderr, return_value):
@@ -171,7 +214,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'odd'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'odd'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'odd'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',[':', ':', ])
     def test_wildcard7(self, stdout, stderr, return_value):
@@ -189,7 +235,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'wildcard9'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'wildcard9'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'wildcard9'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['*:{aaa,bbb}*', ':@1', ])
     def test_backref(self, stdout, stderr, return_value):
@@ -197,7 +246,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'backref'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'backref'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'backref'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa', ':@1', ])
     def test_backref1(self, stdout, stderr, return_value):
@@ -210,7 +262,10 @@ class Test_mvn_alias(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_alias', 'backref2'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_alias', 'backref2'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'backref2'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',[':{aaa,bbb}', '@1:@2', ])
     def test_backref3(self, stdout, stderr, return_value):

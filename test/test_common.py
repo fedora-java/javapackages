@@ -37,15 +37,11 @@ def get_config_file_list():
         return []
 
 def get_actual_config(filename):
-    actfile = open('.xmvn/config.d/' + filename)
-    parser = etree.XMLParser(remove_blank_text=True)
-    return etree.tostring(etree.parse(actfile, parser), pretty_print=True)
+    return os.path.join('.xmvn', 'config.d', filename)
 
 def get_expected_config(filename, scriptname, testname):
     expfname = '{name}_{idx}.xml'.format(name=testname, idx=re.findall('[0-9]+', filename)[-1])
-    expfile =  open(os.path.join(dirpath, 'data', scriptname, expfname))
-    parser = etree.XMLParser(remove_blank_text=True)
-    return etree.tostring(etree.parse(expfile, parser), pretty_print=True)
+    return os.path.join(dirpath, 'data', scriptname, expfname)
 
 def get_expected_file_count(scriptname, testname):
     filelist = os.listdir(os.path.join(dirpath, 'data', scriptname))

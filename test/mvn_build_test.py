@@ -1,6 +1,7 @@
 import unittest
 import shutil
 from test_common import *
+from xml_compare import compare_xml_files
 
 class Test_mvn_build(unittest.TestCase):
 
@@ -49,7 +50,10 @@ class Test_mvn_build(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_build', 'xmvn_debug1'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_build', 'xmvn_debug1'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_build', 'xmvn_debug1'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_build',['-f', ])
     def test_force(self, stdout, stderr, return_value):
@@ -62,7 +66,10 @@ class Test_mvn_build(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_build', 'force1'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_build', 'force1'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_build', 'force1'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_build',['-g', ])
     def test_goal_before(self, stdout, stderr, return_value):
@@ -95,7 +102,10 @@ class Test_mvn_build(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_build', 'singleton1'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_build', 'singleton1'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_build', 'singleton1'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_build',['-X', ])
     def test_debug(self, stdout, stderr, return_value):
@@ -108,7 +118,10 @@ class Test_mvn_build(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_build', 'debug1'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_build', 'debug1'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_build', 'debug1'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_build',['-ji', ])
     def test_skip_both(self, stdout, stderr, return_value):
@@ -136,7 +149,10 @@ class Test_mvn_build(unittest.TestCase):
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), get_expected_file_count('mvn_build', 'all1'))
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_build', 'all1'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_build', 'all1'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
 if __name__ == '__main__':
     unittest.main()
