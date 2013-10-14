@@ -1,0 +1,184 @@
+This step by step guide will show you how to package Maven project. Let's start with
+probably simplest spec file possible.
+
+
+[source,spec,numbered]
+------
+include::maven_project/simplemaven.spec[]
+------
+
+The spec file above is a real world example how it may look like for simple Maven
+project. Both `%build` and `%install` sections consist only of one line.
+
+Another interesting lines:
+[source,spec]
+------
+10: BuildRequires:  maven-local
+------
+
+All Maven projects need to have BuildRequires on `maven-local`. They also need
+to have Requires and BuildRequires on `jpackages-utils`, but build system adds
+these automatically. Package maintainer doesn't need to list them explicitly.
+
+[source,spec]
+------
+31: %dir %{_javadir}/%{name}
+------
+
+By default, resulting JAR files will be installed in `%{_javadir}/%{name}`,
+therefore package needs to own this directory.
+
+The build could fail from many reasons, but one probably most common is
+following one:
+
+------
+[ERROR] Failed to execute goal on project simplemaven: Could not resolve
+dependencies for project com.example:simplemaven:jar:1.0: The following
+artifacts could not be resolved: commons-io:commons-io:jar:2.4,
+junit:junit:jar:4.11: Cannot access central
+(http://repo.maven.apache.org/maven2) in offline mode and the artifact
+commons-io:commons-io:jar:2.4 has not been downloaded from it before. -> [Help
+1]
+------
+
+
+The error message above is self-explanatory. Maven couldn't find some dependencies and
+therefore it wasn't able to build the package. We can try to remove
+these missing dependencies from pom.xml and make Maven stop complaining about
+them. However, these removed dependencies may be crucial for building of the
+project and therefore it may be needed to package them later.
+Let's remove the dependencies from `pom.xml`.
+
+
+.Remove dependencies from pom.xml
+[source,spec]
+------
+...
+%prep
+%setup -q
+
+# Add following lines to %prep section of a spec file
+%pom_remove_dep :commons-io
+%pom_remove_dep :junit
+------
+
+Package maintainer can use a wide variety of "`pom_`" macros for modifying
+`pom.xml` files. See <<helper_macros, Java Helper Functions>> section for more information.
+
+Now try to build the project again.
+
+------
+[ERROR] Failed to execute goal
+        org.apache.maven.plugins:maven-compiler-plugin:3.1:compile (default-compile)
+        on project simplemaven: Compilation failure: Compilation failure:
+[ERROR]
+/builddir/build/BUILD/simplemaven-1.0/src/main/java/com/example/Main.java:[3,29]
+package org.apache.commons.io does not exist
+[ERROR]
+/builddir/build/BUILD/simplemaven-1.0/src/main/java/com/example/Main.java:[8,9]
+cannot find symbol
+[ERROR] symbol:   class FileUtils
+[ERROR] location: class com.example.Main
+[ERROR] -> [Help 1]
+------
+
+Oops, another problem. This time Maven thought it had all the necessary dependenices, but Java
+compiler thinks otherwise.
+
+Now it's possible to either patch the source code not to depend on
+missing libraries or to package them. Second approach is usually correct. It's not neccessary to package every
+dependency right away. Maintainer could package compile time dependencies first and keep the 
+rest for later (test dependencies, ...). But Maven needs to know that it shouldn't try to run tests now. This can be achieved by passing `-f` option to `%mvn_build` macro.  Maven
+will stop complaining about missing test scoped dependencies from now on.
+
+[NOTE]
+======
+It is always recommended to run all available test suites during build. It greatly improves quality of the package.
+======
+
+We already have package which provides `commons-io:commons-io` artifact, let's add it to the `BuildRequires`. Also disable tests for now.
+
+[source,spec]
+------
+BuildRequires:  maven-local
+BuildRequires:  apache-commons-io
+...
+%prep
+%setup -q
+
+# Comment out following lines to %prep section
+%pom_remove_dep :commons-io
+%pom_remove_dep :junit
+
+%build 
+# Skip tests for now, missing dependency junit:junit:4.11
+mvn_build -f
+------
+
+[TIP]
+======
+One can easily search for package which provides desired artifact. Try
+`repoquery -q --whatprovides 'mvn(commons-io:commons-io)'`
+======
+
+Now try to build the project one more time. The build should succeed now. Congrats, you managed to create an RPM from Maven project!
+
+There is plenty of other things maintainer may want to do. For example, he may want to provide symlinks to the JAR file
+in `%{_javadir}`.
+
+This can be easily achieved with `%mvn_file` macro:
+
+[source,spec]
+------
+%prep
+%setup -q
+
+%mvn_file : %{name}/%{name} %{name}
+------
+
+See <<mvn_jar_filenames,Alternative JAR File Names>> section for more information.
+
+Another quite common thing to do is adding aliases to Maven artifact. Try to run `rpm
+-qp --provides` on your locally built RPM package:
+
+[source,shell]
+------
+$ rpm -qp --provides simplemaven-1.0-1.fc21.noarch.rpm
+mvn(com.example:simplemaven) = 1.0
+simplemaven = 1.0-1.fc21
+------
+
+The output above tells us that the RPM package provides Maven artifact
+"com.example:simplemaven:1.0". Upstream may change the groupId:artifactId with
+any new release. And it happens. For example org.apache.commons:commons-io
+changed to commons-io:commons-io some time ago.  It's not a big deal for package
+itself, but it is a huge problem for other packages that depends on that
+particular package. Some packages may still have dependencies on old
+groupId:artifactId, which is suddenly unavailable. Luckily, there is an easy way
+how to solve the problems like these. Package maintainer can add aliases to actually provided
+Maven artifact.
+
+.Add alias to Maven artifact
+[source,spec]
+------
+%mnv_alias org.example:simplemaven simplemaven:simplemaven
+------
+
+See <<pom_jar_mapping,Additional Mappings>> for more information on `%mvn_alias`.
+
+Rebuild the pacakge and check `rpm -qp --provides` output again:
+
+[source,shell]
+------
+$ rpm -qp --provides simplemaven-1.0-2.fc21.noarch.rpm
+mvn(com.example:simplemaven) = 1.0
+mvn(simplemaven:simplemaven) = 1.0
+simplemaven = 1.0-2.fc21
+------
+
+Now it doesn't matter if some other package depends on either of these listed
+artifact. Both dependencies will always be satisified with your package.
+
+NOTE: One could try to fix dependencies in all the dependent packages
+instead of adding an alias to single package. It's almost always wrong thing to
+do.
