@@ -9,7 +9,7 @@ from lxml import etree
 dirpath = os.path.dirname(os.path.realpath(__file__))
 pythonpath = os.path.join(dirpath, '../python')
 sys.path.append(pythonpath)
-script_env = {'PATH':'.', 'PYTHONPATH':pythonpath}
+script_env = {'PATH':dirpath, 'PYTHONPATH':pythonpath}
 
 def call_script(name, args, stdin = None, wrapped = False):
     outfile = open("tmpout", 'w')

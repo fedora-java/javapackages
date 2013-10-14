@@ -1,4 +1,4 @@
 #!/bin/sh
 #mock script for testing arguments passed to xmvn
-mkdir -p .xmvn
-echo "${@}">.xmvn/out
+/usr/bin/mkdir -p .xmvn
+/usr/bin/echo "${@}">.xmvn/out

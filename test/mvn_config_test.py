@@ -2,19 +2,22 @@ import unittest
 import shutil
 from test_common import *
 
-class TestMvnmvn_config(unittest.TestCase):
+class Test_mvn_config(unittest.TestCase):
 
     def setUp(self):
-        try:
-            shutil.rmtree(".xmvn/")
-        except OSError:
-            pass
+        self.maxDiff = 2048
+        dirpath = os.path.dirname(os.path.realpath(__file__))
+        self.olddir = os.getcwd()
+        self.workdir = os.path.join(dirpath, 'workdir')
+        os.mkdir(self.workdir)
+        os.chdir(self.workdir)
 
     def tearDown(self):
         try:
-            shutil.rmtree(".xmvn/")
+            shutil.rmtree(self.workdir)
         except OSError:
             pass
+        os.chdir(self.olddir)
 
     @xmvnconfig('mvn_config', [])
     def test_run_no_args(self, stdout, stderr, return_value):
