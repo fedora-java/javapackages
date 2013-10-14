@@ -37,6 +37,7 @@ The macros `%mvn_build` and `%mvn_install` automatically handle building of the
 JAR files and their subsequent installation to the correct directory. The
 corresponding POM and <<Xdepmap,depmap>> files are also installed.
 
+[[mvn_artifact]]
 ==== Installing additional artifacts ====
 It is possible to explicitly request an installation of any Maven artifact
 (JAR/POM file).  Macro `%mvn_install` only knows about Maven artifacts that were
@@ -59,9 +60,8 @@ created outside of `%mvn_build` can be marked for installation with
 %mvn_artifact webapp:webapp:war::3.1 webapp.war
 -------
 
+[[mvn_alias]]
 ==== Additional Mappings ====
-[[pom_jar_mapping]]
-
 The macro `%mvn_alias` can be used to add additional mappings for given POM/JAR
 file. For example, if the POM file indicates that it contains groupId
 commons-lang, artifactId commons-lang, this macro ensures that we also add a
@@ -78,6 +78,7 @@ POM.
 %mvn_alias "commons-lang:commons-lang" "org.apache.commons:commons-lang"
 -------
 
+[[mvn_file]]
 ==== Alternative JAR File Names ====
 In some cases, it may be important to be able to provide symlinks to actual JAR
 files. This can be achieved with `%mvn_file` macro. This macro allows packager
@@ -98,6 +99,7 @@ installed in `%{_javadir}/google/guice.jar` and there also will be a symlink to
 this JAR file located in `%{_javadir}/guice.jar`. Note the macro will add ".jar"
 extensions automatically.
 
+[[mvn_singleton]]
 ==== Single Artifact Per Package ====
 If the project consists of multiple artifacts, it is recommended to install each
 artifact to the separate subpackage. The macro `%mvn_build -s` will generate
@@ -139,6 +141,7 @@ The Plugin Plugin is used to...
 ...
 -------
 
+[[mvn_package]]
 ==== Assignment of the Maven Artifacts to the Subpackages ====
 The macro `%mvn_package` allows maintainer to specify in which exact package the
 selected artifact will end up. It is something between singleton packaging, when
@@ -189,6 +192,7 @@ package won't be installed anywhere and the package itself won't be created.
 %mvn_package groupId:artifactId __noinstall
 -------
 
+[[mvn_config]]
 ==== Modifying XMvn configuration from within spec file ====
 Some packages might need to modify XMvn's configuration in order to build
 successfully or from other reasons. This can be achieved with `mvn_config`
