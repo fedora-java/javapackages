@@ -64,7 +64,7 @@ class TagBuilder:
         depmap = Depmap(path)
         skipped_but_required = []
         base_package_requires=set()
-        
+
         for provided in depmap.get_provided_artifacts():
             if provided.namespace:
                 base_package_requires.add("{ns}-runtime".format(ns=provided.namespace))
@@ -84,8 +84,18 @@ class TagBuilder:
                     m_provided.artifactId == dependency.artifactId and
                     m_provided.classifier == dependency.classifier and
                     m_provided.extension == dependency.extension and
-                    dependency.version and 
-                    dependency.version == l_provided.version):
+                    m_provided.namespace == dependency.namespace):
+
+                    # if dependency is versioned but another subpackage provides
+                    # non-versioned artifact, it's coming from a different package
+                    if (dependency.version and
+                        dependency.version != l_provided.version):
+                        continue
+
+                    # if dependency is not versioned but provides is versioned
+                    # the dependency is coming from a different package
+                    if not dependency.version and l_provided.version:
+                        continue
 
                     # requires on subpackages are always versioned
                     print("{rpmstr} = {version}".format(
