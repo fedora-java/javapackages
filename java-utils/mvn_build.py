@@ -90,21 +90,19 @@ if __name__ == "__main__":
     parser.add_option("-X", "--debug",
                       action="store_true",
                       help="Enable Maven debugging output (implies -d).")
-    parser.add_option("-n", "--namespace", type="str",
-                      help="Namespace (SCL name) for this package",
+    parser.add_option("-n", "--name", type="str",
+                      help="RPM package name",
                       default="")
+
 
     for index, arg in enumerate(sys.argv):
         sys.argv[index] = arg.decode(sys.getfilesystemencoding())
 
     (options, args) = parser.parse_args()
     xc = XMvnConfig()
-    env = os.environ
-    if 'RPM_PACKAGE_NAME' in env:
-        pkgname = env['RPM_PACKAGE_NAME']
-        if options.namespace:
-            pkgname = pkgname.replace(options.namespace+"-", "", 1)
-        xc.add_custom_option("installerSettings/packageName", pkgname)
+
+    if options.name:
+        xc.add_custom_option("installerSettings/packageName", options.name)
 
     base_goal="verify"
     mvn_args = ["xmvn", "--batch-mode"]
@@ -151,7 +149,7 @@ if __name__ == "__main__":
                 optional=True)
         xc.add_package_mapping(Artifact.from_mvn_str(":{*}"), "@1")
 
-    p = subprocess.Popen(" ".join(mvn_args), shell=True, env=env)
+    p = subprocess.Popen(" ".join(mvn_args), shell=True, env=os.environ)
     p.wait()
 
     subprocess.Popen("""
@@ -160,6 +158,6 @@ if __name__ == "__main__":
             gzip -9nc <.xmvn-builddep | base64
             echo -----END MAVEN BUILD DEPENDENCIES-----
         fi
-        """, shell=True, env=env).wait()
+        """, shell=True, env=os.environ).wait()
 
     sys.exit(p.returncode)
