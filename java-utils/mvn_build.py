@@ -90,6 +90,9 @@ if __name__ == "__main__":
     parser.add_option("-X", "--debug",
                       action="store_true",
                       help="Enable Maven debugging output (implies -d).")
+    parser.add_option("-n", "--namespace", type="str",
+                      help="Namespace (SCL name) for this package",
+                      default="")
 
     for index, arg in enumerate(sys.argv):
         sys.argv[index] = arg.decode(sys.getfilesystemencoding())
@@ -98,7 +101,10 @@ if __name__ == "__main__":
     xc = XMvnConfig()
     env = os.environ
     if 'RPM_PACKAGE_NAME' in env:
-        xc.add_custom_option("installerSettings/packageName", env['RPM_PACKAGE_NAME'])
+        pkgname = env['RPM_PACKAGE_NAME']
+        if options.namespace:
+            pkgname = pkgname.replace(options.namespace+"-", "", 1)
+        xc.add_custom_option("installerSettings/packageName", pkgname)
 
     base_goal="verify"
     mvn_args = ["xmvn", "--batch-mode"]
