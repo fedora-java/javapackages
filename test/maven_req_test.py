@@ -36,7 +36,7 @@ class TestMavenReq(unittest.TestCase):
     @mavenreq(["require_multi/require.xml"])
     def test_require_multi(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
-        self.assertEquals(stdout, "ns-runtime\nns-mvn(org.codehaus.plexus:plexus-ant-factory)\nns-mvn(codehaus:plexus-utils)\nmvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)\n")
+        self.assertEquals(stdout, "ns-runtime\nns-mvn(org.codehaus.plexus:plexus-ant-factory)\nns-mvn(codehaus:plexus-utils) = 1.2\nmvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)\n")
 
     @mavenreq(["require_multi_namespaces/require.xml"])
     def test_require_multi_namespace(self, stdout, stderr, return_value):
@@ -52,7 +52,7 @@ class TestMavenReq(unittest.TestCase):
     @mavenreq(["require_mixed/require.xml"])
     def test_mixed(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
-        self.assertEquals(stdout, "ns-runtime\nns-mvn(org.codehaus.plexus:plexus-ant-factory)\nns-mvn(codehaus:plexus-utils)\nmvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)\nmvn(org.apache.maven.plugins:maven-idea-plugin)\n")
+        self.assertEquals(stdout, "ns-runtime\nns-mvn(org.codehaus.plexus:plexus-ant-factory)\nns-mvn(codehaus:plexus-utils) = 1.2\nmvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)\nmvn(org.apache.maven.plugins:maven-idea-plugin)\n")
 
     #test for rhbz#1012980
     @mavenreq(["require_skipped/require.xml"])
