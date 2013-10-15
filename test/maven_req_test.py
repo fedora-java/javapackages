@@ -63,5 +63,12 @@ class TestMavenReq(unittest.TestCase):
         self.assertEquals(True, len(lines) > 1)
         self.assertEquals(lines[-2], '%mvn_package org.codehaus.plexus:plexus-ant-factory:::1.0 <package_name>')
 
+    # rhbz#1017701 comment 2
+    @mavenreq(["aether/require.xml"])
+    def test_rhbz1017701_c2(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(stdout, "maven31-runtime\nmaven31-mvn(org.eclipse.aether:aether-api) = 0.9.0.M3\n")
+
+
 if __name__ == '__main__':
         unittest.main()

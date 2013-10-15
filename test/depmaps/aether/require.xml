@@ -1,0 +1,20 @@
+<dependencyMap>
+  <dependency>
+    <maven>
+      <namespace>maven31</namespace>
+      <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-spi</artifactId>
+      <version>0.9.0.M3</version>
+    </maven>
+    <jpp>
+      <namespace>maven31</namespace>
+      <groupId>JPP/maven31-aether</groupId>
+      <artifactId>aether-spi</artifactId>
+    </jpp>
+  </dependency>
+  <autoRequires>
+    <namespace>maven31</namespace>
+    <groupId>org.eclipse.aether</groupId>
+    <artifactId>aether-api</artifactId>
+  </autoRequires>
+</dependencyMap>
