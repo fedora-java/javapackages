@@ -33,7 +33,7 @@ class Test_mvn_compat_version(unittest.TestCase):
     def test_simple(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_compat_version', 'simple'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_compat_version', 'simple'),
@@ -49,7 +49,7 @@ class Test_mvn_compat_version(unittest.TestCase):
     def test_more(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_compat_version', 'more'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_compat_version', 'more'),
@@ -60,7 +60,7 @@ class Test_mvn_compat_version(unittest.TestCase):
     def test_version(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_compat_version', 'version'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_compat_version', 'version'),
@@ -71,7 +71,7 @@ class Test_mvn_compat_version(unittest.TestCase):
     def test_wildcard(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_compat_version', 'wildcard'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_compat_version', 'wildcard'),
@@ -82,7 +82,7 @@ class Test_mvn_compat_version(unittest.TestCase):
     def test_backref1(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_compat_version', 'backref1'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_compat_version', 'backref1'),

@@ -43,10 +43,6 @@ def get_expected_config(filename, scriptname, testname):
     expfname = '{name}_{idx}.xml'.format(name=testname, idx=re.findall('[0-9]+', filename)[-1])
     return os.path.join(dirpath, 'data', scriptname, expfname)
 
-def get_expected_file_count(scriptname, testname):
-    filelist = os.listdir(os.path.join(dirpath, 'data', scriptname))
-    return len([file for file in filelist if file.startswith("{name}_".format(name=testname))])
-
 def get_actual_args():
     return open('.xmvn/out').read()
 

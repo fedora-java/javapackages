@@ -43,7 +43,7 @@ class Test_mvn_config(unittest.TestCase):
     def test_simple(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_config', 'simple'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_config', 'simple'),
@@ -54,7 +54,7 @@ class Test_mvn_config(unittest.TestCase):
     def test_path(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_config', 'path'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_config', 'path'),
@@ -65,7 +65,7 @@ class Test_mvn_config(unittest.TestCase):
     def test_xml1(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_config', 'xml1'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_config', 'xml1'),
@@ -76,7 +76,7 @@ class Test_mvn_config(unittest.TestCase):
     def test_xml2(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_config', 'xml2'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_config', 'xml2'),
@@ -87,7 +87,7 @@ class Test_mvn_config(unittest.TestCase):
     def test_xml3(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_config', 'xml3'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_config', 'xml3'),
@@ -98,7 +98,7 @@ class Test_mvn_config(unittest.TestCase):
     def test_xml4(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_config', 'xml4'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_config', 'xml4'),
@@ -109,7 +109,7 @@ class Test_mvn_config(unittest.TestCase):
     def test_nested_xml1(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_config', 'nested_xml1'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_config', 'nested_xml1'),
@@ -120,7 +120,7 @@ class Test_mvn_config(unittest.TestCase):
     def test_nested_xml2(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_config', 'nested_xml2'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_config', 'nested_xml2'),
@@ -151,7 +151,7 @@ class Test_mvn_config(unittest.TestCase):
     def test_entity(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_config', 'entity'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_config', 'entity'),
@@ -162,7 +162,7 @@ class Test_mvn_config(unittest.TestCase):
     def test_mixed(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_config', 'mixed'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_config', 'mixed'),

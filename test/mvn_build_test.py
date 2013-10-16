@@ -48,7 +48,7 @@ class Test_mvn_build(unittest.TestCase):
     def test_xmvn_debug1(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_build', 'xmvn_debug1'))
+        self.assertEquals(len(filelist), 2)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_build', 'xmvn_debug1'),
@@ -64,7 +64,7 @@ class Test_mvn_build(unittest.TestCase):
     def test_force1(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_build', 'force1'))
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_build', 'force1'),
@@ -100,7 +100,7 @@ class Test_mvn_build(unittest.TestCase):
     def test_singleton1(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_build', 'singleton1'))
+        self.assertEquals(len(filelist), 2)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_build', 'singleton1'),
@@ -116,7 +116,7 @@ class Test_mvn_build(unittest.TestCase):
     def test_debug1(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_build', 'debug1'))
+        self.assertEquals(len(filelist), 2)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_build', 'debug1'),
@@ -132,11 +132,17 @@ class Test_mvn_build(unittest.TestCase):
     def test_name(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_build', 'name'))
-
+        self.assertEquals(len(filelist), 1)
         for file in filelist:
-            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_build', 'name'))
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_build', 'name'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
 
+    @xmvnconfig('mvn_build',['-n', 'pkgname', ])
+    def test_name1(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(get_actual_args(), get_expected_args('mvn_build', 'name1'))
 
     @xmvnconfig('mvn_build',['-dfijsX', ])
     def test_all(self, stdout, stderr, return_value):
@@ -147,7 +153,7 @@ class Test_mvn_build(unittest.TestCase):
     def test_all1(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), get_expected_file_count('mvn_build', 'all1'))
+        self.assertEquals(len(filelist), 5)
         for file in filelist:
             report = compare_xml_files(get_actual_config(file),
                  get_expected_config(file, 'mvn_build', 'all1'),
