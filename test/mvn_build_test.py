@@ -112,6 +112,16 @@ class TestMvnmvn_build(unittest.TestCase):
         self.assertEquals(return_value, 0)
         self.assertEquals(get_actual_args(), get_expected_args('mvn_build', 'skip_both'))
 
+    @xmvnconfig('mvn_build',['-n', 'pkgname', ])
+    def test_name(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), get_expected_file_count('mvn_build', 'name'))
+
+        for file in filelist:
+            self.assertEquals(get_actual_config(file), get_expected_config(file, 'mvn_build', 'name'))
+
+
     @xmvnconfig('mvn_build',['-dfijsX', ])
     def test_all(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
