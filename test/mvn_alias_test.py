@@ -295,5 +295,30 @@ class Test_mvn_alias(unittest.TestCase):
             "contain ':' character. Can not parse"),
                 1)
 
+    @preload_xmvn_config('mvn_alias', 'preexisting.xml')
+    @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy', ])
+    def test_preexisting_unindexed(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), 2)
+        for file in filelist:
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'simple'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
+
+    @preload_xmvn_config('mvn_alias', 'preexisting.xml', dstname='javapackages-config-00001.xml',
+        update_index=True)
+    @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy', ])
+    def test_preexisting(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        filelist = get_config_file_list()
+        self.assertEquals(len(filelist), 2)
+        for file in filelist:
+            report = compare_xml_files(get_actual_config(file),
+                 get_expected_config(file, 'mvn_alias', 'preexisting'),
+                 ['artifactGlob'])
+            self.assertFalse(report, '\n' + report)
+
 if __name__ == '__main__':
     unittest.main()

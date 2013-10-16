@@ -1,5 +1,5 @@
 import os
-from shutil import copytree
+import shutil
 import sys
 import subprocess
 import re
@@ -40,7 +40,11 @@ def get_actual_config(filename):
     return os.path.join('.xmvn', 'config.d', filename)
 
 def get_expected_config(filename, scriptname, testname):
-    expfname = '{name}_{idx}.xml'.format(name=testname, idx=re.findall('[0-9]+', filename)[-1])
+    fileno = idx=re.findall('[0-9]+', filename)
+    if fileno:
+        expfname = '{name}_{idx}.xml'.format(name=testname, idx=fileno[-1])
+    else:
+        expfname = filename
     return os.path.join(dirpath, 'data', scriptname, expfname)
 
 def get_actual_args():
@@ -49,6 +53,24 @@ def get_actual_args():
 def get_expected_args(scriptname, testname):
    return open(os.path.join(dirpath, 'data', scriptname, "{name}_out".format(name=testname))).read()
 
+def preload_xmvn_config(name, filename, dstname=None, update_index=False):
+    def test_decorator(fn):
+        def test_decorated(self, *args, **kwargs):
+            src = os.path.join(dirpath, 'data', name, filename)
+            os.mkdir('.xmvn')
+            os.mkdir('.xmvn/config.d')
+            dst = os.path.join('.xmvn', 'config.d', dstname or filename)
+            shutil.copy(src, dst)
+            if update_index:
+                idx = 1
+                if os.path.exists('.xmvn/javapackages-rule-index'):
+                    with open('.xmvn/javapackages-rule-index', 'r') as index:
+                        idx = int(index.read())
+                with open('.xmvn/javapackages-rule-index', 'w') as index:
+                    index.write(str(idx))
+            fn(self, args, kwargs)
+        return test_decorated
+    return test_decorator
 
 def xmvnconfig(name, fnargs):
     def test_decorator(fn):
