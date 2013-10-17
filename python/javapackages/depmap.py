@@ -146,3 +146,10 @@ class Depmap(object):
         if jreq is not None:
             jreq = jreq.text
         return jreq
+
+    def get_java_devel_requires(self):
+        """Returns JVM development version required by depmap or None"""
+        jreq = self.__doc.find('.//requiresJavaDevel')
+        if jreq is not None:
+            jreq = jreq.text
+        return jreq

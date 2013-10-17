@@ -37,6 +37,11 @@ class TestDepmap(unittest.TestCase):
     def test_java_requires(self, d):
         self.assertEqual(d.get_java_requires(), "1.5")
 
+    @depmapfile("depmap_java_devel.xml")
+    def test_java_devel_requires(self, d):
+        self.assertEqual(d.get_java_requires(), None)
+        self.assertEqual(d.get_java_devel_requires(), "1.5")
+
     @depmapfile("depmap_compat_new.xml")
     def test_single_provides(self, d):
         self.assertEqual(len(d.get_provided_artifacts()), 1)
