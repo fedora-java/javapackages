@@ -36,6 +36,7 @@ _pom_initialize()
 {
     _pom_xslt_header='<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
+                exclude-result-prefixes="pom"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns="http://maven.apache.org/POM/4.0.0"
                 xmlns:pom="http://maven.apache.org/POM/4.0.0">
