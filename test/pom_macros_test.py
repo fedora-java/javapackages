@@ -35,6 +35,7 @@ def exec_macro(command = "", pom = "pom.xml"):
 
 class PomMacrosTest(unittest.TestCase):
     olddir = os.getcwd()
+    maxDiff = 2048
 
     @classmethod
     def setUpClass(cls):
@@ -63,6 +64,12 @@ class PomMacrosTest(unittest.TestCase):
         res = doctest_xml_compare.xml_compare(got, want, self.xml_compare_reporter)
         return got, want, res
 
+    def get_result_literally(self, pom_path, want_suffix = "-want"):
+        with open(pom_path, 'r') as gotfile:
+            got = gotfile.read().split('\n')
+        with open(pom_path + want_suffix, 'r') as wantfile:
+            want = wantfile.read().split('\n')
+        return got, want
 
     @exec_macro("ls", "pom_remove_dep.xml")
     def test_sanity(self, stdin, stderr, returncode, pom_path):
@@ -152,6 +159,13 @@ class PomMacrosTest(unittest.TestCase):
 
         got, want, res = self.check_result(pom_path)
         self.assertEqual(res, True)
+
+    @exec_macro("pom_add_dep gdep:adep:3.2:test", "pom_add_dep_whitespace.xml")
+    def test_add_dep_whitespace(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want = self.get_result_literally(pom_path)
+        self.assertEqual(got, want)
 
     @exec_macro("pom_add_dep gdep:adep", "pom_add_dep2.xml")
     def test_add_dep2(self, stdin, stderr, returncode, pom_path):
@@ -313,6 +327,22 @@ class PomMacrosTest(unittest.TestCase):
         got, want, res = self.check_result(pom_path)
         self.assertEqual(res, True)
 
+    @exec_macro("pom_xpath_inject pom:parent '<version>1.2</version>'",
+            "pom_xpath_inject_whitespace.xml")
+    def test_xpath_inject_whitespace(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want = self.get_result_literally(pom_path)
+        self.assertEqual(got, want)
+
+    @exec_macro("pom_xpath_inject pom:parent '<version>1.2</version>'",
+            "pom_xpath_inject_whitespace1.xml")
+    def test_xpath_inject_whitespace(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want = self.get_result_literally(pom_path)
+        self.assertEqual(got, want)
+
     @exec_macro("pom_xpath_inject pom:build/pom:plugins '<plugin>\
             <groupId>some</groupId><artifactId>plugin</artifactId></plugin>'",
             "pom_xpath_inject2.xml")
@@ -346,6 +376,14 @@ class PomMacrosTest(unittest.TestCase):
 
         got, want, res = self.check_result(pom_path)
         self.assertEqual(res, True)
+
+    @exec_macro("pom_xpath_replace pom:parent/pom:groupId '<groupId>commons</groupId>'",
+            "pom_xpath_replace_whitespace.xml")
+    def test_xpath_replace_whitespace(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want = self.get_result_literally(pom_path)
+        self.assertEqual(got, want)
 
     @exec_macro("pom_xpath_replace \"pom:dependency[pom:artifactId[text()='junit']]/pom:version\"\
             '<version>commons</version>'", "pom_xpath_replace2.xml")
