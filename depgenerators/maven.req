@@ -60,6 +60,29 @@ class TagBuilder:
                 continue
             self.print_mvn_requires(path)
 
+    def __process_jvm_req(self, name, version):
+        if not version:
+            return
+        try:
+            jsplit = version.split('.')
+            if len(jsplit) != 2:
+                # if we don't have major.minor format, just ignore version
+                raise ValueError("Required Java version not in major.minor format")
+            major = int(jsplit[0])
+            minor = int(jsplit[1])
+            if major > 1 or minor > 5:
+                print("{name} >= 1:{major}.{minor}".format(name=name,
+                                                           major=major,
+                                                           minor=minor))
+            else:
+                print("{name} >= {major}.{minor}".format(name=name,
+                                                         major=major,
+                                                         minor=minor))
+        except ValueError:
+            # what? not a numbered major/minor java release?
+            print(name)
+
+
     def print_mvn_requires(self, path):
         depmap = Depmap(path)
         skipped_but_required = []
@@ -120,22 +143,10 @@ class TagBuilder:
                             "%mvn_package {art} <package_name>\n".format(art=skipped)
             raise Exception(skipped_msg)
 
-        jreq = depmap.get_java_requires()
-        if jreq is not None:
-            try:
-                jsplit = jreq.split('.')
-                if len(jsplit) != 2:
-                    # if we don't have major.minor format, just ignore version
-                    raise ValueError("Required Java version not in major.minor format")
-                major = int(jsplit[0])
-                minor = int(jsplit[1])
-                if major > 1 or minor > 5:
-                    print("java >= 1:%s.%s" % (major, minor))
-                else:
-                    print("java >= %s.%s" % (major, minor))
-            except ValueError:
-                # what? not a numbered major/minor java release?
-                print("java")
+        reqs = {'java': depmap.get_java_requires(),
+                'java-devel': depmap.get_java_devel_requires()}
+        for name, version in reqs.iteritems():
+            self.__process_jvm_req(name, version)
 
 
 if __name__ == "__main__":
