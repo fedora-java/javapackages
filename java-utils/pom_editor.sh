@@ -101,7 +101,7 @@ _pom_patch()
     (xsltproc --nonet - "${pom}" >"${pom}.tmp" <<<"${_pom_xslt_header}${_pom_xslt_trailer}")
 
     # Try to apply the patch.
-    xsltproc --nonet - "${pom}.tmp" > "${pom}" 
+    xsltproc --nonet - "${pom}.tmp" > "${pom}"
 
     # Bail out if the resulting file is identical to the patched one.
     # This is to help maintainers detect unneeded patches.
@@ -126,9 +126,10 @@ _pom_get_indent()
   <xsl:output method="text"
               version="1.0"
               encoding="UTF-8"/>
-<xsl:template match="/">
-<xsl:value-of select="${2}/preceding-sibling::text()[1]"/>
+<xsl:template match="${2}" priority="10">
+<xsl:value-of select="preceding-sibling::text()[1]"/>
 </xsl:template>
+<xsl:template match="text()"/>
 </xsl:stylesheet>
 EOF
 )|tail -n 1|sed -e "s/\(\S*\)//g"
@@ -141,7 +142,7 @@ _pom_get_tab()
 
 _pom_reformat_injected(){
     local indent=$(_pom_get_indent "${1}" "${2}")
-    local tab=$(_pom_get_tab "${1}")
+    local tab="${4}"
     cat >.input.xml <<EOF
 <root>
 ${3}
@@ -176,7 +177,7 @@ EOF
 #  $3 - content to replace the element with
 _pom_replace_xpath()
 {
-    local code=$(_pom_reformat_injected "${1}" "${2}" "${3}") 
+    local code=$(_pom_reformat_injected "${1}" "${2}" "${3}" "")
     test -n "${code}" || exit 1
     _pom_patch "${1}" <<EOF
 ${_pom_xslt_header}
@@ -211,7 +212,7 @@ EOF
 #  $3 - code to inject
 _pom_inject_xpath()
 {
-    local code=$(_pom_reformat_injected "${1}" "${2}" "${3}")
+    local code=$(_pom_reformat_injected "${1}" "${2}" "${3}" "$(_pom_get_tab ${1})")
     test -n "${code}" || exit 1
     _pom_patch "${1}" <<EOF
 ${_pom_xslt_header}
