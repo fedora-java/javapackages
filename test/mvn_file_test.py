@@ -1,15 +1,18 @@
 import unittest
 import shutil
-from test_common import *
+import os
+from test_common import xmvnconfig, get_config_file_list, \
+        get_actual_config, get_expected_config, DIRPATH
+
 from xml_compare import compare_xml_files
 
-class Test_mvn_file(unittest.TestCase):
+class TestMvnFile(unittest.TestCase):
+
+    maxDiff = 2048
 
     def setUp(self):
-        self.maxDiff = 2048
-        dirpath = os.path.dirname(os.path.realpath(__file__))
         self.olddir = os.getcwd()
-        self.workdir = os.path.join(dirpath, 'workdir')
+        self.workdir = os.path.join(DIRPATH, 'workdir')
         os.mkdir(self.workdir)
         os.chdir(self.workdir)
 
@@ -39,9 +42,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'simple'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'simple'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -50,9 +53,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'symlink'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'symlink'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -61,9 +64,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'group'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'group'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -72,9 +75,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'version'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'version'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -83,9 +86,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'extension'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'extension'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -94,9 +97,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'wildcard'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'wildcard'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -115,9 +118,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'symlinks'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'symlinks'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -126,9 +129,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'classifier'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'classifier'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -137,20 +140,22 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'wildcard2'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'wildcard2'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_file',['a:b', 'sym1', 'sym2', 'sym3', 'sym4', 'sym5', 'sym6', 'sym7', 'sym8', 'sym9', 'sym10', 'sym11', 'sym12', 'sym13', 'sym14', 'sym15', 'sym16', 'sym17', 'sym18', 'sym19', 'sym20', 'sym21', ])
+    @xmvnconfig('mvn_file',['a:b', 'sym1', 'sym2', 'sym3', 'sym4', 'sym5',
+        'sym6', 'sym7', 'sym8', 'sym9', 'sym10', 'sym11', 'sym12', 'sym13',
+        'sym14', 'sym15', 'sym16', 'sym17', 'sym18', 'sym19', 'sym20', 'sym21'])
     def test_more_symlinks(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'more_symlinks'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'more_symlinks'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -159,9 +164,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'backref'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'backref'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -170,9 +175,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'backref1'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'backref1'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -201,9 +206,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'relative1'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'relative1'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -212,9 +217,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'relative2'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'relative2'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -223,9 +228,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'relative3'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'relative3'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -234,9 +239,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'absolute1'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'absolute1'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -245,9 +250,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'prefix1'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'prefix1'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -256,9 +261,9 @@ class Test_mvn_file(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_file', 'prefix2'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_file', 'prefix2'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 

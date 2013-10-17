@@ -3,7 +3,7 @@ from zipfile import ZipFile
 import os
 import unittest
 import shutil
-from test_common import *
+from test_common import DIRPATH, mvn_depmap, call_script
 
 
 from lxml import etree
@@ -11,12 +11,12 @@ from xml_compare import compare_xml
 
 class TestMavenDepmap(unittest.TestCase):
 
+    maxDiff = 2048
+
     def setUp(self):
-        self.maxDiff = 2048
         try:
-            dirpath = os.path.dirname(os.path.realpath(__file__))
             self.olddir = os.getcwd()
-            self.datadir = os.path.join(dirpath,
+            self.datadir = os.path.join(DIRPATH,
                                         'data',
                                         'maven_depmap')
             self.workdir = os.path.join(self.datadir, "..",
@@ -48,7 +48,8 @@ class TestMavenDepmap(unittest.TestCase):
         want = ZipFile('{name}-want.{ext}'.format(name=test_name,
                        ext=archive_path.split('.')[-1]))
         try:
-            if got.testzip() is not None: return ("Not valid zip file", "")
+            if got.testzip() is not None:
+                return ("Not valid zip file", "")
             got_mf = self.read_archive(got, keep_comments)
             want_mf = self.read_archive(want, keep_comments)
         finally:
@@ -58,13 +59,15 @@ class TestMavenDepmap(unittest.TestCase):
 
     def read_archive(self, archive, keep_comments=False):
         res = {}
-        for f in archive.namelist():
-            mf_file = archive.open(f)
+        for filename in archive.namelist():
+            mf_file = archive.open(filename)
             try:
                 if (keep_comments):
-                    res[unicode(f)] = mf_file.readlines()
+                    res[unicode(filename)] = mf_file.readlines()
                 else:
-                    res[unicode(f)] = [line for line in mf_file.readlines() if not line.startswith('#')]
+                    res[unicode(filename)] = \
+                            [line for line in mf_file.readlines()
+                                    if not line.startswith('#')]
             finally:
                 mf_file.close()
         return res
@@ -126,7 +129,8 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(report, '', report)
 
-    @mvn_depmap('JPP.commons-io-commons-io.pom', 'usr/share/java/commons-io/commons-io.jar')
+    @mvn_depmap('JPP.commons-io-commons-io.pom',
+            'usr/share/java/commons-io/commons-io.jar')
     def test_subdirectory(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
         report = self.check_result(inspect.currentframe().f_code.co_name,
@@ -146,17 +150,21 @@ class TestMavenDepmap(unittest.TestCase):
         self.assertNotEqual(return_value, 0)
 
     def test_not_pom(self):
-        stdout, stderr, return_value = call_script(os.path.join(dirpath, '..', 'java-utils', 'maven_depmap.py'),
-                ['.out', 'usr/share/java/commons-io.jar', 'usr/share/java/commons-io.jar'])
+        stdout, stderr, return_value = call_script(os.path.join(DIRPATH, '..',
+            'java-utils', 'maven_depmap.py'),
+                ['.out', 'usr/share/java/commons-io.jar',
+                    'usr/share/java/commons-io.jar'])
         self.assertNotEqual(return_value, 0)
 
     def test_no_pom(self):
-        stdout, stderr, return_value = call_script(os.path.join(dirpath, '..', 'java-utils', 'maven_depmap.py'),
+        stdout, stderr, return_value = call_script(os.path.join(DIRPATH, '..',
+            'java-utils', 'maven_depmap.py'),
                 ['.out'])
         self.assertNotEqual(return_value, 0)
 
     def test_no_args(self):
-        stdout, stderr, return_value = call_script(os.path.join(dirpath, '..', 'java-utils', 'maven_depmap.py'),
+        stdout, stderr, return_value = call_script(os.path.join(DIRPATH, '..',
+            'java-utils', 'maven_depmap.py'),
                 [])
         self.assertNotEqual(return_value, 0)
 
@@ -174,7 +182,8 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(report, '', report)
 
-    @mvn_depmap('/builddir/build/BUILDROOT/pkg-2.5.2-2.fc21.x86_64/a:b:war::1', 'usr/share/java/commons-war.war')
+    @mvn_depmap('/builddir/build/BUILDROOT/pkg-2.5.2-2.fc21.x86_64/a:b:war::1',
+            'usr/share/java/commons-war.war')
     def test_mvn_spec_buildroot(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
         report = self.check_result(inspect.currentframe().f_code.co_name,
@@ -202,7 +211,8 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(report, '', report)
 
-    @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['--namespace=myns', '--append=x:y'])
+    @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['--namespace=myns',
+        '--append=x:y'])
     def test_append_and_namespace(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
         report = self.check_result(inspect.currentframe().f_code.co_name,
@@ -253,7 +263,8 @@ class TestMavenDepmap(unittest.TestCase):
                 'usr/share/java/already-has-pom-properties.jar')
         self.assertEqual(got, want)
 
-    @mvn_depmap('x:y:jar:z:0.1', 'usr/share/java/commons-io-z.jar', ['-a', 'a:b:war:c:12'])
+    @mvn_depmap('x:y:jar:z:0.1', 'usr/share/java/commons-io-z.jar',
+            ['-a', 'a:b:war:c:12'])
     def test_classifier(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
         report = self.check_result(inspect.currentframe().f_code.co_name,
@@ -267,20 +278,23 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(report, '', report)
 
-    @mvn_depmap('JPP/x:y:0.1', 'usr/share/java/commons-io.jar', ['--versions', '1,2,3'])
+    @mvn_depmap('JPP/x:y:0.1', 'usr/share/java/commons-io.jar',
+            ['--versions', '1,2,3'])
     def test_version2(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
         report = self.check_result('test_version', depmap)
         self.assertEqual(report, '', report)
 
-    @mvn_depmap('x:y:0.1', 'usr/share/java/commons-io.jar', ['-r', '1,2,3', '-a', 'a:b:32'])
+    @mvn_depmap('x:y:0.1', 'usr/share/java/commons-io.jar',
+            ['-r', '1,2,3', '-a', 'a:b:32'])
     def test_version_append(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
         report = self.check_result(inspect.currentframe().f_code.co_name,
                                            depmap)
         self.assertEqual(report, '', report)
 
-    @mvn_depmap('x:y:0.1', 'usr/share/java/commons-io.jar', ['-r', '1,2,3', '-n', 'ns', '-a', 'a:b:32'])
+    @mvn_depmap('x:y:0.1', 'usr/share/java/commons-io.jar',
+            ['-r', '1,2,3', '-n', 'ns', '-a', 'a:b:32'])
     def test_version_namespace(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
         report = self.check_result(inspect.currentframe().f_code.co_name,

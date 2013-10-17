@@ -4,22 +4,21 @@ import sys
 import subprocess
 import re
 
-from lxml import etree
-
-dirpath = os.path.dirname(os.path.realpath(__file__))
-pythonpath = os.path.join(dirpath, '../python')
-sys.path.append(pythonpath)
-script_env = {'PATH':dirpath, 'PYTHONPATH':pythonpath}
+DIRPATH = os.path.dirname(os.path.realpath(__file__))
+PYTHONPATH = os.path.join(DIRPATH, '../python')
+sys.path.append(PYTHONPATH)
+SCRIPT_ENV = {'PATH':DIRPATH, 'PYTHONPATH':PYTHONPATH}
 
 def call_script(name, args, stdin = None, wrapped = False):
     outfile = open("tmpout", 'w')
     errfile = open("tmperr", 'w')
     if wrapped:
-        procargs = [sys.executable, os.path.join(dirpath, 'wrapper.py'), name]
+        procargs = [sys.executable, os.path.join(DIRPATH, 'wrapper.py'), name]
     else:
         procargs = [sys.executable, name]
     proc = subprocess.Popen(procargs + args, shell = False,
-        stdout = outfile, stderr = errfile, env = script_env, stdin = subprocess.PIPE)
+        stdout = outfile, stderr = errfile, env = SCRIPT_ENV,
+        stdin = subprocess.PIPE)
     proc.communicate(stdin)
     ret = proc.wait()
     outfile = open("tmpout", 'r+')
@@ -40,23 +39,24 @@ def get_actual_config(filename):
     return os.path.join('.xmvn', 'config.d', filename)
 
 def get_expected_config(filename, scriptname, testname):
-    fileno = idx=re.findall('[0-9]+', filename)
+    fileno = re.findall('[0-9]+', filename)
     if fileno:
         expfname = '{name}_{idx}.xml'.format(name=testname, idx=fileno[-1])
     else:
         expfname = filename
-    return os.path.join(dirpath, 'data', scriptname, expfname)
+    return os.path.join(DIRPATH, 'data', scriptname, expfname)
 
 def get_actual_args():
     return open('.xmvn/out').read()
 
 def get_expected_args(scriptname, testname):
-   return open(os.path.join(dirpath, 'data', scriptname, "{name}_out".format(name=testname))).read()
+    return open(os.path.join(DIRPATH, 'data', scriptname,
+       "{name}_out".format(name=testname))).read()
 
 def preload_xmvn_config(name, filename, dstname=None, update_index=False):
-    def test_decorator(fn):
-        def test_decorated(self, *args, **kwargs):
-            src = os.path.join(dirpath, 'data', name, filename)
+    def test_decorator(fun):
+        def test_decorated(self):
+            src = os.path.join(DIRPATH, 'data', name, filename)
             os.mkdir('.xmvn')
             os.mkdir('.xmvn/config.d')
             dst = os.path.join('.xmvn', 'config.d', dstname or filename)
@@ -68,68 +68,76 @@ def preload_xmvn_config(name, filename, dstname=None, update_index=False):
                         idx = int(index.read())
                 with open('.xmvn/javapackages-rule-index', 'w') as index:
                     index.write(str(idx))
-            fn(self, args, kwargs)
+            fun(self)
         return test_decorated
     return test_decorator
 
 def xmvnconfig(name, fnargs):
-    def test_decorator(fn):
-        def test_decorated(self, *args, **kwargs):
-            path = os.path.join(dirpath, '..', 'java-utils', name + '.py')
+    def test_decorator(fun):
+        def test_decorated(self):
+            path = os.path.join(DIRPATH, '..', 'java-utils', name + '.py')
             (stdout, stderr, return_value) = call_script(path, fnargs)
-            fn(self, stdout, stderr, return_value)
+            fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
 
+def build_depmap_paths(filelist):
+    paths = []
+    for filename in filelist:
+        paths.append(os.path.join(DIRPATH, 'depmaps', filename))
+    return '\n'.join(paths)
+
 def mavenprov(filelist):
-    def test_decorator(fn):
-        def test_decorated(self, *args, **kwargs):
-            path = os.path.join(dirpath, '..', 'depgenerators', 'maven.prov')
-            input = '\n'.join([os.path.join(dirpath, 'depmaps', filename) for filename in filelist])
-            (stdout, stderr, return_value) = call_script(path, [], stdin=input, wrapped=True)
-            fn(self, stdout, stderr, return_value)
+    def test_decorator(fun):
+        def test_decorated(self):
+            path = os.path.join(DIRPATH, '..', 'depgenerators', 'maven.prov')
+            stdin = build_depmap_paths(filelist)
+            (stdout, stderr, return_value) = call_script(path,
+                    [], stdin=stdin, wrapped=True)
+            fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
 
 def mavenreq(filelist):
-    def test_decorator(fn):
-        def test_decorated(self, *args, **kwargs):
-            path = os.path.join(dirpath, '..', 'depgenerators', 'maven.req')
-            input = '\n'.join([os.path.join(dirpath, 'depmaps', filename) for filename in filelist])
-            (stdout, stderr, return_value) = call_script(path, [], stdin=input, wrapped=True)
-            fn(self, stdout, stderr, return_value)
+    def test_decorator(fun):
+        def test_decorated(self):
+            path = os.path.join(DIRPATH, '..', 'depgenerators', 'maven.req')
+            stdin = build_depmap_paths(filelist)
+            (stdout, stderr, return_value) = call_script(path,
+                    [], stdin=stdin, wrapped=True)
+            fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
 
-def mvn_depmap(pom, jar=None, fnargs=[]):
-    def test_decorator(fn):
-        def test_decorated(self, *args, **kwargs):
+def mvn_depmap(pom, jar=None, fnargs=None):
+    def test_decorator(fun):
+        def test_decorated(self):
             os.chdir(self.workdir)
-            path = os.path.join(dirpath, '..', 'java-utils', 'maven_depmap.py')
+            path = os.path.join(DIRPATH, '..', 'java-utils', 'maven_depmap.py')
             args = ['.fragment_data', pom]
             if jar:
                 args.append(os.path.join(os.getcwd(), jar))
-            args.extend(fnargs)
+            args.extend(fnargs or [])
             (stdout, stderr, return_value) = call_script(path, args)
             frag = None
             if return_value == 0:
-                with open('.fragment_data','r') as f:
-                    frag = f.read()
+                with open('.fragment_data','r') as frag_file:
+                    frag = frag_file.read()
                 os.remove('.fragment_data')
-            fn(self, stdout, stderr, return_value, depmap=frag)
+            fun(self, stdout, stderr, return_value, depmap=frag)
         return test_decorated
     return test_decorator
 
 def mvn_artifact(pom, jar=None):
-    def test_decorator(fn):
-        def test_decorated(self, *args, **kwargs):
+    def test_decorator(fun):
+        def test_decorated(self):
             os.chdir(self.datadir)
-            path = os.path.join(dirpath, '..', 'java-utils', 'mvn_artifact.py')
+            path = os.path.join(DIRPATH, '..', 'java-utils', 'mvn_artifact.py')
             os.chdir(self.workdir)
             args = [pom]
             if jar:
                 args.append(os.path.join(os.getcwd(), jar))
             (stdout, stderr, return_value) = call_script(path, args)
-            fn(self, stdout, stderr, return_value)
+            fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator

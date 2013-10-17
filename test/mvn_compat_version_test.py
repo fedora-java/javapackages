@@ -1,15 +1,18 @@
 import unittest
 import shutil
-from test_common import *
+import os
+from test_common import xmvnconfig, get_config_file_list, \
+        get_actual_config, get_expected_config, DIRPATH
+
 from xml_compare import compare_xml_files
 
-class Test_mvn_compat_version(unittest.TestCase):
+class TestMvnCompatVersion(unittest.TestCase):
+
+    maxDiff = 2048
 
     def setUp(self):
-        self.maxDiff = 2048
-        dirpath = os.path.dirname(os.path.realpath(__file__))
         self.olddir = os.getcwd()
-        self.workdir = os.path.join(dirpath, 'workdir')
+        self.workdir = os.path.join(DIRPATH, 'workdir')
         os.mkdir(self.workdir)
         os.chdir(self.workdir)
 
@@ -34,9 +37,9 @@ class Test_mvn_compat_version(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_compat_version', 'simple'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_compat_version', 'simple'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -50,9 +53,9 @@ class Test_mvn_compat_version(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_compat_version', 'more'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_compat_version', 'more'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -61,9 +64,9 @@ class Test_mvn_compat_version(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_compat_version', 'version'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename, 'mvn_compat_version', 'version'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -72,9 +75,10 @@ class Test_mvn_compat_version(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_compat_version', 'wildcard'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename,
+                     'mvn_compat_version', 'wildcard'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
@@ -83,9 +87,10 @@ class Test_mvn_compat_version(unittest.TestCase):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
-        for file in filelist:
-            report = compare_xml_files(get_actual_config(file),
-                 get_expected_config(file, 'mvn_compat_version', 'backref1'),
+        for filename in filelist:
+            report = compare_xml_files(get_actual_config(filename),
+                 get_expected_config(filename,
+                     'mvn_compat_version', 'backref1'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
