@@ -12,4 +12,4 @@ upload: index.html .images_uploaded
 	scp -r index.html fedorapeople.org:public_html/java-packaging-howto/
 
 clean:
-	rm *html
+	rm *.html
