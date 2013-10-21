@@ -87,6 +87,7 @@
       <stereotypes>
         <stereotype>
           <extension>jar</extension>
+          <type>native</type>
         </stereotype>
       </stereotypes>
     </repository>
@@ -108,8 +109,8 @@
       <configuration>
         <repositories>
           <repository>base-raw-pom</repository>
-          <repository>base-jar</repository>
           <repository>base-jni</repository>
+          <repository>base-jar</repository>
         </repositories>
       </configuration>
     </repository>
