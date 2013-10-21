@@ -46,10 +46,6 @@ Will probably include some information about <<Xdepmap,depmap>> files.
 
 include::maven.txt[]
 
-[[packaging_maven_project]]
-== Packaging Maven project
-include::packaging_maven_project.txt[]
-
 === Ant
 
 Medium length-section about Ant
@@ -57,6 +53,11 @@ Medium length-section about Ant
 === Gradle
 
 No information for Gradle!
+
+[[packaging_maven_project]]
+== Packaging Maven project
+include::packaging_maven_project.txt[]
+
 
 :numbered!:
 
