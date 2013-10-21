@@ -1,0 +1,58 @@
+[quote,,http://ant.apache.org/]
+______
+Apache Ant is a Java library and command-line tool whose mission is to drive
+processes described in build files as targets and extension points dependent
+upon each other.
+______
+
+Apache Ant is probably second most used Java build tool right after Apache
+Maven. The main difference between these two tools is that Ant is procedural and
+Maven is declarative. When using Ant, it is neccessary to exactly describe the
+processes which lead to the result. It means that one needs to specify where the
+source files are, what needs to be done and when it needs to be done. On the
+other hand, Maven has some conventions. For most common tasks all that needs to
+be done is to create simple `pom.xml` file.
+
+
+.Common spec file sections
+[source,spec]
+--------
+BuildRequires:  ant
+...
+%build
+ant test
+
+%install
+install -d -m 755 %{buildroot}%{_javadir}
+install -d -m 755 %{buildroot}%{_mavenpomdir}
+install -d -m 755 %{buildroot}%{_javadocdir}/%{name}
+
+# install jar
+install -p -m 644 lib/sample.jar %{buildroot}%{_javadir}/%{name}.jar
+
+# pom
+install -pm 644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
+%add_maven_depmap JPP.%{name}.pom %{name}.jar
+
+# javadoc
+cp -pr api/* %{buildroot}%{_javadocdir}/%{name}
+
+%files -f .mfiles
+%dir %{_javadir}/%{name}
+
+%files javadoc
+%doc %{_javadocdir}/%{name}
+-------
+
+Notable details:
+
+  - `%build` section uses `ant` command to build the project and run the tests.
+  - package maintainer needs to create all necessarry directories in `%install`
+    section
+  - all JAR, POM files and generated Javadoc documentation needs to be manually
+    installed
+  - `%add_maven_depmap` macro is used. This macro generates depmap file for
+    specified JAR and POM file. For more information see Depmap section.
+  - pacakge can use generated file `.mfiles` to populate `%files` section with
+    `-f` switch. However, javadoc subpackage needs to explicitly list the files.
+
