@@ -57,7 +57,7 @@ created outside of `%mvn_build` can be marked for installation with
 # Request installation of POM artifact (no JAR file)
 %mvn_artifact pom.xml
 # Request installation for JAR file specified by artifact coordinates
-%mvn_artifact webapp:webapp:war::3.1 webapp.war
+%mvn_artifact webapp:webapp:war:3.1 webapp.war
 -------
 
 [[mvn_alias]]
