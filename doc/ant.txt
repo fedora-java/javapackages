@@ -57,4 +57,9 @@ Notable details:
   - pacakge can use generated file `.mfiles` to populate `%files` section with
     `-f` switch. However, javadoc subpackage needs to explicitly list the files.
 
+[TIP]
+======
+`%mvn_artifact` macro can simplify some of the steps above. See
+<<mvn_artifact,Installing additional section>> for more information.
+======
 
