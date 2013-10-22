@@ -20,6 +20,7 @@ be done is to create simple `pom.xml` file.
 BuildRequires:  ant
 ...
 %build
+# build the project and run test suite
 ant test
 
 %install
@@ -55,4 +56,5 @@ Notable details:
     specified JAR and POM file. For more information see Depmap section.
   - pacakge can use generated file `.mfiles` to populate `%files` section with
     `-f` switch. However, javadoc subpackage needs to explicitly list the files.
+
 
