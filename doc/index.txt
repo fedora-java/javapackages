@@ -17,7 +17,6 @@ software on Fedora.
 == The Basics
 include::basics.txt[]
 
-include::depmaps.txt[]
 
 
 == Packaging Principles
@@ -35,6 +34,9 @@ will cover basic packaging principles such as:
 === Java Helper Functions
 include::helper_macros.txt[]
 
+[[depmaps]]
+=== Depmaps
+include::depmaps.txt[]
 
 == Build systems
 
