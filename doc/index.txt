@@ -17,6 +17,8 @@ software on Fedora.
 == The Basics
 include::basics.txt[]
 
+include::depmaps.txt[]
+
 
 == Packaging Principles
 
