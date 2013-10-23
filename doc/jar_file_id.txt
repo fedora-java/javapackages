@@ -1,0 +1,13 @@
+Describe various ways that JAR files are identified:
+
+==== Relative paths
+include::jar_file_id_relative.txt[]
+
+==== Artifact specification
+include::jar_file_id_artifact.txt[]
+
+==== Aliases
+include::jar_file_id_aliases.txt[]
+
+==== Compat versions
+include::jar_file_id_compat.txt[]

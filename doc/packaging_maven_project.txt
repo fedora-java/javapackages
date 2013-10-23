@@ -63,7 +63,7 @@ Let's remove the dependencies from `pom.xml`.
 ------
 
 Package maintainer can use a wide variety of "`pom_`" macros for modifying
-`pom.xml` files. See <<helper_macros, Java Helper Functions>> section for more information.
+`pom.xml` files. See <<helper_macros, Macros for POM modification>> section for more information.
 
 Now try to build the project again.
 
@@ -87,7 +87,7 @@ compiler thinks otherwise.
 
 Now it's possible to either patch the source code not to depend on
 missing libraries or to package them. Second approach is usually correct. It's not neccessary to package every
-dependency right away. Maintainer could package compile time dependencies first and keep the 
+dependency right away. Maintainer could package compile time dependencies first and keep the
 rest for later (test dependencies, ...). But Maven needs to know that it shouldn't try to run tests now. This can be achieved by passing `-f` option to `%mvn_build` macro.  Maven
 will stop complaining about missing test scoped dependencies from now on.
 
@@ -110,7 +110,7 @@ BuildRequires:  apache-commons-io
 %pom_remove_dep :commons-io
 %pom_remove_dep :junit
 
-%build 
+%build
 # Skip tests for now, missing dependency junit:junit:4.11
 mvn_build -f
 ------

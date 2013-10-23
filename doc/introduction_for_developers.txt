@@ -1,0 +1,82 @@
+Packaging Java software has specifics which we will try to cover in this section
+aimed at Java developers who are already familiar with Java language, JVM,
+classpath handling, Maven, pom.xml file structure and dependencies.
+
+Instead we will focus on basic packaging tools and relationships between Java
+and RPM world. One of the most important questions is: What is the reason to
+package software in RPM (or other distribution-specific formats). There are
+several reasons for it, among others:
+
+  - Unified way of installation of software for users of distribution regardless
+    of upstream projects
+  - Verification of authenticity of software packages by signing them
+  - Simplified software updates
+  - Automatic handling of dependencies for users
+  - Common filesystem layout across distribution enforced by packaging standards
+  - Ability to administer, monitor and query packages installed on several
+    machines through unified interfaces
+  - Distribution of additional metadata with the software itself such as
+    licenses used, homepage for the project, changelogs and other information
+    that users or administrators can find useful
+
+==== Example RPM Project
+RPM uses `spec` files as recipes for building software packages. A simple
+example of such spec file is below.
+
+[source,spec,numbered]
+------
+include::rpm_project/minimal.spec[]
+------
+
+RPM `spec` files contain several basic sections:
+
+   * header containing package metadata
+   * %prep section used for source unpacking, patching and steps to prepare for
+     building
+   * %build section containing compilation instructions such as Maven or Ant
+     invocation
+   * %install section used to preparing filesystem layout inside directory
+   * %files section containing list of files to be included in the binary RPM itself
+   * %changelog containing RPM changelog with prescribed format used mostly to
+     document changes to spec file (not upstream)
+
+To build RPM from link:rpm_project/minimal.spec[this `spec` file] save it in
+your current directory and run `rpmbuild`:
+[source,shell]
+------
+$ rpmbuild -bb minimal.spec
+------
+
+If everything worked OK, this should produce RPM file
+`~/rpmbuild/RPMS/x86_64/minimal-1.0-1.fc18.x86_64.rpm`. You can use `rpm` or
+`yum` commands to install this package and it will add `/bin/minimalistic` shell
+script to your system. Above `spec` file doesn't specify any build or runtime
+dependencies and lacks several other common parts for simplification.
+[NOTE]
+======
+Paths and filenames might be slightly different depending on your architecture
+and distribution. Output of the commands will tell you exact paths
+======
+
+As you can see to build RPM files you can use `rpmbuild` command. It has several
+other options, which we will cover later on.
+
+One of the most important RPM features is already mentioned handling of
+dependencies. There are two types of dependencies in RPM:
+
+  - build time dependencies (BuildRequires tag in `spec` file)
+  - runtime dependencies (Requires tag in `spec` file)
+
+
+==== Quiz for Java Developers
+
+1. How would you build a binary RPM if you were given a source RPM?
+2. What is most common content of Source0 `spec` file tag?
+3. What is the difference between `Version` and `Release` tags?
+4. How would you apply a patch in RPM?
+5. Where on filesystem should JAR files go?
+6. What is the format of RPM changelog or what tool would you use to produce it?
+7. How would you install an application that needs certain layout (think
+   ANT_HOME) while honoring distribution filesystem layout guidelines?
+8. How would you generate script for running a application with main class
+   org.project.MainClass which depends on commons-lang jar?

@@ -1,0 +1,105 @@
+Java is a programming language which is usually compiled into bytecode for JVM
+(Java Virtual Machine). For more details about the JVM and bytecode
+specification see
+link:http://docs.oracle.com/javase/specs/jvms/se7/html/index.html[JVM
+documentation]. Resulting bytecode is then assembled into zip files with
+specific layout and additional metadata. Most commonly these special zip files
+have `.jar` suffix, but other variations exist. These files have their format
+specified in the
+link:http://docs.oracle.com/javase/7/docs/technotes/guides/jar/jar.html[JAR File
+Specification].
+
+
+==== Example Java Project
+To better illustrate various parts of Java packaging we will dissect simple Java
+hello world application. Java sources are usually organized using directory
+hierarchies. Shared directory hierarchy creates a namespace called `package` in
+Java terminology. To understand naming mechanisms of Java `packages` see
+link:http://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html[Java
+package naming conventions].
+
+Let's create a simple hello world application that will execute following steps
+when run:
+
+ 1. Ask for a name
+ 2. Print out "Hello World from $name" where $name is from step one
+
+To illustrate certain points we artificially complicate things by creating:
+
+ - Input class used only for input of text from terminal
+ - Output class used only for output on terminal
+ - HelloWorldApp class used as main application
+
+.Directory listing of example project
+[source,shell]
+------
+$ find .
+.
+./Makefile
+./src
+./src/org
+./src/org/fedoraproject
+./src/org/fedoraproject/helloworld
+./src/org/fedoraproject/helloworld/output
+./src/org/fedoraproject/helloworld/output/Output.java
+./src/org/fedoraproject/helloworld/input
+./src/org/fedoraproject/helloworld/input/Input.java
+./src/org/fedoraproject/helloworld/HelloWorld.java
+------
+
+In this project all packages are under `src/` directory hierarchy.
+
+.HelloWorld.java listing
+[source,java]
+------
+include::java_project/src/org/fedoraproject/helloworld/HelloWorld.java[]
+------
+
+
+
+.Java Namespaces
+[source,shell]
+------
+org/fedoraproject/helloworld/input/Input.java
+org/fedoraproject/helloworld/output/Output.java
+org/fedoraproject/helloworld/HelloWorld.java
+------
+
+Above example makes use of three separate namespaces:
+
+ - org.fedoraproject.helloworld.input
+ - org.fedoraproject.helloworld.output
+ - org.fedoraproject.helloworld
+
+Environment setup consists of two main parts:
+
+ - Telling JVM which Java class contains `main()` function
+ - Adding required JAR files on JVM classpath
+
+Classic compiled applications use dynamic linker to find dependencies (linked
+libraries), Python interpreter has predefined directories where it searches for
+imported modules. JVM itself has no embedded knowledge of installation paths and
+thus no automatic way to resolve dependencies of Java projects. This means that
+all Java applications have to use wrapper shell scripts to setup the environment
+before invoking the JVM and running the application itself. Note that this is
+not necessary for libraries.
+
+==== Build System Identification
+How to determine preferred upstream build system
+
+
+==== Quiz for Packagers
+At this point you should have enough knowledge about Java to start
+packaging. If you are not able to answer following questions return back to
+previous sections or ask experienced packagers for different explanations of
+given topics.
+
+1. What is the difference between JVM and Java?
+2. What is a CLASSPATH environment variable and how can you use it?
+3. Name two typical Java build systems and how you can identify which one is being used
+4. What is the difference between `java` and `javac` comands?
+5. What are contents of a typical `JAR` file?
+6. What is a pom.xml file and what information it contains?
+7. How would you handle packaging software that contains `lib/junit4.jar` inside
+   source tarball?
+8. Name at least three methods for bundling code in Java projects

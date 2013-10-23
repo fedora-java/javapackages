@@ -1,0 +1,9 @@
+Packaging Java has certain specifics that will be covered in this section which
+will cover basic packaging principles
+
+ * No bundling
+ * Working with upstreams
+ * Commenting workarounds
+ * Single library version
+ * Links to other appropriate documents
+ * ...

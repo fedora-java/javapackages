@@ -1,0 +1,2 @@
+Describe common usage patterns of XMvn, xmvn-bisect and other tools with links
+to upstream documentation where it makes sense

@@ -1,0 +1,2 @@
+
+TODO describe macros such as _javadir, _jnidir etc

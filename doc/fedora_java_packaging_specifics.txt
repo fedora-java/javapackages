@@ -1,0 +1,16 @@
+TODO
+
+=== Directory Layout
+include::directory_layout.txt[]
+
+=== JAR File Identification
+include::jar_file_id.txt[]
+
+=== Dependency Handling
+include::dependency_handling.txt[]
+
+=== Javadoc packages
+include::javadoc_packages.txt[]
+
+=== Core Java packages
+include::core_java_packages.txt[]

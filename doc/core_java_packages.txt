@@ -1,0 +1,7 @@
+Briefly describe several important core packages related to Java packaging:
+
+* java, java-devel, java-headless
+* Ant
+* Maven
+* XMvn
+* javapackages-tools

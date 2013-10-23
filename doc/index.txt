@@ -1,8 +1,9 @@
 Java Packaging HOWTO
 ====================
-Stanislav Ochotnický <sochotnicky@redhat.com>
+
 v1.0, 2013-05-03
 
+include::preamble.txt[]
 
 :numbered!:
 [abstract]
@@ -13,73 +14,43 @@ link:https://fedoraproject.org/wiki/Packaging:Java[Java Packaging Guidelines],
 but rather aims to document tools and techniques used for packaging Java
 software on Fedora.
 
+
 :numbered:
-== The Basics
-include::basics.txt[]
+== Introduction
+include::introduction.txt[]
 
+== Java Specifics in Fedora for Users and Developers
+include::fedora_java_specifics.txt[]
 
+== Java Specifics in Fedora for Packagers
+include::fedora_java_packaging_specifics.txt[]
 
-== Packaging Principles
+== Packaging Best Practices
+include::packaging_best_practices.txt[]
 
-Packaging Java has certain specifics that will be covered in this section which
-will cover basic packaging principles such as:
+== Generic Java Builds
+include::generic_java_build.txt[]
 
- * No bundling
- * Working with upstreams
- * Commenting workarounds
- * Single library version
- * Links to other appropriate documents
-
-[[helper_macros]]
-=== Java Helper Functions
-include::helper_macros.txt[]
-
-[[depmaps]]
-=== Depmaps
-include::depmaps.txt[]
-
-== Build systems
-
-Lorem ipsum about build systems, differences, preferences etcetera.
-
-
-Will probably include some information about <<Xdepmap,depmap>> files.
-
-
-=== Apache Maven ===
-
-include::maven.txt[]
-
-=== Ant
-
+== Ant
 include::ant.txt[]
 
-=== Gradle
+== Maven
+include::maven.txt[]
 
-No information for Gradle!
+== Common Errors
+include::common_errors.txt[]
+
+== Integration of Maven and XMvn Tools
+include::integration_maven_xmvn.txt[]
 
 [[packaging_maven_project]]
 == Packaging Maven project
 include::packaging_maven_project.txt[]
 
 
-:numbered!:
-
-
-== History
-
-This section will be updated with history of Java packaging so that packagers
-can get bigger context. We can mention JPP, add_to_maven_depmap madness, Maven
-updates between major versions etcetera.
-
 [appendix]
-== Example Appendix
-AsciiDoc article appendices are just just article sections with
-'specialsection' titles.
-
-=== Appendix Sub-section
-Appendix sub-section at level 2.
-
+== Appendix
+Ideally include manpages for mvn_ and pom_ macros here
 
 [bibliography]
 References

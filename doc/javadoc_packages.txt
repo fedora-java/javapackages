@@ -1,0 +1,2 @@
+Describe javadocs, purpose of javadoc RPM packages. Mention reasons for not
+having "Requires: {name}" in javadocs.

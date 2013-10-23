@@ -1,148 +1,9 @@
-Many repeating tasks when packaging Java software can be automated. Most of the
-time they are RPM macros or shell scripts.
+Handling of basic build steps in Java
+* javac
+* usage of build-claspath, build-jar-repository to prepare for build
+* ...
 
-==== Macros for pom.xml modification
-
-Sometimes Maven `pom.xml` files need to be patched before they are used to build
-packages. One could use traditional patches to maintain changes, but package
-maintainers should use `%pom_*` macros developed specially to ease this
-task.
-
-These macros are designed to be called from `%prep` section of spec files. They
-are documented in `/etc/rpm/macros.fjava` configuration file, which is also
-link:https://git.fedorahosted.org/cgit/javapackages.git/plain/etc/macros.fjava[available online]
-and all the macros also have their own manual page. See the manual pages
-for technical details how to use them. Below are some examples added for
-convenience.
-
-
-Often dependencies specified in Maven `pom.xml` files need to be removed because
-of different reasons. `%pom_remove_dep` macro can be used to ease this task:
-
-.Removing dependencies from pom.xml files
-[source,spec]
---------
-# Removes dependency on groupId:artifactId from ./pom.xml
-%pom_remove_dep groupId:artifactId
-
-# Removes dependency on groupId:artifactId from ./submodule/pom.xml
-%pom_remove_dep groupId:artifactId submodule
-
-# Removes dependency on groupId:artifactId from ./full/path/to/file.pom
-%pom_remove_dep groupId:artifactId full/path/to/file.pom
-
-# Removes dependency on all artifacts in group groupId from ./pom.xml
-%pom_remove_dep groupId:
-
-# Removes all dependencies from ./pom.xml
-%pom_remove_dep :
---------
-
-[TIP]
-=======
-Dependencies can also be added to pom.xml with `%pom_add_dep` macro, but this
-may be a bug in upstream project if one needs to add extra dependency in order
-to build the project.
-=======
-
-`%pom_remove_plugin` macro works exactly as `%pom_remove_dep`, except it removes
-Maven plugin invocations. Some examples:
-
-.Removing Maven plugins from pom.xml files
-[source,spec]
---------
-# Disables maven-jar-plugin so that classpath isn't included in manifests
-%pom_remove_plugin :maven-jar-plugin
-
-# Disable a proprietary plugin that isn't packaged for Fedora
-%pom_remove_plugin com.example.mammon:useless-proprietary-plugin submodule
---------
-
-Sometimes some submodules of upstream project cannot be built for various
-reasons and there is a need to disable them. This can be achieved by using
-`%pom_disable_module`, for example:
-
-.Disabling specific project modules
-[source,spec]
---------
-# Disables child-module-1, a submodule of the main pom.xml file
-%pom_disable_module child-module-1
-
-# Disables grandchild-module, a submodule of child-module-2/pom.xml
-%pom_disable_module grandchild-module child-module-2
---------
-
-Macro `%pom_remove_parent` removes reference
-to a parent POM from Maven POM files. This can be useful when parent POM
-is not yet packaged (e.g. because of licensing issues) and at the same time it's
-not really needed for building of the project. There are also macros for adding
-parent POM reference (`%pom_add_parent`) and replacing existing reference
-with new one (`%pom_set_parent`).
-
-.Manipulating parent POM references
-[source,spec]
---------
-# Remove reference to a parent POM from ./pom.xml
-%pom_remove_parent
-
-# Remove reference to a parent POM from ./submodule/pom.xml
-%pom_remove_parent submodule
-
-# Add parent POM reference to ./pom.xml
-%pom_add_parent groupId:artifactId
-
-# Replace existing parent POM reference in ./pom.xml
-%pom_set_parent groupId:artifactId:version
---------
-
-The above macros cover the most common cases of modifying `pom.xml` files,
-however if there is a need to apply some less-common patches there are also two
-generic macros for modifying `pom.xml` files. `%pom_xpath_remove` can be used to
-remove arbitrary XML nodes, described by link:http://www.w3.org/TR/xpath/[XPath]
-1.0 expressions. `%pom_xpath_inject` macro is capable of injecting arbitrary
-link:http://www.w3.org/TR/xml/[XML] code to any `pom.xml` file. Below you can find
-some examples for these macros.
-
-.Less common pom.xml modifications
-[source,spec]
---------
-# Removes parent definition
-%pom_xpath_remove "pom:parent"
-
-# Removes extensions from the build
-%pom_xpath_remove "pom:build/pom:extensions" module/pom.xml
-
-# Adds new dependency
-%pom_xpath_inject "pom:dependencies" "
-                  <dependency>
-                        <groupId>org.example.project</groupId>
-                        <artifactId>awesomeproject</artifactId>
-                        <version>1.0.0.GA</version>
-                  </dependency>"
-
-# Use a bit more complex XPath to add additional exclusion into
-# maven-wagon dependency
-%pom_xpath_inject "pom:dependency[pom:artifactId[text()='maven-wagon']]/pom:exclusions" "
-        <exclusion>
-            <groupId>antlr</groupId>
-            <artifactId>antlr</artifactId>
-        </exclusion>"
---------
-
-.Handling XML namespaces
-[NOTE]
-=======
-POM files use a specific namespace - http://maven.apache.org/POM/4.0.0. The
-easiest way to respect this namespace in XPath expressions is prefixing all node
-names with `pom:`. For example, `pom:environment/pom:os` will work because it
-selects nodes from `pom` namespace, but `environment/os` won't find anything
-because it looks for nodes that don't belong to any XML namespace.
-=======
-Using `%pom_*` macros not only increases readability of the spec file, but also
-improves maintainability of the package as there are no patches that would need
-to be rebased with each upstream release.
-
-==== add_maven_depmap macro
+=== add_maven_depmap macro
 
 Maven identifies JAR files by a set of strings: groupId, artifactId and version
 (mostly). To let XMvn know what groupId:artifactId corresponds to which
@@ -249,7 +110,8 @@ This form should be used when a package consists of multiple JAR files that are
 installed into a subdirectory of `%{_javadir}`. Note that in this case, the POM
 file name includes the optional subdirectory field.
 
-==== Generating Application Shell Scripts
+
+=== Generating Application Shell Scripts
 As mentioned in section about xref:XFor_Packagers[Java packaging basics], all
 Java applications need wrapper shell scripts to setup the environment before
 running JVM and associated Java code.
@@ -279,7 +141,7 @@ classpath before executing main class (4th argument, JAR files separated with
 ":"). `build-classpath` is run on every part of 4th argument to create full
 classpaths.
 
-==== Replacing JARs with symlinks using xmvn-subst
+=== Replacing JARs with symlinks using xmvn-subst
 
 Sometimes it may be needed to replace all JAR files in current directory with
 symlinks to the system JARs located in `%{_javadir}`. This task can be achieved

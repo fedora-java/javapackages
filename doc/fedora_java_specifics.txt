@@ -1,0 +1,2 @@
+Describe general usage of Java, OpenJDK, switching of multiple JVM versions
+etc. Also describe build-classpath and related scripts included in /usr/bin

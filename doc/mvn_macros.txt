@@ -1,0 +1,191 @@
+[[mvn_artifact]]
+==== Installing additional artifacts
+It is possible to explicitly request an installation of any Maven artifact
+(JAR/POM file).  Macro `%mvn_install` only knows about Maven artifacts that were
+created during execution of `%mvn_build`. Normally, any other artifacts which
+were built by some other method would need to be installed manually.
+`%mvn_build` macro doesn't even need to be used at all. Luckily, all artifacts
+created outside of `%mvn_build` can be marked for installation with
+`%mvn_artifact` macro. This macro creates configuration for `%mvn_install`.
+
+.Requesting installation of Maven artifact
+[source,spec]
+-------
+%prep
+...
+# Request installation of POM and JAR file
+%mvn_artifact subpackage/pom.xml target/artifact.jar
+# Request installation of POM artifact (no JAR file)
+%mvn_artifact pom.xml
+# Request installation for JAR file specified by artifact coordinates
+%mvn_artifact webapp:webapp:war:3.1 webapp.war
+-------
+
+[[mvn_alias]]
+==== Additional Mappings
+The macro `%mvn_alias` can be used to add additional mappings for given POM/JAR
+file. For example, if the POM file indicates that it contains groupId
+commons-lang, artifactId commons-lang, this macro ensures that we also add a
+mapping between groupId org.apache.commons and the installed JAR/POM files. This
+is necessary in cases where the groupId or artifactId may have changed, and
+other packages might require different IDs than those reflected in the installed
+POM.
+
+.Adding more mappings for JAR/POM files example
+[source,spec]
+-------
+%prep
+...
+%mvn_alias "commons-lang:commons-lang" "org.apache.commons:commons-lang"
+-------
+
+[[mvn_file]]
+==== Alternative JAR File Names
+In some cases, it may be important to be able to provide symlinks to actual JAR
+files. This can be achieved with `%mvn_file` macro. This macro allows packager
+to specify names of the JAR files, their location in `%{_javadir}` directory and
+also can create symlinks to the JAR files. These symlinks can be possibly
+located outside of the `%{_javadir}` directory.
+
+.Adding file symlinks to compatibility
+[source,spec]
+-------
+%prep
+...
+%mvn_file :guice google/guice guice
+-------
+
+This means that JAR file for artifact with ID "guice" (and any groupId) will be
+installed in `%{_javadir}/google/guice.jar` and there also will be a symlink to
+this JAR file located in `%{_javadir}/guice.jar`. Note the macro will add ".jar"
+extensions automatically.
+
+[[mvn_singleton]]
+==== Single Artifact Per Package
+If the project consists of multiple artifacts, it is recommended to install each
+artifact to the separate subpackage. The macro `%mvn_build -s` will generate
+separate `.mfiles` file for every artifact in the project. This file contains
+list of files related to specific artifact (typically JAR file, POM file and
+depmap). It can be later used in `%files` section of the spec file.
+
+.Creating one subpackage for each generated artifact
+[source,spec]
+-------
+...
+%description
+The Maven Plugin Tools contains...
+
+%package -n maven-plugin-annotations
+Summary:        Maven Plugin Java 5 Annotations
+
+%description -n maven-plugin-annotations
+This package contains Java 5 annotations to use in Mojos.
+
+%package -n maven-plugin-plugin
+Summary:        Maven Plugin Plugin
+
+%description -n maven-plugin-plugin
+The Plugin Plugin is used to...
+...
+
+%build
+%mvn_build -s
+
+%install
+%mvn_install
+
+%files -f .mfiles-maven-plugin-tools
+%doc LICENSE NOTICE
+%files -n maven-plugin-annotations -f .mfiles-maven-plugin-annotations
+%files -n maven-plugin-plugin      -f .mfiles-maven-plugin-plugin
+%files -f .mfiles-javadoc
+...
+-------
+
+[[mvn_package]]
+==== Assignment of the Maven Artifacts to the Subpackages
+The macro `%mvn_package` allows maintainer to specify in which exact package the
+selected artifact will end up. It is something between singleton packaging, when
+each artifact has its own subpackage and default packaging, when all artifacts
+end up in the same package.
+
+.Assigning multiple artifacts to single subpackage
+[source,spec]
+-------
+...
+%prep
+%mvn_package ":plexus-compiler-jikes"   plexus-compiler-extras
+%mvn_package ":plexus-compiler-eclipse" plexus-compiler-extras
+%mvn_package ":plexus-compiler-csharp"  plexus-compiler-extras
+
+%build
+%mvn_build
+
+%install
+%mvn_install
+
+%files -f .mfiles
+%files -f .mfiles-plexus-compiler-extras
+%files -f .mfiles-javadoc
+-------
+
+In above example, the artifacts `plexus-compiler-jikes`,
+`plexus-compiler-eclipse`, `plexus-compiler-csharp` will end up in package named
+`plexus-compiler-extras`. If there are some other artifacts beside these three
+mentioned (e.g. some parent POMs), then these will all end up in package named
+`%{name}`.
+
+[TIP]
+======
+`%mvn_package` macro supports wildcards and brace expansions, so whole `%prep` section from previous example can be replaced with single line:
+`%mvn_package ":plexus-compiler-{jikes,eclipse,csharp}" plexus-compiler-extras`
+======
+
+It is possible to assign artifacts into a package called `__noinstall`. This package
+name has a special meaning. And as you can guess, artifacts assigned into this
+package won't be installed anywhere and the package itself won't be created.
+
+.Skipping installation of an artifact
+[source,spec]
+-------
+%prep
+...
+%mvn_package groupId:artifactId __noinstall
+-------
+
+[[mvn_config]]
+==== Modifying XMvn configuration from within spec file
+Some packages might need to modify XMvn's configuration in order to build
+successfully or from other reasons. This can be achieved with `mvn_config`
+macro. For example, some old package can use `enum` as an identifier, but it is
+also keyword since Java 1.5. Such package will probably fail to build on current
+systems. This problem can be easily solved by passing `-source 1.4` to the
+compiler, so one could add following line to the spec file:
+
+.Overriding default XMvn configuration
+[source,spec]
+-------
+%prep
+...
+%mvn_config buildSettings/compilerSource 1.4
+-------
+
+XMvn's configuration is quite complex, but well documented at project's
+http://mizdebsk.fedorapeople.org/xmvn/site/[official website]. The website
+should always be used as a primary source of information about XMvn
+configuration.
+
+[TIP]
+======
+Read about XMvn's configuration
+http://mizdebsk.fedorapeople.org/xmvn/site/configuration.html[basics] and see
+full http://mizdebsk.fedorapeople.org/xmvn/site/config.html[configuration reference].
+======
+
+[TIP]
+======
+All `%mvn_` macros have their own manual page which contains details on how to
+use them. All possible options should be documented there. These manual pages
+should be considered most up to date documentation right after source code. Try
+for example `man mvn_file`.
+======
