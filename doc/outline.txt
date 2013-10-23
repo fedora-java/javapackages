@@ -1,0 +1,64 @@
+* Cover - authors, license
+
+
+* Introduction to packaging - reasons, problems, rationale
+** introduction for 2 groups
+*** Java Devels - simple rpm intro focused on Java
+*** Packagers - intro to Java  (CLASSPATH, javac, JDK, JRE, ...)
+
+
+* Java specifics in Fedora for users (integration, working with JDKs, running...)
+** scripts in /usr/bin (generic) - for users/devs
+** mention /usr/share/java, omit the rest of layout
+
+
+* Java specifics in Fedora for packagers
+** Directory Layout
+*** foreach _dir in macros:
+**** purpose
+**** description, explanation
+
+** Identification of JAR
+*** relative path
+*** gid:aid (optional)
+*** aliases
+**** symlinks for paths
+**** additional mapping for gid:aid
+*** compat versions (and why no %{version})
+
+** Provides/Requires
+*** mvn(gid:aid...) explained
+*** TODO osgi
+
+** Javadoc packages
+
+** Core Java Packages
+*** javapackages-tools
+*** XMvn
+*** java, java-devel, java-headless ...
+
+
+* Packaging
+** Best Practices
+*** Maybe split for rules and relaxed recommendations
+**** no bundling
+**** split jars
+**** using standard macros ..
+
+** Buildsystems
+*** repeat add_maven_depmap, build-classpath...?
+*** Generic (javac & co.)
+*** Ant
+**** generic
+**** aether-ant-tasks
+**** ivy
+** Maven
+*** DO NOT mention add_maven_depmap
+*** what to do when dep is missing
+*** .mfiles*
+
+** Common Error Messages
+
+
+* Integration with Maven (XMvn)
+
