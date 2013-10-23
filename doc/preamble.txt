@@ -1,2 +1,7 @@
-
 TODO add authors, license etc
+
+Nicolas Mailhot
+JPackage Project
+
+Ville Skyttä
+JPackage Project
