@@ -118,7 +118,7 @@ mvn_build -f
 [TIP]
 ======
 One can easily search for package which provides desired artifact. Try
-`repoquery -q --whatprovides 'mvn(commons-io:commons-io)'`
+`repoquery -f 'mvn(commons-io:commons-io)'`
 ======
 
 Now try to build the project one more time. The build should succeed now. Congrats, you managed to create an RPM from Maven project!
