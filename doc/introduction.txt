@@ -1,3 +1,33 @@
+Clean Java packaging has historically been a daunting task.  Lack of
+any standard addressing the physical location of files on the system
+combined with the common use of licensing terms that only allow free
+redistribution of key components as a part of a greater ensemble has
+let to the systematic release of self-sufficient applications with
+built-in copies of external components.
+
+As a consequence applications are only tested with the versions of the
+components they bundle, a complete Java system suffers from endless
+duplication of the same modules, and integrating multiple parts can be
+a nightmare since they are bound to depend on the same elements - only
+with different and subtly incompatible versions (different
+requirements, different bugs).  Any security or compatibility upgrade,
+must be performed for each of those duplicated elements.
+
+This problem is compounded by the current practice of folding
+extensions proper in the JVM itself after a while; an element that
+could safely be embedded in a application will suddenly conflict with
+a JVM part and cause subtle failures.
+
+It is not surprising then that complex Java systems tend to fossilize
+very quickly, with the cost of maintaining dependencies current
+growing too high so fast people basically give up on it.
+
+This situation is incompatible with typical fast-evolving Linux
+platform.  To attain the aim of user- and administrator-friendly RPM
+packaging of Java applications a custom infrastructure and strict
+packaging rules had to be evolved.
+
+
 Basic introduction to packaging, reasons problems rationale
 
 This section includes basic introduction to Java packaging world to people
