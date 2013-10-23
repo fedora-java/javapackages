@@ -112,7 +112,7 @@ BuildRequires:  apache-commons-io
 
 %build
 # Skip tests for now, missing dependency junit:junit:4.11
-mvn_build -f
+%mvn_build -f
 ------
 
 [TIP]
