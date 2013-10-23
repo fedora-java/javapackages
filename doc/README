@@ -11,3 +11,5 @@ And of course add ~/bin to your PATH before running make
 Conventions:
  JAR - always capital unless mentioning filename
  POM - always capital unless mentioning filename
+
+Please limit line length to 72 characters.
