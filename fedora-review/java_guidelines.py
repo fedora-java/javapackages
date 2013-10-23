@@ -1,8 +1,8 @@
 #-*- coding: utf-8 -*-
 """Java language plugin for fedora-review
 
-This plugin aims to implement Fedora Packaging Guidelines for Java[1] as a
-fedora-review plugin.
+This plugin aims to implement Fedora Packaging Guidelines for Java[1]
+as a fedora-review plugin.
 
 [1] https://fedoraproject.org/wiki/Packaging:Java
 """
@@ -234,7 +234,7 @@ class CheckAddMavenDepmap(JavaCheckBase):
         JavaCheckBase.__init__(self, base)
         self.url = 'https://fedoraproject.org/wiki/Packaging:Java' \
                    '#add_maven_depmap_macro'
-        self.text = 'Pom files have correct Maven mapping'
+        self.text = 'POM files have correct Maven mapping'
         self.automatic = True
         self.type = 'MUST'
 
@@ -246,7 +246,7 @@ class CheckAddMavenDepmap(JavaCheckBase):
             self.set_passed(self.PASS)
         elif not self.spec.find_re('[^#]*%add_maven_depmap'):
             self.set_passed(self.FAIL, """Old style Maven package found, no
-                            add_maven_depmap calls found but pom files
+                            add_maven_depmap calls found but POM files
                             present""")
         else:
             self.set_passed(self.PENDING, """Some add_maven_depmap
@@ -304,7 +304,7 @@ class CheckNoRequiresPost(JavaCheckBase):
     def __init__(self, base):
         JavaCheckBase.__init__(self, base)
         self.url = 'https://fedoraproject.org/wiki/Packaging:Java'
-        self.text = "Packages DOES NOT have Requires(post) and " \
+        self.text = "Packages DO NOT have Requires(post) and " \
                     "Requires(postun) on jpackage-utils for " \
                     "%update_maven_depmap macro"
         self.automatic = True
@@ -402,13 +402,13 @@ class CheckLocalDepmap(JavaCheckBase):
 
 
 class CheckBundledJars(JavaCheckBase):
-    """Check for bundled jar/class files in source tarball"""
+    """Check for bundled JAR/class files in source tarball"""
 
     def __init__(self, base):
         JavaCheckBase.__init__(self, base)
         self.url = 'http://fedoraproject.org/wiki/Packaging:Java' \
                    '#Pre-built_JAR_files_.2F_Other_bundled_software'
-        self.text = """If source tarball includes bundled jar/class
+        self.text = """If source tarball includes bundled JAR/class
         files these need to be removed prior to building"""
         self.automatic = False
         self.type = 'MUST'
@@ -419,7 +419,7 @@ class JarFilename(JavaCheckBase):
 
     def __init__(self, base):
         JavaCheckBase.__init__(self, base)
-        self.text = "Jar files are named and installed according to guidelines"
+        self.text = "JAR files are named and installed according to guidelines"
         self.url = 'https://fedoraproject.org/wiki/Packaging:Java' \
                    '#JAR_file_installation'
         self.automatic = False
