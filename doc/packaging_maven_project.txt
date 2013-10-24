@@ -106,9 +106,9 @@ BuildRequires:  apache-commons-io
 %prep
 %setup -q
 
-# Comment out following lines to %prep section
-%pom_remove_dep :commons-io
-%pom_remove_dep :junit
+# Comment out following lines in %prep section
+#%%pom_remove_dep :commons-io
+#%%pom_remove_dep :junit
 
 %build
 # Skip tests for now, missing dependency junit:junit:4.11
