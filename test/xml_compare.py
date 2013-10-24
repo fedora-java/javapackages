@@ -1,9 +1,8 @@
 from lxml import etree
 import sys
-from collections import defaultdict
 import re
 
-def compare_xml_files(file1, file2, unordered=[]):
+def compare_xml_files(file1, file2, unordered=None):
     """ Compares two XML files and returns empty string if they're identical
     and string with differences otherwise. Optional third argument specifies
     which elements should be compared without taking element order into
@@ -14,9 +13,10 @@ def compare_xml_files(file1, file2, unordered=[]):
                     element under the root <html>
               ['p'] for unordered comparison of children of every <p> element
     """
-    return compare_xml(etree.parse(file1).getroot(), etree.parse(file2).getroot(), unordered)
+    return compare_lxml_etree(etree.parse(file1).getroot(),
+            etree.parse(file2).getroot(), unordered)
 
-def compare_xml(doc1, doc2, unordered=[]):
+def compare_lxml_etree(doc1, doc2, unordered=None):
     """ Compares two XML documents (lxml.etree) and returns empty string if
     they're identical and string with differences otherwise. Optional third
     argument specifies which elements should be compared without taking element
@@ -27,40 +27,44 @@ def compare_xml(doc1, doc2, unordered=[]):
                     element under the root <html>
               ['p'] for unordered comparison of children of every <p> element
     """
-    unord_abs = [path[1:] for path in unordered if path.startswith('/')]
-    unord_rel = [path for path in unordered if not path.startswith('/')]
 
-    strip_xml(doc1)
-    strip_xml(doc2)
+    paths = _create_paths(unordered)
 
-    return '\n'.join(['{sgn}{line}'.format(sgn=sgn, line=line) for sgn, line
-            in compare_element(doc1, doc2, unordered_abs=unord_abs + unord_rel, unordered_rel=unord_rel)])
+    _strip_comments(doc1)
+    _strip_comments(doc2)
 
-def strip_xml(doc):
-    unwanted = [node for node in doc.iter() if node.tag == etree.Comment]
+    lines = []
+    for sgn, line in _compare_element(doc1, doc2, unordered_paths = paths):
+        lines.append('{sgn}{line}'.format(sgn=sgn, line=line))
 
-    for c in unwanted:
-        p = c.getparent()
-        p.remove(c)
+    return '\n'.join(lines)
 
-def localname(tag):
+def _strip_comments(doc):
+    for node in doc.iter():
+        if node.tag == etree.Comment:
+            parent = node.getparent()
+            parent.remove(node)
+
+def _localname(tag):
     return etree.QName(tag).localname
 
-def compare_element(e1, e2, unordered_abs=[], unordered_rel=[]):
-    if e1.tag != e2.tag:
-        return print_element(e1, '-') + print_element(e2, '+')
-    new_abs, unordered = process_paths(unordered_abs, unordered_rel, e1.tag)
-    if unordered:
-        child_rep = tab(compare_children_unordered(e1, e2,
-            lambda a, b: compare_element(a, b, new_abs, unordered_rel)))
-    else:
-        child_rep = tab(compare_children_ordered(e1, e2,
-            lambda a, b: compare_element(a, b, new_abs, unordered_rel)))
+def _compare_element(exp, act, unordered_paths=None):
+    if exp.tag != act.tag:
+        return _print_element(exp, '-') + _print_element(act, '+')
 
-    attr_rep = tab(compare_attrs(e1, e2))
-    text_rep = tab(compare_text(e1.text, e2.text))
-    tail_rep = compare_text(e1.tail, e2.tail)
-    tag = localname(e1.tag)
+    tag = _localname(exp.tag)
+    new_unordered = _descend_paths(unordered_paths, tag)
+    def callback(exp, act):
+        return _compare_element(exp, act, unordered_paths=new_unordered)
+
+    if _matches_paths(unordered_paths, tag):
+        child_rep = _tab(_compare_children_unordered(exp, act, callback))
+    else:
+        child_rep = _tab(_compare_children_ordered(exp, act, callback))
+
+    attr_rep = _tab(_compare_attrs(exp, act))
+    text_rep = _tab(_compare_text(exp.text, act.text))
+    tail_rep = _compare_text(exp.tail, act.tail)
 
     if attr_rep or child_rep or text_rep:
         rep = []
@@ -86,49 +90,88 @@ def compare_element(e1, e2, unordered_abs=[], unordered_rel=[]):
             return [(' ', '<{tag} .../>'.format(tag=tag))] + tail_rep
         else: return []
 
-def tab(lst):
+class _Path(object):
+    def __init__(self, parts, relative=False):
+        self.parts = list(parts)
+        self.relative = relative
+
+    def matches_start(self, tagname):
+        exp = re.escape(self.parts[0])
+        exp = re.sub(r'\\\*', '.*', exp)
+        return re.match(exp + '$', tagname)
+
+    def matches(self, tagname):
+        return len(self.parts) == 1 and self.matches_start(tagname)
+
+    def descend(self):
+        if len(self.parts) > 1:
+            return _Path(self.parts[1:])
+
+def _create_paths(paths):
+    res = []
+    for path in paths or []:
+        if path.startswith('/'):
+            parts = path.split('/')[1:]
+            res.append(_Path(parts))
+        else:
+            parts = path.split('/')
+            res.append(_Path(parts))
+            res.append(_Path(parts, relative=True))
+    return res
+
+def _matches_paths(paths, tagname):
+    for path in paths or []:
+        if path.matches(tagname):
+            return True
+    return False
+
+def _descend_paths(paths, tagname):
+    res = []
+    for path in paths or []:
+        if path.relative:
+            res.append(path)
+            if path.matches_start(tagname):
+                descendant = path.descend()
+                if descendant:
+                    res.append(descendant)
+        else:
+            descendant = path.descend()
+            if descendant:
+                res.append(descendant)
+    return res
+
+def _tab(lst):
     return [(sgn, '    ' + line) for sgn, line in lst]
 
-def process_paths(unordered_abs, unordered_rel, tagname):
-    tagname = localname(tagname)
-    current_paths = [path for path in unordered_abs if path.find('/') == -1]
-    new_abs = [path[path.index('/') + 1:] for path in unordered_abs if path.find('/') >= 0]
-    new_abs += [path[path.index('/') + 1:] for path in unordered_rel
-            if path.find('/') >= 0 and path_matches(tagname, path[:path.index('/')])]
-    new_abs += unordered_rel
-    unordered = any([path_matches(tagname, path) for path in current_paths])
-    return (new_abs, unordered)
-
-def path_matches(path, exp):
-    exp = re.escape(exp)
-    exp = re.sub(r'\\\*', '.*', exp)
-    return re.match(exp + '$', path)
-
-def print_element(e, prefix):
-    if e is None:
+def _print_element(elem, prefix):
+    if elem is None:
         return
     rep = []
-    attrs = ['{k}="{v}"'.format(k=k, v=v) for k,v in e.attrib.iteritems()]
-    t = localname(e.tag)
-    if len(e) or e.text:
-        rep.append('<{e}{attrs}>'.format(e=t, attrs=(' ' + ' '.join(attrs)) if attrs else ''))
-        if e.text and e.text.strip():
-            rep.append('    ' + e.text.strip())
-        rep += ['    ' + line for child in e for child_rep, line in print_element(child, prefix)]
-        rep.append('</{e}>'.format(e=t))
+    attrs = ['{k}="{v}"'.format(k=k, v=v) for k, v in elem.attrib.iteritems()]
+    tag = _localname(elem.tag)
+    if len(elem) or elem.text:
+        rep.append('<{elem}{attrs}>'.format(elem=tag,
+            attrs=(' ' + ' '.join(attrs)) if attrs else ''))
+        if elem.text and elem.text.strip():
+            rep.append('    ' + elem.text.strip())
+        rep += ['    ' + line for child in elem for
+                _, line in _print_element(child, prefix)]
+        rep.append('</{elem}>'.format(elem=tag))
     else:
-        rep.append('<{e}{attrs}/>'.format(e=t, attrs=(' ' + ' '.join(attrs)) if attrs else ''))
+        rep.append('<{elem}{attrs}/>'.format(elem=tag,
+            attrs=(' ' + ' '.join(attrs)) if attrs else ''))
     return [(prefix, line) for line in rep]
 
-def compare_children_unordered(e1, e2, cmp_f):
+def _compare_children_unordered(exp, act, cmp_f):
     r_matched = set()
     index = []
-    for i, v in enumerate(e1):
+
+    for i, lchild in enumerate(exp):
         first = None
-        for j, w in enumerate(e2):
+        for j, rchild in enumerate(act):
             if j not in r_matched:
-                if v.tag == w.tag:
-                    subrep = cmp_f(v, w)
+                if lchild.tag == rchild.tag:
+                    subrep = cmp_f(lchild, rchild)
                     if not subrep:
                         r_matched.add(j)
                         break
@@ -140,66 +183,66 @@ def compare_children_unordered(e1, e2, cmp_f):
                 r_matched.add(j)
                 index.append((i, subrep))
             else:
-                index.append((i, print_element(v, '-')))
+                index.append((i, _print_element(lchild, '-')))
 
-    for j, w in enumerate(e2):
+    for j, rchild in enumerate(act):
         if j not in r_matched:
-            index.append((j, print_element(w, '+')))
-    return [inner for idx, item in sorted(index, key=lambda tup: tup[0]) for inner in item]
+            index.append((j, _print_element(rchild, '+')))
 
-def compare_children_ordered(e1, e2, cmp_f):
+    return _get_items_from_index(index)
+
+def _get_items_from_index(index):
+    items = []
+    for _, item in sorted(index, key=lambda tup: tup[0]):
+        items += item
+    return items
+
+def _compare_children_ordered(exp, act, cmp_f):
     rep = []
-    for i, v in enumerate(e1):
-        if i < len(e2):
-            rep += cmp_f(v, e2[i])
+    for i, lchild in enumerate(exp):
+        if i < len(act):
+            rep += cmp_f(lchild, act[i])
         else:
-            rep += print_element(v, '-')
-    for i in range(len(e1), len(e2)):
-        rep += print_element(e2[i], '+')
+            rep += _print_element(lchild, '-')
+    for i in range(len(exp), len(act)):
+        rep += _print_element(act[i], '+')
     return rep
 
-def dictdiff(d1, d2, f_left, f_right, f_both):
-    """ Calls f_left on items present in d1 but not in d2, f_right on items
-    present in d2 but not in d1 and f_both on items that are present in both
-    """
-    ret = []
-    for k in d1.keys():
-        if k in d2:
-            ret += f_both(k, d1[k], d2[k])
+def _compare_text(text1, text2):
+    text1 = text1.strip() if text1 else None
+    text2 = text2.strip() if text2 else None
+    rep = []
+    if text1 != text2:
+        if text1:
+            rep.append(('-', text1))
+        if text2:
+            rep.append(('+', text2))
+    return rep
+
+def _compare_attrs(exp, act):
+    rep = []
+    attrib1, attrib2 = exp.attrib, act.attrib
+
+    for k, lchild in attrib1.iteritems():
+        if k in attrib2:
+            if attrib2[k] != lchild:
+                rep.append(('-', '{name} = "{value}"'\
+                        .format(name=k, value=lchild)))
+                rep.append(('+', '{name} = "{value}"'\
+                        .format(name=k, value=attrib2[k])))
         else:
-            ret += f_left(k, d2[k])
-    for k in d2.keys():
-        if k not in d1:
-            ret += f_right(k, d2[k])
-    return ret
+            rep.append(('-', '{name} = "{value}"'.format(name=k, value=lchild)))
 
-def compare_text(t1, t2):
-    t1 = t1.strip() if t1 else None
-    t2 = t2.strip() if t2 else None
-    rep = []
-    if t1 != t2:
-        if t1:
-            rep.append(('-', t1))
-        if t2:
-            rep.append(('+', t2))
-    return rep;
-
-def compare_attrs(e1, e2):
-    rep = []
-    a1, a2 = e1.attrib, e2.attrib
-
-    def fmt(sign, k, v):
-        return (sign, '{k}="{v}"'.format(k=k, v=v))
-
-    rep += dictdiff(a1, a2, lambda k, v: [fmt('-', k, v)],
-        lambda k, v: [fmt('+', k ,v)],
-        lambda k, v1, v2: [fmt('-', k, v1), fmt('+', k ,v)] if v1 != v2 else [])
+    for k, lchild in attrib2.iteritems():
+        if k not in attrib1:
+            rep.append(('+', '{name} = "{value}"'.format(name=k, value=lchild)))
 
     return rep
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
-        print 'Usage {name} file1 file2 [unordered_elements_path_specifiaction]'.format(name=sys.argv[0])
+        print ('Usage {name} filexp filact ' +
+            '[unordered_elements path specification]').format(name=sys.argv[0])
         sys.exit(1)
     print compare_xml_files(sys.argv[1], sys.argv[2], sys.argv[3:])
 

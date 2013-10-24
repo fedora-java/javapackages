@@ -7,7 +7,7 @@ from test_common import DIRPATH, mvn_depmap, call_script
 
 
 from lxml import etree
-from xml_compare import compare_xml
+from xml_compare import compare_lxml_etree
 
 class TestMavenDepmap(unittest.TestCase):
 
@@ -38,7 +38,7 @@ class TestMavenDepmap(unittest.TestCase):
         got = etree.fromstring(depmap)
         want = etree.parse(os.path.join(self.workdir,
                                         test_name+"-want.xml")).getroot()
-        report = compare_xml(got, want, unordered=['jpp', 'maven'])
+        report = compare_lxml_etree(got, want, unordered=['jpp', 'maven'])
         if report:
             report = '\n' + report
         return report
