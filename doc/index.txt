@@ -43,10 +43,6 @@ include::common_errors.txt[]
 == Integration of Maven and XMvn Tools
 include::integration_maven_xmvn.txt[]
 
-[[packaging_maven_project]]
-== Packaging Maven project
-include::packaging_maven_project.txt[]
-
 
 [appendix]
 == Appendix
