@@ -1,3 +1,5 @@
+WORK IN PROGRESS
+mizdebsk, 25 Oct 2013
 
 Describe RPM Provides and Requires, their interactions especially with relation
 to JAR file identification, explain mvn(gId:aId...) strings.

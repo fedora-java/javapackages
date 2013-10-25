@@ -1,2 +1,4 @@
+WORK IN PROGRESS
+mizdebsk, 25 Oct 2013
 
 TODO describe macros such as _javadir, _jnidir etc

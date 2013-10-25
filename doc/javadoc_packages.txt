@@ -1,2 +1,5 @@
+WORK IN PROGRESS
+mizdebsk, 25 Oct 2013
+
 Describe javadocs, purpose of javadoc RPM packages. Mention reasons for not
 having "Requires: {name}" in javadocs.
