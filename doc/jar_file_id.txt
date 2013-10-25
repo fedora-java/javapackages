@@ -1,7 +1,17 @@
-WORK IN PROGRESS
-mizdebsk, 25 Oct 2013
+Complex Java applications usually consist of multiple components.
+Each component can have multiple implementations, called _artifacts_.
+Artifacts in java context are _usually_ JAR files, but can also be WAR
+files or any other kind of file.
 
-Describe various ways that JAR files are identified:
+There exist multiple incompatible ways of identifying (naming) Java
+artifacts and each build system often encourages usage of specific
+naming scheme.  This means that Linux distributions also need to allow
+each artifact to be located using several different identifiers,
+possible using different schemes.  On the other hand it is virtually
+impossible to every naming scheme, so there are some simplifications.
+
+This chapter describes artifact different ways to identify and locate
+artifacts in system repository.
 
 ==== Relative paths
 include::jar_file_id_relative.txt[]
