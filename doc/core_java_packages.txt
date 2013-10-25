@@ -1,10 +1,60 @@
 WORK IN PROGRESS
 mizdebsk, 25 Oct 2013
 
-Briefly describe several important core packages related to Java packaging:
+==== JVM
 
-* java, java-devel, java-headless
+Fedora allows multiple Java Virtual Machines (JVMs) to be packaged
+independently.  Java packages should not directly depend on any
+particulat JVM, but instead require one of three virtual JVM packages
+depending of what Java funtionality is required.
+
+*`java-headless`*::
+
+    This package provides a working Java Runtime Environment (JRE)
+    with some functionality didabled.  Graphics and audio support may
+    be unavailable in this case.  `java-headless` provides
+    functionality that is enough for most of packages and avoids
+    pulling in a number of graphics and audio libraries as
+    dependencies.  Requirement on `java-headless` is appropriate for
+    most of Java packages.
+
+*`java`*::
+
+    Includes the same base functionality as `java-headless`, but also
+    implements audio and graphics subsystems.  Packages should require
+    `java` if they need some functionality from these subsystems, for
+    example creating GUI using AWT library.
+
+*`java-devel`*::
+
+    Provides full Java Development Kit (JDK).  In most cases only
+    packages related to Java development should have runtime
+    dependencies on `java-devel`.  Runtime packages should require
+    `java-headless` or `java`.  Some packages not strictly related to
+    java development need access to libraries included with JDK, but
+    not with JRE (for example `tools.jar`).  That's one of few cases
+    where requiring java-devel may be necessary.
+
+Packages that require minimal Java standard version can add versioned
+dependencies on one of virtual packages providing Java environment.
+For example if packages depending on functionality of JDK 8 can
+require `java-headless >= 1:1.8.0`.
+
+.Epoch in versions of JVM packages
+[NOTE]
+=======
+For compatibility with JPackage project packages providing Java 1.6.0
+or later use epoch equal to `1`.  This was necessary because package
+`java-1.5.0-ibm` from JPackage project had epoch `1` for some reason,
+so packages providing other implementations of JVM also had to use
+non-zero epoch in order to keep version ordering correct.
+=======
+
+
+TODO
+
+* Java Packages Tools
 * Ant
+** extra tasks and /etc/ant.d
 * Maven
-* XMvn
-* javapackages-tools
+** XMvn
