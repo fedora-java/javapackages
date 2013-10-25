@@ -1,1 +1,20 @@
-Relative paths from /usr/share/java, subdirectories etc
+As described in [link], JAR artifacts are installed in one of stanrard
+directory trees.  Usually this is either `%{_javadir}`
+(`/usr/share/java`) or `%{_jnidir}` (`/usr/lib/java`).
+
+The simplest way of identifying artifacts is using their relative path
+from one of standard locations.  All artifact can be identified this
+way because each artifacts has a unique file name.  Each path
+identifying artifact will be called _artifact path_ in this document.
+
+To keep artifact paths simpler and more readable, extension can be
+omited if it is equal to `jar`.  For non-JAR artifacts extension
+cannot be omitted and must be retained.
+
+Additionally, if artifact path points to a directory then it
+represents all artifacts contained in this directory.  This allows a
+whole set of related artifacts to be referenced easily by specifying
+directory name containing all of them.
+
+If the same artifact path has valid expansions in two different root
+directories then it is unspecified which artifacts will be located.
