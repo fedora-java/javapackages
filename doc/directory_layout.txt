@@ -1,4 +1,85 @@
-WORK IN PROGRESS
-mizdebsk, 25 Oct 2013
+This secrion describes most of directories used for Java packaging.
+Each directory is named in RPM macro form, which shows how it should
+be used in RPM spec files.  Symbolic name is followed by usual macro
+expantion (i.e. physical directory location in the file system) and
+short description.
 
-TODO describe macros such as _javadir, _jnidir etc
+[glossary]
+*`%{_jvmdir}`* -- `/usr/lib/jvm`::
+
+    Root directory where different Java Virtual Machines (JVM) are
+    installed.  Each JVM creates a subdirectory, possibly with several
+    alternative names implemented with symbolic links.  Directories
+    prefixed with `java` contain Java Development Kit (JDK), while
+    directories which names start with `jre` hold Java Runtime
+    Environment (JRE).
+
+*`%{_jvmsysconfdir}`* -- `/etc/jvm`::
+*`%{_jvmcommonsysconfdir}`* -- `/etc/jvm-commmon`::
+
+    Directories containing configuration files for Java Virtual
+    Machines (JVM).
+
+*`%{_jvmjardir}`* -- `/usr/lib/jvm-exports`::
+*`%{_jvmprivdir}`* -- `/usr/lib/jvm-private`::
+*`%{_jvmlibdir}`* -- `/usr/lib/jvm`::
+*`%{_jvmdatadir}`* -- `/usr/share/jvm`::
+*`%{_jvmcommonlibdir}`* -- `/usr/lib/jvm-commmon`::
+*`%{_jvmcommondatadir}`* -- `/usr/share/jvm-commmon`::
+
+    Directories containing implementation files of Java Virtual
+    Machines (JVM).  Describing them in detail is out of scope for
+    this document.  Purpose of each directory is commented briefly in
+    `macros.jpackage` file in `/etc/rpm`.  More detailed description
+    can be found in JPackage policy.
+
+*`%{_javaconfdir}`* -- `/etc/java`::
+
+    Directory containing Java configuration files.  In particular it
+    contains main Java configurayion file -- `java.conf`.
+
+*`%{_javadir}`* -- `/usr/share/java`::
+
+    Directory that holds all JAR files that do not contain or use
+    native code and do not depend on a particular Java standard
+    version.  JAR files can either be placed directly in this
+    directory or one of its subdirectories.  Often packages create
+    their own subdirectories here, in this case subdirectory name
+    should match package name.
+
+*`%{_jnidir}`* -- `/usr/lib/java`::
+
+    Directory where architecture-specific JAR files are installed.  In
+    particular JAR files containing or using native code (Java Native
+    Interface, NI) should be installed.
+
+*`%{_javadir}-ext`* -- `/usr/share/java-ext`::
+*`%{_javadir}-`+_x_._y_._z_+* -- `/usr/share/java-`+_x_._y_._z_+::
+*`%{_jnidir}-ext`* -- `/usr/lib/java-ext`::
+*`%{_jnidir}-`+_x_._y_._z_+* -- `/usr/lib/java-`+_x_._y_._z_+::
+
+    These directories are rarely used and are retained mostly for
+    compatibility with JPackage project.  They are meant to contain
+    JAR files that depend on particular Java standard version.  Note
+    that such JARs can (and usually are) placed in %{javadir} or
+    %{jnidir}.
+
+*`%{_javadocdir}`* -- `/usr/share/javadoc`::
+
+    Root directory where all Java API documentation (Javadoc) is
+    installed.  Each source package usually creates a single
+    subdirectory containing aggregated Javadocs for all binary
+    packages it produces.
+
+*`%{_mavenpomdir}`* -- `/usr/share/maven-poms`::
+
+    Directory where Project Object Model (POM) files used by Apache
+    Maven are installed.  Each POM must have name that strictly
+    corresponds to JAR file in `%{javadir}` or `%{jnidir}`.
+
+*`%{_mavendepmapfragdir}`* -- `/usr/share/maven-fragments`::
+
+    Directory containing package metadata in XML format.  Typically
+    each binary package installs here a single XML file containing
+    various information (metadata) about artifacts associated with
+    that package.
