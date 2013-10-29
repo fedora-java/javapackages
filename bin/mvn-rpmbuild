@@ -30,6 +30,12 @@
 #
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
+echo "***************************************************************" >&2
+echo "* WARNING!  mvn-rpmbuild is deprecated and it will be removed *" >&2
+echo "* in future.  Users should migrate to using %mvn_build macro  *" >&2
+echo "* or call XMvn directly if greater flexibility is required.   *" >&2
+echo "***************************************************************" >&2
+
 # Support local depmaps
 depmap=
 for arg in "$@"; do
