@@ -1,4 +1,4 @@
-As described in [link], JAR artifacts are installed in one of stanrard
+As described in [link], JAR artifacts are installed in one of standard
 directory trees.  Usually this is either `%{_javadir}`
 (`/usr/share/java`) or `%{_jnidir}` (`/usr/lib/java`).
 
@@ -8,7 +8,7 @@ way because each artifacts has a unique file name.  Each path
 identifying artifact will be called _artifact path_ in this document.
 
 To keep artifact paths simpler and more readable, extension can be
-omited if it is equal to `jar`.  For non-JAR artifacts extension
+omitted if it is equal to `jar`.  For non-JAR artifacts extension
 cannot be omitted and must be retained.
 
 Additionally, if artifact path points to a directory then it

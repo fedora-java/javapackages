@@ -1,7 +1,7 @@
-This secrion describes most of directories used for Java packaging.
+This section describes most of directories used for Java packaging.
 Each directory is named in RPM macro form, which shows how it should
 be used in RPM spec files.  Symbolic name is followed by usual macro
-expantion (i.e. physical directory location in the file system) and
+expansion (i.e. physical directory location in the file system) and
 short description.
 
 [glossary]
@@ -15,7 +15,7 @@ short description.
     Environment (JRE).
 
 *`%{_jvmsysconfdir}`* -- `/etc/jvm`::
-*`%{_jvmcommonsysconfdir}`* -- `/etc/jvm-commmon`::
+*`%{_jvmcommonsysconfdir}`* -- `/etc/jvm-common`::
 
     Directories containing configuration files for Java Virtual
     Machines (JVM).
@@ -24,8 +24,8 @@ short description.
 *`%{_jvmprivdir}`* -- `/usr/lib/jvm-private`::
 *`%{_jvmlibdir}`* -- `/usr/lib/jvm`::
 *`%{_jvmdatadir}`* -- `/usr/share/jvm`::
-*`%{_jvmcommonlibdir}`* -- `/usr/lib/jvm-commmon`::
-*`%{_jvmcommondatadir}`* -- `/usr/share/jvm-commmon`::
+*`%{_jvmcommonlibdir}`* -- `/usr/lib/jvm-common`::
+*`%{_jvmcommondatadir}`* -- `/usr/share/jvm-common`::
 
     Directories containing implementation files of Java Virtual
     Machines (JVM).  Describing them in detail is out of scope for
@@ -36,7 +36,7 @@ short description.
 *`%{_javaconfdir}`* -- `/etc/java`::
 
     Directory containing Java configuration files.  In particular it
-    contains main Java configurayion file -- `java.conf`.
+    contains main Java configuration file -- `java.conf`.
 
 *`%{_javadir}`* -- `/usr/share/java`::
 
@@ -61,8 +61,8 @@ short description.
     These directories are rarely used and are retained mostly for
     compatibility with JPackage project.  They are meant to contain
     JAR files that depend on particular Java standard version.  Note
-    that such JARs can (and usually are) placed in %{javadir} or
-    %{jnidir}.
+    that such JARs can (and usually are) placed in %{_javadir} or
+    %{_jnidir}.
 
 *`%{_javadocdir}`* -- `/usr/share/javadoc`::
 
@@ -75,7 +75,7 @@ short description.
 
     Directory where Project Object Model (POM) files used by Apache
     Maven are installed.  Each POM must have name that strictly
-    corresponds to JAR file in `%{javadir}` or `%{jnidir}`.
+    corresponds to JAR file in `%{_javadir}` or `%{_jnidir}`.
 
 *`%{_mavendepmapfragdir}`* -- `/usr/share/maven-fragments`::
 
