@@ -7,12 +7,16 @@ index.html: *.txt images/xmvn.svg
 	dia -e $@ $<
 
 .images_uploaded: images/* images/icons/*
-	scp -r images/ fedorapeople.org:public_html/java-packaging-howto/
+	mkdir -p doc || :
+	cp -r images/ doc/
+	scp -r doc fedorahosted.org:javapackages
 	touch .images_uploaded
 
 
 upload: index.html .images_uploaded
-	scp -r index.html fedorapeople.org:public_html/java-packaging-howto/
+	mkdir doc || :
+	cp *.html doc
+	scp -r doc fedorahosted.org:javapackages
 
 clean:
 	rm -f *.html images/*.svg
