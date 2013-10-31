@@ -3,4 +3,5 @@ Aliases working in two ways:
 * Symlinks for paths
 * Additional mappings for artifact specifications
 
-IN PROGRESS - msrb
+WORK IN PROGRESS
+mizdebsk, 31 Oct 2013

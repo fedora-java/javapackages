@@ -1,4 +1,5 @@
-
 Handling of compatibility packages, versioned jars etc.
 
-TODO - write content
+WORK IN PROGRESS
+mizdebsk, 31 Oct 2013
+
