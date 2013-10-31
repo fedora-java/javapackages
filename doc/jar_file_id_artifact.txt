@@ -1,1 +1,22 @@
-JAR files identified by Maven artifacts, classifiers, extensions etc.
+As noted in previous section, every artifact can be uniquly identified
+by its file path.  However this is not always the preferred way of
+artifact identification.
+
+Modern Java build systems provide a way of identifying artifacts with
+an abstract identifier, or more often a pair of identifiers.  The
+first if usually called *group ID* or *organization ID* while the
+second is just *artifact ID*.  This pair of identifiers will be called
+*artifact coordinated* in this document.  Besides group ID and
+artifact ID, artifact coordinates may also include other (optional)
+information about artifact, such as *extension*, *classifier* or
+*version*.
+
+In Linux distributions it's important to stay close to upstreams
+providing software being packaged, so the ability to identify
+artifacts in the same way as upstream does is very important from the
+point of view of packaging.  Every artifact can optionally be
+identified by artifact coordinates assigned during package build.
+Packages built with Maven automatically use this feature, but all
+other packages, even these built with pure `javac`, can use this
+feature too (see description of `%mvn_artifact` and
+`%add_maven_depmap` macros).
