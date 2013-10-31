@@ -2,3 +2,5 @@ Aliases working in two ways:
 
 * Symlinks for paths
 * Additional mappings for artifact specifications
+
+TODO - write content
