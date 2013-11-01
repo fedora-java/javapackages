@@ -69,6 +69,14 @@ class POM(object):
         gId = self.__find('./pom:groupId')
         if gId is None:
             gId = self.__find('./pom:parent/pom:groupId')
+        if gId is None:
+            gId = self.__find('/ivy-module/info')
+            if gId is not None:
+                gId = gId.attrib["organisation"]
+            if gId is not None:
+                return gId
+        if gId is None:
+            raise PomLoadingException("Unable to determine groupId")
         if len(gId) != 0:
             raise PomLoadingException("Unexpected child nodes under groupId")
         return gId.text.strip()
@@ -79,6 +87,14 @@ class POM(object):
         Effective artifactId of the pom Artifact
         """
         aId = self.__find('./pom:artifactId')
+        if aId is None:
+            aId = self.__find('/ivy-module/info')
+            if aId is not None:
+                aId = aId.attrib["module"]
+            if aId is not None:
+                return aId
+        if aId is None:
+            raise PomLoadingException("Unable to determine artifactID")
         if len(aId) != 0:
             raise PomLoadingException("Unexpected child nodes under artifactId")
         return aId.text.strip()
@@ -92,7 +108,14 @@ class POM(object):
         version = self.__find('./pom:version')
         if version is None:
             version = self.__find('./pom:parent/pom:version')
-            assert version is not None
+        if version is None:
+            version = self.__find('/ivy-module/info')
+            if version is not None:
+                version = version.attrib["revision"]
+            if version is not None:
+                return version
+        if version is None:
+            raise PomLoadingException("Unable to determine artifact version")
         if len(version) != 0:
             raise PomLoadingException("Unexpected child nodes under version")
         return version.text.strip()
@@ -107,4 +130,7 @@ class POM(object):
             if len(p) != 0:
                 raise PomLoadingException("Unexpected child nodes under packaging")
             return p.text.strip()
+        p = self.__find('/ivy-module/info')
+        if p is not None:
+            return 'ivy'
         return None
