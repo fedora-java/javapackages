@@ -75,6 +75,13 @@ class TestPOM(unittest.TestCase):
         self.assertEqual(p.artifactId, "junit")
         self.assertEqual(p.version, "4.11")
 
+    @pomfile("ivy-simple.xml")
+    def test_ivy_module(self, p):
+        self.assertEqual(p.packaging, "ivy")
+        self.assertEqual(p.groupId, "org.apache")
+        self.assertEqual(p.artifactId, "hello-ivy")
+        self.assertEqual(p.version, "1.2.3")
+
 
 if __name__ == '__main__':
     unittest.main()
