@@ -95,7 +95,12 @@ class TagBuilder:
                 base_package_requires.add("jpackage-utils")
         for basereq in base_package_requires:
             print basereq
+
+        unknown_deps = []
         for dependency in depmap.get_required_artifacts():
+            if dependency.version == "UNKNOWN":
+                unknown_deps.append(dependency)
+                continue
             for skipped in self.skipped_artifacts:
                 if (skipped.groupId == dependency.groupId and
                     skipped.artifactId == dependency.artifactId and
@@ -131,6 +136,16 @@ class TagBuilder:
                 if dependency.extension == "pom":
                     dependency.extension = ""
                 print(dependency.get_rpm_str(dependency.version))
+
+        if unknown_deps:
+            unknown_msg = "Following dependencies were not resolved and " \
+                          "requires cannot be generated. Either remove the " \
+                          "dependency from pom.xml or add proper packages to " \
+                          "BuildRequires:\n"
+            for unknown in unknown_deps:
+                unknown_msg = unknown_msg + \
+                            "{art}\n".format(art=unknown)
+            raise Exception(unknown_msg)
 
         if skipped_but_required:
             skipped_msg = "Following artifacts were built " \
