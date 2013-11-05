@@ -19,18 +19,6 @@
 
    https://bugzilla.redhat.com/buglist.cgi?product=Fedora&component=javapackages-tools&keywords=NeedsTestCase
 
-** Expand test cases for require generator & multiple provided artifacts, each with
-   different namespace (i.e. require jpackage-utils & nsX-runtime at the same
-   time)
 
 * FEATURES
 
-** SCL support
-
-   %jpackage_script should check SCL, perhaps automatically activate SCL?
-   Then you could just run /opt/rh/maven31/bin/mvn and Maven would be ran
-   with maven31 SCL activated (just an idea, I'm not sure about that)
-
-   generated quto-requires should include SCL-specific metapackage
-   instead of jpackage-utils.  The SCL package is assumed to own all
-   the directories like /opt/rh/scl/usr/share/maven-fragments etc.
