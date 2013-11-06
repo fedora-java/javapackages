@@ -84,6 +84,32 @@ all Java applications have to use wrapper shell scripts to setup the environment
 before invoking the JVM and running the application itself. Note that this is
 not necessary for libraries.
 
+[[classpath]]
+==== Class path
+
+The class path is a way of telling JVM where to look for user classes
+and 3rd party libraries. By default, only current directory is searched,
+all other locations need to be specified explicitly by setting up
+CLASSPATH environment variable, or via `-cp` (`-classpath`) option of a
+Java Virtual Machine.
+
+.Setting the class path
+[source,shell]
+------
+java -cp /usr/share/java/log4j.jar:/usr/share/java/junit.jar mypackage/MyClass.class
+CLASSPATH=/usr/share/java/log4j.jar:/usr/share/java/junit.jar java mypackage/MyClass.class
+------
+
+Please note that two JAR files are separated by colon in a class path
+definition.
+
+[TIP]
+======
+See
+http://docs.oracle.com/javase/7/docs/technotes/tools/windows/classpath.html[official
+documentation] for more information about class path.
+======
+
 ==== Build System Identification
 How to determine preferred upstream build system
 TODO - write content
