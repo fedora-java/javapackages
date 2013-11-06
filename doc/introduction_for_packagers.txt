@@ -84,6 +84,27 @@ all Java applications have to use wrapper shell scripts to setup the environment
 before invoking the JVM and running the application itself. Note that this is
 not necessary for libraries.
 
+The sample project can be compiled to a bytecode by Java compiler. Java
+compiler can be typically invoked from command line by command `javac`.
+
+[source,shell]
+------
+$ javac `find . -name *.java`
+------
+
+For every `.java` file corresponding `.class` file will be created. The
+`.class` files contain Java bytecode which is meant to be executed on
+JVM.
+
+One could put invocation of `javac` to Makefile and simplify the
+compilation a bit. It might be sufficient for such a simple project, but
+it would quickly become hard to build more complex projects with this
+approach. Java world knows several high-level build systems which can
+highly simplify building of Java projects. Among the others, probably
+most known are http://maven.apache.org/[Apache Maven],
+http://ant.apache.org/[Apache Ant] and http://www.gradle.org/[Gradle].
+
+
 [[classpath]]
 ==== Class path
 
