@@ -1,4 +1,104 @@
-Examples of common errors encountered during packaging, their explanations and
-possible solutions and/or workarounds
+This section contains explanations and solutions/workarounds for common
+errors which can be encountered during packaging.
 
-WORK IN PROGRESS - msrb
+[[error_missing_dependency]]
+=== Missing dependency
+
+------
+[ERROR] Failed to execute goal on project simplemaven: Could not resolve
+dependencies for project com.example:simplemaven:jar:1.0: The following
+artifacts could not be resolved: commons-io:commons-io:jar:2.4,
+junit:junit:jar:4.11: Cannot access central
+(http://repo.maven.apache.org/maven2) in offline mode and the artifact
+commons-io:commons-io:jar:2.4 has not been downloaded from it before. -> [Help
+1]
+------
+
+Maven wasn't able to build project `com.example:simplemaven`, because it
+couldn't find some dependencies (in this case
+`commons-io:commons-io:jar:2.4` and `junit:junit:jar:4.11`)
+
+Package maintainer has two options here:
+
+ - find out which packages provide given dependencies and add them to
+   `BuildRequires` in the spec file. Use `repoquery -f
+   'mvn(commons-io:commons-io)'` to search for package which provides
+   given artifact.
+
+ - remove those dependencies from `pom.xml` file. Maven will stop
+   complaining about them and some dependencies don't have to be
+   mandatory for project to build. Maintainer can use wide variety of
+   <<helper_macros,macros>> for modifying POM files. The one
+   for removing dependencies is called
+   <<pom_remove_dep,%pom_remove_dep>>. If removed dependency was
+   actually needed, the build will later fail with compilation failure.
+
+
+[[error_compilation_failure]]
+=== Compilation failure
+
+------
+[ERROR] Failed to execute goal
+        org.apache.maven.plugins:maven-compiler-plugin:3.1:compile (default-compile)
+        on project simplemaven: Compilation failure: Compilation failure:
+[ERROR]
+/builddir/build/BUILD/simplemaven-1.0/src/main/java/com/example/Main.java:[3,29]
+package org.apache.commons.io does not exist
+[ERROR]
+/builddir/build/BUILD/simplemaven-1.0/src/main/java/com/example/Main.java:[8,9]
+cannot find symbol
+[ERROR] symbol:   class FileUtils
+[ERROR] location: class com.example.Main
+[ERROR] -> [Help 1]
+------
+
+Java compiler couldn't find given class on classpath or incompatible
+version was present. This could be caused by following reasons:
+
+ - `pom.xml` requires different version of Maven artifact than local
+   repository provides
+ - `pom.xml` is missing necessary dependency
+
+Different versions of same library may provide slightly different API.
+This means that project doesn't have to be buildable if different
+version is provided.  If the library in local repository is older than
+the one required by project, then the library could be updated. If the
+project requires older version, then the project should be ported to
+latest stable version of the library (this may require cooperation with
+project's upstream). If none of these is possible from some reason, it
+is still possible to introduce new `compat` package. See
+<<compat_packages,compat packages>> section for more information on this
+topic.
+
+Sometimes `pom.xml` doesn't list all the necessary dependencies, even if
+it should. Dependencies can also depend on some other and typically all
+these will be available to the project which is being built. The problem
+is that local repository may contain different versions of these
+dependencies. And even if these versions are fully compatible with the
+project, they may require slightly different set of dependencies. This
+could lead to build failure if `pom.xml` doesn't specify all necessary
+dependencies and relies on transitive dependencies. Such a missing
+dependency may be considered a bug in the project. The solution is to
+explicitly add missing dependency to the `pom.xml`. This may be easily
+done by using `%pom_add_dep` macro. See section about
+<<helper_macros,macros for POM modification>> for more information.
+
+[[error_requires_unknown]]
+=== Requires cannot be generated
+
+------
+Following dependencies were not resolved and requires cannot be generated. Either remove the dependency from pom.xml or add proper packages to BuildRequires:
+org.apache.maven.doxia:doxia-core::tests:UNKNOWN
+------
+
+[[error_scope_system]]
+=== Dependencies with scope "system"
+
+------
+[ERROR] Failed to execute goal
+org.fedoraproject.xmvn:xmvn-mojo:1.2.0:install (default-cli) on project
+pom: Some reactor artifacts have dependencies with scope "system". Such
+dependencies are not supported by XMvn installer. You should either
+remove any dependencies with scope "system" before the build or not run
+XMvn instaler. -> [Help 1]
+------
