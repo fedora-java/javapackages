@@ -124,7 +124,7 @@ class PomMacrosTest(unittest.TestCase):
         self.assertEqual(res, True)
 
     @exec_macro("pom_remove_plugin not:there", "pom_remove_plugin_ret1.xml")
-    def test_remove_plugin_nons(self, stdin, stderr, returncode, pom_path):
+    def test_remove_plugin_ret1(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 1)
 
         got, want, res = self.check_result(pom_path)
@@ -335,7 +335,7 @@ class PomMacrosTest(unittest.TestCase):
 
     @exec_macro("pom_xpath_inject pom:parent '<version>1.2</version>'",
             "pom_xpath_inject_whitespace1.xml")
-    def test_xpath_inject_whitespace(self, stdin, stderr, returncode, pom_path):
+    def test_xpath_inject_whitespace1(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 0, stderr)
 
         got, want = self.get_result_literally(pom_path)
