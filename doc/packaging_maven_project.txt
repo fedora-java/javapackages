@@ -29,25 +29,12 @@ By default, resulting JAR files will be installed in `%{_javadir}/%{name}`,
 therefore package needs to own this directory.
 
 The build could fail from many reasons, but one probably most common is
-following one:
+build failure due to <<error_missing_dependency,missing dependencies>>
 
-------
-[ERROR] Failed to execute goal on project simplemaven: Could not resolve
-dependencies for project com.example:simplemaven:jar:1.0: The following
-artifacts could not be resolved: commons-io:commons-io:jar:2.4,
-junit:junit:jar:4.11: Cannot access central
-(http://repo.maven.apache.org/maven2) in offline mode and the artifact
-commons-io:commons-io:jar:2.4 has not been downloaded from it before. -> [Help
-1]
-------
-
-
-The error message above is self-explanatory. Maven couldn't find some dependencies and
-therefore it wasn't able to build the package. We can try to remove
-these missing dependencies from pom.xml and make Maven stop complaining about
-them. However, these removed dependencies may be crucial for building of the
-project and therefore it may be needed to package them later.
-Let's remove the dependencies from `pom.xml`.
+We can try to remove these missing dependencies from pom.xml and make Maven
+stop complaining about them. However, these removed dependencies may be crucial
+for building of the project and therefore it may be needed to package them
+later.  Let's remove the dependencies from `pom.xml`.
 
 
 .Remove dependencies from pom.xml
@@ -65,22 +52,8 @@ Let's remove the dependencies from `pom.xml`.
 Package maintainer can use a wide variety of "`pom_`" macros for modifying
 `pom.xml` files. See <<helper_macros, Macros for POM modification>> section for more information.
 
-Now try to build the project again.
-
-------
-[ERROR] Failed to execute goal
-        org.apache.maven.plugins:maven-compiler-plugin:3.1:compile (default-compile)
-        on project simplemaven: Compilation failure: Compilation failure:
-[ERROR]
-/builddir/build/BUILD/simplemaven-1.0/src/main/java/com/example/Main.java:[3,29]
-package org.apache.commons.io does not exist
-[ERROR]
-/builddir/build/BUILD/simplemaven-1.0/src/main/java/com/example/Main.java:[8,9]
-cannot find symbol
-[ERROR] symbol:   class FileUtils
-[ERROR] location: class com.example.Main
-[ERROR] -> [Help 1]
-------
+Now try to build the project again. The build will fail with
+<<error_compilation_failure,compilation failure>>.
 
 Oops, another problem. This time Maven thought it had all the necessary dependenices, but Java
 compiler thinks otherwise.
