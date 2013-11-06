@@ -15,7 +15,7 @@ $ java org/fedoraproject/helloworld/HelloWorld.class
 --------
 
 For developers, `javac` command is probably one of the most important
-tools from OpenJDK. It's a Java compiler which tranaslates source files
+tools from OpenJDK. It's a Java compiler which translates source files
 to Java bytecode, which can be later interpreted by JVM. Other
 interesting tools are `javadoc` and `javap`. `javadoc` is a tool for
 generating Javadoc documentation and `javap` can be used for
