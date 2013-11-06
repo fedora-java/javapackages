@@ -1,11 +1,12 @@
 import unittest
-import subprocess
 import os
-from shutil import copyfile
+
 from shutil import copytree
 from shutil import rmtree
 from lxml import etree
 from formencode import doctest_xml_compare
+
+from test_rpmbuild import Package
 
 ns = dict(a='http://maven.apache.org/POM/4.0.0')
 dirpath = os.path.dirname(os.path.realpath(__file__))
@@ -21,14 +22,15 @@ workdir = os.path.join(datadir, "..", 'pom_macros_workdir')
 def exec_macro(command = "", pom = "pom.xml"):
     def test_decorator(fn):
         def test_decorated(self, *args, **kwargs):
-            bash = subprocess.Popen(['bash'],
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                stdin=subprocess.PIPE)
             pompath = os.path.join(workdir, pom)
-            stdin, stderr = bash.communicate("%s %s %s" % (pe, command,
-                pompath))
+            pomname = os.path.basename(pom)
+            package = Package(fn.__name__)
+            pomsourcepath = package.add_source(pompath)
+            package.append_to_prep('%{command} {pom}'.format(command=command,
+                pom=pomname))
+            stdin, stderr, return_value = package.run_prep()
 
-            fn(self, stdin, stderr, bash.returncode, pompath)
+            fn(self, stdin, stderr, return_value, pomsourcepath)
         return test_decorated
     return test_decorator
 
@@ -40,40 +42,36 @@ class PomMacrosTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.tearDownClass()
-        try:
-            cls.olddir = os.getcwd()
-            copytree(datadir, workdir)
-            os.chdir(workdir)
-        except OSError:
-            pass
+        cls.olddir = os.getcwd()
+        copytree(datadir, workdir)
+        os.chdir(workdir)
 
     @classmethod
     def tearDownClass(cls):
         try:
             rmtree(workdir)
-            os.chdir(cls.olddir)
         except OSError:
             pass
+        os.chdir(cls.olddir)
 
     def xml_compare_reporter(self, report):
         print report
 
-    def check_result(self, pom_path, want_suffix = "-want"):
+    def check_result(self, pom_path):
         got = etree.parse(pom_path).getroot()
-        want = etree.parse(pom_path + want_suffix).getroot()
+        wantpath = '{pom}-want'.format(pom=os.path.basename(pom_path))
+        want = etree.parse(wantpath).getroot()
         res = doctest_xml_compare.xml_compare(got, want, self.xml_compare_reporter)
         return got, want, res
 
-    def get_result_literally(self, pom_path, want_suffix = "-want"):
+    def get_result_literally(self, pom_path):
         with open(pom_path, 'r') as gotfile:
             got = gotfile.read().split('\n')
-        with open(pom_path + want_suffix, 'r') as wantfile:
+
+        wantpath = '{pom}-want'.format(pom=os.path.basename(pom_path))
+        with open(wantpath, 'r') as wantfile:
             want = wantfile.read().split('\n')
         return got, want
-
-    @exec_macro("ls", "pom_remove_dep.xml")
-    def test_sanity(self, stdin, stderr, returncode, pom_path):
-        self.assertEqual(returncode, 0, stderr)
 
     @exec_macro("pom_remove_dep :commons-io", "pom_remove_dep.xml")
     def test_remove_dep(self, stdin, stderr, returncode, pom_path):
