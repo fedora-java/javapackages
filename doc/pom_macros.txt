@@ -11,6 +11,7 @@ for technical details how to use them. Below are some examples added for
 convenience.
 
 
+[[pom_remove_dep]]
 Often dependencies specified in Maven `pom.xml` files need to be removed because
 of different reasons. `%pom_remove_dep` macro can be used to ease this task:
 
