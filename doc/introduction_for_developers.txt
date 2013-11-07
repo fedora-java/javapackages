@@ -72,7 +72,7 @@ for more information on this topic.
 Another useful tool is `rpm`. It can do a lot of stuff, but most
 importantly it can replace `repoquery` if one only needs to query local
 RPM database. Only installed packages, or local `.rpm` files, can be
-queryied with this tool.
+queried with this tool.
 
 Common use case could be checking which Maven artifacts provide locally
 built packages.
