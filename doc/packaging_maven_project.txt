@@ -114,6 +114,11 @@ See <<mvn_file,Alternative JAR File Names>> section for more information.
 Another quite common thing to do is adding aliases to Maven artifact. Try to run `rpm
 -qp --provides` on your locally built RPM package:
 
+[TIP]
+======
+See also section about <<querying_repositories,querying repositories>>
+======
+
 [source,shell]
 ------
 $ rpm -qp --provides simplemaven-1.0-1.fc21.noarch.rpm
