@@ -23,6 +23,11 @@ class Package(object):
         self.__prep = ''
         self.__build = ''
         self.buildpath = os.path.join('rpmbuild', 'BUILD', name + '-1')
+        self.__env = dict(os.environ)
+        self.__env['HOME'] = os.getcwd()
+        self.__env['PYTHONPATH'] = os.path.join(DIRPATH, '..', 'python')
+        self.__env['PATH'] = '{mock}:{path}'.format(mock=DIRPATH,
+                                            path=self.__env['PATH'])
 
     def add_source(self, sourcepath, newname=None):
         """Add source file to a package
@@ -60,16 +65,13 @@ class Package(object):
         return self.__invoke_rpmbuild(['-bb'])
 
     def __invoke_rpmbuild(self, args):
-        env = dict(os.environ)
-        env['HOME'] = os.getcwd()
-        env['PYTHONPATH'] = os.path.join(DIRPATH, '..', 'python')
         outfile = open("tmpout", 'w')
         errfile = open("tmperr", 'w')
         topdir = '--define=_topdir {cwd}/rpmbuild'.format(cwd=os.getcwd())
         proc = subprocess.Popen(['rpmbuild', topdir,
                                  os.path.join('rpmbuild', 'SPECS',
                                               self.__name + '.spec')]
-                                + args, shell=False, env=env,
+                                + args, shell=False, env=self.__env,
                                 stdout=outfile, stderr=errfile)
         ret = proc.wait()
         outfile = open("tmpout", 'r+')
@@ -79,6 +81,9 @@ class Package(object):
         os.remove('tmpout')
         os.remove('tmperr')
         return (out, err, ret)
+
+    def set_env(self, name, value):
+        self.__env[name] = value
 
     def __prepare_all(self):
         try:
@@ -117,6 +122,7 @@ class Package(object):
         """)
 
         prep_section = dedent("""\
+
         %prep
         mkdir %{name}-%{version}
         cd %{name}-%{version}
@@ -126,9 +132,11 @@ class Package(object):
         prep_section += self.__prep
 
         build_section = dedent("""\
-        %build
 
+        %build
+        cd %{name}-%{version}
         """)
+        build_section += self.__build
 
         specpath = os.path.join('rpmbuild', 'SPECS', self.__name + '.spec')
         with open(specpath, 'w') as specfile:
