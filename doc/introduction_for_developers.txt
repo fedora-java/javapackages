@@ -19,6 +19,54 @@ several reasons for it, among others:
     licenses used, homepage for the project, changelogs and other information
     that users or administrators can find useful
 
+==== Example RPM Project
+RPM uses `spec` files as recipes for building software packages. A simple
+example of such spec file is below.
+
+[source,spec,numbered]
+------
+include::rpm_project/minimal.spec[]
+------
+
+RPM `spec` files contain several basic sections:
+
+   * header containing package metadata
+   * %prep section used for source unpacking, patching and steps to prepare for
+     building
+   * %build section containing compilation instructions such as Maven or Ant
+     invocation
+   * %install section used to preparing filesystem layout inside directory
+   * %files section containing list of files to be included in the binary RPM itself
+   * %changelog containing RPM changelog with prescribed format used mostly to
+     document changes to spec file (not upstream)
+
+To build RPM from link:rpm_project/minimal.spec[this `spec` file] save it in
+your current directory and run `rpmbuild`:
+[source,shell]
+------
+$ rpmbuild -bb minimal.spec
+------
+
+If everything worked OK, this should produce RPM file
+`~/rpmbuild/RPMS/x86_64/minimal-1.0-1.fc18.x86_64.rpm`. You can use `rpm` or
+`yum` commands to install this package and it will add `/bin/minimalistic` shell
+script to your system. Above `spec` file doesn't specify any build or runtime
+dependencies and lacks several other common parts for simplification.
+[NOTE]
+======
+Paths and filenames might be slightly different depending on your architecture
+and distribution. Output of the commands will tell you exact paths
+======
+
+As you can see to build RPM files you can use `rpmbuild` command. It has several
+other options, which we will cover later on.
+
+One of the most important RPM features is already mentioned handling of
+dependencies. There are two types of dependencies in RPM:
+
+  - build time dependencies (BuildRequires tag in `spec` file)
+  - runtime dependencies (Requires tag in `spec` file)
+
 ==== Querying repositories
 
 Fedora comes with several useful tools which can provide great
@@ -84,55 +132,6 @@ mvn(com.example:simplemaven) = 1.0
 mvn(simplemaven:simplemaven) = 1.0
 simplemaven = 1.0-2.fc21
 ------
-
-==== Example RPM Project
-RPM uses `spec` files as recipes for building software packages. A simple
-example of such spec file is below.
-
-[source,spec,numbered]
-------
-include::rpm_project/minimal.spec[]
-------
-
-RPM `spec` files contain several basic sections:
-
-   * header containing package metadata
-   * %prep section used for source unpacking, patching and steps to prepare for
-     building
-   * %build section containing compilation instructions such as Maven or Ant
-     invocation
-   * %install section used to preparing filesystem layout inside directory
-   * %files section containing list of files to be included in the binary RPM itself
-   * %changelog containing RPM changelog with prescribed format used mostly to
-     document changes to spec file (not upstream)
-
-To build RPM from link:rpm_project/minimal.spec[this `spec` file] save it in
-your current directory and run `rpmbuild`:
-[source,shell]
-------
-$ rpmbuild -bb minimal.spec
-------
-
-If everything worked OK, this should produce RPM file
-`~/rpmbuild/RPMS/x86_64/minimal-1.0-1.fc18.x86_64.rpm`. You can use `rpm` or
-`yum` commands to install this package and it will add `/bin/minimalistic` shell
-script to your system. Above `spec` file doesn't specify any build or runtime
-dependencies and lacks several other common parts for simplification.
-[NOTE]
-======
-Paths and filenames might be slightly different depending on your architecture
-and distribution. Output of the commands will tell you exact paths
-======
-
-As you can see to build RPM files you can use `rpmbuild` command. It has several
-other options, which we will cover later on.
-
-One of the most important RPM features is already mentioned handling of
-dependencies. There are two types of dependencies in RPM:
-
-  - build time dependencies (BuildRequires tag in `spec` file)
-  - runtime dependencies (Requires tag in `spec` file)
-
 
 ==== Quiz for Java Developers
 
