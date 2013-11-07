@@ -19,6 +19,72 @@ several reasons for it, among others:
     licenses used, homepage for the project, changelogs and other information
     that users or administrators can find useful
 
+==== Querying repositories
+
+Fedora comes with several useful tools which can provide great
+assistance in getting information from RPM repositories.
+
+`repoquery` is a tool for querying information from YUM repositories.
+Maintainer of Java packages might typically query the repository for
+information like "which package contains Maven artifact
+`groupId:artifactId`".
+
+.Find out which package provides given artifact
+[source,shell]
+------
+$ repoquery -f 'mvn(commons-io:commons-io)'
+apache-commons-io-1:2.4-9.fc19.noarch
+------
+
+The example above shows that one can get to `commons-io:commons-io`
+artifact by installing `apache-commons-io` package.
+
+By default, repoquery uses all enabled repositories in YUM
+configuration, but it is possible to explicitly specify any other
+repository. For example following command will query only Rawhide
+repository:
+
+[source,shell]
+------
+$ repoquery --repoid rawhide -f 'mvn(commons-io:commons-io)'
+apache-commons-io-1:2.4-10.fc20.noarch
+------
+
+Sometimes it may be useful to just list all the artifacts provided by
+given package:
+
+[source,shell]
+------
+$ repoquery --provides apache-commons-io
+apache-commons-io = 1:2.4-9.fc19
+jakarta-commons-io = 1:2.4-9.fc19
+mvn(commons-io:commons-io) = 2.4
+mvn(org.apache.commons:commons-io) = 2.4
+osgi(org.apache.commons.io) = 2.4.0
+------
+
+Output above means that package `apache-commons-io` provides two Maven
+artifacts: previously mentioned `commons-io:commons-io` and
+`org.apache.commons:commons-io`. In this case the second one is just an
+alias for same JAR file. See section about <<aliases,artifact aliases>>
+for more information on this topic.
+
+Another useful tool is `rpm`. It can do a lot of stuff, but most
+importantly it can replace `repoquery` if one only needs to query local
+RPM database. Only installed packages, or local `.rpm` files, can be
+queryied with this tool.
+
+Common use case could be checking which Maven artifacts provide locally
+built packages.
+
+[source,shell]
+------
+$ rpm -qp --provides simplemaven-1.0-2.fc21.noarch.rpm
+mvn(com.example:simplemaven) = 1.0
+mvn(simplemaven:simplemaven) = 1.0
+simplemaven = 1.0-2.fc21
+------
+
 ==== Example RPM Project
 RPM uses `spec` files as recipes for building software packages. A simple
 example of such spec file is below.
