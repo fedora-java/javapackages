@@ -19,7 +19,8 @@ def exec_macro(command = "", pom = "pom.xml"):
             pompath = os.path.join(WORKDIR, pom)
             pomname = os.path.basename(pom)
             package = Package(function.__name__)
-            pomsourcepath = package.add_source(pompath)
+            package.add_source(pompath)
+            pomsourcepath = os.path.join(package.buildpath, pomname)
             package.append_to_prep('%{command} {pom}'.format(command=command,
                 pom=pomname))
             stdin, stderr, return_value = package.run_prep()

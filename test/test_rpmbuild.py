@@ -22,6 +22,7 @@ class Package(object):
         self.__sources = {}
         self.__prep = ''
         self.__build = ''
+        self.buildpath = os.path.join('rpmbuild', 'BUILD', name + '-1')
 
     def add_source(self, sourcepath, newname=None):
         """Add source file to a package
@@ -39,7 +40,6 @@ class Package(object):
         if not newname:
             newname = os.path.basename(sourcepath)
         self.__sources[sourcepath] = newname
-        return os.path.join('rpmbuild', 'BUILD', self.__name + '-1', newname)
 
     def append_to_prep(self, to_append):
         """Appends given string to %prep section of spec."""
@@ -62,6 +62,7 @@ class Package(object):
     def __invoke_rpmbuild(self, args):
         env = dict(os.environ)
         env['HOME'] = os.getcwd()
+        env['PYTHONPATH'] = os.path.join(DIRPATH, '..', 'python')
         outfile = open("tmpout", 'w')
         errfile = open("tmperr", 'w')
         topdir = '--define=_topdir {cwd}/rpmbuild'.format(cwd=os.getcwd())
@@ -110,7 +111,7 @@ class Package(object):
             header += 'Source{index}: {filename}\n'.format(filename=filename,
                     index=index)
 
-            header += dedent("""\
+        header += dedent("""\
         %description
         This is just a test.
         """)
