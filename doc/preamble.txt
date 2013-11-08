@@ -1,7 +1,32 @@
-TODO add authors, license etc
+The authors of this document are:
 
-Nicolas Mailhot
-JPackage Project
+* Mikolaj Izdebski, Red Hat
+* Nicolas Mailhot, JPackage Project
+* Stanislav Ochotnicky, Red Hat
+* Ville Skyttä, JPackage Project
+* Michal Srb, Red Hat
 
-Ville Skyttä
-JPackage Project
+This document is free software; see the
+https://git.fedorahosted.org/cgit/javapackages.git/plain/LICENSE[license]
+for terms of use, distribution and/or modification.
+
+The source code for this document is available in
+https://git.fedorahosted.org/cgit/javapackages.git[git repository].
+Instructions for building it from sources are available in
+https://git.fedorahosted.org/cgit/javapackages.git/plain/doc/README[README
+file].
+
+This document is developed as part of Javapackages community project,
+which welcomes new contributotrs.  Requests and comments related to
+this document should be
+http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=javapackages-tools[reported]
+at https://bugzilla.redhat.com/[Red Hat Bugzilla].
+
+Before contributing please read the
+https://git.fedorahosted.org/cgit/javapackages.git/plain/doc/README[README
+file], which among other things includes basic rules which should be
+followed when working on this document.  You can patches to
+https://bugzilla.redhat.com/[Red Hat Bugzilla].  They should be in git
+format and should be prepared against `master` branch in git.
+Alternatively you can also send pull requests at
+https://github.com/mizdebsk/javapackages[Javapackages Github mirror].
