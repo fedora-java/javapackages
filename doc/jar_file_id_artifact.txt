@@ -1,4 +1,4 @@
-As noted in previous section, every artifact can be uniquly identified
+As noted in previous section, every artifact can be uniquely identified
 by its file path.  However this is not always the preferred way of
 artifact identification.
 
@@ -6,7 +6,7 @@ Modern Java build systems provide a way of identifying artifacts with
 an abstract identifier, or more often a pair of identifiers.  The
 first if usually called *group ID* or *organization ID* while the
 second is just *artifact ID*.  This pair of identifiers will be called
-*artifact coordinated* in this document.  Besides group ID and
+*artifact coordinates* in this document.  Besides group ID and
 artifact ID, artifact coordinates may also include other (optional)
 information about artifact, such as *extension*, *classifier* or
 *version*.
