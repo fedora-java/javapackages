@@ -7,7 +7,9 @@ import re
 DIRPATH = os.path.dirname(os.path.realpath(__file__))
 PYTHONPATH = os.path.join(DIRPATH, '../python')
 sys.path.append(PYTHONPATH)
-SCRIPT_ENV = {'PATH':DIRPATH, 'PYTHONPATH':PYTHONPATH}
+SCRIPT_ENV = {'PATH':'{mock}:{real}'.format(mock=DIRPATH,
+                                            real=os.environ['PATH']),
+              'PYTHONPATH':PYTHONPATH}
 
 def call_script(name, args, stdin = None, wrapped = False):
     outfile = open("tmpout", 'w')

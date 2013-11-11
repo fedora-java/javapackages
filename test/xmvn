@@ -2,3 +2,4 @@
 #mock script for testing arguments passed to xmvn
 mkdir -p .xmvn
 echo "${@}">.xmvn/out
+env >.xmvn/env
