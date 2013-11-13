@@ -2,7 +2,7 @@ This section contains information about default Java implementation in
 Fedora, switching between different Java runtime environments and about
 few useful tools which can be used during packaging/development.
 
-=== OpenJDK
+=== Java implementation in Fedora
 Fedora ships with reference implementation of Java Standard Edition 7
 called http://openjdk.java.net/OpenJDK[OpenJDK]. OpenJDK provides Java
 Runtime Environment for Java applications and set of development tools
