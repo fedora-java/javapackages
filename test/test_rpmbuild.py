@@ -23,6 +23,7 @@ class Package(object):
         self.__begin = ''
         self.__prep = ''
         self.__build = ''
+        self.__install = ''
         self.buildpath = os.path.join('rpmbuild', 'BUILD', name + '-1')
         self.__env = dict(os.environ)
         self.__env['HOME'] = os.getcwd()
@@ -59,6 +60,10 @@ class Package(object):
         """Appends given string to %build section of spec."""
         self.__build += to_append + '\n'
 
+    def append_to_install(self, to_append):
+        """Appends given string to %install section of spec."""
+        self.__install += to_append + '\n'
+
     def run_prep(self, args=None):
         """Runs rpmbuild -bp (doing only prep phase) with current settings."""
         self.__prepare_all()
@@ -68,6 +73,11 @@ class Package(object):
         """Runs rpmbuild -bb (stop after build phase) with current settings."""
         self.__prepare_all()
         return self.__invoke_rpmbuild(['-bb'] + (args or []))
+
+    def run_install(self, args=None):
+        """Runs rpmbuild -bi (stop after install) with current settings."""
+        self.__prepare_all()
+        return self.__invoke_rpmbuild(['-bi'] + (args or []))
 
     def __invoke_rpmbuild(self, args):
         outfile = open("tmpout", 'w')
@@ -143,11 +153,18 @@ class Package(object):
         """)
         build_section += self.__build
 
+        install_section = dedent("""\
+
+        %install
+        """)
+        install_section += self.__install
+
         specpath = os.path.join('rpmbuild', 'SPECS', self.__name + '.spec')
         with open(specpath, 'w') as specfile:
             specfile.write(header)
             specfile.write(prep_section)
             specfile.write(build_section)
+            specfile.write(install_section)
 
     def __prepare_sources(self):
         destpath = os.path.join('rpmbuild', 'SOURCES')
