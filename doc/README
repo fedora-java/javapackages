@@ -1,3 +1,7 @@
+Build instructions:
+
+Simply run 'make' in project's doc/ directory.
+
 Conventions:
  JAR - always capital unless mentioning filename
  POM - always capital unless mentioning filename
