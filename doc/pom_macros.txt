@@ -128,9 +128,6 @@ some examples for these macros.
 .Less common pom.xml modifications
 [source,spec]
 --------
-# Removes parent definition
-%pom_xpath_remove "pom:parent"
-
 # Removes extensions from the build
 %pom_xpath_remove "pom:build/pom:extensions" module/pom.xml
 
