@@ -7,8 +7,20 @@ These macros are designed to be called from `%prep` section of spec files. They
 are documented in `/etc/rpm/macros.fjava` configuration file, which is also
 link:https://git.fedorahosted.org/cgit/javapackages.git/plain/etc/macros.fjava[available online]
 and all the macros also have their own manual page. See the manual pages
-for technical details how to use them. Below are some examples added for
-convenience.
+for technical details how to use them.
+
+.Handling XML namespaces
+[NOTE]
+=======
+POM files use a specific namespace - http://maven.apache.org/POM/4.0.0. The
+easiest way to respect this namespace in XPath expressions is prefixing all node
+names with `pom:`. For example, `pom:environment/pom:os` will work because it
+selects nodes from `pom` namespace, but `environment/os` won't find anything
+because it looks for nodes that don't belong to any XML namespace.
+=======
+Using `%pom_*` macros not only increases readability of the spec file, but also
+improves maintainability of the package as there are no patches that would need
+to be rebased with each upstream release. Below are some examples added for convenience.
 
 
 [[pom_remove_dep]]
@@ -138,17 +150,4 @@ some examples for these macros.
             <artifactId>antlr</artifactId>
         </exclusion>"
 --------
-
-.Handling XML namespaces
-[NOTE]
-=======
-POM files use a specific namespace - http://maven.apache.org/POM/4.0.0. The
-easiest way to respect this namespace in XPath expressions is prefixing all node
-names with `pom:`. For example, `pom:environment/pom:os` will work because it
-selects nodes from `pom` namespace, but `environment/os` won't find anything
-because it looks for nodes that don't belong to any XML namespace.
-=======
-Using `%pom_*` macros not only increases readability of the spec file, but also
-improves maintainability of the package as there are no patches that would need
-to be rebased with each upstream release.
 
