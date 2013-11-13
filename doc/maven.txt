@@ -54,6 +54,3 @@ include::mvn_macros.txt[]
 === Macros for POM modification
 include::pom_macros.txt[]
 
-
-.XMvn package relationships
-image:images/xmvn.svg["XMvn related packages",width=600]
