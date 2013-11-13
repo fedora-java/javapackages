@@ -261,6 +261,20 @@ class MvnMacrosTest(unittest.TestCase):
         self.assertEquals(report, '', report)
 
     @rpm_test()
+    def test_mvn_build_no_args(self, pack):
+        pack.append_to_build('%mvn_build')
+
+        _, stderr, return_value = pack.run_build()
+        self.assertEqual(return_value, 0, stderr)
+        argspath = os.path.join(pack.buildpath, '.xmvn', 'out')
+        with open(argspath, 'r') as argsfile:
+            exp = '--batch-mode --offline ' + \
+                  'verify org.fedoraproject.xmvn:xmvn-mojo:install ' + \
+                  'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
+                  'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
+            self.assertEquals(argsfile.read(), exp)
+
+    @rpm_test()
     def test_mvn_build_singleton(self, pack):
         pack.append_to_build('%mvn_build -s')
         _, stderr, return_value = pack.run_build()
@@ -281,4 +295,99 @@ class MvnMacrosTest(unittest.TestCase):
         with open(actfile, 'r') as act:
             with open(expfile, 'r') as exp:
                 self.assertEquals(act.read(), exp.read())
+
+    @rpm_test()
+    def test_mvn_build_environment(self, pack):
+        pack.append_to_build('export MAVEN_OPTS="-Xmx1024M"')
+        pack.append_to_build('%mvn_build')
+        _, stderr, return_value = pack.run_build()
+        self.assertEqual(return_value, 0, stderr)
+        envpath = os.path.join(pack.buildpath, '.xmvn', 'env')
+        with open(envpath, 'r') as envfile:
+            for line in envfile:
+                if line == 'MAVEN_OPTS=-Xmx1024M\n':
+                    break
+            else:
+                self.assertTrue(False, 'Environment varible not passed to XMvn')
+
+    @rpm_test()
+    def test_mvn_build_pass_args(self, pack):
+        pack.append_to_build('%mvn_build -s -- --log-file "/var/log/xmvn"')
+        _, stderr, return_value = pack.run_build()
+        self.assertEqual(return_value, 0, stderr)
+        argspath = os.path.join(pack.buildpath, '.xmvn', 'out')
+        with open(argspath, 'r') as argsfile:
+            exp = '--batch-mode --offline --log-file /var/log/xmvn ' + \
+                  'verify org.fedoraproject.xmvn:xmvn-mojo:install ' + \
+                  'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
+                  'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
+            self.assertEquals(argsfile.read(), exp)
+
+    @rpm_test()
+    def test_mvn_build_bootstrap(self, pack):
+        pack.append_to_build('%define xmvn_bootstrap true')
+        pack.append_to_build('%mvn_build')
+
+        _, stderr, return_value = pack.run_build()
+        self.assertEqual(return_value, 0, stderr)
+        argspath = os.path.join(pack.buildpath, '.xmvn', 'out')
+        with open(argspath, 'r') as argsfile:
+            exp = '--batch-mode ' + \
+                  'verify org.fedoraproject.xmvn:xmvn-mojo:install ' + \
+                  'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
+                  'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
+            self.assertEquals(argsfile.read(), exp)
+
+    @rpm_test()
+    def test_mvn_build_skip_javadoc(self, pack):
+        pack.prepend('%bcond_without javadoc')
+        pack.append_to_build('%mvn_build')
+
+        _, stderr, return_value = pack.run_build(['--without', 'javadoc'])
+        self.assertEqual(return_value, 0, stderr)
+        argspath = os.path.join(pack.buildpath, '.xmvn', 'out')
+        with open(argspath, 'r') as argsfile:
+            exp = '--batch-mode --offline ' + \
+                  'verify org.fedoraproject.xmvn:xmvn-mojo:install ' + \
+                  'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
+            self.assertEquals(argsfile.read(), exp)
+
+    @rpm_test()
+    def test_mvn_build_skip_test(self, pack):
+        pack.prepend('%bcond_without tests')
+        pack.append_to_build('%mvn_build')
+
+        _, stderr, return_value = pack.run_build(['--without', 'tests'])
+        self.assertEqual(return_value, 0, stderr)
+        argspath = os.path.join(pack.buildpath, '.xmvn', 'out')
+        with open(argspath, 'r') as argsfile:
+            exp = '--batch-mode --offline -Dmaven.test.skip=true ' + \
+                  'package org.fedoraproject.xmvn:xmvn-mojo:install ' + \
+                  'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
+                  'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
+            self.assertEquals(argsfile.read(), exp)
+
+    @rpm_test()
+    def test_mvn_build_scl(self, pack):
+        pack.prepend('%{?scl:%scl_package mypackage}')
+        pack.prepend('%{?scl:%global pkg_name pkgname}')
+        pack.append_to_build('%mvn_build')
+
+        _, stderr, return_value = pack.run_build(['--define', 'scl myscl'])
+        self.assertEqual(return_value, 0, stderr)
+        argspath = os.path.join(pack.buildpath, '.xmvn', 'out')
+        with open(argspath, 'r') as argsfile:
+            exp = '--batch-mode --offline ' + \
+                  'verify org.fedoraproject.xmvn:xmvn-mojo:install ' + \
+                  'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
+                  'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
+            self.assertEquals(argsfile.read(), exp)
+
+        confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
+        filelist = sorted(os.listdir(confpath))
+        self.assertEquals(len(filelist), 1)
+        actfile = os.path.join(confpath, filelist[0])
+        expfile = os.path.join(DIRPATH, 'data', 'mvn_build', 'name_00001.xml')
+        report = compare_xml_files(actfile, expfile, ['artifactGlob'])
+        self.assertEquals(report, '', report)
 
