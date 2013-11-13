@@ -54,6 +54,8 @@ See `man alternatives` for more information on how to use
 Developers may want to use Java compiler from different JDK. This can be
 also achieved with `alternatives --config javac`.
 
+=== Building classpath with `build-classpath`
+
 Most of the Java application needs to specify classpath in order to work
 correctly. Fedora contains several tools which make working with
 classpaths easier.
@@ -78,6 +80,8 @@ Example:
 $ build-classpath httpcomponents/httpclient.jar
 /usr/share/java/httpcomponents/httpclient.jar
 --------
+
+=== Building JAR repository with `build-jar-repository`
 
 Another tool is `build-jar-repository`. It can fill specified directory
 with symbolic/hard links to specified JAR files.Similarly to
