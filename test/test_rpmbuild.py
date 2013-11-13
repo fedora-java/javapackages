@@ -20,6 +20,7 @@ class Package(object):
     def __init__(self, name):
         self.__name = name
         self.__sources = {}
+        self.__begin = ''
         self.__prep = ''
         self.__build = ''
         self.buildpath = os.path.join('rpmbuild', 'BUILD', name + '-1')
@@ -46,6 +47,10 @@ class Package(object):
             newname = os.path.basename(sourcepath)
         self.__sources[sourcepath] = newname
 
+    def prepend(self, to_prepend):
+        """Prepends given string to spec file"""
+        self.__begin += to_prepend
+
     def append_to_prep(self, to_append):
         """Appends given string to %prep section of spec."""
         self.__prep += to_append + '\n'
@@ -54,15 +59,15 @@ class Package(object):
         """Appends given string to %build section of spec."""
         self.__build += to_append + '\n'
 
-    def run_prep(self):
+    def run_prep(self, args=None):
         """Runs rpmbuild -bp (doing only prep phase) with current settings."""
         self.__prepare_all()
-        return self.__invoke_rpmbuild(['-bp'])
+        return self.__invoke_rpmbuild(['-bp'] + (args or []))
 
-    def run_build(self):
+    def run_build(self, args=None):
         """Runs rpmbuild -bb (stop after build phase) with current settings."""
         self.__prepare_all()
-        return self.__invoke_rpmbuild(['-bb'])
+        return self.__invoke_rpmbuild(['-bb'] + (args or []))
 
     def __invoke_rpmbuild(self, args):
         outfile = open("tmpout", 'w')
@@ -104,7 +109,7 @@ class Package(object):
             pass
 
     def __prepare_spec(self):
-        header = dedent("""\
+        header = self.__begin + dedent("""
         Name:    {name}
         Version:    1
         Release:    1%{{?dist}}
