@@ -12,6 +12,8 @@ convenience.
 
 
 [[pom_remove_dep]]
+==== Adding/removing dependencies
+
 Often dependencies specified in Maven `pom.xml` files need to be removed because
 of different reasons. `%pom_remove_dep` macro can be used to ease this task:
 
@@ -41,6 +43,9 @@ may be a bug in upstream project if one needs to add extra dependency in order
 to build the project.
 =======
 
+[[pom_remove_plugin]]
+==== Adding/removing plugins
+
 `%pom_remove_plugin` macro works exactly as `%pom_remove_dep`, except it removes
 Maven plugin invocations. Some examples:
 
@@ -53,6 +58,9 @@ Maven plugin invocations. Some examples:
 # Disable a proprietary plugin that isn't packaged for Fedora
 %pom_remove_plugin com.example.mammon:useless-proprietary-plugin submodule
 --------
+
+[[pom_disable_module]]
+==== Disabling unneeded modules
 
 Sometimes some submodules of upstream project cannot be built for various
 reasons and there is a need to disable them. This can be achieved by using
@@ -67,6 +75,9 @@ reasons and there is a need to disable them. This can be achieved by using
 # Disables grandchild-module, a submodule of child-module-2/pom.xml
 %pom_disable_module grandchild-module child-module-2
 --------
+
+[[pom_remove_parent]]
+==== Working with parent POM references
 
 Macro `%pom_remove_parent` removes reference
 to a parent POM from Maven POM files. This can be useful when parent POM
@@ -90,6 +101,9 @@ with new one (`%pom_set_parent`).
 # Replace existing parent POM reference in ./pom.xml
 %pom_set_parent groupId:artifactId:version
 --------
+
+[[pom_xpath_remove]]
+==== Macros for performing generic modifications
 
 The above macros cover the most common cases of modifying `pom.xml` files,
 however if there is a need to apply some less-common patches there are also two
