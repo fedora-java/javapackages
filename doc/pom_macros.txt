@@ -118,12 +118,13 @@ with new one (`%pom_set_parent`).
 ==== Macros for performing generic modifications
 
 The above macros cover the most common cases of modifying `pom.xml` files,
-however if there is a need to apply some less-common patches there are also two
+however if there is a need to apply some less-common patches there are also three
 generic macros for modifying `pom.xml` files. `%pom_xpath_remove` can be used to
 remove arbitrary XML nodes, described by link:http://www.w3.org/TR/xpath/[XPath]
 1.0 expressions. `%pom_xpath_inject` macro is capable of injecting arbitrary
-link:http://www.w3.org/TR/xml/[XML] code to any `pom.xml` file. Below you can find
-some examples for these macros.
+link:http://www.w3.org/TR/xml/[XML] code to any `pom.xml` file. And finally,
+`%pom_xpath_set` replaces content of the arbitrary XML nodes with specified value.
+Below you can find some examples for these macros.
 
 .Less common pom.xml modifications
 [source,spec]
@@ -138,6 +139,9 @@ some examples for these macros.
                         <artifactId>awesomeproject</artifactId>
                         <version>1.0.0.GA</version>
                   </dependency>"
+
+# Change groupId of a parent
+%pom_xpath_set "pom:parent/pom:groupId" "org.apache"
 
 # Use a bit more complex XPath to add additional exclusion into
 # maven-wagon dependency
