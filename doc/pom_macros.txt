@@ -1,33 +1,37 @@
-Sometimes Maven `pom.xml` files need to be patched before they are used to build
-packages. One could use traditional patches to maintain changes, but package
-maintainers should use `%pom_*` macros developed specially to ease this
-task.
+Sometimes Maven `pom.xml` files need to be patched before they are used
+to build packages. One could use traditional patches to maintain
+changes, but package maintainers should use `%pom_*` macros developed
+specially to ease this task.
 
-These macros are designed to be called from `%prep` section of spec files. They
-are documented in `/etc/rpm/macros.fjava` configuration file, which is also
-link:https://git.fedorahosted.org/cgit/javapackages.git/plain/etc/macros.fjava[available online]
-and all the macros also have their own manual page. See the manual pages
-for technical details how to use them.
+These macros are designed to be called from `%prep` section of spec
+files. They are documented in `/etc/rpm/macros.fjava` configuration
+file, which is also
+link:https://git.fedorahosted.org/cgit/javapackages.git/plain/etc/macros.fjava[available
+online] and all the macros also have their own manual page. See the
+manual pages for technical details how to use them.
 
 .Handling XML namespaces
 [NOTE]
 =======
-POM files use a specific namespace - http://maven.apache.org/POM/4.0.0. The
-easiest way to respect this namespace in XPath expressions is prefixing all node
-names with `pom:`. For example, `pom:environment/pom:os` will work because it
-selects nodes from `pom` namespace, but `environment/os` won't find anything
-because it looks for nodes that don't belong to any XML namespace.
+POM files use a specific namespace - http://maven.apache.org/POM/4.0.0.
+The easiest way to respect this namespace in XPath expressions is
+prefixing all node names with `pom:`. For example,
+`pom:environment/pom:os` will work because it selects nodes from `pom`
+namespace, but `environment/os` won't find anything because it looks for
+nodes that don't belong to any XML namespace.
 =======
-Using `%pom_*` macros not only increases readability of the spec file, but also
-improves maintainability of the package as there are no patches that would need
-to be rebased with each upstream release. Below are some examples added for convenience.
+Using `%pom_*` macros not only increases readability of the spec file,
+but also improves maintainability of the package as there are no patches
+that would need to be rebased with each upstream release. Below are some
+examples added for convenience.
 
 
 [[pom_remove_dep]]
 ==== Adding/removing dependencies
 
-Often dependencies specified in Maven `pom.xml` files need to be removed because
-of different reasons. `%pom_remove_dep` macro can be used to ease this task:
+Often dependencies specified in Maven `pom.xml` files need to be removed
+because of different reasons. `%pom_remove_dep` macro can be used to
+ease this task:
 
 .Removing dependencies from pom.xml files
 [source,spec]
@@ -49,8 +53,8 @@ of different reasons. `%pom_remove_dep` macro can be used to ease this task:
 --------
 
 Dependencies can also be added to `pom.xml` with `%pom_add_dep` macro.
-Usage is very similar to `%pom_remove_dep`, see `"man pom_add_dep"` for more
-information.
+Usage is very similar to `%pom_remove_dep`, see `"man pom_add_dep"` for
+more information.
 
 [[pom_remove_plugin]]
 ==== Adding/removing plugins
@@ -74,9 +78,9 @@ Like in previous case, there is also a macro for adding plugins to
 [[pom_disable_module]]
 ==== Disabling unneeded modules
 
-Sometimes some submodules of upstream project cannot be built for various
-reasons and there is a need to disable them. This can be achieved by using
-`%pom_disable_module`, for example:
+Sometimes some submodules of upstream project cannot be built for
+various reasons and there is a need to disable them. This can be
+achieved by using `%pom_disable_module`, for example:
 
 .Disabling specific project modules
 [source,spec]
@@ -91,12 +95,12 @@ reasons and there is a need to disable them. This can be achieved by using
 [[pom_remove_parent]]
 ==== Working with parent POM references
 
-Macro `%pom_remove_parent` removes reference
-to a parent POM from Maven POM files. This can be useful when parent POM
-is not yet packaged (e.g. because of licensing issues) and at the same time it's
-not really needed for building of the project. There are also macros for adding
-parent POM reference (`%pom_add_parent`) and replacing existing reference
-with new one (`%pom_set_parent`).
+Macro `%pom_remove_parent` removes reference to a parent POM from Maven
+POM files. This can be useful when parent POM is not yet packaged (e.g.
+because of licensing issues) and at the same time it's not really needed
+for building of the project. There are also macros for adding parent POM
+reference (`%pom_add_parent`) and replacing existing reference with new
+one (`%pom_set_parent`).
 
 .Manipulating parent POM references
 [source,spec]
@@ -117,14 +121,16 @@ with new one (`%pom_set_parent`).
 [[pom_xpath_remove]]
 ==== Macros for performing generic modifications
 
-The above macros cover the most common cases of modifying `pom.xml` files,
-however if there is a need to apply some less-common patches there are also three
-generic macros for modifying `pom.xml` files. `%pom_xpath_remove` can be used to
-remove arbitrary XML nodes, described by link:http://www.w3.org/TR/xpath/[XPath]
-1.0 expressions. `%pom_xpath_inject` macro is capable of injecting arbitrary
-link:http://www.w3.org/TR/xml/[XML] code to any `pom.xml` file. And finally,
-`%pom_xpath_set` replaces content of the arbitrary XML nodes with specified value.
-Below you can find some examples for these macros.
+The above macros cover the most common cases of modifying `pom.xml`
+files, however if there is a need to apply some less-common patches
+there are also three generic macros for modifying `pom.xml` files.
+`%pom_xpath_remove` can be used to remove arbitrary XML nodes, described
+by link:http://www.w3.org/TR/xpath/[XPath] 1.0 expressions.
+`%pom_xpath_inject` macro is capable of injecting arbitrary
+link:http://www.w3.org/TR/xml/[XML] code to any `pom.xml` file. And
+finally, `%pom_xpath_set` replaces content of the arbitrary XML nodes
+with specified value.  Below you can find some examples for these
+macros.
 
 .Less common pom.xml modifications
 [source,spec]
