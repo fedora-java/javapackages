@@ -25,6 +25,8 @@ to Java bytecode, which can be later interpreted by JVM.
 
 `javap` can be used for disassembling Java class files.
 
+==== Switching between different Java implementations
+
 Users and developers may want to have multiple Java environments
 installed at the same time. It is possible in Fedora, but only one of
 them can be default Java environment in system. Fedora uses
