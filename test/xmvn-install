@@ -1,0 +1,5 @@
+#!/bin/sh
+#mock script for testing arguments passed to xmvn
+mkdir -p .xmvn
+echo "${@}">.xmvn/install-out
+env >.xmvn/install-env

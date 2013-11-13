@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import unittest
 
@@ -390,4 +391,51 @@ class MvnMacrosTest(unittest.TestCase):
         expfile = os.path.join(DIRPATH, 'data', 'mvn_build', 'name_00001.xml')
         report = compare_xml_files(actfile, expfile, ['artifactGlob'])
         self.assertEquals(report, '', report)
+
+    @rpm_test()
+    def test_mvn_install(self, pack):
+        pack.append_to_install('%mvn_install')
+
+        _, stderr, return_value = pack.run_install()
+        self.assertEqual(return_value, 0, stderr)
+
+        argspath = os.path.join('rpmbuild', 'BUILD', '.xmvn', 'install-out')
+        with open(argspath, 'r') as argsfile:
+            args = argsfile.read()
+            self.assertTrue(re.match(r'-R \.xmvn-reactor -n \S+ -d \S+\n',
+                                     args), args)
+
+    @rpm_test()
+    def test_mvn_install_debug(self, pack):
+        pack.append_to_install('%mvn_install -X')
+
+        _, stderr, return_value = pack.run_install()
+        self.assertEqual(return_value, 0, stderr)
+
+        argspath = os.path.join('rpmbuild', 'BUILD', '.xmvn', 'install-out')
+        with open(argspath, 'r') as argsfile:
+            args = argsfile.read()
+            self.assertTrue(re.match(r'-X -R \.xmvn-reactor -n \S+ -d \S+\n',
+                                     args), args)
+
+    @rpm_test()
+    def test_mvn_install_directory(self, pack):
+        pack.append_to_build('mkdir ../doc')
+        pack.append_to_build('touch ../doc/file')
+        pack.append_to_install('%mvn_install -J doc')
+        pack.append_to_install('%files -f .mfiles-javadoc')
+
+        _, stderr, return_value = pack.run_install()
+        self.assertEqual(return_value, 0, stderr)
+
+        argspath = os.path.join('rpmbuild', 'BUILD', '.xmvn', 'install-out')
+        with open(argspath, 'r') as argsfile:
+            args = argsfile.read()
+            self.assertTrue(re.match(r'-R \.xmvn-reactor -n \S+ -d \S+\n',
+                                     args), args)
+
+        mfilespath = os.path.join('rpmbuild', 'BUILD', '.mfiles-javadoc')
+        with open(mfilespath, 'r') as mfiles:
+            self.assertEqual(mfiles.read(),
+                             '/usr/share/javadoc/test_mvn_install_directory\n')
 
