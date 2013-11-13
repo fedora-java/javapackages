@@ -21,6 +21,8 @@ OpenJDK provides a lot of interesting tools for Java developers:
 `javac` is a Java compiler which translates source files
 to Java bytecode, which can be later interpreted by JVM.
 
+`jdb` is a simple command-line debugger for Java applications.
+
 `javadoc` is a tool for generating Javadoc documentation.
 
 `javap` can be used for disassembling Java class files.
