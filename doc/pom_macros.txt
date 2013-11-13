@@ -48,12 +48,9 @@ of different reasons. `%pom_remove_dep` macro can be used to ease this task:
 %pom_remove_dep :
 --------
 
-[TIP]
-=======
-Dependencies can also be added to pom.xml with `%pom_add_dep` macro, but this
-may be a bug in upstream project if one needs to add extra dependency in order
-to build the project.
-=======
+Dependencies can also be added to `pom.xml` with `%pom_add_dep` macro.
+Usage is very similar to `%pom_remove_dep`, see `"man pom_add_dep"` for more
+inforamtion.
 
 [[pom_remove_plugin]]
 ==== Adding/removing plugins
@@ -70,6 +67,9 @@ Maven plugin invocations. Some examples:
 # Disable a proprietary plugin that isn't packaged for Fedora
 %pom_remove_plugin com.example.mammon:useless-proprietary-plugin submodule
 --------
+
+Like in previous case, there is also a macro for adding plugins to
+`pom.xml`. See `"man pom_add_plugin"` for more information.
 
 [[pom_disable_module]]
 ==== Disabling unneeded modules
