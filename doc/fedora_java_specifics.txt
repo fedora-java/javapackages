@@ -1,4 +1,6 @@
-Fedora ships with reference implementation of Java Standard Edition
+
+=== OpenJDK
+Fedora ships with reference implementation of Java Standard Edition 7
 called http://openjdk.java.net/OpenJDK[OpenJDK]. OpenJDK provides Java
 Runtime Environment for Java applications and set of development tools
 for Java developers.
@@ -14,12 +16,14 @@ Here is an example how to run sample Java project from section 1.1.1:
 $ java org/fedoraproject/helloworld/HelloWorld.class
 --------
 
-For developers, `javac` command is probably one of the most important
-tools from OpenJDK. It's a Java compiler which translates source files
-to Java bytecode, which can be later interpreted by JVM. Other
-interesting tools are `javadoc` and `javap`. `javadoc` is a tool for
-generating Javadoc documentation and `javap` can be used for
-disassembling Java class files.
+OpenJDK provides a lot of interesting tools for Java developers:
+
+`javac` is a Java compiler which translates source files
+to Java bytecode, which can be later interpreted by JVM.
+
+`javadoc` is a tool for generating Javadoc documentation.
+
+`javap` can be used for disassembling Java class files.
 
 Users and developers may want to have multiple Java environments
 installed at the same time. It is possible in Fedora, but only one of
