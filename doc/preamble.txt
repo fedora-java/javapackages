@@ -25,7 +25,7 @@ at https://bugzilla.redhat.com/[Red Hat Bugzilla].
 Before contributing please read the
 https://git.fedorahosted.org/cgit/javapackages.git/plain/doc/README[README
 file], which among other things includes basic rules which should be
-followed when working on this document.  You can patches to
+followed when working on this document.  You can send patches to
 https://bugzilla.redhat.com/[Red Hat Bugzilla].  They should be in git
 format and should be prepared against `master` branch in git.
 Alternatively you can also send pull requests at
