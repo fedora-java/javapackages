@@ -50,7 +50,7 @@ of different reasons. `%pom_remove_dep` macro can be used to ease this task:
 
 Dependencies can also be added to `pom.xml` with `%pom_add_dep` macro.
 Usage is very similar to `%pom_remove_dep`, see `"man pom_add_dep"` for more
-inforamtion.
+information.
 
 [[pom_remove_plugin]]
 ==== Adding/removing plugins
