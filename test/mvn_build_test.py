@@ -72,13 +72,13 @@ class TestMvnBuild(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_build',['-g', ])
+    @xmvnconfig('mvn_build',['-g', 'validate'])
     def test_goal_before(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(get_actual_args(),
                 get_expected_args('mvn_build', 'goal_before'))
 
-    @xmvnconfig('mvn_build',['-G', ])
+    @xmvnconfig('mvn_build',['-G', 'integration-test'])
     def test_goal_after(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         self.assertEquals(get_actual_args(),
@@ -169,6 +169,13 @@ class TestMvnBuild(unittest.TestCase):
                  get_expected_config(filename, 'mvn_build', 'all1'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
+
+    @xmvnconfig('mvn_build',['-g', 'validate', 'compile', '-G',
+                             'integration-test', 'verify'])
+    def test_more_goals(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0)
+        self.assertEquals(get_actual_args(),
+                get_expected_args('mvn_build', 'more_goals'))
 
 if __name__ == '__main__':
     unittest.main()
