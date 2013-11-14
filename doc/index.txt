@@ -31,9 +31,11 @@ include::packaging_best_practices.txt[]
 == Generic Java Builds
 include::generic_java_build.txt[]
 
+[[ant]]
 == Ant
 include::ant.txt[]
 
+[[maven]]
 == Maven
 include::maven.txt[]
 
