@@ -67,6 +67,17 @@ dependencies. There are two types of dependencies in RPM:
   - build time dependencies (BuildRequires tag in `spec` file)
   - runtime dependencies (Requires tag in `spec` file)
 
+More information on this topic can be found in
+<<handling_dependencies,Handling dependencies>> section.
+
+Except building binary RPMs (`-bb`), `rpmbuild` can also be told to:
+
+ - build only source RPMs (SRPMs), the packages containing source files
+   which can be later build to RPMs (option `-bs`)
+ - build all, both binary and source RPMs (option `-ba`)
+
+See `rpmbuild`'s manual page for all available options.
+
 [[querying_repositories]]
 ==== Querying repositories
 
