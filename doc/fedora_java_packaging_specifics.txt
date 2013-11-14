@@ -7,6 +7,7 @@ include::directory_layout.txt[]
 === JAR File Identification
 include::jar_file_id.txt[]
 
+[[dependency_handling]]
 === Dependency Handling
 include::dependency_handling.txt[]
 
