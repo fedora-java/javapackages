@@ -104,6 +104,11 @@ highly simplify building of Java projects. Among the others, probably
 most known are http://maven.apache.org/[Apache Maven],
 http://ant.apache.org/[Apache Ant] and http://www.gradle.org/[Gradle].
 
+[TIP]
+======
+See also <<maven,Maven>> and <<ant,Ant>> sections.
+======
+
 
 [[classpath]]
 ==== Classpath
