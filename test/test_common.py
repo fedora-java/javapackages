@@ -14,10 +14,7 @@ SCRIPT_ENV = {'PATH':'{mock}:{real}'.format(mock=DIRPATH,
 def call_script(name, args, stdin = None, wrapped = False):
     outfile = open("tmpout", 'w')
     errfile = open("tmperr", 'w')
-    if wrapped:
-        procargs = [sys.executable, os.path.join(DIRPATH, 'wrapper.py'), name]
-    else:
-        procargs = [sys.executable, name]
+    procargs = [sys.executable, os.path.join(DIRPATH, 'wrapper.py'), name]
     proc = subprocess.Popen(procargs + args, shell = False,
         stdout = outfile, stderr = errfile, env = SCRIPT_ENV,
         stdin = subprocess.PIPE)
