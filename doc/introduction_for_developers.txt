@@ -68,7 +68,7 @@ dependencies. There are two types of dependencies in RPM:
   - runtime dependencies (Requires tag in `spec` file)
 
 More information on this topic can be found in
-<<handling_dependencies,Handling dependencies>> section.
+<<dependency_handling ,Handling dependencies>> section.
 
 Except building binary RPMs (`-bb`), `rpmbuild` can also be told to:
 
