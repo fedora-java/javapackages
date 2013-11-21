@@ -10,11 +10,11 @@ components they bundle, a complete Java system suffers from endless
 duplication of the same modules, and integrating multiple parts can be
 a nightmare since they are bound to depend on the same elements - only
 with different and subtly incompatible versions (different
-requirements, different bugs).  Any security or compatibility upgrade,
+requirements, different bugs).  Any security or compatibility upgrade
 must be performed for each of those duplicated elements.
 
 This problem is compounded by the current practice of folding
-extensions proper in the JVM itself after a while; an element that
+extensions in the JVM itself after a while; an element that
 could safely be embedded in a application will suddenly conflict with
 a JVM part and cause subtle failures.
 
@@ -28,7 +28,7 @@ packaging of Java applications a custom infrastructure and strict
 packaging rules had to be evolved.
 
 
-Basic introduction to packaging, reasons problems rationale
+=== Basic introduction to packaging, reasons, problems, rationale
 
 This section includes basic introduction to Java packaging world to people
 coming from different backgrounds. Goal is to understand language of all groups
@@ -39,7 +39,7 @@ xref:XFor_Packagers[introduction to Java world] is probably a better starting
 point.
 
 It should be noted that especially in this section we might sacrifice
-correctness for simplicity
+correctness for simplicity.
 
 [[XFor_Packagers]]
 === For Packagers
