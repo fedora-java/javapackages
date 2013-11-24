@@ -57,7 +57,7 @@ include::java_project/src/org/fedoraproject/helloworld/HelloWorld.java[]
 
 
 
-.Java Namespaces
+.Java packages
 [source,shell]
 ------
 org/fedoraproject/helloworld/input/Input.java
@@ -65,11 +65,14 @@ org/fedoraproject/helloworld/output/Output.java
 org/fedoraproject/helloworld/HelloWorld.java
 ------
 
-Above example makes use of three separate namespaces:
+Although the directory structure of our package is hierarchical, there
+is no real parent-child relationship between packages. Each package is
+therefore seen as independent.
+Above example makes use of three separate packages:
 
- - org.fedoraproject.helloworld.input
- - org.fedoraproject.helloworld.output
- - org.fedoraproject.helloworld
+ - `org.fedoraproject.helloworld.input`
+ - `org.fedoraproject.helloworld.output`
+ - `org.fedoraproject.helloworld`
 
 Environment setup consists of two main parts:
 
