@@ -15,7 +15,7 @@ It's a Java application launcher which spawns Java Virtual Machine
 
 Here is an example how to run sample Java project from section 1.1.1:
 
-[source,java]
+[source,shell]
 --------
 $ java org/fedoraproject/helloworld/HelloWorld.class
 --------
@@ -38,7 +38,6 @@ installed at the same time. It is possible in Fedora, but only one of
 them can be default Java environment in system. Fedora uses
 `alternatives` for switching between different installed JREs/JDKs.
 
-[source,shell]
 --------
 # alternatives --config java
 
@@ -82,7 +81,7 @@ $ build-classpath log4j junit org.ow2.asm:asm
 /usr/share/java/log4j.jar:/usr/share/java/junit.jar:/usr/share/java/objectweb-asm4/asm.jar
 --------
 
-`log4j` corresponds to `log4j.jar` stored in %{_javadir}. If the JAR
+`log4j` corresponds to `log4j.jar` stored in `%{_javadir}`. If the JAR
 file is stored in subdirectory under `%{_javadir}`, it's neccessary to
 pass `subdirectory/jarname` as an argument to `build-classpath`.
 Example:
@@ -114,7 +113,7 @@ Similar command `rebuild-jar-repository` can be used to rebuild JAR
 repository previously built by `build-jar-repository`. See `man
 rebuild-jar-repository` for more information.
 
-build-classpath-directory is a small tool which can be used to build
+`build-classpath-directory` is a small tool which can be used to build
 classpath string from specified directory.
 
 [source,shell]

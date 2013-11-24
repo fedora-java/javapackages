@@ -1,4 +1,4 @@
-As described in [link], JAR artifacts are installed in one of standard
+JAR artifacts are installed in one of standard
 directory trees.  Usually this is either `%{_javadir}`
 (`/usr/share/java`) or `%{_jnidir}` (`/usr/lib/java`).
 

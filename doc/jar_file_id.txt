@@ -1,9 +1,9 @@
 Complex Java applications usually consist of multiple components.
 Each component can have multiple implementations, called _artifacts_.
-Artifacts in java context are _usually_ JAR files, but can also be WAR
+Artifacts in Java context are _usually_ JAR files, but can also be WAR
 files or any other kind of file.
 
-There exist multiple incompatible ways of identifying (naming) Java
+There are multiple incompatible ways of identifying (naming) Java
 artifacts and each build system often encourages usage of specific
 naming scheme.  This means that Linux distributions also need to allow
 each artifact to be located using several different identifiers,

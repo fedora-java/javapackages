@@ -11,7 +11,7 @@ depending of what Java funtionality is required.
 *`java-headless`*::
 
     This package provides a working Java Runtime Environment (JRE)
-    with some functionality didabled.  Graphics and audio support may
+    with some functionality disabled.  Graphics and audio support may
     be unavailable in this case.  `java-headless` provides
     functionality that is enough for most of packages and avoids
     pulling in a number of graphics and audio libraries as
