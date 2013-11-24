@@ -12,7 +12,7 @@ Specification].
 
 ==== Example Java Project
 To better illustrate various parts of Java packaging we will dissect simple Java
-hello world application. Java sources are usually organized using directory
+``Hello world'' application. Java sources are usually organized using directory
 hierarchies. Shared directory hierarchy creates a namespace called `package` in
 Java terminology. To understand naming mechanisms of Java `packages` see
 link:http://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html[Java
@@ -22,13 +22,13 @@ Let's create a simple hello world application that will execute following steps
 when run:
 
  1. Ask for a name
- 2. Print out "Hello World from $name" where $name is from step one
+ 2. Print out ``Hello World from'' and the name from previous step
 
 To illustrate certain points we artificially complicate things by creating:
 
- - Input class used only for input of text from terminal
- - Output class used only for output on terminal
- - HelloWorldApp class used as main application
+ - `Input` class used only for input of text from terminal
+ - `Output` class used only for output on terminal
+ - `HelloWorldApp` class used as main application
 
 .Directory listing of example project
 [source,shell]
@@ -76,8 +76,35 @@ Above example makes use of three separate packages:
 
 Environment setup consists of two main parts:
 
- - Telling JVM which Java class contains `main()` function
+ - Telling JVM which Java class contains `main()` method
  - Adding required JAR files on JVM classpath
+
+.Classpath
+
+The classpath is a way of telling JVM where to look for user classes
+and 3rd party libraries. By default, only current directory is searched,
+all other locations need to be specified explicitly by setting up
+CLASSPATH environment variable, or via `-cp` (`-classpath`) option of a
+Java Virtual Machine.
+
+.Setting the classpath
+[source,shell]
+------
+java -cp /usr/share/java/log4j.jar:/usr/share/java/junit.jar mypackage/MyClass.class
+CLASSPATH=/usr/share/java/log4j.jar:/usr/share/java/junit.jar java mypackage/MyClass.class
+------
+
+Please note that two JAR files are separated by colon in a classpath
+definition.
+
+[TIP]
+======
+See
+http://docs.oracle.com/javase/7/docs/technotes/tools/windows/classpath.html[official
+documentation] for more information about classpath.
+======
+
+.Wrapper scripts
 
 Classic compiled applications use dynamic linker to find dependencies (linked
 libraries), Python interpreter has predefined directories where it searches for
@@ -87,6 +114,7 @@ all Java applications have to use wrapper shell scripts to setup the environment
 before invoking the JVM and running the application itself. Note that this is
 not necessary for libraries.
 
+.Compiling our project
 The sample project can be compiled to a bytecode by Java compiler. Java
 compiler can be typically invoked from command line by command `javac`.
 
@@ -112,32 +140,6 @@ http://ant.apache.org/[Apache Ant] and http://www.gradle.org/[Gradle].
 See also <<maven,Maven>> and <<ant,Ant>> sections.
 ======
 
-
-[[classpath]]
-==== Classpath
-
-The classpath is a way of telling JVM where to look for user classes
-and 3rd party libraries. By default, only current directory is searched,
-all other locations need to be specified explicitly by setting up
-CLASSPATH environment variable, or via `-cp` (`-classpath`) option of a
-Java Virtual Machine.
-
-.Setting the classpath
-[source,shell]
-------
-java -cp /usr/share/java/log4j.jar:/usr/share/java/junit.jar mypackage/MyClass.class
-CLASSPATH=/usr/share/java/log4j.jar:/usr/share/java/junit.jar java mypackage/MyClass.class
-------
-
-Please note that two JAR files are separated by colon in a classpath
-definition.
-
-[TIP]
-======
-See
-http://docs.oracle.com/javase/7/docs/technotes/tools/windows/classpath.html[official
-documentation] for more information about classpath.
-======
 
 ==== Build System Identification
 Build system used by upstream can be usually identified by looking at
