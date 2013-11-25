@@ -20,12 +20,32 @@ several reasons for it, among others:
     that users or administrators can find useful
 
 ==== Example RPM Project
-RPM uses `spec` files as recipes for building software packages. A simple
-example of such spec file is below.
+RPM uses `spec` files as recipes for building software packages.  We
+will use it to package example project created in previous section. If
+you didn't read it you don't need to; the file listing is available here
+and the rest is not necessary for this section.
 
+.Directory listing
+[source,shell]
+------
+Makefile
+src
+src/org
+src/org/fedoraproject
+src/org/fedoraproject/helloworld
+src/org/fedoraproject/helloworld/output
+src/org/fedoraproject/helloworld/output/Output.java
+src/org/fedoraproject/helloworld/input
+src/org/fedoraproject/helloworld/input/Input.java
+src/org/fedoraproject/helloworld/HelloWorld.java
+------
+
+We packed the project directory into file `helloworld.tar.gz`.
+
+.Example spec file
 [source,spec,numbered]
 ------
-include::rpm_project/minimal.spec[]
+include::rpm_project/helloworld.spec[]
 ------
 
 RPM `spec` files contain several basic sections:
@@ -40,18 +60,21 @@ RPM `spec` files contain several basic sections:
    * %changelog containing RPM changelog with prescribed format used mostly to
      document changes to spec file (not upstream)
 
-To build RPM from link:rpm_project/minimal.spec[this `spec` file] save it in
+To build RPM from link:rpm_project/helloworld.spec[this `spec` file] save it in
 your current directory and run `rpmbuild`:
 [source,shell]
 ------
-$ rpmbuild -bb minimal.spec
+$ rpmbuild -bb helloworld.spec
 ------
 
 If everything worked OK, this should produce RPM file
-`~/rpmbuild/RPMS/x86_64/minimal-1.0-1.fc18.x86_64.rpm`. You can use `rpm` or
-`yum` commands to install this package and it will add `/bin/minimalistic` shell
-script to your system. Above `spec` file doesn't specify any build or runtime
-dependencies and lacks several other common parts for simplification.
+`~/rpmbuild/RPMS/x86_64/helloworld-1.0-1.fc18.x86_64.rpm`. You can use
+`rpm -i` or `yum localinstall` commands to install this package and it
+will add `/usr/share/java/helloworld.jar` and `/usr/bin/helloworld`
+wrapper script to your system. Above `spec` file doesn't specify any
+build or runtime dependencies and lacks several other common parts for
+simplification.
+
 [NOTE]
 ======
 Paths and filenames might be slightly different depending on your architecture
