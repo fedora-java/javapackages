@@ -4,6 +4,45 @@ be used in RPM spec files.  Symbolic name is followed by usual macro
 expansion (i.e. physical directory location in the file system) and
 short description.
 
+.Directories commonly used by regular packages
+[glossary]
+*`%{_javadir}`* -- `/usr/share/java`::
+
+    Directory that holds all JAR files that do not contain or use
+    native code and do not depend on a particular Java standard
+    version.  JAR files can either be placed directly in this
+    directory or one of its subdirectories.  Often packages create
+    their own subdirectories there, in this case subdirectory name
+    should match package name.
+
+*`%{_jnidir}`* -- `/usr/lib/java`::
+
+    Directory where architecture-specific JAR files are installed.  In
+    particular JAR files containing or using native code (Java Native
+    Interface, NI) should be installed.
+
+*`%{_javadocdir}`* -- `/usr/share/javadoc`::
+
+    Root directory where all Java API documentation (Javadoc) is
+    installed.  Each source package usually creates a single
+    subdirectory containing aggregated Javadocs for all binary
+    packages it produces.
+
+*`%{_mavenpomdir}`* -- `/usr/share/maven-poms`::
+
+    Directory where Project Object Model (POM) files used by Apache
+    Maven are installed.  Each POM must have name that strictly
+    corresponds to JAR file in `%{_javadir}` or `%{_jnidir}`.
+
+*`%{_mavendepmapfragdir}`* -- `/usr/share/maven-fragments`::
+
+    Directory containing package metadata in XML format.  Typically
+    each binary package installs there a single XML file containing
+    various information (metadata) about artifacts associated with
+    that package.
+
+
+.Other directories
 [glossary]
 *`%{_jvmdir}`* -- `/usr/lib/jvm`::
 
@@ -38,21 +77,6 @@ short description.
     Directory containing Java configuration files.  In particular it
     contains main Java configuration file -- `java.conf`.
 
-*`%{_javadir}`* -- `/usr/share/java`::
-
-    Directory that holds all JAR files that do not contain or use
-    native code and do not depend on a particular Java standard
-    version.  JAR files can either be placed directly in this
-    directory or one of its subdirectories.  Often packages create
-    their own subdirectories there, in this case subdirectory name
-    should match package name.
-
-*`%{_jnidir}`* -- `/usr/lib/java`::
-
-    Directory where architecture-specific JAR files are installed.  In
-    particular JAR files containing or using native code (Java Native
-    Interface, NI) should be installed.
-
 *`%{_javadir}-ext`* -- `/usr/share/java-ext`::
 *`%{_javadir}-`+_x_._y_._z_+* -- `/usr/share/java-`+_x_._y_._z_+::
 *`%{_jnidir}-ext`* -- `/usr/lib/java-ext`::
@@ -64,22 +88,3 @@ short description.
     that such JARs can (and usually are) placed in `%{_javadir}` or
     `%{_jnidir}`.
 
-*`%{_javadocdir}`* -- `/usr/share/javadoc`::
-
-    Root directory where all Java API documentation (Javadoc) is
-    installed.  Each source package usually creates a single
-    subdirectory containing aggregated Javadocs for all binary
-    packages it produces.
-
-*`%{_mavenpomdir}`* -- `/usr/share/maven-poms`::
-
-    Directory where Project Object Model (POM) files used by Apache
-    Maven are installed.  Each POM must have name that strictly
-    corresponds to JAR file in `%{_javadir}` or `%{_jnidir}`.
-
-*`%{_mavendepmapfragdir}`* -- `/usr/share/maven-fragments`::
-
-    Directory containing package metadata in XML format.  Typically
-    each binary package installs there a single XML file containing
-    various information (metadata) about artifacts associated with
-    that package.
