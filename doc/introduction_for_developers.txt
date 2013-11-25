@@ -50,15 +50,63 @@ include::rpm_project/helloworld.spec[]
 
 RPM `spec` files contain several basic sections:
 
-   * header containing package metadata
-   * %prep section used for source unpacking, patching and steps to prepare for
-     building
-   * %build section containing compilation instructions such as Maven or Ant
-     invocation
-   * %install section used to preparing filesystem layout inside directory
-   * %files section containing list of files to be included in the binary RPM itself
-   * %changelog containing RPM changelog with prescribed format used mostly to
-     document changes to spec file (not upstream)
+Header, which contains: ::
+   * Package metadata such as its name, version, release,
+     license...
+   * A `Summary` with basic one-line summary of package contents
+   * Package source URLs denoted with `Source0` to `SourceN` directives
+   ** Source files can then be referenced by `%SOURCE0` to
+      `%SOURCEn`, which expand to actual paths to given files
+   ** In practice, the source URL shouldn't point to a file in our
+      filesystem, but to an upstream release on the web
+   * Patches - using `Patch0` to `PatchN`
+   * Project dependencies
+   ** Build dependencies specified by `BuildRequires`, which need to be
+      determined manually.
+   ** Run time dependencies will be detected automatically. If it fails,
+      you have to specify them with `Requires`.
+   ** More information on this topic can be found in
+      <<dependency_handling,Dependency handling>> section.
+
+
+Description::
+   * Few sentences about the project and its uses. It will be displayed
+     by package management software.
+
+Prep section::
+   * Unpacks the sources using `setup -q` or manually if needed
+   * If a source file doesn't need to be extracted, it can be copied
+     to build directory by `cp -p $SOURCE0 .`
+   * Apply patches with `%patchX`, where X is the number of patch you
+     want to apply. (You usually need the patch index, so it would be:
+     `%patch0 -p1`)
+
+Build section::
+   * Contains project compilation instructions. Usually consists of
+     calling the projects build system such as Ant, Maven or Make.
+
+Optional `%check` section::
+   * Runs projects integration tests. Unit test are usually run in
+     `%build` section, so if there are no integration tests available,
+     this section is omitted
+
+Install section::
+   * Copies built files that are supposed to be installed into
+     `%{buildroot}` directory, which represents target filesystem's root
+
+Files section::
+   * Lists all files, that should be installed from `%{buildroot}` to
+     target system.
+   * Documentation files are prefixed by `%doc` and are
+     taken from build directory instead of buildroot
+   * Directories that this package should own are prefixed with `%dir`
+
+Changelog::
+   * Contains changes to this spec file (not upstream)
+   * Has prescribed format. To prevent mistakes in format, it is
+     advised to use tool such as `rpmdev-bumpspec` from package rpmdevtools to
+     append new changelog entries instead of editing it by hand
+
 
 To build RPM from link:rpm_project/helloworld.spec[this `spec` file] save it in
 your current directory and run `rpmbuild`:
@@ -71,9 +119,9 @@ If everything worked OK, this should produce RPM file
 `~/rpmbuild/RPMS/x86_64/helloworld-1.0-1.fc18.x86_64.rpm`. You can use
 `rpm -i` or `yum localinstall` commands to install this package and it
 will add `/usr/share/java/helloworld.jar` and `/usr/bin/helloworld`
-wrapper script to your system. Above `spec` file doesn't specify any
-build or runtime dependencies and lacks several other common parts for
-simplification.
+wrapper script to your system. Please note that this specfile is
+simplified and lacks some additional parts, such as license
+installation.
 
 [NOTE]
 ======
@@ -83,15 +131,6 @@ and distribution. Output of the commands will tell you exact paths
 
 As you can see to build RPM files you can use `rpmbuild` command. It has several
 other options, which we will cover later on.
-
-One of the most important RPM features is already mentioned handling of
-dependencies. There are two types of dependencies in RPM:
-
-  - build time dependencies (BuildRequires tag in `spec` file)
-  - runtime dependencies (Requires tag in `spec` file)
-
-More information on this topic can be found in
-<<dependency_handling ,Handling dependencies>> section.
 
 Except building binary RPMs (`-bb`), `rpmbuild` can also be told to:
 
