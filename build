@@ -78,6 +78,7 @@ expand bin/jvmjar
 expand bin/mvn-local
 expand bin/mvn-rpmbuild
 expand bin/rebuild-jar-repository
+expand bin/shade-jar
 expand bin/xmvn-builddep
 expand etc/java.conf
 expand etc/macros.jpackage
@@ -110,3 +111,4 @@ manpage pom_xpath_set
 manpage build-classpath
 manpage build-jar-repository
 manpage rebuild-jar-repository
+manpage shade-jar
