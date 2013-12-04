@@ -1,0 +1,39 @@
+shade-jar(1)
+============
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+shade-jar - rename Java namespace in JAR file
+
+SYNOPSIS
+--------
+*bin/shade-jar* *orig-namespace* *shaded-namespace* *in-jar* *out-jar*
+
+DESCRIPTION
+-----------
+
+*shade-jar* utility is means for changing JAR file namespaces.
+Basically it replaces all occurences of given pattern with a given
+replacement.  The replacament is performed on class file names and
+inside the class files themselves.  This is commonly known as
+_shading_.
+
+EXAMPLES
+--------
+*shade-jar org.apache.log4j com.example.shaded.log4j
+/usr/share/java/log4j.jar lib/shaded-log4j.jar* will replace all
+occurences of *org.apache.log4j* in JAR file
+*/usr/share/java/log4j.jar* with *com.example.shaded.log4j* and store
+the resulting JAR in *lib/shaded-log4j.jar*.
+
+AUTHOR
+------
+Written by Mikolaj Izdebski.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
