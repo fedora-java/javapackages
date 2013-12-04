@@ -205,7 +205,7 @@ class XMvnConfig(object):
         elems.append(velem)
         self.__add_config("artifactManagement", "rule", content=elems)
 
-    def add_file_mapping(self, artifact, paths, prefix="/"):
+    def add_file_mapping(self, artifact, paths):
         """
         Change where on filesystem given artifact is installed
 
@@ -224,9 +224,6 @@ class XMvnConfig(object):
                                                   "is higher than wildcard "
                                                   "groups.")
             pe = SubElement(felem, "file")
-
-            if os.path.isabs(path):
-                path = os.path.relpath(path, prefix)
             pe.text = path
         elems.append(felem)
         self.__add_config("artifactManagement", "rule", content=elems)

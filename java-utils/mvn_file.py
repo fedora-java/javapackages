@@ -61,10 +61,6 @@ commons-lang:commons-lang:war:test-jar:3.1
 if __name__ == "__main__":
     parser = SaneParser(usage=usage,
                         epilog=epilog)
-    parser.add_option("-p", "--prefix",
-                      help="Set prefix for converting absolute paths to "+
-                           "relative",
-                      default="/usr/share/java")
     for index, arg in enumerate(sys.argv):
         sys.argv[index] = arg.decode(sys.getfilesystemencoding())
 
@@ -75,7 +71,7 @@ if __name__ == "__main__":
     try:
         orig = Artifact.from_mvn_str(args[0])
         orig.validate(allow_backref=False)
-        XMvnConfig().add_file_mapping(orig, args[1:], options.prefix)
+        XMvnConfig().add_file_mapping(orig, args[1:])
     except (ArtifactValidationException, ArtifactFormatException), e:
         parser.error("{e}: Provided artifact strings were invalid. "
                      "Please see help  and check your arguments".format(e=e))
