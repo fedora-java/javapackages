@@ -46,3 +46,4 @@ from javapackages.depmap import Depmap
 from javapackages.pom import POM
 from javapackages.artifact import Artifact
 from javapackages.xmvn_config import XMvnConfig
+from javapackages.version import __version__
