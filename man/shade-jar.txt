@@ -29,6 +29,11 @@ occurences of *org.apache.log4j* in JAR file
 */usr/share/java/log4j.jar* with *com.example.shaded.log4j* and store
 the resulting JAR in *lib/shaded-log4j.jar*.
 
+BUGS
+----
+Currently only class files are shaded.  Resources are not renamed.
+Neither contents of resource files nor manifests are processed.
+
 AUTHOR
 ------
 Written by Mikolaj Izdebski.
