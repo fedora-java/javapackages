@@ -39,11 +39,18 @@ Two main file types handled are:
 
 See pom and depmap modules for more information
 """
-
 __all__ = ["Depmap", "POM", "Artifact", "XMvnConfig"]
 
 from javapackages.depmap import Depmap
 from javapackages.pom import POM
 from javapackages.artifact import Artifact
 from javapackages.xmvn_config import XMvnConfig
-from javapackages.version import __version__
+
+try:
+    from javapackages.version import __version__
+except ImportError:
+    import os
+    dirpath = os.path.dirname(os.path.realpath(__file__))
+    versionpath = os.path.join(dirpath, '..', '..', 'VERSION')
+    with open(versionpath) as vp:
+        __version__ = vp.read().strip()
