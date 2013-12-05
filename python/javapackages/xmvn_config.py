@@ -220,6 +220,8 @@ class XMvnConfig(object):
         main = artifact.get_xml_element(root="artifactGlob")
         elems = [main]
         felem = Element("files")
+        if not [path for path in paths if not os.path.isabs(path)]:
+            raise XMvnConfigException("At least one path must be relative")
         for path in paths:
             backrefs = self.__count_backreferences(path)
             if backrefs > wild_groups:
