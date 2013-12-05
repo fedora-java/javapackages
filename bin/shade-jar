@@ -46,13 +46,14 @@ fi
 tmp=$(mktemp -d)
 trap "rm -rf ${tmp}" 0
 
-objectweb-asm3-processor code singlexml -in "${3}" -out "${tmp}/classes.zip" 2>/dev/null
+objectweb-asm3-processor code xml -in "${3}" -out "${tmp}/content.jar" 2>/dev/null
+mkdir "${tmp}/content"
 (
-  cd "${tmp}"
-  jar xf classes.zip classes.xml
-  sed -i -e "s|${1//.//}|${2//.//}|g" -e "s|${1//./\\.}|${2//./\\.}|g" classes.xml
-  jar cf classes.zip classes.xml
+  cd "${tmp}/content"
+  jar xf ../content.jar
+  find -name *.xml | xargs sed -i -e "s|${1//\.//}|${2//\.//}|g" -e "s|${1}|${2}|g"
+  jar cfM ../content.jar *
 )
-objectweb-asm3-processor singlexml code -in "${tmp}/classes.zip" -out "${4}" 2>/dev/null
+objectweb-asm3-processor xml code -in "${tmp}/content.jar" -out "${4}" 2>/dev/null
 
 exit 0
