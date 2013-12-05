@@ -245,27 +245,5 @@ class TestMvnFile(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_file',['-p', '/usr/share/', 'a:b', '/usr/share/sym', ])
-    def test_prefix1(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
-        filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
-        for filename in filelist:
-            report = compare_xml_files(get_actual_config(filename),
-                 get_expected_config(filename, 'mvn_file', 'prefix1'),
-                 ['artifactGlob'])
-            self.assertFalse(report, '\n' + report)
-
-    @xmvnconfig('mvn_file',['-p', '/usr', 'a:b', '/usr/share/sym', ])
-    def test_prefix2(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
-        filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
-        for filename in filelist:
-            report = compare_xml_files(get_actual_config(filename),
-                 get_expected_config(filename, 'mvn_file', 'prefix2'),
-                 ['artifactGlob'])
-            self.assertFalse(report, '\n' + report)
-
 if __name__ == '__main__':
     unittest.main()

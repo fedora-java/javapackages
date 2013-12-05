@@ -11,7 +11,7 @@
 	<groupId>a</groupId>
       </artifactGlob>
       <files>
-	<file>sym</file>
+        <file>/usr/share/java/sym</file>
       </files>
     </rule>
   </artifactManagement>
