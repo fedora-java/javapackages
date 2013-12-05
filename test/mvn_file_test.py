@@ -234,7 +234,7 @@ class TestMvnFile(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_file',['a:b', '/usr/share/java/sym', ])
+    @xmvnconfig('mvn_file',['a:b', 'file', '/usr/share/java/sym'])
     def test_absolute1(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0)
         filelist = get_config_file_list()
@@ -244,6 +244,11 @@ class TestMvnFile(unittest.TestCase):
                  get_expected_config(filename, 'mvn_file', 'absolute1'),
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
+
+    @xmvnconfig('mvn_file',['a:b', '/usr/share/java/sym', ])
+    def test_absolute2(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertTrue(stderr)
 
 if __name__ == '__main__':
     unittest.main()
