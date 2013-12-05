@@ -43,6 +43,9 @@ from lxml.etree import ElementTree, Element, SubElement
 
 from javapackages.artifact import ArtifactValidationException
 
+class XMvnConfigException(Exception):
+    pass
+
 class XMvnConfig(object):
     """
     Class for modifying XMvn configuration
