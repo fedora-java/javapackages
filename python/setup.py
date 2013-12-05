@@ -2,13 +2,22 @@
 """
 Setup script
 """
+import os
 from setuptools import setup
+
+dirpath = os.path.dirname(os.path.realpath(__file__))
+versionpath = os.path.join(dirpath, '..', 'VERSION')
+moduleversion = os.path.join(dirpath, 'javapackages', 'version.py')
+with open(versionpath) as vp:
+    __version__ = vp.read().strip()
+    with open(moduleversion, "w") as mv:
+        mv.write("__version__ = '{v}'".format(v=__version__))
 
 setup(
     name = 'javapackages',
     description = 'Module for handling, querying and manipulating of various '
                   'files for Java packaging in Linux distributions',
-    version = '1.0.0',
+    version = __version__,
     license = 'BSD',
     download_url = 'https://fedorahosted.org/released/javapackages/',
     url = 'https://fedorahosted.org/javapackages/',
