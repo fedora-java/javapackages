@@ -35,7 +35,7 @@ import sys
 
 from javapackages.artifact import (Artifact, ArtifactFormatException,
                                    ArtifactValidationException)
-from javapackages.xmvn_config import XMvnConfig
+from javapackages.xmvn_config import XMvnConfig, XMvnConfigException
 
 class SaneParser(optparse.OptionParser):
     def format_epilog(self, formatter):
@@ -75,4 +75,7 @@ if __name__ == "__main__":
     except (ArtifactValidationException, ArtifactFormatException), e:
         parser.error("{e}: Provided artifact strings were invalid. "
                      "Please see help  and check your arguments".format(e=e))
+        sys.exit(1)
+    except XMvnConfigException, e:
+        parser.error("Incorrect configuration: {e}".format(e=e))
         sys.exit(1)
