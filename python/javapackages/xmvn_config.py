@@ -35,7 +35,6 @@ import os
 import errno
 import re
 from StringIO import StringIO
-import xml.dom.minidom
 
 import lxml
 import lxml.etree as ET
@@ -144,7 +143,7 @@ class XMvnConfig(object):
         """
         Return maximum number of backreference used in string s
         """
-        backref_re = re.compile('@(\d+)')
+        backref_re = re.compile(r'@(\d+)')
         backref_nos = [int(x) for x in backref_re.findall(s)]
         if backref_nos:
             return max((int(x) for x in backref_re.findall(s)))
@@ -162,6 +161,7 @@ class XMvnConfig(object):
                             "parenthesis for groups of wildcard "
                             "matching is different.")
         return left
+
     def add_aliases(self, artifact, aliases):
         """
         Adds alias artifacts for given main artifact
@@ -279,8 +279,8 @@ class XMvnConfig(object):
 
         try:
             #wrap content into something to allow text content
-            inserted = "<root>{0}</root>".format(content);
-            contentRoot = ET.fromstring(inserted);
+            inserted = "<root>{0}</root>".format(content)
+            contentRoot = ET.fromstring(inserted)
             par.text = contentRoot.text
             for element in contentRoot:
                 par.append(element)
