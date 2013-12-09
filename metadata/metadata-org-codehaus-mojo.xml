@@ -182,6 +182,11 @@
       <artifactId>emma-maven-plugin</artifactId>
     </plugin>
     <plugin>
+      <name>Enchanter Maven Plugin</name>
+      <prefix>enchanter</prefix>
+      <artifactId>enchanter-maven-plugin</artifactId>
+    </plugin>
+    <plugin>
       <name>Maven Exec Plugin</name>
       <prefix>exec</prefix>
       <artifactId>exec-maven-plugin</artifactId>
@@ -592,7 +597,7 @@
       <artifactId>sql-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>SQLJ Maven Plugin</name>
+      <name>Mojo's SQLJ Maven Plugin</name>
       <prefix>sqlj</prefix>
       <artifactId>sqlj-maven-plugin</artifactId>
     </plugin>
@@ -682,7 +687,7 @@
       <artifactId>webminifier-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven Webstart Plugin</name>
+      <name>MWEBSTART :: Webstart Maven Plugin</name>
       <prefix>webstart</prefix>
       <artifactId>webstart-maven-plugin</artifactId>
     </plugin>

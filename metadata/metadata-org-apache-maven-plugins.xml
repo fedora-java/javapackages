@@ -52,6 +52,11 @@
       <artifactId>maven-checkstyle-plugin</artifactId>
     </plugin>
     <plugin>
+      <name>Apache Maven Checkstyle Plugin</name>
+      <prefix>checkstyle</prefix>
+      <artifactId>maven-checkstyle-plugin</artifactId>
+    </plugin>
+    <plugin>
       <name>Maven Clean Plugin</name>
       <prefix>clean</prefix>
       <artifactId>maven-clean-plugin</artifactId>
@@ -108,6 +113,11 @@
     </plugin>
     <plugin>
       <name>Maven EAR Plugin</name>
+      <prefix>ear</prefix>
+      <artifactId>maven-ear-plugin</artifactId>
+    </plugin>
+    <plugin>
+      <name>Apache Maven EAR Plugin</name>
       <prefix>ear</prefix>
       <artifactId>maven-ear-plugin</artifactId>
     </plugin>
@@ -328,6 +338,11 @@
     </plugin>
     <plugin>
       <name>Maven Shade Plugin</name>
+      <prefix>shade</prefix>
+      <artifactId>maven-shade-plugin</artifactId>
+    </plugin>
+    <plugin>
+      <name>Apache Maven Shade Plugin</name>
       <prefix>shade</prefix>
       <artifactId>maven-shade-plugin</artifactId>
     </plugin>
