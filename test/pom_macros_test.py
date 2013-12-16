@@ -253,13 +253,6 @@ class PomMacrosTest(unittest.TestCase):
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
 
-    @exec_macro("pom_add_parent pg:p-a:1", "pom_add_parent_second.xml")
-    def test_add_parent_second(self, stdin, stderr, returncode, pom_path):
-        self.assertEqual(returncode, 0, stderr)
-
-        report, res = check_result(pom_path)
-        self.assertEqual(res, True, report)
-
     @exec_macro("pom_set_parent pg:aa:5", "pom_set_parent.xml")
     def test_set_parent(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 0, stderr)
