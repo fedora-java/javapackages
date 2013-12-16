@@ -294,7 +294,7 @@ sort -u -o ${_filelist} ${_filelist} \
 #
 # Usage: %pom_add_dep groupId:artifactId[:version[:scope]] [POM location] \
 #            [extra XML]
-#        %pom_add_dep_mgmt groupId:articId[:version[:scope]] [POM location] \
+#        %pom_add_dep_mgmt groupId:artifactId[:version[:scope]] [POM location] \
 #            [extra XML]
 #
 # These macros patch specified POM file adding a dependency on given version of
