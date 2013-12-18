@@ -128,21 +128,14 @@ class Pom(object):
             pomfile.write(etree.tostring(self.root))
             pomfile.write('\n')
 
-    def to_etree(self, parent, content):
-        if not isinstance(parent, etree._Element):
-            parent = self.xpath_query_element(parent)
-        if not isinstance(content, etree._Element):
-            content = self.subtree_from_string(content)
-        return parent, content
-
     def inject_xml(self, parent, content):
-        parent, content = self.to_etree(parent, content)
+        content = self.subtree_from_string(content)
         items = len(content)
         parent[:0] = content
         self.reformat(parent, parent[:items])
 
     def replace_xml(self, replaced, content):
-        replaced, content = self.to_etree(replaced, content)
+        content = self.subtree_from_string(content)
         parent = replaced.getparent()
         idx = parent.index(replaced)
         items = len(content)
@@ -152,7 +145,7 @@ class Pom(object):
         self.reformat(parent, parent[idx: idx + items])
 
     def replace_xml_content(self, parent, content):
-        parent, content = self.to_etree(parent, content)
+        content = self.subtree_from_string(content)
         parent[:] = content
         parent.text = content.text
         self.reformat(parent, parent)
@@ -170,7 +163,7 @@ class Pom(object):
         return node
 
     def inject_artifact(self, where, node_name, artifact, aux_content=''):
-        parent = self.make_path(self.root, where.split('/'))
+        parent = self.make_path(self.root, where.split('/') or [])
         self.inject_xml(parent, Pom.comment("<{name}>{content} {aux}</{name}>")\
                                 .format(name=node_name,
                                         content=artifact.get_xml(),
@@ -198,6 +191,17 @@ class Pom(object):
             prettify_node(element, parent_node, base)
 
     def xpath_query_element(self, query):
+        query_result = self.xpath_query(query)
+        if len(query_result) > 1:
+            raise PomQueryAmbigous("XPath query '{0}' matched more than one nodes."\
+                                  .format(query))
+        parent = query_result[0]
+        if not isinstance(parent, etree._Element):
+            raise PomQueryNoMatch("XPath query '{0}': matched node is not an element"\
+                                  .format(query))
+        return parent
+
+    def xpath_query(self, query):
         if not query.startswith('/'):
             query = '//' + query
         try:
@@ -208,14 +212,7 @@ class Pom(object):
         if len(query_result) == 0:
             raise PomQueryNoMatch("XPath query '{0}' didn't match any node."\
                                   .format(query))
-        elif len(query_result) > 1:
-            raise PomQueryAmbigous("XPath query '{0}' matched more than one nodes."\
-                                  .format(query))
-        parent = query_result[0]
-        if not isinstance(parent, etree._Element):
-            raise PomQueryNoMatch("XPath query '{0}': matched node is not an element"\
-                                  .format(query))
-        return parent
+        return query_result
 
     def subtree_from_string(self, xml_string, root='root'):
         document = "<{root} {ns}>{0}</{root}>".format(xml_string, root=root, ns=self.XMLNS)
@@ -232,50 +229,50 @@ class Pom(object):
 class PomEditor(object):
     @staticmethod
     def pom_xpath_inject(where, xml_string, pom=None):
-        pom.inject_xml(where, Pom.comment(xml_string))
+        pom.inject_xml(pom.xpath_query_element(where), Pom.comment(xml_string))
 
     @staticmethod
     def pom_xpath_replace(where, xml_string, pom=None):
-        pom.replace_xml(where, Pom.comment(xml_string))
+        pom.replace_xml(pom.xpath_query_element(where), Pom.comment(xml_string))
 
     @staticmethod
     def pom_xpath_remove(where, pom=None):
-        pom.replace_xml(where, "<!-- element removed by maintainer -->")
+        pom.replace_xml(pom.xpath_query_element(where), "<!-- element removed by maintainer -->")
 
     @staticmethod
     def pom_xpath_set(where, content, pom=None):
         #TODO check content
-        pom.replace_xml_content(where, Pom.comment(content))
+        pom.replace_xml_content(pom.xpath_query_element(where), Pom.comment(content))
 
     @staticmethod
     def pom_remove_dep(dep, pom=None):
         try:
             artifact = Artifact('groupId:artifactId:version').load(dep)
             xpath = "//pom:dependency[{0}]".format(artifact.get_xpath_condition())
-            pom.replace_xml(xpath, "<!-- dependency removed by maintainer -->")
+            elements = pom.xpath_query(xpath)
+            for element in elements:
+                pom.replace_xml(element, "<!-- dependency removed by maintainer -->")
         except PomQueryNoMatch:
             raise PomException("Dependency '{0}' not found.".format(dep))
-        except PomQueryAmbigous:
-            raise PomException("Artifact specification '{0}' matched more "
-                               "dependencies.".format(dep))
 
     @staticmethod
     def pom_remove_plugin(plugin, pom=None):
         try:
             artifact = Artifact('groupId:artifactId:version').load(plugin)
             xpath = "//pom:plugin[{0}]".format(artifact.get_xpath_condition())
-            pom.replace_xml(xpath, "<!-- plugin removed by maintainer -->")
+            elements = pom.xpath_query(xpath)
+            for element in elements:
+                pom.replace_xml(element, "<!-- plugin removed by maintainer -->")
         except PomQueryNoMatch:
             raise PomException("Plugin '{0}' not found.".format(plugin))
-        except PomQueryAmbigous:
-            raise PomException("Artifact specification '{0}' matched more "
-                               "plugins.".format(plugin))
 
     @staticmethod
     def pom_disable_module(module, pom=None):
         try:
             xpath = "//pom:module[normalize-space(text())='{0}']".format(module)
-            pom.replace_xml(xpath, "<!-- module removed by maintainer -->")
+            elements = pom.xpath_query(xpath)
+            for element in elements:
+                pom.replace_xml(element, "<!-- module removed by maintainer -->")
         except PomQueryNoMatch:
             raise PomException("Module '{0}' not found.".format(module))
 
@@ -284,13 +281,12 @@ class PomEditor(object):
         if pom.root.find('pom:parent', namespaces=Pom.NSMAP) is not None:
             raise PomException("POM already has a parent.")
         artifact = Artifact('groupId:artifactId:version', version='any').load(parent)
-        pom.inject_xml('/pom:project',
-                       "<parent>{0}</parent>".format(artifact.get_xml()))
+        pom.inject_artifact('', 'parent', artifact)
 
     @staticmethod
     def pom_remove_parent(pom=None):
         try:
-            pom.replace_xml("/pom:project/pom:parent",
+            pom.replace_xml(pom.xpath_query_element("/pom:project/pom:parent"),
                             "<!-- parent POM reference removed by maintainer -->")
         except PomQueryNoMatch:
             raise PomException("POM doesn't specify parent.")
@@ -299,7 +295,8 @@ class PomEditor(object):
     def pom_set_parent(parent, pom=None):
         try:
             artifact = Artifact('groupId:artifactId:version:scope', version='any').load(parent)
-            pom.replace_xml_content("/pom:project/pom:parent", artifact.get_xml())
+            element = pom.xpath_query_element("/pom:project/pom:parent")
+            pom.replace_xml_content(element, artifact.get_xml())
         except PomQueryNoMatch:
             raise PomException("POM doesn't specify parent.")
 
@@ -307,20 +304,18 @@ class PomEditor(object):
     def pom_add_dep(dep, pom=None, xml_string=''):
         artifact = Artifact('groupId:artifactId:version:scope', version='any').load(dep)
         pom.inject_artifact('pom:dependencies', 'dependency', artifact,
-                        xml_string)
+                            xml_string)
 
     @staticmethod
     def pom_add_dep_mgmt(dep, pom=None, xml_string=''):
         artifact = Artifact('groupId:artifactId:version:scope', version='any').load(dep)
         pom.inject_artifact('pom:dependencyManagement/pom:dependencies',
-                        'dependency', artifact, xml_string)
+                            'dependency', artifact, xml_string)
 
     @staticmethod
     def pom_add_plugin(plugin, pom=None):
         artifact = Artifact('groupId:artifactId:version', version='any',
                             groupId='org.apache.maven.plugins').load(plugin)
-        if not artifact['version']:
-            artifact['version'] = 'any'
         pom.inject_artifact('pom:build/pom:plugins', 'plugin', artifact)
 
 if __name__ == '__main__':
