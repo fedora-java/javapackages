@@ -99,7 +99,7 @@ def patch_poms(function, args):
         origfile = path.join(pomdir, path.basename(pompath) + '.orig')
         shutil.move(pompath, origfile)
         pom.write(pompath)
-    except (PomException, OSError, IOError) as exception:
+    except (PomException, etree.XMLSyntaxError, OSError, IOError) as exception:
         print >> sys.stderr, "Error in processing {0}".format(pompath)
         print >> sys.stderr, exception.message
         sys.exit(3)
