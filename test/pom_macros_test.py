@@ -462,8 +462,19 @@ class PomMacrosTest(unittest.TestCase):
         self.assertEqual(returncode, 1, stderr)
         self.assertIn("Error in processing", stderr)
 
-    @exec_macro("pom_remove_parent", "nonexistent_pom.xml")
-    def test_no_pom(self, stdin, stderr, returncode, pom_path):
+    def test_no_pom(self):
+        package = Package("nonexistent_pom")
+        package.append_to_prep('%pom_remove_parent')
+        _, stderr, returncode = package.run_prep()
+
+        self.assertEqual(returncode, 1, stderr)
+        self.assertIn("Couldn't locate POM file using pattern", stderr)
+
+    def test_no_pom_explicit(self):
+        package = Package("nonexistent_pom_explicit")
+        package.append_to_prep('%pom_remove_parent nonexistent_pom.xml')
+        _, stderr, returncode = package.run_prep()
+
         self.assertEqual(returncode, 1, stderr)
         self.assertIn("Couldn't locate POM file using pattern", stderr)
 
