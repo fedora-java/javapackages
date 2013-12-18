@@ -89,6 +89,7 @@ class PomMacrosTest(unittest.TestCase):
     @exec_macro("pom_remove_dep not:there", "pom_remove_dep_ret1.xml")
     def test_remove_dep_no_effect(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 1, stderr)
+        self.assertIn("Error in processing", stderr)
 
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
@@ -118,6 +119,7 @@ class PomMacrosTest(unittest.TestCase):
     @exec_macro("pom_remove_plugin not:there", "pom_remove_plugin_ret1.xml")
     def test_remove_plugin_ret1(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 1)
+        self.assertIn("Error in processing", stderr)
 
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
@@ -140,6 +142,7 @@ class PomMacrosTest(unittest.TestCase):
     def test_disable_module_no_effect(self, stdin, stderr,
                                       returncode, pom_path):
         self.assertEqual(returncode, 1)
+        self.assertIn("Error in processing", stderr)
 
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
@@ -238,6 +241,7 @@ class PomMacrosTest(unittest.TestCase):
     @exec_macro("pom_remove_parent", "pom_remove_parent_fail.xml")
     def test_remove_parent_fail(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 1)
+        self.assertIn("Error in processing", stderr)
 
     @exec_macro("pom_add_parent pg:pa:21", "pom_add_parent.xml")
     def test_add_parent(self, stdin, stderr, returncode, pom_path):
@@ -270,6 +274,7 @@ class PomMacrosTest(unittest.TestCase):
     @exec_macro("pom_set_parent pg:aa", "pom_set_parent_fail.xml")
     def test_set_parent_fail(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 1, stderr)
+        self.assertIn("Error in processing", stderr)
 
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
@@ -302,6 +307,7 @@ class PomMacrosTest(unittest.TestCase):
                 "pom_xpath_remove_fail.xml")
     def test_xpath_remove_fail(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 1, stderr)
+        self.assertIn("Error in processing", stderr)
 
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
@@ -354,6 +360,7 @@ class PomMacrosTest(unittest.TestCase):
     def test_xpath_inject_fail(self, stdin, stderr, returncode, pom_path):
         # invalid XML code
         self.assertEqual(returncode, 1, stderr)
+        self.assertIn("Error in processing", stderr)
 
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
@@ -400,6 +407,7 @@ class PomMacrosTest(unittest.TestCase):
                 "pom_xpath_replace_fail.xml")
     def test_xpath_replace_fail(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 1, stderr)
+        self.assertIn("Error in processing", stderr)
 
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
@@ -410,6 +418,7 @@ class PomMacrosTest(unittest.TestCase):
     def test_xpath_replace_invalid_xml(self, stdin, stderr,
                                        returncode, pom_path):
         self.assertEqual(returncode, 1, stderr)
+        self.assertIn("Error in processing", stderr)
 
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
@@ -443,6 +452,7 @@ class PomMacrosTest(unittest.TestCase):
                 "pom_xpath_set_fail.xml")
     def test_xpath_set_fail(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 1, stderr)
+        self.assertIn("Error in processing", stderr)
 
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
@@ -450,10 +460,12 @@ class PomMacrosTest(unittest.TestCase):
     @exec_macro("pom_remove_parent", "unparsable_xml.pom")
     def test_unparsable_xml(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 1, stderr)
+        self.assertIn("Error in processing", stderr)
 
     @exec_macro("pom_remove_parent", "nonexistent_pom.xml")
     def test_no_pom(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 1, stderr)
+        self.assertIn("Couldn't locate POM file using pattern", stderr)
 
 if __name__ == '__main__':
     unittest.main()
