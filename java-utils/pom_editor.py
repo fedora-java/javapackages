@@ -163,7 +163,8 @@ class Pom(object):
         return node
 
     def inject_artifact(self, where, node_name, artifact, aux_content=''):
-        parent = self.make_path(self.root, where.split('/') or [])
+        path_parts = [part for part in where.split('/') if part]
+        parent = self.make_path(self.root, path_parts)
         self.inject_xml(parent, Pom.comment("<{name}>{content} {aux}</{name}>")\
                                 .format(name=node_name,
                                         content=artifact.get_xml(),
