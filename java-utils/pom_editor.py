@@ -89,8 +89,6 @@ def macro(outer_function):
                 pomdir = path.dirname(pompath) or '.'
                 pom = Pom(pompath)
                 pom.write(path.join(pomdir, path.basename(pompath) + '.tmp'))
-                print args
-                print args[:pomspec_pos], args[pomspec_pos:]
                 fnargs = list(args[:pomspec_pos]) + [pom] + list(args[pomspec_pos + 1:])
                 function(*fnargs)
                 origfile = path.join(pomdir, path.basename(pompath) + '.orig')
@@ -236,20 +234,24 @@ ScopedArtifact = MetaArtifact(artifact_spec_scoped, version='any')
 
 @macro
 def pom_xpath_inject(where, xml_string, pom=None):
-    pom.inject_xml(pom.xpath_query_element(where), Pom.comment(xml_string))
+    for element in pom.xpath_query(where):
+        pom.inject_xml(element, Pom.comment(xml_string))
 
 @macro
 def pom_xpath_replace(where, xml_string, pom=None):
-    pom.replace_xml(pom.xpath_query_element(where), Pom.comment(xml_string))
+    for element in pom.xpath_query(where):
+        pom.replace_xml(element, Pom.comment(xml_string))
 
 @macro
 def pom_xpath_remove(where, pom=None):
-    pom.replace_xml(pom.xpath_query_element(where), "<!-- element removed by maintainer -->")
+    for element in pom.xpath_query(where):
+        pom.replace_xml(element, "<!-- element removed by maintainer -->")
 
 @macro
 def pom_xpath_set(where, content, pom=None):
-    #TODO check content
-    pom.replace_xml_content(pom.xpath_query_element(where), Pom.comment(content))
+    for element in pom.xpath_query(where):
+        #TODO check content
+        pom.replace_xml_content(element, Pom.comment(content))
 
 @macro
 def pom_remove_dep(dep, pom=None):
