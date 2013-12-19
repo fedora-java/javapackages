@@ -91,9 +91,6 @@ class PomMacrosTest(unittest.TestCase):
         self.assertEqual(returncode, 1, stderr)
         self.assertIn("Error in processing", stderr)
 
-        report, res = check_result(pom_path)
-        self.assertEqual(res, True, report)
-
     @exec_macro("pom_remove_plugin :my-plugin", "pom_remove_plugin.xml")
     def test_remove_plugin(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 0, stderr)
@@ -121,9 +118,6 @@ class PomMacrosTest(unittest.TestCase):
         self.assertEqual(returncode, 1)
         self.assertIn("Error in processing", stderr)
 
-        report, res = check_result(pom_path)
-        self.assertEqual(res, True, report)
-
     @exec_macro("pom_disable_module module", "pom_disable_module.xml")
     def test_disable_module(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 0, stderr)
@@ -143,9 +137,6 @@ class PomMacrosTest(unittest.TestCase):
                                       returncode, pom_path):
         self.assertEqual(returncode, 1)
         self.assertIn("Error in processing", stderr)
-
-        report, res = check_result(pom_path)
-        self.assertEqual(res, True, report)
 
     @exec_macro("pom_add_dep gdep:adep:3.2:test", "pom_add_dep.xml")
     def test_add_dep(self, stdin, stderr, returncode, pom_path):
@@ -276,9 +267,6 @@ class PomMacrosTest(unittest.TestCase):
         self.assertEqual(returncode, 1, stderr)
         self.assertIn("Error in processing", stderr)
 
-        report, res = check_result(pom_path)
-        self.assertEqual(res, True, report)
-
     @exec_macro("pom_xpath_remove pom:maven-old", "pom_xpath_remove.xml")
     def test_xpath_remove(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 0, stderr)
@@ -309,12 +297,18 @@ class PomMacrosTest(unittest.TestCase):
         self.assertEqual(returncode, 1, stderr)
         self.assertIn("Error in processing", stderr)
 
-        report, res = check_result(pom_path)
-        self.assertEqual(res, True, report)
-
     @exec_macro("pom_xpath_inject pom:parent '<version>1.2</version>'",
                 "pom_xpath_inject.xml")
     def test_xpath_inject(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        report, res = check_result(pom_path)
+        self.assertEqual(res, True, report)
+
+    @exec_macro("pom_xpath_inject pom:dependencies/pom:dependency "
+                "'<classifier>test</classifier>'",
+                "pom_xpath_inject_multiple.xml")
+    def test_xpath_inject_multiple(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 0, stderr)
 
         report, res = check_result(pom_path)
@@ -362,9 +356,6 @@ class PomMacrosTest(unittest.TestCase):
         self.assertEqual(returncode, 1, stderr)
         self.assertIn("Error in processing", stderr)
 
-        report, res = check_result(pom_path)
-        self.assertEqual(res, True, report)
-
     @exec_macro("pom_xpath_replace pom:parent/pom:groupId \
                  '<groupId>commons</groupId>'",
                 "pom_xpath_replace.xml")
@@ -373,6 +364,22 @@ class PomMacrosTest(unittest.TestCase):
 
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
+
+    @exec_macro("pom_xpath_replace //pom:dependency/pom:groupId "
+                "'<groupId>a</groupId>'",
+                "pom_xpath_replace_multiple.xml")
+    def test_xpath_replace_multiple(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        report, res = check_result(pom_path)
+        self.assertEqual(res, True, report)
+
+    @exec_macro("pom_xpath_replace //pom:dependency/pom:groupId "
+                "'<groupId>a/groupId>'",
+                "pom_xpath_replace_multiple.xml")
+    def test_xpath_replace_invalid(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 1)
+        self.assertIn("Error in processing", stderr)
 
     @exec_macro("pom_xpath_replace pom:parent/pom:groupId \
                  '<groupId>commons</groupId>'",
@@ -420,12 +427,17 @@ class PomMacrosTest(unittest.TestCase):
         self.assertEqual(returncode, 1, stderr)
         self.assertIn("Error in processing", stderr)
 
-        report, res = check_result(pom_path)
-        self.assertEqual(res, True, report)
-
     @exec_macro("pom_xpath_set pom:project/pom:groupId 'commons'",
             "pom_xpath_set.xml")
     def test_xpath_set(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        report, res = check_result(pom_path)
+        self.assertEqual(res, True, report)
+
+    @exec_macro("pom_xpath_set pom:groupId 'commons'",
+            "pom_xpath_set_multiple.xml")
+    def test_xpath_set_multiple(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 0, stderr)
 
         report, res = check_result(pom_path)
