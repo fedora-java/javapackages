@@ -322,10 +322,11 @@ def pom_add_dep_mgmt(dep, pom=None, xml_string=''):
                         'dependency', artifact, xml_string)
 
 @macro
-def pom_add_plugin(plugin, pom=None):
+def pom_add_plugin(plugin, pom=None, xml_string=''):
     artifact = MetaArtifact(artifact_spec, version='any',
                         groupId='org.apache.maven.plugins')(plugin)
-    pom.inject_artifact('pom:build/pom:plugins', 'plugin', artifact)
+    pom.inject_artifact('pom:build/pom:plugins', 'plugin', artifact,
+                        xml_string)
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
