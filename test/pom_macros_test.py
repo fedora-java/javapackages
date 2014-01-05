@@ -13,7 +13,7 @@ DATADIR = os.path.join(DIRPATH, "data", "pom_macros")
 WORKDIR = os.path.join(DATADIR, "..", 'pom_macros_workdir')
 
 
-def exec_macro(command = "", pom = "pom.xml"):
+def exec_macro(command = "", pom = "pom.xml", tail=''):
     def test_decorator(function):
         def test_decorated(self, *args, **kwargs):
             pompath = os.path.join(WORKDIR, pom)
@@ -21,8 +21,8 @@ def exec_macro(command = "", pom = "pom.xml"):
             package = Package(function.__name__)
             package.add_source(pompath)
             pomsourcepath = os.path.join(package.buildpath, pomname)
-            package.append_to_prep('%{command} {pom}'.format(command=command,
-                pom=pomname))
+            package.append_to_prep('%{command} {pom} {tail}'.format(command=command,
+                pom=pomname, tail=tail))
             stdin, stderr, return_value = package.run_prep()
 
             function(self, stdin, stderr, return_value, pomsourcepath)
@@ -145,6 +145,22 @@ class PomMacrosTest(unittest.TestCase):
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
 
+    @exec_macro("pom_add_dep foo:bar:1.2", "pom_add_dep_extra.xml",
+                "'<scope>test</scope>'")
+    def test_add_dep_extra(self, stdout, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        report, res = check_result(pom_path)
+        self.assertEqual(res, True, report)
+
+    @exec_macro("pom_add_dep_mgmt foo:bar:1.2", "pom_add_dep_mgmt_extra.xml",
+                "'<scope>test</scope>'")
+    def test_add_dep_mgmt_extra(self, stdout, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        report, res = check_result(pom_path)
+        self.assertEqual(res, True, report)
+
     @exec_macro("pom_add_dep gdep:adep:3.2:test", "pom_add_dep_whitespace.xml")
     def test_add_dep_whitespace(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 0, stderr)
@@ -189,6 +205,20 @@ class PomMacrosTest(unittest.TestCase):
 
     @exec_macro("pom_add_plugin plugin:plug:3", "pom_add_plugin.xml")
     def test_add_plugin(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        report, res = check_result(pom_path)
+        self.assertEqual(res, True, report)
+
+    @exec_macro("pom_add_plugin plugin:plug:3", "pom_add_plugin_extra.xml",
+                """'<executions>
+                       <id>default-compile</id>
+                       <goals>
+                          <goal>testCompile</goal>
+                       </goals>
+                    </executions>
+                   '""")
+    def test_add_plugin_extra(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 0, stderr)
 
         report, res = check_result(pom_path)
