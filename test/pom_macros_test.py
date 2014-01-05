@@ -64,6 +64,16 @@ class PomMacrosTest(unittest.TestCase):
             pass
         os.chdir(cls.olddir)
 
+    def test_usage(self):
+        package = Package("usage")
+        pompath = os.path.join(WORKDIR, "pom_remove_dep.xml")
+        package.add_source(pompath, "pom.xml")
+        package.append_to_prep('%pom_remove_dep')
+        _, stderr, return_value = package.run_prep()
+        self.assertEqual(return_value, 1)
+        self.assertIn("Usage: %pom_remove_dep "\
+                      "[groupId]:[artifactId] [POM location]", stderr)
+
     @exec_macro("pom_remove_dep :commons-io", "pom_remove_dep.xml")
     def test_remove_dep(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 0, stderr)

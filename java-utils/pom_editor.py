@@ -6,6 +6,7 @@ import sys
 
 from lxml import etree
 from os import path
+from textwrap import dedent
 
 # all macro fuctions that can be called from external world
 macros = {}
@@ -63,6 +64,10 @@ def get_indent(node):
     text = node.text.split('\n')[-1]
     return re.sub(r'\S.*', '', text)
 
+def print_usage(function):
+    print >> sys.stderr, "Usage: %{name} {doc}".format(name=function.__name__,
+                                                       doc=function.__doc__)
+
 def macro(outer_function):
     def decorator(function):
         def decorated(*args):
@@ -70,8 +75,7 @@ def macro(outer_function):
             maxargcount = len(arglist)
             minargcount = maxargcount - len(defaults or [])
             if len(args) > maxargcount or len(args) < minargcount:
-                print >> sys.stderr, "Usage: %pom_{name} {doc}".format(name=function.__name__,
-                                                                 doc=function.__doc__)
+                print_usage(function)
                 sys.exit(1)
             pomspec_pos = arglist.index('pom')
             if pomspec_pos < len(args):
@@ -83,6 +87,7 @@ def macro(outer_function):
                 pompath = find_pom(pomspec)
             except PomException as exception:
                 print >> sys.stderr, exception.message
+                print_usage(function)
                 sys.exit(2)
 
             try:
@@ -97,6 +102,7 @@ def macro(outer_function):
             except (PomException, etree.XMLSyntaxError, OSError, IOError) as exception:
                 print >> sys.stderr, "Error in processing {0}".format(pompath)
                 print >> sys.stderr, exception.message
+                print_usage(function)
                 sys.exit(3)
 
         macros[function.__name__] = decorated
@@ -210,8 +216,9 @@ class Pom(object):
             raise PomQueryInvalid("XPath query '{0}': {1}.".format(query,
                                                                error.message))
         if len(query_result) == 0:
-            raise PomQueryNoMatch("XPath query '{0}' didn't match any node."\
-                                  .format(query))
+            raise PomQueryNoMatch(dedent("""\
+                    XPath query '{0}' didn't match any node.
+                    (Did you forget to specify 'pom:' namespace?)""").format(query))
         return query_result
 
     def subtree_from_string(self, xml_string, root='root'):
@@ -234,27 +241,31 @@ ScopedArtifact = MetaArtifact(artifact_spec_scoped, version='any')
 
 @macro
 def pom_xpath_inject(where, xml_string, pom=None):
+    """<XPath> [XML code] [POM location]"""
     for element in pom.xpath_query(where):
         pom.inject_xml(element, Pom.comment(xml_string))
 
 @macro
 def pom_xpath_replace(where, xml_string, pom=None):
+    """<XPath> <XML code> [POM location]"""
     for element in pom.xpath_query(where):
         pom.replace_xml(element, Pom.comment(xml_string))
 
 @macro
 def pom_xpath_remove(where, pom=None):
+    """<XPath> [POM location]"""
     for element in pom.xpath_query(where):
         pom.replace_xml(element, "<!-- element removed by maintainer -->")
 
 @macro
 def pom_xpath_set(where, content, pom=None):
+    """<XPath> <new contents> [POM location]"""
     for element in pom.xpath_query(where):
-        #TODO check content
         pom.replace_xml_content(element, Pom.comment(content))
 
 @macro
 def pom_remove_dep(dep, pom=None):
+    """[groupId]:[artifactId] [POM location]"""
     try:
         artifact = VersionedArtifact(dep)
         xpath = "//pom:dependency[{0}]".format(artifact.get_xpath_condition())
@@ -266,6 +277,7 @@ def pom_remove_dep(dep, pom=None):
 
 @macro
 def pom_remove_plugin(plugin, pom=None):
+    """[groupId]:[artifactId] [POM location]"""
     try:
         artifact = VersionedArtifact(plugin)
         xpath = "//pom:plugin[{0}]".format(artifact.get_xpath_condition())
@@ -277,6 +289,7 @@ def pom_remove_plugin(plugin, pom=None):
 
 @macro
 def pom_disable_module(module, pom=None):
+    """<module name> [POM location]"""
     try:
         xpath = "//pom:module[normalize-space(text())='{0}']".format(module)
         elements = pom.xpath_query(xpath)
@@ -287,6 +300,7 @@ def pom_disable_module(module, pom=None):
 
 @macro
 def pom_add_parent(parent, pom=None):
+    """groupId:artifactId[:version] [POM location]"""
     if pom.root.find('pom:parent', namespaces=Pom.NSMAP) is not None:
         raise PomException("POM already has a parent.")
     artifact = DefaultVersionedArtifact(parent)
@@ -294,6 +308,7 @@ def pom_add_parent(parent, pom=None):
 
 @macro
 def pom_remove_parent(pom=None):
+    """[POM location]"""
     try:
         pom.replace_xml(pom.xpath_query_element("/pom:project/pom:parent"),
                         "<!-- parent POM reference removed by maintainer -->")
@@ -302,8 +317,9 @@ def pom_remove_parent(pom=None):
 
 @macro
 def pom_set_parent(parent, pom=None):
+    """groupId:artifactId[:version] [POM location]"""
     try:
-        artifact = ScopedArtifact(parent)
+        artifact = DefaultVersionedArtifact(parent)
         element = pom.xpath_query_element("/pom:project/pom:parent")
         pom.replace_xml_content(element, artifact.get_xml())
     except PomQueryNoMatch:
@@ -311,18 +327,21 @@ def pom_set_parent(parent, pom=None):
 
 @macro
 def pom_add_dep(dep, pom=None, xml_string=''):
+    """groupId:artifactId[:version[:scope]] [POM location] [extra XML]"""
     artifact = ScopedArtifact(dep)
     pom.inject_artifact('pom:dependencies', 'dependency', artifact,
                         xml_string)
 
 @macro
 def pom_add_dep_mgmt(dep, pom=None, xml_string=''):
+    """groupId:artifactId[:version[:scope]] [POM location] [extra XML]"""
     artifact = ScopedArtifact(dep)
     pom.inject_artifact('pom:dependencyManagement/pom:dependencies',
                         'dependency', artifact, xml_string)
 
 @macro
 def pom_add_plugin(plugin, pom=None, xml_string=''):
+    """groupId:artifactId[:version] [POM location] [extra XML]"""
     artifact = MetaArtifact(artifact_spec, version='any',
                         groupId='org.apache.maven.plugins')(plugin)
     pom.inject_artifact('pom:build/pom:plugins', 'plugin', artifact,
