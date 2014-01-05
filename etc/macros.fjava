@@ -183,7 +183,7 @@ sort -u -o ${_filelist} ${_filelist} \
 #
 # Usage: %pom_xpath_inject <XPath> [XML code] [POM location]
 #
-# This macro patches specified POM file appending some code as childreen of all
+# This macro patches specified POM file appending some code as children of all
 # XML nodes described by the XPath expression.
 #
 # XPath is an expression describing a set of XML nodes in the POM file to which
@@ -251,11 +251,6 @@ sort -u -o ${_filelist} ${_filelist} \
 # directory containing pom.xml. If POM location is not given then pom.xml from
 # current working directory is used.
 #
-# Note: If specified POM has already a reference to parent POM this macro will
-# not alter or remove it. Instead a second reference will be added. This is
-# usually not the expected behavior, so if you want to replace existing parent
-# POM reference, consider using %pom_set_parent macro instead.
-#
 %pom_add_parent()     %{expand: %{__pom_call}add_parent     %*
 }
 
@@ -303,7 +298,7 @@ sort -u -o ${_filelist} ${_filelist} \
 # <dependencyManagement>.
 #
 # groupId and artifactId are identifiers of Maven artifact on which dependency
-# is to be added.. They must be specified. If version is not specified then
+# is to be added. They must be specified. If version is not specified then
 # default value of "any" is used. If scope is not specified then no scope is
 # defined (Maven defaults to "compile" in this case).
 #
