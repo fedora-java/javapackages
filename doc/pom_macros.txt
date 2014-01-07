@@ -18,7 +18,9 @@ The easiest way to respect this namespace in XPath expressions is
 prefixing all node names with `pom:`. For example,
 `pom:environment/pom:os` will work because it selects nodes from `pom`
 namespace, but `environment/os` won't find anything because it looks for
-nodes that don't belong to any XML namespace.
+nodes that don't belong to any XML namespace. It is needed even if the
+original POM file didn't contain proper POM namespace, since it will be
+added automatically.
 =======
 Using `%pom_*` macros not only increases readability of the spec file,
 but also improves maintainability of the package as there are no patches

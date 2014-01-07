@@ -10,7 +10,7 @@ pom_set_parent - set parent POM reference in POM file
 
 SYNOPSIS
 --------
-*%pom_set_parent* groupId*:*artifactId[*:*version] [POM-location]
+*%pom_set_parent* groupId**:**artifactId[**:**version] [POM-location]
 
 DESCRIPTION
 -----------

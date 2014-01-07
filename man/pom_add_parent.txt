@@ -10,7 +10,7 @@ pom_add_parent - add parent POM reference to POM file
 
 SYNOPSIS
 --------
-*%pom_add_parent* groupId*:*artifactId[*:*version] [POM-location]
+*%pom_add_parent* groupId**:**artifactId[**:**version] [POM-location]
 
 DESCRIPTION
 -----------
@@ -29,14 +29,6 @@ EXAMPLES
 --------
 *%pom_add_parent foo:bar baz* - this call adds reference to parent POM
 artifact *foo:bar* to *baz/pom.xml* file.
-
-BUGS
-----
-If specified POM has already a reference to parent POM this macro will
-not alter or remove it.  Instead a second reference will be added.
-This is usually not the expected behavior as it results in creating
-invalid POM file.  In order to replace existing parent POM reference,
-*pom_set_parent*(7) should be used instead.
 
 AUTHOR
 ------
