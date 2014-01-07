@@ -42,6 +42,7 @@
       <stereotypes>
         <stereotype>
           <extension>jar</extension>
+          <extension>zip</extension>
         </stereotype>
       </stereotypes>
     </repository>
