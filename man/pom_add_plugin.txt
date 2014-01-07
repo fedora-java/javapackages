@@ -10,7 +10,7 @@ pom_add_plugin - add plugin invocation to POM file
 
 SYNOPSIS
 --------
-*%pom_add_plugin* groupId*:*artifactId[*:*version] [POM-location]
+*%pom_add_plugin* groupId**:**artifactId[**:**version] [POM-location]
   [extra-XML]
 
 DESCRIPTION

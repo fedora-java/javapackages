@@ -10,10 +10,10 @@ pom_add_dep - add dependency to POM file
 
 SYNOPSIS
 --------
-*%pom_add_dep* groupId*:*artifactId[*:*version[*:*scope]]
+*%pom_add_dep* groupId**:**artifactId[**:**version[**:**scope]]
   [POM-location] [extra-XML]
 
-*%pom_add_dep_mgmt* groupId:articId[*:*version[*:*scope]]
+*%pom_add_dep_mgmt* groupId**:**articId[**:**version[**:**scope]]
   [POM-location] [extra-XML]
 
 DESCRIPTION
@@ -21,11 +21,11 @@ DESCRIPTION
 These macros patch specified POM file adding a dependency on given
 version of artifactId from groupId, with given scope (if
 any). *pom_add_dep* adds the dependency to *<dependencies>* XML node,
-while *pom_add_dep_mgmt* adds it to *dependencyManagement*.
+while *pom_add_dep_mgmt* adds it to *<dependencyManagement>*.
 
 groupId and artifactId are identifiers of Maven artifact on which
 dependency is to be added.  They must be specified.  If version is not
-specified then default value of "any" is used.  If scope is not
+specified then default value of *"any"* is used.  If scope is not
 specified then no scope is defined (Maven defaults to "compile" in
 this case).
 

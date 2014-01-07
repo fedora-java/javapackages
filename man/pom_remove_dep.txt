@@ -10,7 +10,7 @@ pom_remove_dep - remove dependency on Maven artifact from POM file
 
 SYNOPSIS
 --------
-*%pom_remove_dep* [groupId]:[artifactId] [POM-location]
+*%pom_remove_dep* \[groupId]**:**[artifactId] [POM-location]
 
 DESCRIPTION
 -----------
