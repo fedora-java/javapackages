@@ -88,6 +88,13 @@ class PomMacrosTest(unittest.TestCase):
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
 
+    @exec_macro("pom_remove_dep :", "pom_remove_dep_wildcard.xml")
+    def test_remove_wildcard(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        report, res = check_result(pom_path)
+        self.assertEqual(res, True, report)
+
     @exec_macro("pom_remove_dep junit:", "pom_remove_dep_nons.xml")
     def test_remove_dep_nons(self, stdin, stderr, returncode, pom_path):
         # no namespace

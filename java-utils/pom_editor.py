@@ -45,7 +45,7 @@ def MetaArtifact(specification, **defaults):
                 value = self.values[key]
                 if value and value != '*':
                     conditions.append(expr.format(key, value))
-            return ' and '.join(conditions)
+            return ' and '.join(conditions) if conditions else 'true()'
     return Artifact
 
 def find_pom(pompath):
