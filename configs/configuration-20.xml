@@ -75,10 +75,12 @@
       <stereotypes>
         <stereotype>
           <extension>jar</extension>
-          <!-- Maybe /usr/share/java is not the best place to store
-               ZIP files, but packages are doing so anyways and
-               allowing ZIPs here simplifies packaging.  TODO: find a
-               better location for ZIP files.  -->
+        </stereotype>
+        <!-- Maybe /usr/share/java is not the best place to store
+             ZIP files, but packages are doing so anyways and
+             allowing ZIPs here simplifies packaging.  TODO: find a
+             better location for ZIP files.  -->
+        <stereotype>
           <extension>zip</extension>
         </stereotype>
       </stereotypes>
