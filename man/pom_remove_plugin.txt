@@ -10,7 +10,7 @@ pom_remove_plugin - remove Maven plugin invocation from POM file
 
 SYNOPSIS
 --------
-*%pom_remove_plugin* [groupId]:[artifactId] [POM-location]
+*%pom_remove_plugin* \[groupId]**:**[artifactId] [POM-location]
 
 DESCRIPTION
 -----------
@@ -27,7 +27,7 @@ the directory containing *pom.xml*.  If POM location is not given then
 
 EXAMPLES
 --------
-*%pom_remove_plugin maven-shade-plugin* - this call removes invocation
+*%pom_remove_plugin :maven-shade-plugin* - this call removes invocation
 of Maven Shade Plugin from POM in current working directory.
 
 AUTHOR
