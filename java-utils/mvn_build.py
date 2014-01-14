@@ -117,8 +117,11 @@ if __name__ == "__main__":
         mvn_args.append("-X")
 
     if options.xmvn_debug or options.debug:
+        # for XMvn 1.x.x
         xc.add_custom_option("resolverSettings/debug", 'true')
         xc.add_custom_option("installerSettings/debug", 'true')
+        # for XMvn 2.x.x
+        mvn_args.append("-Dorg.slf4j.simpleLogger.log.org.fedoraproject.xmvn=debug")
 
     if options.force:
         mvn_args.append("-Dmaven.test.skip=true")
