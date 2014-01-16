@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<ivysettings>
+  <typedef name="xmvn" classname="org.fedoraproject.maven.connector.ivy.IvyResolver"/>
+  <property name="ivy.mode" value="local" override="false"/>
+
+  <settings defaultResolver="xmvn-mode"/>
+  <include url="${ivy.default.settings.dir}/ivysettings-public.xml"/>
+  <include url="${ivy.default.settings.dir}/ivysettings-shared.xml"/>
+  <include url="${ivy.default.settings.dir}/ivysettings-local.xml"/>
+  <include url="${ivy.default.settings.dir}/ivysettings-main-chain.xml"/>
+  <include url="${ivy.default.settings.dir}/ivysettings-default-chain.xml"/>
+
+  <resolvers>
+    <xmvn name="xmvn"/>
+    <chain name="xmvn-local" returnFirst="true" checkmodified="true">
+      <resolver ref="local"/>
+      <resolver ref="xmvn"/>
+    </chain>
+    <chain name="xmvn-bootstrap" returnFirst="true" checkmodified="true">
+      <resolver ref="local"/>
+      <resolver ref="xmvn"/>
+      <resolver ref="main"/>
+    </chain>
+    <chain name="xmvn-upstream" returnFirst="true" checkmodified="true">
+      <resolver ref="local"/>
+      <resolver ref="main"/>
+    </chain>
+    <chain name="xmvn-mode" returnFirst="true" checkmodified="true">
+      <resolver ref="xmvn-${ivy.mode}"/>
+    </chain>
+  </resolvers>
+</ivysettings>

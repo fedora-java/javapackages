@@ -1,0 +1,9 @@
+aether/aether-api
+guava
+maven/maven-model
+plexus-classworlds
+plexus-containers/plexus-container-default
+plexus/utils
+xbean/xbean-reflect
+xmvn/xmvn-connector
+xmvn/xmvn-core

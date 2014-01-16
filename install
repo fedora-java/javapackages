@@ -194,5 +194,14 @@ inst_data configs/configuration-20-rpmbuild-raw.xml "${m2home}"
 
 link "${m2home}/configuration-20.xml" "${m2home}/configuration.xml"
 
+
+exec >files-ivy
+
+dir "${sysconfdir}/ivy"
+
+inst_data configs/ivy-local-classpath "${sysconfdir}/ant.d"
+inst_data configs/ivysettings.xml "${sysconfdir}/ivy"
+
+
 exec >files-fedora-review
 inst_data fedora-review/java_guidelines.py "${datadir}/fedora-review/plugins"
