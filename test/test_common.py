@@ -1,8 +1,9 @@
 import os
-import shutil
-import sys
-import subprocess
 import re
+import shutil
+import subprocess
+import sys
+import unittest
 
 DIRPATH = os.path.dirname(os.path.realpath(__file__))
 PYTHONPATH = os.path.join(DIRPATH, '../python')
@@ -140,3 +141,23 @@ def mvn_artifact(pom, jar=None):
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
+
+class WorkdirTestCase(unittest.TestCase):
+    olddir = os.getcwd()
+    WORKDIR = '.workdir'
+
+    def setUp(self):
+        self.olddir = os.getcwd()
+        try:
+            shutil.rmtree(self.WORKDIR)
+        except OSError:
+            pass
+        os.mkdir(self.WORKDIR)
+        os.chdir(self.WORKDIR)
+
+    def tearDown(self):
+        try:
+            shutil.rmtree(self.WORKDIR)
+        except OSError:
+            pass
+        os.chdir(self.olddir)
