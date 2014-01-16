@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="US-ASCII"?>
 <ivysettings>
   <typedef name="xmvn" classname="org.fedoraproject.maven.connector.ivy.IvyResolver"/>
-  <property name="ivy.mode" value="local" override="false"/>
+  <property name="ivy.mode" value="upstream" override="false"/>
 
   <settings defaultResolver="xmvn-mode"/>
   <include url="${ivy.default.settings.dir}/ivysettings-public.xml"/>
