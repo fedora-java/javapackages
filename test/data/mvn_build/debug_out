@@ -1,1 +1,1 @@
---batch-mode --offline -X verify org.fedoraproject.xmvn:xmvn-mojo:install org.apache.maven.plugins:maven-javadoc-plugin:aggregate org.fedoraproject.xmvn:xmvn-mojo:builddep
+--batch-mode --offline -X -Dorg.slf4j.simpleLogger.log.org.fedoraproject.xmvn=debug verify org.fedoraproject.xmvn:xmvn-mojo:install org.apache.maven.plugins:maven-javadoc-plugin:aggregate org.fedoraproject.xmvn:xmvn-mojo:builddep
