@@ -113,7 +113,7 @@ sort -u -o ${_filelist} ${_filelist} \
 # directory containing pom.xml. If POM location is not given then pom.xml from
 # current working directory is used.
 #
-%pom_remove_dep()     %{expand: %{__pom_call}remove_dep     %*
+%pom_remove_dep(rf)     %{expand: %{__pom_call}remove_dep %**
 }
 
 
@@ -132,7 +132,7 @@ sort -u -o ${_filelist} ${_filelist} \
 # directory containing pom.xml. If POM location is not given then pom.xml from
 # current working directory is used.
 #
-%pom_remove_plugin()  %{expand: %{__pom_call}remove_plugin  %*
+%pom_remove_plugin(rf)  %{expand: %{__pom_call}remove_plugin  %**
 }
 
 
@@ -175,7 +175,7 @@ sort -u -o ${_filelist} ${_filelist} \
 # because it selects nodes from pom namespace, but "environment/os" won't find
 # anything because it looks for nodes that don't belong to any XML namespace.
 #
-%pom_xpath_remove()   %{expand: %{__pom_call}xpath_remove   %*
+%pom_xpath_remove(rf)   %{expand: %{__pom_call}xpath_remove   %**
 }
 
 
@@ -213,7 +213,7 @@ sort -u -o ${_filelist} ${_filelist} \
 # directory containing pom.xml. If POM location is not given then pom.xml from
 # current working directory is used.
 #
-%pom_xpath_replace()  %{expand: %{__pom_call}xpath_replace  %*
+%pom_xpath_replace(rf)  %{expand: %{__pom_call}xpath_replace  %**
 }
 
 
@@ -232,7 +232,7 @@ sort -u -o ${_filelist} ${_filelist} \
 # directory containing pom.xml. If POM location is not given then pom.xml from
 # current working directory is used.
 #
-%pom_xpath_set()      %{expand: %{__pom_call}xpath_set      %*
+%pom_xpath_set(rf)      %{expand: %{__pom_call}xpath_set      %**
 }
 
 
