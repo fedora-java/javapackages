@@ -3,6 +3,7 @@ import inspect
 import re
 import shutil
 import sys
+import optparse
 
 from lxml import etree
 from os import path
@@ -58,6 +59,22 @@ def find_pom(pompath):
     raise PomException("Couldn't locate POM file using pattern '{0}'"\
                         .format(pompath))
 
+def find_poms_recursive(pomspec):
+    modules = [find_pom(pomspec)]
+    found = set(modules)
+    try:
+        while modules:
+            pompath = find_pom(modules.pop())
+            found.add(pompath)
+            pom_xml = etree.parse(pompath)
+            modules += [path.join(path.dirname(pompath), node.text.strip())
+                        for node in pom_xml.xpath('//pom:modules/pom:module',
+                        namespaces=Pom.NSMAP)]
+        return found
+
+    except (PomException, IOError):
+        raise PomException("Cannot read POM file '{0}'".format(pompath))
+
 def get_indent(node):
     if node is None or not node.text:
         return ''
@@ -68,46 +85,60 @@ def print_usage(function):
     print >> sys.stderr, "Usage: %{name} {doc}".format(name=function.__name__,
                                                        doc=function.__doc__)
 
-def macro(outer_function):
+def parse_args(function, args):
+    (arglist, _, _, defaults) = inspect.getargspec(function)
+    option_parser = optparse.OptionParser()
+    option_parser.add_option('-r', '--recursive', action="store_true")
+    option_parser.add_option('-f', '--force', action="store_true")
+    options, arguments = option_parser.parse_args(list(args))
+    min_arg_count = len(arglist) - len(defaults)
+    fnargs = dict(zip(arglist, arguments[:min_arg_count]))
+    poms = arguments[min_arg_count:]
+    print defaults
+    if len(defaults or [] > 1) and poms:
+        last = poms[-1]
+        if '<' in last:
+            del poms[-1]
+            fnargs[arglist[-1]] = last
+    if not poms:
+        poms = ['.']
+    return options, fnargs, poms
+
+def macro():
     def decorator(function):
         def decorated(*args):
-            (arglist, _, _, defaults) = inspect.getargspec(function)
-            maxargcount = len(arglist)
-            minargcount = maxargcount - len(defaults or [])
-            if len(args) > maxargcount or len(args) < minargcount:
-                print_usage(function)
-                sys.exit(1)
-            pomspec_pos = arglist.index('pom')
-            if pomspec_pos < len(args):
-                pomspec = args[pomspec_pos]
-            else:
-                pomspec = 'pom.xml'
-
             try:
-                pompath = find_pom(pomspec)
-            except PomException as exception:
-                print >> sys.stderr, exception.message
-                print_usage(function)
-                sys.exit(2)
+                pompath = None
+                options, fnargs, poms = parse_args(function, args)
 
-            try:
-                pomdir = path.dirname(pompath) or '.'
-                pom = Pom(pompath)
-                pom.write(path.join(pomdir, path.basename(pompath) + '.tmp'))
-                fnargs = list(args[:pomspec_pos]) + [pom] + list(args[pomspec_pos + 1:])
-                function(*fnargs)
-                origfile = path.join(pomdir, path.basename(pompath) + '.orig')
-                shutil.move(pompath, origfile)
-                pom.write(pompath)
-            except (PomException, etree.XMLSyntaxError, OSError, IOError) as exception:
-                print >> sys.stderr, "Error in processing {0}".format(pompath)
+                for pomspec in poms:
+                    if options.recursive:
+                        pompaths = find_poms_recursive(pomspec)
+                    else:
+                        pompaths = [find_pom(pomspec)]
+
+                    matches = 0
+                    for pompath in pompaths:
+                        try:
+                            pom = Pom(pompath)
+                            fnargs['pom'] = pom
+                            pom.patch(function, fnargs)
+                            matches += 1
+                        except PomQueryNoMatch as exception:
+                            pass
+                    if matches == 0 and not options.force:
+                        raise exception
+
+            except Exception as exception:
+                if pompath:
+                    print >> sys.stderr, "Error in processing {0}".format(pompath)
                 print >> sys.stderr, exception.message
                 print_usage(function)
                 sys.exit(3)
 
         macros[function.__name__] = decorated
         return decorated
-    return decorator(outer_function)
+    return decorator
 
 class Pom(object):
     NSMAP = {'pom': 'http://maven.apache.org/POM/4.0.0',
@@ -125,6 +156,7 @@ class Pom(object):
         with open(pompath) as pomfile:
             pom = re.sub(r'\<\s*project\s*\>',
                     ('<project {ns}>').format(ns=self.XMLNS), pomfile.read())
+        self.pompath = pompath
         self.root = etree.fromstring(pom)
         self.tab = get_indent(self.root)
 
@@ -132,6 +164,17 @@ class Pom(object):
         with open(filename, 'w') as pomfile:
             pomfile.write(etree.tostring(self.root))
             pomfile.write('\n')
+
+    def patch(self, function, fnargs):
+        pomdir = path.dirname(self.pompath)
+        pomfile = path.basename(self.pompath)
+        try:
+            self.write(path.join(pomdir, pomfile + '.tmp'))
+            function(**fnargs)
+        finally:
+            origfile = path.join(pomdir, pomfile + '.orig')
+            shutil.move(self.pompath, origfile)
+            self.write(self.pompath)
 
     def inject_xml(self, parent, content):
         content = self.subtree_from_string(content)
@@ -243,31 +286,31 @@ VersionedArtifact = MetaArtifact(artifact_spec)
 DefaultVersionedArtifact = MetaArtifact(artifact_spec, version='any')
 ScopedArtifact = MetaArtifact(artifact_spec_scoped, version='any')
 
-@macro
+@macro()
 def pom_xpath_inject(where, xml_string, pom=None):
     """<XPath> [XML code] [POM location]"""
     for element in pom.xpath_query(where):
         pom.inject_xml(element, Pom.comment(xml_string))
 
-@macro
+@macro()
 def pom_xpath_replace(where, xml_string, pom=None):
     """<XPath> <XML code> [POM location]"""
     for element in pom.xpath_query(where):
         pom.replace_xml(element, Pom.comment(xml_string))
 
-@macro
+@macro()
 def pom_xpath_remove(where, pom=None):
     """<XPath> [POM location]"""
     for element in pom.xpath_query(where):
         pom.replace_xml(element, "<!-- element removed by maintainer -->")
 
-@macro
+@macro()
 def pom_xpath_set(where, content, pom=None):
     """<XPath> <new contents> [POM location]"""
     for element in pom.xpath_query(where):
         pom.replace_xml_content(element, Pom.comment(content))
 
-@macro
+@macro()
 def pom_remove_dep(dep, pom=None):
     """[groupId]:[artifactId] [POM location]"""
     try:
@@ -277,9 +320,9 @@ def pom_remove_dep(dep, pom=None):
         for element in elements:
             pom.replace_xml(element, "<!-- dependency removed by maintainer -->")
     except PomQueryNoMatch:
-        raise PomException("Dependency '{0}' not found.".format(dep))
+        raise PomQueryNoMatch("Dependency '{0}' not found.".format(dep))
 
-@macro
+@macro()
 def pom_remove_plugin(plugin, pom=None):
     """[groupId]:[artifactId] [POM location]"""
     try:
@@ -289,9 +332,9 @@ def pom_remove_plugin(plugin, pom=None):
         for element in elements:
             pom.replace_xml(element, "<!-- plugin removed by maintainer -->")
     except PomQueryNoMatch:
-        raise PomException("Plugin '{0}' not found.".format(plugin))
+        raise PomQueryNoMatch("Plugin '{0}' not found.".format(plugin))
 
-@macro
+@macro()
 def pom_disable_module(module, pom=None):
     """<module name> [POM location]"""
     try:
@@ -300,9 +343,9 @@ def pom_disable_module(module, pom=None):
         for element in elements:
             pom.replace_xml(element, "<!-- module removed by maintainer -->")
     except PomQueryNoMatch:
-        raise PomException("Module '{0}' not found.".format(module))
+        raise PomQueryNoMatch("Module '{0}' not found.".format(module))
 
-@macro
+@macro()
 def pom_add_parent(parent, pom=None):
     """groupId:artifactId[:version] [POM location]"""
     if pom.root.find('pom:parent', namespaces=Pom.NSMAP) is not None:
@@ -310,16 +353,16 @@ def pom_add_parent(parent, pom=None):
     artifact = DefaultVersionedArtifact(parent)
     pom.inject_artifact('', 'parent', artifact)
 
-@macro
+@macro()
 def pom_remove_parent(pom=None):
     """[POM location]"""
     try:
         pom.replace_xml(pom.xpath_query_element("/pom:project/pom:parent"),
                         "<!-- parent POM reference removed by maintainer -->")
     except PomQueryNoMatch:
-        raise PomException("POM doesn't specify parent.")
+        raise PomQueryNoMatch("POM doesn't specify parent.")
 
-@macro
+@macro()
 def pom_set_parent(parent, pom=None):
     """groupId:artifactId[:version] [POM location]"""
     try:
@@ -327,23 +370,23 @@ def pom_set_parent(parent, pom=None):
         element = pom.xpath_query_element("/pom:project/pom:parent")
         pom.replace_xml_content(element, artifact.get_xml())
     except PomQueryNoMatch:
-        raise PomException("POM doesn't specify parent.")
+        raise PomQueryNoMatch("POM doesn't specify parent.")
 
-@macro
+@macro()
 def pom_add_dep(dep, pom=None, xml_string=''):
     """groupId:artifactId[:version[:scope]] [POM location] [extra XML]"""
     artifact = ScopedArtifact(dep)
     pom.inject_artifact('pom:dependencies', 'dependency', artifact,
                         xml_string)
 
-@macro
+@macro()
 def pom_add_dep_mgmt(dep, pom=None, xml_string=''):
     """groupId:artifactId[:version[:scope]] [POM location] [extra XML]"""
     artifact = ScopedArtifact(dep)
     pom.inject_artifact('pom:dependencyManagement/pom:dependencies',
                         'dependency', artifact, xml_string)
 
-@macro
+@macro()
 def pom_add_plugin(plugin, pom=None, xml_string=''):
     """groupId:artifactId[:version] [POM location] [extra XML]"""
     artifact = MetaArtifact(artifact_spec, version='any',
