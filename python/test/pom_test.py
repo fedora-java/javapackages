@@ -17,7 +17,7 @@ def pomfile(fname):
 
 class TestPOM(unittest.TestCase):
 
-    @exception_expected(IOError)
+    @exception_expected(PomLoadingException)
     @pomfile("NULL_FILE.pom.xml")
     def test_nonexisting_pom(self, p):
         self.assertTrue(False, "IOError was expected!")
