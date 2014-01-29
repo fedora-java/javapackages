@@ -174,12 +174,50 @@ class TestRecursive(WorkdirTestCase):
         self.assertEqual('', report, report)
 
     def test_recursive_no_match(self):
-        return_value, stderr, _ = exec_pom_macro('%pom_remove_dep -r :junit',
+        return_value, stderr, _ = exec_pom_macro('%pom_remove_dep -r :not-there',
                 poms_tree=self.example_tree)
         self.assertIn("Error", stderr)
-        self.assertIn("not fount", stderr)
+        self.assertIn("not found", stderr)
         self.assertNotEqual(0, return_value)
 
+    def test_recursive_missing(self):
+        poms_tree = dict(self.example_tree)
+        del poms_tree['intermediate/schemas']
+        return_value, stderr, _ = exec_pom_macro('%pom_remove_dep -r :commons-io',
+                poms_tree=poms_tree)
+        self.assertIn("Cannot read", stderr)
+        self.assertNotEqual(0, return_value)
+
+    def test_recursive_subpom(self):
+        return_value, stderr, report = exec_pom_macro('%pom_remove_dep -r :junit intermediate',
+                poms_tree=self.example_tree,
+                want_tree={'intermediate/schemas': 'example_schemas_removed_junit.xml'})
+        self.assertEqual(0, return_value, stderr)
+        self.assertEqual('', report, report)
+
+    def test_recursive_multiple(self):
+        poms_tree = dict(self.example_tree)
+        return_value, stderr, report = exec_pom_macro('%pom_remove_dep -r :junit intermediate common',
+                poms_tree=poms_tree,
+                want_tree={'intermediate/schemas': 'example_schemas_removed_junit.xml',
+                    'common': 'example_common_removed_junit.xml'})
+        self.assertEqual(0, return_value, stderr)
+        self.assertEqual('', report, report)
+
+    def test_recursive_partial_match(self):
+        return_value, stderr, _ = exec_pom_macro('%pom_remove_dep -r commons-ioX intermediate common',
+                poms_tree=self.example_tree)
+        self.assertIn("Error", stderr)
+        self.assertIn("not found", stderr)
+        self.assertNotEqual(0, return_value)
+
+    def test_recursive_partial_match_forced(self):
+        return_value, stderr, report = exec_pom_macro(\
+                '%pom_remove_dep -rf commons-ioX:commons-io intermediate common',
+                poms_tree=self.example_tree,
+                want_tree={'common': 'example_common_removed_commons_iox.xml'})
+        self.assertEqual(0, return_value, stderr)
+        self.assertEqual('', report, report)
 
 class TestAttributeRecognition(WorkdirTestCase):
     def test_default_extra_xml(self):
