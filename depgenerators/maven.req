@@ -158,7 +158,7 @@ class TagBuilder:
                             "%mvn_package {art} <package_name>\n".format(art=skipped)
             raise Exception(skipped_msg)
 
-        reqs = {'java': depmap.get_java_requires(),
+        reqs = {'java-headless': depmap.get_java_requires(),
                 'java-devel': depmap.get_java_devel_requires()}
         for name, version in reqs.iteritems():
             self.__process_jvm_req(name, version)
