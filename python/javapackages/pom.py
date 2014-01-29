@@ -43,7 +43,10 @@ class POM(object):
         et = ElementTree ()
         parser = XMLParser(remove_comments=True,
                            strip_cdata=True)
-        self.__doc = et.parse(path, parser=parser)
+        try:
+            self.__doc = et.parse(path, parser=parser)
+        except IOError:
+            raise PomLoadingException("Cannot read file {0}".format(path))
 
         if self.__doc is None:
             raise PomLoadingException("Failed to load pom.xml. You have a problem")
