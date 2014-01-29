@@ -142,12 +142,16 @@ class Pom(object):
     def replace_xml(self, replaced, content):
         content = self.subtree_from_string(content)
         parent = replaced.getparent()
-        idx = parent.index(replaced)
-        items = len(content)
-        del parent[idx]
-        for i, element in enumerate(content):
-            parent.insert(idx + i, element)
-        self.reformat(parent, parent[idx: idx + items])
+        parent.text = content.text
+        if not isinstance(replaced, etree._Element):
+            parent.extend(content)
+        else:
+            idx = parent.index(replaced)
+            items = len(content)
+            del parent[idx]
+            for i, element in enumerate(content):
+                parent.insert(idx + i, element)
+            self.reformat(parent, parent[idx: idx + items])
 
     def replace_xml_content(self, parent, content):
         content = self.subtree_from_string(content)

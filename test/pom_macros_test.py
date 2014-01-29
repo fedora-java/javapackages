@@ -321,6 +321,13 @@ class PomMacrosTest(unittest.TestCase):
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
 
+    @exec_macro("pom_xpath_remove 'pom:modules/node()'", "pom_xpath_remove_generic.xml")
+    def test_xpath_remove_generic(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        report, res = check_result(pom_path)
+        self.assertEqual(res, True, report)
+
     @exec_macro("pom_xpath_remove \
                  \"pom:dependency[pom:artifactId[text()='m-m']]\"",
                 "pom_xpath_remove2.xml")
