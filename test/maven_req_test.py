@@ -26,7 +26,7 @@ class TestMavenReq(unittest.TestCase):
     @mavenreq(["require-java/require.xml"])
     def test_require_java(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
-        self.assertEquals(stdout, "jpackage-utils\nmvn(org.apache.maven:maven-project)\njava >= 1:1.6\n")
+        self.assertEquals(stdout, "jpackage-utils\nmvn(org.apache.maven:maven-project)\njava-headless >= 1:1.6\n")
 
     @mavenreq(["require-java-devel/require.xml"])
     def test_require_java_devel(self, stdout, stderr, return_value):
@@ -36,7 +36,7 @@ class TestMavenReq(unittest.TestCase):
     @mavenreq(["require-java-both/require.xml"])
     def test_require_java_both(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
-        self.assertEquals(stdout, "jpackage-utils\nmvn(org.apache.maven:maven-project)\njava >= 1:1.6\njava-devel >= 1:1.6\n")
+        self.assertEquals(stdout, "jpackage-utils\nmvn(org.apache.maven:maven-project)\njava-headless >= 1:1.6\njava-devel >= 1:1.6\n")
 
     @mavenreq(["require_parent/require.xml"])
     def test_require_parent(self, stdout, stderr, return_value):
