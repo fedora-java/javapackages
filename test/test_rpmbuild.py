@@ -83,7 +83,8 @@ class Package(object):
         outfile = open("tmpout", 'w')
         errfile = open("tmperr", 'w')
         topdir = '--define=_topdir {cwd}/rpmbuild'.format(cwd=os.getcwd())
-        proc = subprocess.Popen(['rpmbuild', topdir,
+        scl_undef = '--eval=%undefine scl'
+        proc = subprocess.Popen(['rpmbuild', topdir, scl_undef,
                                  os.path.join('rpmbuild', 'SPECS',
                                               self.__name + '.spec')]
                                 + args, shell=False, env=self.__env,
