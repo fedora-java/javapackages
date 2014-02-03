@@ -173,13 +173,13 @@ class Package(object):
             shutil.copy(sourcepath, os.path.join(destpath, targetname))
 
 def _prepare_macros():
-    etcpath = os.path.join(DIRPATH, '..', 'etc')
+    macropath = os.path.join(DIRPATH, '..', 'macros.d')
     java_utils = os.path.abspath(os.path.join(DIRPATH, '..', 'java-utils'))
 
     with open('.rpmmacros', 'w') as rpmmacros:
-        for filepath in os.listdir(etcpath):
+        for filepath in os.listdir(macropath):
             if filepath.startswith('macros'):
-                with open(os.path.join(etcpath, filepath), 'r') as macrofile:
+                with open(os.path.join(macropath, filepath), 'r') as macrofile:
                     for line in macrofile:
                         if '/usr/share/java-utils' in line:
                             rpmmacros.write(re.sub(r'/usr/share/java-utils',
