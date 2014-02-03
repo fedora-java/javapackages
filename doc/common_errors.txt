@@ -91,6 +91,23 @@ Following dependencies were not resolved and requires cannot be generated. Eithe
 org.apache.maven.doxia:doxia-core::tests:UNKNOWN
 ------
 
+Most often this error happens when one part of the package depends on an
+attached artifact which is not being installed. Automatic RPM requires generator
+then tries to generate requires on artifact which is not being installed. This
+would most likely result in a broken RPM package so generator halts the build.
+
+There are usually two possible solutions for this problem:
+
+ - Install attached artifact in question. For the above error following macro
+   would install artifacts with `tests` classifiers into `tests` subpackage.
+
+    %mvn_package :::tests: %{name}-tests
+
+ - Remove dependency on problematic artifact. This can involve `pom.xml`
+   modifications, disabling tests or even code changes so it is usually easier
+   to install the dependency.
+
+
 [[error_scope_system]]
 === Dependencies with scope "system"
 
@@ -102,3 +119,15 @@ dependencies are not supported by XMvn installer. You should either
 remove any dependencies with scope "system" before the build or not run
 XMvn instaler. -> [Help 1]
 ------
+
+Some Maven artifacts try to depend on exact system paths. Most usually this
+dependency is either on `com.sun:tools` or `sun.jdk:jconsole`. Dependencies with
+system scope cause issues with our tooling and requires generators so they are
+not supported.
+
+Easiest way to solve this for above two dependencies is by removing and adding
+back the dependency without `<scope>` or `<systemPath>` nodes:
+
+    %pom_remove_dep com.sun:tools
+    %pom_add_dep com.sun:tools
+
