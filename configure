@@ -74,6 +74,6 @@ test -z "${rpmconfigdir}" && rpmconfigdir="${prefix}/lib/rpm"
 
 test -z "${m2home}" && m2home="${datadir}/xmvn"
 
-eval $(sed -n 's/^%_\('"$vars_re"'\)\ *\(.*\)$/\1="\2"/;T;s/%{_\(.*}\)/${\1/;p' etc/macros.jpackage)
+eval $(sed -n 's/^%_\('"$vars_re"'\)\ *\(.*\)$/\1="\2"/;T;s/%{_\(.*}\)/${\1/;p' macros.d/macros.jpackage)
 
 set | sed -n 's/^\('"$vars_re"'\)=/&/;T;p' >config.status

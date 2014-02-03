@@ -122,8 +122,8 @@ inst_data target/java-functions "${javadir}-utils"
 inst_data java-utils/maven_depmap.py "${javadir}-utils"
 inst_data java-utils/pom_editor.py "${javadir}-utils"
 
-inst_data target/macros.jpackage "${sysconfdir}/rpm"
-inst_data target/macros.fjava "${sysconfdir}/rpm"
+inst_data target/macros.jpackage "${rpmconfigdir}/macros.d"
+inst_data target/macros.fjava "${rpmconfigdir}/macros.d"
 
 inst_data target/build-classpath.1 "${mandir}/man1"
 inst_data target/build-jar-repository.1 "${mandir}/man1"
@@ -162,7 +162,7 @@ exec >files-maven
 
 dir "${m2home}"
 
-inst_data target/macros.xmvn "${sysconfdir}/rpm"
+inst_data target/macros.xmvn "${rpmconfigdir}/macros.d"
 
 inst_data java-utils/builddep.py "${javadir}-utils"
 inst_data java-utils/mvn_alias.py "${javadir}-utils"
