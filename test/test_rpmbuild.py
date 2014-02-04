@@ -5,7 +5,7 @@ import shutil
 
 from textwrap import dedent
 
-from test_common import DIRPATH
+DIRPATH = os.path.dirname(os.path.realpath(__file__))
 
 class Package(object):
     """Represents single RPM package that should be built.

@@ -1,42 +1,4 @@
-from os import path
-from test_rpmbuild import Package
-from test_common import DIRPATH, WorkdirTestCase
-from xml_compare import compare_xml_files
-
-DATADIR = path.join(DIRPATH, 'data', 'pom_editor')
-
-def exec_pom_macro(line, poms_tree, want_tree=None):
-    """
-    Parameters:
-        line::
-            A line of spec code injected to %prep
-        poms_tree::
-            dictionary that maps subpackage directory paths to input poms
-        want_tree::
-            dictionary that maps subpackage directory paths to wanted poms
-            (in want directory)
-    It creates a directory structure corresponding to keys in poms_tree and
-    copies pom files into it. Then it executes prep and compares altered poms
-    to wanted ones from want_tree (if not specified in want_tree it is assumed
-    to remain unchanged and is compared with the original pom). Returns tuple
-    of rpmbuild's return value, stderr and report of differences in xml files.
-    """
-    pack = Package('test')
-    pack.append_to_prep(line)
-    for destpath, sourcepath in poms_tree.iteritems():
-        pack.add_source(path.join(DATADIR, sourcepath), path.join(destpath, 'pom.xml'))
-    _, stderr, return_value = pack.run_prep()
-    reports = []
-    if return_value == 0:
-        for filepath, pom in poms_tree.iteritems():
-            if want_tree and filepath in want_tree:
-                expected_pom = path.join('want', want_tree[filepath])
-            else:
-                expected_pom = pom
-            expected_pom = path.join(DATADIR, expected_pom)
-            actual_pom = path.join(pack.buildpath, filepath, 'pom.xml')
-            reports.append(compare_xml_files(actual_pom, expected_pom))
-    return return_value, stderr, '\n'.join(reports).strip()
+from test_common import exec_pom_macro, WorkdirTestCase
 
 class TestPomPath(WorkdirTestCase):
     def test_sanity(self):
