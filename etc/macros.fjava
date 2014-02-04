@@ -337,3 +337,6 @@ sort -u -o ${_filelist} ${_filelist} \
 #
 %pom_add_plugin()     %{expand: %{__pom_call}add_plugin     %*
 }
+
+%pom_change_dep(rf)     %{expand: %{__pom_call}change_dep    %**
+}

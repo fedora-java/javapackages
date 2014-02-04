@@ -24,12 +24,27 @@ class PomQueryInvalid(PomException):
 def MetaArtifact(specification, **defaults):
     parts = specification.split(':')
     class Artifact(object):
-        def __init__(self, values):
+        def __init__(self, **values):
             self.values = dict.fromkeys(parts, '')
             self.values.update(defaults)
-            for key, value in zip(parts, values.split(':')):
+            self.values.update(values)
+
+        @classmethod
+        def from_mvn_str(cls, string):
+            values = {}
+            for key, value in zip(parts, string.split(':')):
                 if value:
-                    self.values[key] = value
+                    values[key] = value
+            return cls(**values)
+
+        @classmethod
+        def from_xml(cls, element):
+            values = {}
+            for part in parts:
+                subelement = element.find('{*}' + part)
+                if subelement is not None:
+                    values[part] = subelement.text.strip()
+            return cls(**values)
 
         def get_xml(self):
             xml = ''
@@ -47,6 +62,22 @@ def MetaArtifact(specification, **defaults):
                 if value and value != '*':
                     conditions.append(expr.format(key, value))
             return ' and '.join(conditions) if conditions else 'true()'
+
+        def update(self, artifact):
+            for key, value in artifact.values.iteritems():
+                if key not in parts:
+                    raise KeyError(key + ' not defined')
+                if value:
+                    self[key] = value
+
+        def __getitem__(self, key):
+            return self.values[key]
+
+        def __setitem__(self, key, value):
+            if key not in parts:
+                raise KeyError(key + ' not defined')
+            self.values[key] = value
+
     return Artifact
 
 def find_pom(pompath):
@@ -129,7 +160,7 @@ def macro():
                     if matches == 0 and not options.force:
                         raise exception
 
-            except Exception as exception:
+            except (PomException, etree.XMLSyntaxError, IOError, TypeError) as exception:
                 if pompath:
                     print >> sys.stderr, "Error in processing {0}".format(pompath)
                 print >> sys.stderr, exception.message
@@ -143,7 +174,7 @@ def macro():
 class Pom(object):
     NSMAP = {'pom': 'http://maven.apache.org/POM/4.0.0',
               'xsi': 'http://www.w3.org/2001/XMLSchema-instance'}
-    POM_NS = '{' + NSMAP['pom'] + '}'
+    NS = '{' + NSMAP['pom'] + '}'
     XMLNS = ('xmlns="http://maven.apache.org/POM/4.0.0"'
     'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'
     'xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 '
@@ -206,7 +237,7 @@ class Pom(object):
         if elements:
             child = node.find(elements[0], namespaces=self.NSMAP)
             if child is None:
-                name = re.sub(r'pom:', self.POM_NS, elements[0])
+                name = re.sub(r'pom:', self.NS, elements[0])
                 child = etree.Element(name)
                 node.insert(0, child)
                 node.insert(0, etree.Comment(" section added by maintainer "))
@@ -284,7 +315,8 @@ artifact_spec = 'groupId:artifactId:version'
 artifact_spec_scoped = artifact_spec + ':scope'
 VersionedArtifact = MetaArtifact(artifact_spec)
 DefaultVersionedArtifact = MetaArtifact(artifact_spec, version='any')
-ScopedArtifact = MetaArtifact(artifact_spec_scoped, version='any')
+ScopedArtifact = MetaArtifact(artifact_spec_scoped)
+DefaultScopedArtifact = MetaArtifact(artifact_spec_scoped, version='any')
 
 @macro()
 def pom_xpath_inject(where, xml_string, pom=None):
@@ -314,7 +346,7 @@ def pom_xpath_set(where, content, pom=None):
 def pom_remove_dep(dep, pom=None):
     """[groupId]:[artifactId] [POM location]"""
     try:
-        artifact = VersionedArtifact(dep)
+        artifact = VersionedArtifact.from_mvn_str(dep)
         xpath = "//pom:dependency[{0}]".format(artifact.get_xpath_condition())
         elements = pom.xpath_query(xpath)
         for element in elements:
@@ -326,7 +358,7 @@ def pom_remove_dep(dep, pom=None):
 def pom_remove_plugin(plugin, pom=None):
     """[groupId]:[artifactId] [POM location]"""
     try:
-        artifact = VersionedArtifact(plugin)
+        artifact = VersionedArtifact.from_mvn_str(plugin)
         xpath = "//pom:plugin[{0}]".format(artifact.get_xpath_condition())
         elements = pom.xpath_query(xpath)
         for element in elements:
@@ -350,7 +382,7 @@ def pom_add_parent(parent, pom=None):
     """groupId:artifactId[:version] [POM location]"""
     if pom.root.find('pom:parent', namespaces=Pom.NSMAP) is not None:
         raise PomException("POM already has a parent.")
-    artifact = DefaultVersionedArtifact(parent)
+    artifact = DefaultVersionedArtifact.from_mvn_str(parent)
     pom.inject_artifact('', 'parent', artifact)
 
 @macro()
@@ -366,7 +398,7 @@ def pom_remove_parent(pom=None):
 def pom_set_parent(parent, pom=None):
     """groupId:artifactId[:version] [POM location]"""
     try:
-        artifact = DefaultVersionedArtifact(parent)
+        artifact = DefaultVersionedArtifact.from_mvn_str(parent)
         element = pom.xpath_query_element("/pom:project/pom:parent")
         pom.replace_xml_content(element, artifact.get_xml())
     except PomQueryNoMatch:
@@ -375,14 +407,14 @@ def pom_set_parent(parent, pom=None):
 @macro()
 def pom_add_dep(dep, pom=None, xml_string=''):
     """groupId:artifactId[:version[:scope]] [POM location] [extra XML]"""
-    artifact = ScopedArtifact(dep)
+    artifact = DefaultScopedArtifact.from_mvn_str(dep)
     pom.inject_artifact('pom:dependencies', 'dependency', artifact,
                         xml_string)
 
 @macro()
 def pom_add_dep_mgmt(dep, pom=None, xml_string=''):
     """groupId:artifactId[:version[:scope]] [POM location] [extra XML]"""
-    artifact = ScopedArtifact(dep)
+    artifact = DefaultScopedArtifact.from_mvn_str(dep)
     pom.inject_artifact('pom:dependencyManagement/pom:dependencies',
                         'dependency', artifact, xml_string)
 
@@ -390,9 +422,25 @@ def pom_add_dep_mgmt(dep, pom=None, xml_string=''):
 def pom_add_plugin(plugin, pom=None, xml_string=''):
     """groupId:artifactId[:version] [POM location] [extra XML]"""
     artifact = MetaArtifact(artifact_spec, version='any',
-                        groupId='org.apache.maven.plugins')(plugin)
+                        groupId='org.apache.maven.plugins').from_mvn_str(plugin)
     pom.inject_artifact('pom:build/pom:plugins', 'plugin', artifact,
                         xml_string)
+
+@macro()
+def pom_change_dep(old, new, pom=None, xml_string=''):
+    """groupId:artifactId[:version] groupId:artifactId[:version[:scope]]
+       [POM location] [extra XML]"""
+    try:
+        old_artifact = VersionedArtifact.from_mvn_str(old)
+        xpath = "//pom:dependency[{0}]".format(old_artifact.get_xpath_condition())
+        elements = pom.xpath_query(xpath)
+        for element in elements:
+            new_artifact = DefaultScopedArtifact.from_xml(element)
+            new_artifact.update(ScopedArtifact.from_mvn_str(new))
+            new_xml = new_artifact.get_xml() + xml_string
+            pom.replace_xml_content(element, new_xml)
+    except PomQueryNoMatch:
+        raise PomQueryNoMatch("Dependency '{0}' not found.".format(old))
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
