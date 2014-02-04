@@ -4,9 +4,9 @@ changes, but package maintainers should use `%pom_*` macros developed
 specially to ease this task.
 
 These macros are designed to be called from `%prep` section of spec
-files. They are documented in `/etc/rpm/macros.fjava` configuration
+files. They are documented in `/usr/lib/rpm/macros.d/macros.fjava` configuration
 file, which is also
-link:https://git.fedorahosted.org/cgit/javapackages.git/plain/etc/macros.fjava[available
+link:https://git.fedorahosted.org/cgit/javapackages.git/plain/macros.d/macros.fjava[available
 online] and all the macros also have their own manual page. See the
 manual pages for technical details how to use them.
 
@@ -159,4 +159,3 @@ macros.
             <artifactId>antlr</artifactId>
         </exclusion>"
 --------
-
