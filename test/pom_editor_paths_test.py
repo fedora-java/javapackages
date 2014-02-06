@@ -125,6 +125,15 @@ class TestRecursive(WorkdirTestCase):
         self.assertEqual(0, return_value, stderr)
         self.assertEqual('', report, report)
 
+    def test_recursive_plugin_with_module(self):
+        poms_tree = dict(self.example_tree)
+        poms_tree[''] = 'example_parent_plugin_with_module.xml'
+        return_value, stderr, report = exec_pom_macro('%pom_remove_dep -r :junit',
+                poms_tree=poms_tree,
+                want_tree={'intermediate/schemas': 'example_schemas_removed_junit.xml'})
+        self.assertEqual(0, return_value, stderr)
+        self.assertEqual('', report, report)
+
     def test_default_recursive_profile(self):
         poms_tree = dict(self.example_tree)
         poms_tree[''] = 'example_parent_profile.xml'

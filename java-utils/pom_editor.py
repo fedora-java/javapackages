@@ -93,13 +93,15 @@ def find_pom(pompath):
 def find_poms_recursive(pomspec):
     modules = [find_pom(pomspec)]
     found = set(modules)
+    module_xpath =  '/pom:project/pom:modules/pom:module |\
+            /pom:project/pom:profile/pom:modules/pom:module'
     try:
         while modules:
             pompath = find_pom(modules.pop())
             found.add(pompath)
             pom_xml = etree.parse(pompath)
             modules += [path.join(path.dirname(pompath), node.text.strip())
-                        for node in pom_xml.xpath('//pom:modules/pom:module',
+                        for node in pom_xml.xpath(module_xpath,
                         namespaces=Pom.NSMAP)]
         return found
 
