@@ -119,6 +119,7 @@
           <repository>base-raw-pom</repository>
           <repository>base-jar</repository>
           <repository>base-jni</repository>
+          <repository>jenkins-plugin</repository>
         </repositories>
       </configuration>
     </repository>
@@ -130,6 +131,7 @@
           <repository>base-raw-pom</repository>
           <repository>base-jni</repository>
           <repository>base-jar</repository>
+          <repository>jenkins-plugin</repository>
         </repositories>
       </configuration>
     </repository>
