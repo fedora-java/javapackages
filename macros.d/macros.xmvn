@@ -141,7 +141,7 @@
 # buildroot. It is intended to be placed in %install section of spec file.
 #
 %mvn_install(J:X) \
-xmvn-install %{?-X} -R .xmvn-reactor -n "${RPM_PACKAGE_NAME}" -d "%{buildroot}" \
+xmvn-install %{?-X} -R .xmvn-reactor -n %{?scl:%{pkg_name}}%{!?scl:%{name}} -d "%{buildroot}" \
 jdir="%{-J*:%{-J*}}%{!-J*:target/site/apidocs}" \
 if [ -d "${jdir}" ]; then \
    install -dm755 %{buildroot}%{_javadocdir}/%{name} \
