@@ -336,7 +336,8 @@ def pom_xpath_replace(where, xml_string, pom=None):
 def pom_xpath_remove(where, pom=None):
     """<XPath> [POM location]"""
     for element in pom.xpath_query(where):
-        pom.replace_xml(element, "<!-- element removed by maintainer -->")
+        pom.replace_xml(element,
+                "<!-- element removed by maintainer: {0} -->".format(where))
 
 @macro()
 def pom_xpath_set(where, content, pom=None):
@@ -352,7 +353,8 @@ def pom_remove_dep(dep, pom=None):
         xpath = "//pom:dependency[{0}]".format(artifact.get_xpath_condition())
         elements = pom.xpath_query(xpath)
         for element in elements:
-            pom.replace_xml(element, "<!-- dependency removed by maintainer -->")
+            pom.replace_xml(element,
+                    "<!-- dependency removed by maintainer: {0} -->".format(dep))
     except PomQueryNoMatch:
         raise PomQueryNoMatch("Dependency '{0}' not found.".format(dep))
 
@@ -364,7 +366,8 @@ def pom_remove_plugin(plugin, pom=None):
         xpath = "//pom:plugin[{0}]".format(artifact.get_xpath_condition())
         elements = pom.xpath_query(xpath)
         for element in elements:
-            pom.replace_xml(element, "<!-- plugin removed by maintainer -->")
+            pom.replace_xml(element,
+                    "<!-- plugin removed by maintainer: {0} -->".format(plugin))
     except PomQueryNoMatch:
         raise PomQueryNoMatch("Plugin '{0}' not found.".format(plugin))
 
@@ -375,7 +378,8 @@ def pom_disable_module(module, pom=None):
         xpath = "//pom:module[normalize-space(text())='{0}']".format(module)
         elements = pom.xpath_query(xpath)
         for element in elements:
-            pom.replace_xml(element, "<!-- module removed by maintainer -->")
+            pom.replace_xml(element,
+                    "<!-- module removed by maintainer: {0} -->".format(module))
     except PomQueryNoMatch:
         raise PomQueryNoMatch("Module '{0}' not found.".format(module))
 
