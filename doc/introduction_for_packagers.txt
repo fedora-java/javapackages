@@ -251,6 +251,16 @@ have to tell Ant which file should be used by using `-f` option with the
 name of the actual build file.
 
 
+Some projects that use Apache Ant also use Apache Ivy to simplify
+dependency handling. Ivy is capable of resolving and downloading
+artifacts from Maven repositories which are declaratively described in
+XML. Project usually contains one or more `ivy.xml` files specifying the
+module Maven coordinates and its dependecies. Ivy can also be used
+directly from Ant build files. To detect whether the project you wish to
+package is using Apache Ivy, look for files named `ivy.xml` or nodes in
+the `ivy` namespace in project's build file.
+
+
 .Gradle
 Gradle is configured by a script written in Groovy (dynamic language
 built on top of JVM and extending Java's syntax). It's configuration

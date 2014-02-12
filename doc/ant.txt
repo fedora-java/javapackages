@@ -10,11 +10,22 @@ Maven. The main difference between these two tools is that Ant is procedural and
 Maven is declarative. When using Ant, it is neccessary to exactly describe the
 processes which lead to the result. It means that one needs to specify where the
 source files are, what needs to be done and when it needs to be done. On the
-other hand, Maven has some conventions. For most common tasks all that needs to
-be done is to create simple `pom.xml` file.
+other hand, Maven relies on conventions and doesn't require specifying most
+of the process unless you need to override the defaults.
 
 
-.Common spec file sections
+If upstream ships a Maven POM file, it must be installed even if you
+don't build with Maven. If not you should try to search Maven Central
+Repository for it, ship it as another source and install it.
+
+
+You are also required to generate and install a depmap - XML file
+mapping between upstream artifact names to local artifacts being
+installed. It can be easily generated using `%add_maven_depmap` macro or
+*XMvn*.
+
+
+.Common spec file using `%add_maven_depmap`
 [source,spec]
 --------
 BuildRequires:  ant
@@ -47,19 +58,88 @@ cp -pr api/* %{buildroot}%{_javadocdir}/%{name}
 
 Notable details:
 
-  - `%build` section uses `ant` command to build the project and run the tests.
-  - package maintainer needs to create all necessarry directories in `%install`
+  - `%build` section uses `ant` command to build the project and run the
+    tests. The used target(s) may vary depending on the `build.xml`
+    file. You can use `ant -p` command to list the project info or
+    manually look for `<target>` nodes in the `build.xml` file
+  - package maintainer needs to create all necessary directories in `%install`
     section
   - all JAR, POM files and generated Javadoc documentation needs to be manually
     installed
   - `%add_maven_depmap` macro is used. This macro generates depmap file for
-    specified JAR and POM file. For more information see Depmap section.
-  - pacakge can use generated file `.mfiles` to populate `%files` section with
-    `-f` switch. However, javadoc subpackage needs to explicitly list the files.
+    specified JAR and POM file and adds them to `.mfiles`
+  - package can use generated file `.mfiles` to populate `%files` section with
+    `-f` switch. However, javadoc subpackage needs to explicitly list the files
 
-[TIP]
-======
-`%mvn_artifact` macro can simplify some of the steps above. See
-<<mvn_artifact,Installing additional section>> for more information.
-======
+.Common spec file using XMvn
+[source,spec]
+-------------
+BuildRequires: ant
+BuildRequires: xmvn
+BuildRequires: javapackages-tools
+...
+%build
+ant test
 
+%install
+%mvn_artifact pom.xml lib/sample.jar
+
+%mvn_install -J api/
+
+%files -f .mfiles
+%files javadoc -f .mfiles-javadoc
+------
+
+Details:
+
+    - `%mvn_artifact` macro is used to request installation of an
+      artifact that was not built using Maven. It expects a POM file and
+      a JAR file. For POM only artifacts, the JAR part is omitted. +
+      See <<mvn_artifact,Installing additional artifacts>> for more
+      information
+    - `%mvn_install` performs the actual installation. Optional `-J`
+      parameter requests installation of generated Javadoc from given
+      directory
+    - This method of artifact installation is simpler and also allows
+      using other XMvn macros such as `%mvn_alias` or `%mvn_package`.
+
+
+=== Apache Ivy
+
+Apache Ivy provides an automatic dependency management for Ant managed
+builds. It uses Maven repositories for retrieving artifacts and supports
+many declarative features of Maven such as handling transitive
+dependencies.
+
+XMvn supports local resolution of Ivy artifacts, their installation
+and requires generation.
+
+
+.Spec file
+[source, spec]
+--------------
+BuildRequires: ivy-local
+...
+%build
+ant -Divy.mode=local test
+
+%install
+%mvn_artifact ivy.xml lib/sample.jar
+
+%mvn_install -J api/
+
+%files -f .mfiles
+%files -javadoc -f .mfiles-javadoc
+--------
+
+Details:
+
+    - `-Divy.mode=local` tells Ivy to use XMvn local artifact
+      resolution instead of downloading from the Internet
+    - If there is an `ivy-settings.xml` or similar file, which specifies
+      remote repositories, it needs to be disabled, otherwise it would
+      override local resolution.
+    - `%mvn_artifact` supports installing artifacts described by Ivy
+      configuration files
+
+TODO: ivy:publish
