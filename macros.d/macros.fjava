@@ -52,8 +52,8 @@
 set -e \
 # default values \
 %if %# == 0 \
-   _pompart="JPP-%{name}.pom" \
-   _jarpart="%{name}.jar" \
+   _pompart="JPP-%{?scl:%{pkg_name}}%{!?scl:%{name}}.pom" \
+   _jarpart="%{?scl:%{pkg_name}}%{!?scl:%{name}}.jar" \
 %else \
    _pompart="%1" \
    _jarpart="%2" \
