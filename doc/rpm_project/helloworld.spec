@@ -1,4 +1,7 @@
-# Comments start with hash sign
+# Comments start with hash sign. Caution: macros in comments are still
+# expanded, which can lead to unexpected results. To stop macro from expanding,
+# double its percent sign (e.g. %%mvn_install)
+
 # First part usually consists of metadata such as package name, version, and
 # much more
 Name:		helloworld
