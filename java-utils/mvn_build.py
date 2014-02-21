@@ -152,6 +152,8 @@ if __name__ == "__main__":
                 optional=True)
         xc.add_package_mapping(Artifact.from_mvn_str(":{*}"), "@1")
 
+    print "Executing:", " ".join(mvn_args)
+    print mvn_args
     p = subprocess.Popen(" ".join(mvn_args), shell=True, env=os.environ)
     p.wait()
 
