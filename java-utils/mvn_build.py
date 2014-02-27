@@ -29,6 +29,8 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
+from __future__ import print_function
+
 import os
 import optparse
 import subprocess
@@ -152,8 +154,9 @@ if __name__ == "__main__":
                 optional=True)
         xc.add_package_mapping(Artifact.from_mvn_str(":{*}"), "@1")
 
-    print "Executing:", " ".join(mvn_args)
-    print mvn_args
+    print("Executing:", " ".join(mvn_args), file=sys.stderr)
+    print(mvn_args, file=sys.stderr)
+    sys.stderr.flush()
     p = subprocess.Popen(" ".join(mvn_args), shell=True, env=os.environ)
     p.wait()
 
