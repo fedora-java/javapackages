@@ -35,7 +35,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy', ])
     def test_simple(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -46,7 +46,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy:1.2', ])
     def test_version(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -57,7 +57,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy:zzz:', ])
     def test_extension(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -68,7 +68,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy:zzz:www:', ])
     def test_classifier(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -79,7 +79,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['aaa:bbb:3.1', 'xxx:yyy:zzz:3.0', ])
     def test_comb1(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -90,7 +90,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['aaa:bbb:ccc:ddd:2.1', 'xxx:yyy:', ])
     def test_comb2(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -101,7 +101,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['aaa:bbb:ccc:', 'xxx:yyy:zzz:www:2.1', ])
     def test_comb3(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -112,7 +112,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['aaa:bbb:ccc:4.1', 'xxx:yyy:zzz:', ])
     def test_comb4(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -131,7 +131,7 @@ class TestMvnAlias(unittest.TestCase):
         'zzzzzzzzzzzzzzzzzzzzzzzzzzz:wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww' +
         'wwwwwwwwwwwwwwwww:33333333333333333333333333333333333333333333'])
     def test_longopt(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -142,7 +142,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['*:aaa', 'xxx:yyy', ])
     def test_wildcard1(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -153,7 +153,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',[':aaa', 'xxx:yyy', ])
     def test_wildcard2(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -164,7 +164,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['aaa::ccc', 'xxx:yyy', ])
     def test_wildcard3(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -190,7 +190,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:', ])
     def test_wildcard4(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -211,7 +211,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'ccc:ddd', 'eee:fff', 'ggg:hhh', ])
     def test_multi(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -222,7 +222,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'ccc:ddd', 'eee:fff', ])
     def test_odd(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -243,7 +243,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['x:y', 'a:b:c::1', ])
     def test_wildcard9(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -254,7 +254,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['*:{aaa,bbb}*', ':@1', ])
     def test_backref(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -270,7 +270,7 @@ class TestMvnAlias(unittest.TestCase):
 
     @xmvnconfig('mvn_alias',['{aa,bb}:{cc,dd}', '@1:@2', ])
     def test_backref2(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -310,7 +310,7 @@ class TestMvnAlias(unittest.TestCase):
     @preload_xmvn_config('mvn_alias', 'preexisting.xml')
     @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy', ])
     def test_preexisting_unindexed(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 2)
         for filename in filelist:
@@ -324,7 +324,7 @@ class TestMvnAlias(unittest.TestCase):
         update_index=True)
     @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy', ])
     def test_preexisting(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 2)
         for filename in filelist:

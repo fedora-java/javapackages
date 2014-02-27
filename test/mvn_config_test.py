@@ -44,7 +44,7 @@ class TestMvnConfig(unittest.TestCase):
 
     @xmvnconfig('mvn_config',['aaa', 'bbb', ])
     def test_simple(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -55,7 +55,7 @@ class TestMvnConfig(unittest.TestCase):
 
     @xmvnconfig('mvn_config',['a/b/c', 'xxx', ])
     def test_path(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -66,7 +66,7 @@ class TestMvnConfig(unittest.TestCase):
 
     @xmvnconfig('mvn_config',['a', '<b/>', ])
     def test_xml1(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -77,7 +77,7 @@ class TestMvnConfig(unittest.TestCase):
 
     @xmvnconfig('mvn_config',['a', '<b>c</b>', ])
     def test_xml2(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -88,7 +88,7 @@ class TestMvnConfig(unittest.TestCase):
 
     @xmvnconfig('mvn_config',['a', '<b>c</b><d/>', ])
     def test_xml3(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -99,7 +99,7 @@ class TestMvnConfig(unittest.TestCase):
 
     @xmvnconfig('mvn_config',['a', '<b>c</b><d>e</d>', ])
     def test_xml4(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -110,7 +110,7 @@ class TestMvnConfig(unittest.TestCase):
 
     @xmvnconfig('mvn_config',['a', '<b><c>d</c></b>', ])
     def test_nested_xml1(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -121,7 +121,7 @@ class TestMvnConfig(unittest.TestCase):
 
     @xmvnconfig('mvn_config',['a', '<b><c>d</c>d</b>', ])
     def test_nested_xml2(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -152,7 +152,7 @@ class TestMvnConfig(unittest.TestCase):
 
     @xmvnconfig('mvn_config',['a', '<b>c&lt;d</b>', ])
     def test_entity(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:
@@ -163,7 +163,7 @@ class TestMvnConfig(unittest.TestCase):
 
     @xmvnconfig('mvn_config',['a', 'f<b>c</b>d', ])
     def test_mixed(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
         self.assertEquals(len(filelist), 1)
         for filename in filelist:

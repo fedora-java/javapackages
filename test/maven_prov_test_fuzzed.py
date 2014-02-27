@@ -13028,352 +13028,352 @@ class TestMavenProvFuzzed(unittest.TestCase):
 
     @mavenprov(["fuzzed/fuzzed_3256.xml"])
     def test_fuzzed_3256(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3257.xml"])
     def test_fuzzed_3257(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3258.xml"])
     def test_fuzzed_3258(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3259.xml"])
     def test_fuzzed_3259(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3260.xml"])
     def test_fuzzed_3260(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3261.xml"])
     def test_fuzzed_3261(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3262.xml"])
     def test_fuzzed_3262(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3263.xml"])
     def test_fuzzed_3263(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3264.xml"])
     def test_fuzzed_3264(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3265.xml"])
     def test_fuzzed_3265(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3266.xml"])
     def test_fuzzed_3266(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3267.xml"])
     def test_fuzzed_3267(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3268.xml"])
     def test_fuzzed_3268(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3269.xml"])
     def test_fuzzed_3269(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3270.xml"])
     def test_fuzzed_3270(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3271.xml"])
     def test_fuzzed_3271(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3272.xml"])
     def test_fuzzed_3272(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3273.xml"])
     def test_fuzzed_3273(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3274.xml"])
     def test_fuzzed_3274(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3275.xml"])
     def test_fuzzed_3275(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3276.xml"])
     def test_fuzzed_3276(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3277.xml"])
     def test_fuzzed_3277(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3278.xml"])
     def test_fuzzed_3278(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3279.xml"])
     def test_fuzzed_3279(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3280.xml"])
     def test_fuzzed_3280(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3281.xml"])
     def test_fuzzed_3281(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3282.xml"])
     def test_fuzzed_3282(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3283.xml"])
     def test_fuzzed_3283(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3284.xml"])
     def test_fuzzed_3284(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3285.xml"])
     def test_fuzzed_3285(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3286.xml"])
     def test_fuzzed_3286(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3287.xml"])
     def test_fuzzed_3287(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3288.xml"])
     def test_fuzzed_3288(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3289.xml"])
     def test_fuzzed_3289(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3290.xml"])
     def test_fuzzed_3290(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3291.xml"])
     def test_fuzzed_3291(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3292.xml"])
     def test_fuzzed_3292(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3293.xml"])
     def test_fuzzed_3293(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3294.xml"])
     def test_fuzzed_3294(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3295.xml"])
     def test_fuzzed_3295(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3296.xml"])
     def test_fuzzed_3296(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3297.xml"])
     def test_fuzzed_3297(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3298.xml"])
     def test_fuzzed_3298(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3299.xml"])
     def test_fuzzed_3299(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3300.xml"])
     def test_fuzzed_3300(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3301.xml"])
     def test_fuzzed_3301(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3302.xml"])
     def test_fuzzed_3302(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3303.xml"])
     def test_fuzzed_3303(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3304.xml"])
     def test_fuzzed_3304(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3305.xml"])
     def test_fuzzed_3305(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3306.xml"])
     def test_fuzzed_3306(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3307.xml"])
     def test_fuzzed_3307(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3308.xml"])
     def test_fuzzed_3308(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3309.xml"])
     def test_fuzzed_3309(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3310.xml"])
     def test_fuzzed_3310(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3311.xml"])
     def test_fuzzed_3311(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3312.xml"])
     def test_fuzzed_3312(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3313.xml"])
     def test_fuzzed_3313(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3314.xml"])
     def test_fuzzed_3314(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3315.xml"])
     def test_fuzzed_3315(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3316.xml"])
     def test_fuzzed_3316(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3317.xml"])
     def test_fuzzed_3317(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3318.xml"])
     def test_fuzzed_3318(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3319.xml"])
     def test_fuzzed_3319(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3320.xml"])
     def test_fuzzed_3320(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3321.xml"])
     def test_fuzzed_3321(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3322.xml"])
     def test_fuzzed_3322(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3323.xml"])
     def test_fuzzed_3323(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3324.xml"])
     def test_fuzzed_3324(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3325.xml"])
     def test_fuzzed_3325(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3326.xml"])
@@ -13798,352 +13798,352 @@ class TestMavenProvFuzzed(unittest.TestCase):
 
     @mavenprov(["fuzzed/fuzzed_3431.xml"])
     def test_fuzzed_3431(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3432.xml"])
     def test_fuzzed_3432(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3433.xml"])
     def test_fuzzed_3433(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3434.xml"])
     def test_fuzzed_3434(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3435.xml"])
     def test_fuzzed_3435(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3436.xml"])
     def test_fuzzed_3436(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3437.xml"])
     def test_fuzzed_3437(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3438.xml"])
     def test_fuzzed_3438(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3439.xml"])
     def test_fuzzed_3439(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3440.xml"])
     def test_fuzzed_3440(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3441.xml"])
     def test_fuzzed_3441(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3442.xml"])
     def test_fuzzed_3442(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3443.xml"])
     def test_fuzzed_3443(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3444.xml"])
     def test_fuzzed_3444(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3445.xml"])
     def test_fuzzed_3445(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3446.xml"])
     def test_fuzzed_3446(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3447.xml"])
     def test_fuzzed_3447(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3448.xml"])
     def test_fuzzed_3448(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3449.xml"])
     def test_fuzzed_3449(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3450.xml"])
     def test_fuzzed_3450(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3451.xml"])
     def test_fuzzed_3451(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3452.xml"])
     def test_fuzzed_3452(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3453.xml"])
     def test_fuzzed_3453(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3454.xml"])
     def test_fuzzed_3454(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3455.xml"])
     def test_fuzzed_3455(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3456.xml"])
     def test_fuzzed_3456(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3457.xml"])
     def test_fuzzed_3457(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3458.xml"])
     def test_fuzzed_3458(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3459.xml"])
     def test_fuzzed_3459(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3460.xml"])
     def test_fuzzed_3460(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3461.xml"])
     def test_fuzzed_3461(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3462.xml"])
     def test_fuzzed_3462(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3463.xml"])
     def test_fuzzed_3463(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3464.xml"])
     def test_fuzzed_3464(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3465.xml"])
     def test_fuzzed_3465(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3466.xml"])
     def test_fuzzed_3466(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3467.xml"])
     def test_fuzzed_3467(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3468.xml"])
     def test_fuzzed_3468(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3469.xml"])
     def test_fuzzed_3469(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3470.xml"])
     def test_fuzzed_3470(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3471.xml"])
     def test_fuzzed_3471(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3472.xml"])
     def test_fuzzed_3472(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3473.xml"])
     def test_fuzzed_3473(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3474.xml"])
     def test_fuzzed_3474(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3475.xml"])
     def test_fuzzed_3475(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3476.xml"])
     def test_fuzzed_3476(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3477.xml"])
     def test_fuzzed_3477(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3478.xml"])
     def test_fuzzed_3478(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3479.xml"])
     def test_fuzzed_3479(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3480.xml"])
     def test_fuzzed_3480(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3481.xml"])
     def test_fuzzed_3481(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3482.xml"])
     def test_fuzzed_3482(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3483.xml"])
     def test_fuzzed_3483(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3484.xml"])
     def test_fuzzed_3484(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3485.xml"])
     def test_fuzzed_3485(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3486.xml"])
     def test_fuzzed_3486(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3487.xml"])
     def test_fuzzed_3487(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3488.xml"])
     def test_fuzzed_3488(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3489.xml"])
     def test_fuzzed_3489(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3490.xml"])
     def test_fuzzed_3490(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3491.xml"])
     def test_fuzzed_3491(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3492.xml"])
     def test_fuzzed_3492(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3493.xml"])
     def test_fuzzed_3493(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3494.xml"])
     def test_fuzzed_3494(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3495.xml"])
     def test_fuzzed_3495(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3496.xml"])
     def test_fuzzed_3496(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3497.xml"])
     def test_fuzzed_3497(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3498.xml"])
     def test_fuzzed_3498(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3499.xml"])
     def test_fuzzed_3499(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3500.xml"])
     def test_fuzzed_3500(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_3501.xml"])
@@ -16668,352 +16668,352 @@ class TestMavenProvFuzzed(unittest.TestCase):
 
     @mavenprov(["fuzzed/fuzzed_4131.xml"])
     def test_fuzzed_4131(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4132.xml"])
     def test_fuzzed_4132(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4133.xml"])
     def test_fuzzed_4133(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4134.xml"])
     def test_fuzzed_4134(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4135.xml"])
     def test_fuzzed_4135(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4136.xml"])
     def test_fuzzed_4136(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4137.xml"])
     def test_fuzzed_4137(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4138.xml"])
     def test_fuzzed_4138(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4139.xml"])
     def test_fuzzed_4139(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4140.xml"])
     def test_fuzzed_4140(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4141.xml"])
     def test_fuzzed_4141(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4142.xml"])
     def test_fuzzed_4142(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4143.xml"])
     def test_fuzzed_4143(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4144.xml"])
     def test_fuzzed_4144(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4145.xml"])
     def test_fuzzed_4145(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4146.xml"])
     def test_fuzzed_4146(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4147.xml"])
     def test_fuzzed_4147(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4148.xml"])
     def test_fuzzed_4148(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4149.xml"])
     def test_fuzzed_4149(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4150.xml"])
     def test_fuzzed_4150(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4151.xml"])
     def test_fuzzed_4151(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4152.xml"])
     def test_fuzzed_4152(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4153.xml"])
     def test_fuzzed_4153(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4154.xml"])
     def test_fuzzed_4154(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4155.xml"])
     def test_fuzzed_4155(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4156.xml"])
     def test_fuzzed_4156(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4157.xml"])
     def test_fuzzed_4157(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4158.xml"])
     def test_fuzzed_4158(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4159.xml"])
     def test_fuzzed_4159(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4160.xml"])
     def test_fuzzed_4160(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4161.xml"])
     def test_fuzzed_4161(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4162.xml"])
     def test_fuzzed_4162(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4163.xml"])
     def test_fuzzed_4163(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4164.xml"])
     def test_fuzzed_4164(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4165.xml"])
     def test_fuzzed_4165(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4166.xml"])
     def test_fuzzed_4166(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4167.xml"])
     def test_fuzzed_4167(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4168.xml"])
     def test_fuzzed_4168(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4169.xml"])
     def test_fuzzed_4169(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4170.xml"])
     def test_fuzzed_4170(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4171.xml"])
     def test_fuzzed_4171(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4172.xml"])
     def test_fuzzed_4172(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4173.xml"])
     def test_fuzzed_4173(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4174.xml"])
     def test_fuzzed_4174(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4175.xml"])
     def test_fuzzed_4175(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4176.xml"])
     def test_fuzzed_4176(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4177.xml"])
     def test_fuzzed_4177(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4178.xml"])
     def test_fuzzed_4178(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4179.xml"])
     def test_fuzzed_4179(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4180.xml"])
     def test_fuzzed_4180(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4181.xml"])
     def test_fuzzed_4181(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4182.xml"])
     def test_fuzzed_4182(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4183.xml"])
     def test_fuzzed_4183(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4184.xml"])
     def test_fuzzed_4184(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4185.xml"])
     def test_fuzzed_4185(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4186.xml"])
     def test_fuzzed_4186(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4187.xml"])
     def test_fuzzed_4187(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4188.xml"])
     def test_fuzzed_4188(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4189.xml"])
     def test_fuzzed_4189(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4190.xml"])
     def test_fuzzed_4190(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4191.xml"])
     def test_fuzzed_4191(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4192.xml"])
     def test_fuzzed_4192(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4193.xml"])
     def test_fuzzed_4193(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4194.xml"])
     def test_fuzzed_4194(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4195.xml"])
     def test_fuzzed_4195(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4196.xml"])
     def test_fuzzed_4196(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4197.xml"])
     def test_fuzzed_4197(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4198.xml"])
     def test_fuzzed_4198(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4199.xml"])
     def test_fuzzed_4199(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4200.xml"])
     def test_fuzzed_4200(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4201.xml"])
@@ -17438,352 +17438,352 @@ class TestMavenProvFuzzed(unittest.TestCase):
 
     @mavenprov(["fuzzed/fuzzed_4306.xml"])
     def test_fuzzed_4306(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4307.xml"])
     def test_fuzzed_4307(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4308.xml"])
     def test_fuzzed_4308(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4309.xml"])
     def test_fuzzed_4309(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4310.xml"])
     def test_fuzzed_4310(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4311.xml"])
     def test_fuzzed_4311(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4312.xml"])
     def test_fuzzed_4312(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4313.xml"])
     def test_fuzzed_4313(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4314.xml"])
     def test_fuzzed_4314(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4315.xml"])
     def test_fuzzed_4315(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4316.xml"])
     def test_fuzzed_4316(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4317.xml"])
     def test_fuzzed_4317(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4318.xml"])
     def test_fuzzed_4318(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4319.xml"])
     def test_fuzzed_4319(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4320.xml"])
     def test_fuzzed_4320(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4321.xml"])
     def test_fuzzed_4321(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4322.xml"])
     def test_fuzzed_4322(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4323.xml"])
     def test_fuzzed_4323(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4324.xml"])
     def test_fuzzed_4324(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4325.xml"])
     def test_fuzzed_4325(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4326.xml"])
     def test_fuzzed_4326(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4327.xml"])
     def test_fuzzed_4327(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4328.xml"])
     def test_fuzzed_4328(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4329.xml"])
     def test_fuzzed_4329(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4330.xml"])
     def test_fuzzed_4330(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4331.xml"])
     def test_fuzzed_4331(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4332.xml"])
     def test_fuzzed_4332(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4333.xml"])
     def test_fuzzed_4333(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4334.xml"])
     def test_fuzzed_4334(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4335.xml"])
     def test_fuzzed_4335(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4336.xml"])
     def test_fuzzed_4336(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4337.xml"])
     def test_fuzzed_4337(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4338.xml"])
     def test_fuzzed_4338(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4339.xml"])
     def test_fuzzed_4339(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4340.xml"])
     def test_fuzzed_4340(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4341.xml"])
     def test_fuzzed_4341(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4342.xml"])
     def test_fuzzed_4342(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4343.xml"])
     def test_fuzzed_4343(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4344.xml"])
     def test_fuzzed_4344(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4345.xml"])
     def test_fuzzed_4345(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4346.xml"])
     def test_fuzzed_4346(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4347.xml"])
     def test_fuzzed_4347(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4348.xml"])
     def test_fuzzed_4348(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4349.xml"])
     def test_fuzzed_4349(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4350.xml"])
     def test_fuzzed_4350(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4351.xml"])
     def test_fuzzed_4351(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4352.xml"])
     def test_fuzzed_4352(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4353.xml"])
     def test_fuzzed_4353(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4354.xml"])
     def test_fuzzed_4354(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4355.xml"])
     def test_fuzzed_4355(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4356.xml"])
     def test_fuzzed_4356(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4357.xml"])
     def test_fuzzed_4357(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4358.xml"])
     def test_fuzzed_4358(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4359.xml"])
     def test_fuzzed_4359(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4360.xml"])
     def test_fuzzed_4360(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4361.xml"])
     def test_fuzzed_4361(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4362.xml"])
     def test_fuzzed_4362(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4363.xml"])
     def test_fuzzed_4363(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4364.xml"])
     def test_fuzzed_4364(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4365.xml"])
     def test_fuzzed_4365(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4366.xml"])
     def test_fuzzed_4366(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4367.xml"])
     def test_fuzzed_4367(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4368.xml"])
     def test_fuzzed_4368(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4369.xml"])
     def test_fuzzed_4369(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4370.xml"])
     def test_fuzzed_4370(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4371.xml"])
     def test_fuzzed_4371(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4372.xml"])
     def test_fuzzed_4372(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4373.xml"])
     def test_fuzzed_4373(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent::tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4374.xml"])
     def test_fuzzed_4374(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
     @mavenprov(["fuzzed/fuzzed_4375.xml"])
     def test_fuzzed_4375(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0)
+        self.assertEquals(return_value, 0, stderr)
         self.assertEquals(stdout, "mvn(org.lbzip2:parent:xyzzy:tests:) = 2.3\n")
 
 if __name__ == '__main__':
