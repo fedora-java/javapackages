@@ -124,7 +124,10 @@ if __name__ == "__main__":
     if jar_path:
         SubElement(art, "file").text = os.path.abspath(jar_path)
     if pom_path:
-        SubElement(art, "rawPomPath").text = os.path.abspath(pom_path)
+        if jar_path:
+            SubElement(art, "rawPomPath").text = os.path.abspath(pom_path)
+        else:
+            SubElement(art, "file").text = os.path.abspath(pom_path)
 
     with open(config, 'w') as f:
             f.write(tostring(root, pretty_print=True))
