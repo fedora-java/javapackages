@@ -71,7 +71,9 @@ class TestMavenReq(unittest.TestCase):
         self.assertNotEqual(stderr, '')
         lines = stderr.split('\n');
         self.assertEquals(True, len(lines) > 1)
-        self.assertEquals(lines[-2], '%mvn_package org.codehaus.plexus:plexus-ant-factory:::1.0 <package_name>')
+        print stderr
+        self.assertEquals(lines[-4], 'org.codehaus.plexus:plexus-ant-factory:::1.0 ' \
+                                     'required by org.apache.commons-lang:commons-lang')
 
     # rhbz#1017701 comment 2
     @mavenreq(["aether/require.xml"])

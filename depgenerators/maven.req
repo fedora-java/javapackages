@@ -36,7 +36,12 @@ import os
 import sys
 import signal
 import traceback
+
+from lxml import etree
+
+from javapackages import POM
 from javapackages import Depmap
+from javapackages import Artifact
 
 class TagBuilder:
     def __init__ (self, filelist=None):
@@ -47,8 +52,8 @@ class TagBuilder:
         self.skipped_artifacts = []
         if paths:
             # let's first read all fragment files for provided artifacts
-            fragment_dir = os.path.dirname(paths[0])
-            for dirname, dirnames, filenames in os.walk(fragment_dir):
+            self.fragment_dir = os.path.dirname(paths[0])
+            for dirname, dirnames, filenames in os.walk(self.fragment_dir):
                 for filename in filenames:
                     if filename.endswith(".pom"):
                         continue
@@ -143,25 +148,71 @@ class TagBuilder:
                           "dependency from pom.xml or add proper packages to " \
                           "BuildRequires:\n"
             for unknown in unknown_deps:
-                unknown_msg = unknown_msg + \
-                            "{art}\n".format(art=unknown)
+                required_by = self.find_what_requires(unknown)
+                if required_by:
+                    unknown_msg += "{art} required by {req}\n".format(art=unknown,
+                                                                      req=required_by)
+                else:
+                    unknown_msg += "{art}\n".format(art=unknown)
             raise Exception(unknown_msg)
 
         if skipped_but_required:
             skipped_msg = "Following artifacts were built " \
                           "but are not being installed however other " \
-                          "artifacts require them. Either package these " \
-                          "artifacts or do not build them. To package " \
-                          "call %mvn_package in %prep:\n"
+                          "artifacts require them:\n"
             for skipped in skipped_but_required:
-                skipped_msg = skipped_msg + \
-                            "%mvn_package {art} <package_name>\n".format(art=skipped)
+                required_by = self.find_what_requires(skipped)
+                if required_by:
+                    skipped_msg += "{art} required by {req}\n".format(art=skipped,
+                                                                      req=required_by)
+                else:
+                    skipped_msg += "{art}\n".format(art=skipped)
+            skipped_msg += "\nEither package these artifacts or do not "\
+                           "build them. To package them call %mvn_package "\
+                           "in %prep.\n"
             raise Exception(skipped_msg)
 
         reqs = {'java-headless': depmap.get_java_requires(),
                 'java-devel': depmap.get_java_devel_requires()}
         for name, version in reqs.iteritems():
             self.__process_jvm_req(name, version)
+
+    def find_what_requires(self, artifact):
+        """
+        Determine which artifact requires given artifact. This is an attempt to
+        find the artifact by guessing where the pom might be and going through
+        its dependencies. It is not meant to be reliable or pretty, just to
+        print more descriptive error messages when we can. If it cannot find
+        anything, returns None.
+        """
+        try:
+            pom_dir = os.path.join(self.fragment_dir, '..', 'maven-poms')
+            for dirname, _, filenames in os.walk(pom_dir):
+                for filename in filenames:
+                    if filename.endswith(".pom"):
+                        pomfile = os.path.join(dirname, filename)
+                        pom = etree.parse(pomfile)
+                        for elem in pom.getiterator():
+                            if hasattr(elem.tag, 'startswith') and elem.tag.startswith('{'):
+                                elem.tag = elem.tag[elem.tag.find('}') + 1:]
+                        dependencies = pom.xpath('//dependencies/dependency')
+                        for dep in dependencies:
+                            dep_artifact = Artifact.from_xml_element(dep)
+                            scope = dep.find('./scope')
+                            if scope is not None and scope.text.strip() not in \
+                                    ('compile', 'runtime'):
+                                continue
+                            if compare_artifacts(artifact, dep_artifact):
+                                pom_obj = POM(pomfile)
+                                return "{g}:{a}".format(g=pom_obj.groupId,
+                                                        a=pom_obj.artifactId)
+        except Exception:
+            pass
+
+
+def compare_artifacts(art1, art2):
+    return (art1.artifactId == art2.artifactId and
+            art1.groupId == art2.groupId)
 
 
 if __name__ == "__main__":
