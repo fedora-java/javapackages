@@ -218,9 +218,8 @@ def compare_artifacts(art1, art2):
 if __name__ == "__main__":
     try:
         builder = TagBuilder ()
-    except Exception, e:
+    except Exception:
         traceback.print_exc(file=sys.stderr)
-        sys.stderr.write(str(e))
         # rpmbuild ignores non-zero exit codes but this that is bad. Make sure
         # the build fails and doesn't silently ignore problems
         os.kill(os.getppid(), signal.SIGTERM)
