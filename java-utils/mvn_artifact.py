@@ -108,7 +108,7 @@ if __name__ == "__main__":
         orig.validate(allow_backref=False)
         if len(args) == 1:
             parser.error("When using artifact specification artifact path must be "
-                    "provided")
+                         "provided")
     except (ArtifactFormatException):
         orig = POM(args[0])
         pom_path = args[0]
@@ -138,5 +138,4 @@ if __name__ == "__main__":
         add_artifact_element(root, orig, ppath=pom_path)
 
     with open(config, 'w') as f:
-            f.write(tostring(root, pretty_print=True))
-
+        f.write(tostring(root, pretty_print=True))
