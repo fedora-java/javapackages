@@ -64,7 +64,11 @@ class TagBuilder:
                 # for pom artifacts
                 ns = l_artifact.namespace
                 if prov_artifact.extension == 'pom':
-                    print("{ns}mvn({gid}:{aid}) = {version}".format(
+                    if depmap.is_compat():
+                        mvn_rpm_string = "{ns}mvn({gid}:{aid}:{version}) = {version}"
+                    else:
+                        mvn_rpm_string = "{ns}mvn({gid}:{aid}) = {version}"
+                    print(mvn_rpm_string.format(
                             ns=(ns + "-") if ns else "",
                             gid=prov_artifact.groupId,
                             aid=prov_artifact.artifactId,

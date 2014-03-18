@@ -77,5 +77,11 @@ class TestMavenProv(unittest.TestCase):
         self.assertEquals(stdout, "maven31-mvn(org.apache.maven:apache-maven:pom:) = 3.1.1\n"
                                   "maven31-mvn(org.apache.maven:apache-maven) = 3.1.1\n")
 
+    @mavenprov(["pom_compat.xml"])
+    def test_compat_version_in_artifact(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        self.assertEquals(stdout, "mvn(org.apache.maven:apache-maven:pom:3.1.1) = 3.1.1\n"
+                "mvn(org.apache.maven:apache-maven:3.1.1) = 3.1.1\n")
+
 if __name__ == '__main__':
     unittest.main()
