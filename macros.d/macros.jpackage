@@ -94,9 +94,14 @@
 %_javadocdir    %{_datadir}/javadoc
 
 #
-# Directory for maven POMs
+# Directory for Maven POM files
 #
 %_mavenpomdir   %{_datadir}/maven-poms
+
+#
+# Directory for Ivy XML files
+#
+%_ivyxmldir     %{_datadir}/ivy-xmls
 
 #
 # Directory for maven depmaps
