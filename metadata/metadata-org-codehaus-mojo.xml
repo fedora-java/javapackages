@@ -277,7 +277,7 @@
       <artifactId>javancss-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven JAXB 2.0 Plugin</name>
+      <name>JAXB-2 Maven Plugin</name>
       <prefix>jaxb2</prefix>
       <artifactId>jaxb2-maven-plugin</artifactId>
     </plugin>
@@ -342,7 +342,7 @@
       <artifactId>jxr-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven Keytool Plugin</name>
+      <name>Keytool: Maven Plugin</name>
       <prefix>keytool</prefix>
       <artifactId>keytool-maven-plugin</artifactId>
     </plugin>
@@ -402,7 +402,7 @@
       <artifactId>multibuild-optimizer-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven Native Plugin</name>
+      <name>Native Maven Plugin</name>
       <prefix>native</prefix>
       <artifactId>native-maven-plugin</artifactId>
     </plugin>
@@ -632,7 +632,7 @@
       <artifactId>tomcat-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven Plugin for TrueZIP</name>
+      <name>TrueZIP Maven Plugin</name>
       <prefix>truezip</prefix>
       <artifactId>truezip-maven-plugin</artifactId>
     </plugin>

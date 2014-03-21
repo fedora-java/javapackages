@@ -47,7 +47,7 @@
       <artifactId>maven-changes-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven Checkstyle Plugin</name>
+      <name>Apache Maven Checkstyle Plugin</name>
       <prefix>checkstyle</prefix>
       <artifactId>maven-checkstyle-plugin</artifactId>
     </plugin>
@@ -147,7 +147,7 @@
       <artifactId>maven-failsafe-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>maven-gpg-plugin Maven Mojo</name>
+      <name>Apache Maven GPG Plugin</name>
       <prefix>gpg</prefix>
       <artifactId>maven-gpg-plugin</artifactId>
     </plugin>
@@ -198,6 +198,11 @@
     </plugin>
     <plugin>
       <name>Maven Jarsigner Plugin</name>
+      <prefix>jarsigner</prefix>
+      <artifactId>maven-jarsigner-plugin</artifactId>
+    </plugin>
+    <plugin>
+      <name>Apache Maven Jarsigner Plugin</name>
       <prefix>jarsigner</prefix>
       <artifactId>maven-jarsigner-plugin</artifactId>
     </plugin>
@@ -262,7 +267,7 @@
       <artifactId>maven-plugin-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven PMD Plugin</name>
+      <name>Apache Maven PMD Plugin</name>
       <prefix>pmd</prefix>
       <artifactId>maven-pmd-plugin</artifactId>
     </plugin>
@@ -292,7 +297,7 @@
       <artifactId>maven-reactor-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven Release plugin</name>
+      <name>Maven Release Plugin</name>
       <prefix>release</prefix>
       <artifactId>maven-release-plugin</artifactId>
     </plugin>
@@ -327,7 +332,7 @@
       <artifactId>maven-scm-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>SCM Publish Maven Plugin</name>
+      <name>Apache Maven SCM Publish Plugin</name>
       <prefix>scm-publish</prefix>
       <artifactId>maven-scm-publish-plugin</artifactId>
     </plugin>
