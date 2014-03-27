@@ -112,3 +112,7 @@ manpage build-classpath
 manpage build-jar-repository
 manpage rebuild-jar-repository
 manpage shade-jar
+
+pushd doc
+make clean all
+popd

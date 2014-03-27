@@ -66,6 +66,9 @@ inst_data() { inst "%attr(0644,root,root)" "${@}"; }
 inst_exec() { inst "%attr(0755,root,root)" "${@}"; }
 inst_config() { inst "%config(noreplace)" "${@}"; }
 
+inst_doc() {
+    echo "%doc ${1}"
+}
 
 exec >files-common
 
@@ -205,3 +208,10 @@ inst_data configs/ivysettings.xml "${sysconfdir}/ivy"
 
 exec >files-fedora-review
 inst_data fedora-review/java_guidelines.py "${datadir}/fedora-review/plugins"
+
+exec >files-doc
+inst_doc doc/index.html
+inst_doc doc/images
+inst_doc doc/rpm_project
+inst_doc doc/ideas
+inst_doc doc/java_project
