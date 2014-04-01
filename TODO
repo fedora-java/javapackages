@@ -6,6 +6,8 @@
 ** Remove deprecated code when it's no longer used
    git grep -i @''deprecated
 
+** Remove all references to "depmap" from documentation
+
 
 * BUGS
 
