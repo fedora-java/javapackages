@@ -1,6 +1,12 @@
 -*- outline -*-
 
 
+* TASKS
+
+** Remove deprecated code when it's no longer used
+   git grep -i @''deprecated
+
+
 * BUGS
 
 ** Add testcase for pom properties with whitespace

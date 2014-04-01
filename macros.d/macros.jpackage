@@ -104,6 +104,7 @@
 %_ivyxmldir     %{_datadir}/ivy-xmls
 
 #
+# @Deprecated
 # Directory for maven depmaps
 #
 %_mavendepmapdir %{_sysconfdir}/maven

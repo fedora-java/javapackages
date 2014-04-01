@@ -55,10 +55,10 @@ jvmjardir
 jvmlibdir
 jvmprivdir
 jvmsysconfdir
-mavendepmapdir
-mavendepmapfragdir
 mavenpomdir
 "
+
+vars="$vars mavendepmapdir mavendepmapfragdir" # @Deprecated
 
 vars_re=$(echo $vars | sed 's/ /\\|/g')
 
