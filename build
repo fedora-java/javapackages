@@ -113,6 +113,4 @@ manpage build-jar-repository
 manpage rebuild-jar-repository
 manpage shade-jar
 
-pushd doc
-make clean all
-popd
+make -C doc clean all
