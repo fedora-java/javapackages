@@ -41,10 +41,10 @@ POM.
 
 [[mvn_file]]
 ==== Alternative JAR File Names
-In some cases, it may be important to be able to provide symlinks to actual JAR
+In some cases, it may be important to be able to provide symbolic links to actual JAR
 files. This can be achieved with `%mvn_file` macro. This macro allows packager
 to specify names of the JAR files, their location in `%{_javadir}` directory and
-also can create symlinks to the JAR files. These symlinks can be possibly
+also can create symbolic links to the JAR files. These links can be possibly
 located outside of the `%{_javadir}` directory.
 
 .Adding file symlinks to compatibility
@@ -56,7 +56,7 @@ located outside of the `%{_javadir}` directory.
 -------
 
 This means that JAR file for artifact with ID "guice" (and any groupId) will be
-installed in `%{_javadir}/google/guice.jar` and there also will be a symlink to
+installed in `%{_javadir}/google/guice.jar` and there also will be a symbolic links to
 this JAR file located in `%{_javadir}/guice.jar`. Note the macro will add ".jar"
 extensions automatically.
 

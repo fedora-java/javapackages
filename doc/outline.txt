@@ -3,7 +3,7 @@
 
 * Introduction to packaging - reasons, problems, rationale
 ** introduction for 2 groups
-*** Java Devels - simple rpm intro focused on Java
+*** Java Developers - simple rpm intro focused on Java
 *** Packagers - intro to Java  (CLASSPATH, javac, JDK, JRE, ...)
 
 
@@ -14,7 +14,7 @@
 
 * Java specifics in Fedora for packagers
 ** Directory Layout
-*** foreach _dir in macros:
+*** for each _dir in macros:
 **** purpose
 **** description, explanation
 
@@ -22,13 +22,13 @@
 *** relative path
 *** gid:aid (optional)
 *** aliases
-**** symlinks for paths
+**** symbolic links for paths
 **** additional mapping for gid:aid
-*** compat versions (and why no %{version})
+*** compatibility versions (and why no %{version})
 
 ** Provides/Requires
 *** mvn(gid:aid...) explained
-*** TODO osgi
+*** TODO OSGi
 
 ** Javadoc packages
 
@@ -45,7 +45,7 @@
 **** split jars
 **** using standard macros ..
 
-** Buildsystems
+** Build systems
 *** repeat add_maven_depmap, build-classpath...?
 *** Generic (javac & co.)
 *** Ant

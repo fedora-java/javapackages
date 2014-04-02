@@ -17,7 +17,7 @@ https://git.fedorahosted.org/cgit/javapackages.git/plain/doc/README[README
 file].
 
 This document is developed as part of Javapackages community project,
-which welcomes new contributotrs.  Requests and comments related to
+which welcomes new contributors.  Requests and comments related to
 this document should be
 http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=javapackages-tools[reported]
 at https://bugzilla.redhat.com/[Red Hat Bugzilla].

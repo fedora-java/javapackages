@@ -55,11 +55,11 @@ Package maintainer can use a wide variety of "`pom_`" macros for modifying
 Now try to build the project again. The build will fail with
 <<error_compilation_failure,compilation failure>>.
 
-Oops, another problem. This time Maven thought it had all the necessary dependenices, but Java
+Oops, another problem. This time Maven thought it had all the necessary dependencies, but Java
 compiler thinks otherwise.
 
 Now it's possible to either patch the source code not to depend on
-missing libraries or to package them. Second approach is usually correct. It's not neccessary to package every
+missing libraries or to package them. Second approach is usually correct. It's not necessary to package every
 dependency right away. Maintainer could package compile time dependencies first and keep the
 rest for later (test dependencies, ...). But Maven needs to know that it shouldn't try to run tests now. This can be achieved by passing `-f` option to `%mvn_build` macro.  Maven
 will stop complaining about missing test scoped dependencies from now on.
@@ -97,7 +97,7 @@ One can easily search for package which provides desired artifact. Try
 
 Now try to build the project one more time. The build should succeed now. Congrats, you managed to create an RPM from Maven project!
 
-There is plenty of other things maintainer may want to do. For example, he may want to provide symlinks to the JAR file
+There is plenty of other things maintainer may want to do. For example, he may want to provide symbolic links to the JAR file
 in `%{_javadir}`.
 
 This can be easily achieved with `%mvn_file` macro:
@@ -151,7 +151,7 @@ simplemaven = 1.0-2.fc21
 ------
 
 Now it doesn't matter if some other package depends on either of these listed
-artifact. Both dependencies will always be satisified with your package.
+artifact. Both dependencies will always be satisfied with your package.
 
 NOTE: One could try to fix dependencies in all the dependent packages
 instead of adding an alias to single package. It's almost always wrong thing to
