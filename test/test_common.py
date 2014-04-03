@@ -166,7 +166,7 @@ class WorkdirTestCase(unittest.TestCase):
             pass
         os.chdir(self.olddir)
 
-def exec_pom_macro(line, poms_tree, want_tree=None):
+def exec_pom_macro(line, poms_tree, want_tree=None, filename='pom.xml'):
     """
     Parameters:
         line::
@@ -186,7 +186,7 @@ def exec_pom_macro(line, poms_tree, want_tree=None):
     pack = Package('test')
     pack.append_to_prep(line)
     for destpath, sourcepath in poms_tree.iteritems():
-        pack.add_source(path.join(DATADIR, sourcepath), path.join(destpath, 'pom.xml'))
+        pack.add_source(path.join(DATADIR, sourcepath), path.join(destpath, filename))
     _, stderr, return_value = pack.run_prep()
     reports = []
     if return_value == 0:
@@ -196,9 +196,9 @@ def exec_pom_macro(line, poms_tree, want_tree=None):
             else:
                 expected_pom = pom
             expected_pom = path.join(DATADIR, expected_pom)
-            actual_pom = path.join(pack.buildpath, filepath, 'pom.xml')
+            actual_pom = path.join(pack.buildpath, filepath, filename)
             reports.append(compare_xml_files(actual_pom, expected_pom))
     return return_value, stderr, '\n'.join(reports).strip()
 
-def exec_pom_macro_simple(line, pom, want=None):
-    return exec_pom_macro(line, {'': pom}, {'': want} if want else None)
+def exec_pom_macro_simple(line, pom, want=None, filename='pom.xml'):
+    return exec_pom_macro(line, {'': pom}, {'': want} if want else None, filename=filename)

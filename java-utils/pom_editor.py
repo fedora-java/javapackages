@@ -12,6 +12,12 @@ from textwrap import dedent
 # all macro fuctions that can be called from external world
 macros = {}
 
+
+BEGIN_COMMENT = "<!-- begin of code added by maintainer -->"
+END_COMMENT = "<!-- end of code added by maintainer -->"
+COMMENT = (BEGIN_COMMENT, END_COMMENT)
+
+
 class PomException(Exception):
     pass
 class PomQueryNoMatch(PomException):
@@ -80,24 +86,27 @@ def MetaArtifact(specification, **defaults):
 
     return Artifact
 
-def find_pom(pompath):
-    if path.isfile(pompath):
-        return pompath
-    if path.isdir(pompath):
-        subpompath = path.join(pompath, 'pom.xml')
-        if path.isfile(subpompath):
-            return subpompath
-    raise PomException("Couldn't locate POM file using pattern '{0}'"\
-                        .format(pompath))
+def find_xml(xmlpath):
+    if path.isfile(xmlpath):
+        return xmlpath
+    if path.isdir(xmlpath):
+        subxmlpath = path.join(xmlpath, 'pom.xml')
+        if path.isfile(subxmlpath):
+            return subxmlpath
+        subxmlpath = path.join(xmlpath, 'ivy.xml')
+        if path.isfile(subxmlpath):
+            return subxmlpath
+    raise PomException("Couldn't locate XML file using pattern '{0}'"\
+                        .format(xmlpath))
 
-def find_poms_recursive(pomspec):
-    modules = [find_pom(pomspec)]
+def find_xml_recursive(xmlspec):
+    modules = [find_xml(xmlspec)]
     found = set(modules)
-    module_xpath =  '/pom:project/pom:modules/pom:module |\
-            /pom:project/pom:profile/pom:modules/pom:module'
+    module_xpath = '/pom:project/pom:modules/pom:module |'\
+                   '/pom:project/pom:profile/pom:modules/pom:module'
     try:
         while modules:
-            pompath = find_pom(modules.pop())
+            pompath = find_xml(modules.pop())
             found.add(pompath)
             pom_xml = etree.parse(pompath)
             modules += [path.join(path.dirname(pompath), node.text.strip())
@@ -127,7 +136,6 @@ def parse_args(function, args):
     min_arg_count = len(arglist) - len(defaults)
     fnargs = dict(zip(arglist, arguments[:min_arg_count]))
     poms = arguments[min_arg_count:]
-    print defaults
     if len(defaults or [] > 1) and poms:
         last = poms[-1]
         if '<' in last:
@@ -137,86 +145,44 @@ def parse_args(function, args):
         poms = ['.']
     return options, fnargs, poms
 
-def macro():
-    def decorator(function):
-        def decorated(*args):
-            try:
-                pompath = None
-                options, fnargs, poms = parse_args(function, args)
+class XmlFile(object):
+    default_name = None
+    NSMAP = {}
+    XMLNS = ''
 
-                for pomspec in poms:
-                    if options.recursive:
-                        pompaths = find_poms_recursive(pomspec)
-                    else:
-                        pompaths = [find_pom(pomspec)]
-
-                    matches = 0
-                    for pompath in pompaths:
-                        try:
-                            pom = Pom(pompath)
-                            fnargs['pom'] = pom
-                            pom.patch(function, fnargs)
-                            matches += 1
-                        except PomQueryNoMatch as exception:
-                            pass
-                    if matches == 0 and not options.force:
-                        raise exception
-
-            except (PomException, etree.XMLSyntaxError, IOError, TypeError) as exception:
-                if pompath:
-                    print >> sys.stderr, "Error in processing {0}".format(pompath)
-                print >> sys.stderr, exception.message
-                print_usage(function)
-                sys.exit(3)
-
-        macros[function.__name__] = decorated
-        return decorated
-    return decorator
-
-class Pom(object):
-    NSMAP = {'pom': 'http://maven.apache.org/POM/4.0.0',
-              'xsi': 'http://www.w3.org/2001/XMLSchema-instance'}
-    NS = '{' + NSMAP['pom'] + '}'
-    XMLNS = ('xmlns="http://maven.apache.org/POM/4.0.0"'
-    'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'
-    'xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 '
-    'http://maven.apache.org/xsd/maven-4.0.0.xsd"')
-
-    BEGIN_COMMENT = "<!-- begin of code added by maintainer -->"
-    END_COMMENT = "<!-- end of code added by maintainer -->"
-
-    def __init__(self, pompath):
-        with open(pompath) as pomfile:
-            pom = re.sub(r'\<\s*project\s*\>',
-                    ('<project {ns}>').format(ns=self.XMLNS), pomfile.read())
-        self.pompath = pompath
-        self.root = etree.fromstring(pom)
+    def __init__(self, xmlpath):
+        self.xmlpath = xmlpath
+        self.root = None
+        self._load_file()
         self.tab = get_indent(self.root)
 
+    def _load_file(self):
+        self.root = etree.parse(self.xmlpath).getroot()
+
     def write(self, filename):
-        with open(filename, 'w') as pomfile:
-            pomfile.write(etree.tostring(self.root))
-            pomfile.write('\n')
+        with open(filename, 'w') as xmlfile:
+            xmlfile.write(etree.tostring(self.root))
+            xmlfile.write('\n')
 
     def patch(self, function, fnargs):
-        pomdir = path.dirname(self.pompath)
-        pomfile = path.basename(self.pompath)
+        xmldir = path.dirname(self.xmlpath)
+        xmlfile = path.basename(self.xmlpath)
         try:
-            self.write(path.join(pomdir, pomfile + '.tmp'))
+            self.write(path.join(xmldir, xmlfile + '.tmp'))
             function(**fnargs)
         finally:
-            origfile = path.join(pomdir, pomfile + '.orig')
-            shutil.move(self.pompath, origfile)
-            self.write(self.pompath)
+            origfile = path.join(xmldir, xmlfile + '.orig')
+            shutil.move(self.xmlpath, origfile)
+            self.write(self.xmlpath)
 
-    def inject_xml(self, parent, content):
-        content = self.subtree_from_string(content)
+    def inject_xml(self, parent, content, comment=''):
+        content = self.subtree_from_string(content, comment)
         items = len(content)
         parent[:0] = content
         self.reformat(parent, parent[:items])
 
-    def replace_xml(self, replaced, content):
-        content = self.subtree_from_string(content)
+    def replace_xml(self, replaced, content='', comment=''):
+        content = self.subtree_from_string(content, comment)
         parent = replaced.getparent()
         parent.text = content.text
         if not isinstance(replaced, etree._Element):
@@ -229,31 +195,15 @@ class Pom(object):
                 parent.insert(idx + i, element)
             self.reformat(parent, parent[idx: idx + items])
 
-    def replace_xml_content(self, parent, content):
-        content = self.subtree_from_string(content)
+    def replace_xml_content(self, parent, content, comment=''):
+        if hasattr(parent, 'is_attribute'):
+            if parent.is_attribute:
+                parent.getparent().attrib[parent.attrname] = content
+                return
+        content = self.subtree_from_string(content, comment)
         parent[:] = content
         parent.text = content.text
         self.reformat(parent, parent)
-
-    def make_path(self, node, elements):
-        if elements:
-            child = node.find(elements[0], namespaces=self.NSMAP)
-            if child is None:
-                name = re.sub(r'pom:', self.NS, elements[0])
-                child = etree.Element(name)
-                node.insert(0, child)
-                node.insert(0, etree.Comment(" section added by maintainer "))
-                self.reformat(node, node[:2])
-            return self.make_path(child, elements[1:])
-        return node
-
-    def inject_artifact(self, where, node_name, artifact, aux_content=''):
-        path_parts = [part for part in where.split('/') if part]
-        parent = self.make_path(self.root, path_parts)
-        self.inject_xml(parent, Pom.comment("<{name}>{content} {aux}</{name}>")\
-                                .format(name=node_name,
-                                        content=artifact.get_xml(),
-                                        aux=aux_content))
 
     def reformat(self, parent_node, elements):
         level = 0
@@ -281,11 +231,7 @@ class Pom(object):
         if len(query_result) > 1:
             raise PomQueryAmbigous("XPath query '{0}' matched more than one nodes."\
                                   .format(query))
-        parent = query_result[0]
-        if not isinstance(parent, etree._Element):
-            raise PomQueryNoMatch("XPath query '{0}': matched node is not an element"\
-                                  .format(query))
-        return parent
+        return query_result[0]
 
     def xpath_query(self, query):
         if not query.startswith('/'):
@@ -301,17 +247,63 @@ class Pom(object):
                     (Did you forget to specify 'pom:' namespace?)""").format(query))
         return query_result
 
-    def subtree_from_string(self, xml_string, root='root'):
-        document = "<{root} {ns}>{0}</{root}>".format(xml_string, root=root, ns=self.XMLNS)
+    def subtree_from_string(self, xml_string, comment=('', ''), root='root'):
+        if type(comment) == tuple:
+            begin, end = comment
+        else:
+            begin, end = comment, ''
+        document = "<{root} {ns}>{begin}{0}{end}</{root}>".format(xml_string,
+                    root=root, ns=self.XMLNS, begin=begin, end=end)
         try:
             tree = etree.fromstring(document)
         except etree.XMLSyntaxError as error:
             raise PomException("Syntax error in injected XML: {0}.".format(error))
         return tree
 
-    @staticmethod
-    def comment(content):
-        return Pom.BEGIN_COMMENT + content + Pom.END_COMMENT
+    def make_path(self, node, elements):
+        if elements:
+            child = node.find(elements[0], namespaces=self.NSMAP)
+            if child is None:
+                name = elements[0]
+                for ns, url in self.NSMAP.iteritems():
+                    ns_token = ns + ':'
+                    url_token = '{' + url + '}'
+                    name = name.replace(ns_token, url_token)
+                child = etree.Element(name)
+                node.insert(0, child)
+                node.insert(0, etree.Comment(" section added by maintainer "))
+                self.reformat(node, node[:2])
+            return self.make_path(child, elements[1:])
+        return node
+
+class Pom(XmlFile):
+    default_name = 'pom.xml'
+    NSMAP = {'pom': 'http://maven.apache.org/POM/4.0.0',
+              'xsi': 'http://www.w3.org/2001/XMLSchema-instance'}
+    NS = '{' + NSMAP['pom'] + '}'
+    XMLNS = ('xmlns="http://maven.apache.org/POM/4.0.0"'
+    'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'
+    'xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 '
+    'http://maven.apache.org/xsd/maven-4.0.0.xsd"')
+
+    def __init__(self, pompath):
+        super(Pom, self).__init__(pompath)
+
+    def _load_file(self):
+        with open(self.xmlpath) as pomfile:
+            pom = re.sub(r'\<\s*project\s*\>',
+                    ('<project {ns}>').format(ns=self.XMLNS), pomfile.read())
+        self.root = etree.fromstring(pom)
+
+
+    def inject_artifact(self, where, node_name, artifact, aux_content=''):
+        path_parts = [part for part in where.split('/') if part]
+        parent = self.make_path(self.root, path_parts)
+        self.inject_xml(parent, "<{name}>{content} {aux}</{name}>"\
+                                .format(name=node_name,
+                                        content=artifact.get_xml(),
+                                        aux=aux_content),
+                                comment=COMMENT)
 
 artifact_spec = 'groupId:artifactId:version'
 artifact_spec_scoped = artifact_spec + ':scope'
@@ -320,30 +312,80 @@ DefaultVersionedArtifact = MetaArtifact(artifact_spec, version='any')
 ScopedArtifact = MetaArtifact(artifact_spec_scoped)
 DefaultScopedArtifact = MetaArtifact(artifact_spec_scoped, version='any')
 
+def create_xml_object(filepath):
+    tree = etree.parse(filepath)
+    root = tree.getroot()
+    pom_detect = '/pom:project/pom:modelVersion|/project/modelVersion'
+    if root.xpath(pom_detect, namespaces=Pom.NSMAP):
+        return Pom(filepath)
+    if root.tag == 'ivy-module':
+        pass
+    return XmlFile(filepath)
+
+def macro(types=(XmlFile,)):
+    def decorator(function):
+        def decorated(*args):
+            try:
+                xmlpath = None
+                options, fnargs, xmls = parse_args(function, args)
+
+                for xmlspec in xmls:
+                    if options.recursive:
+                        xmlpaths = find_xml_recursive(xmlspec)
+                    else:
+                        xmlpaths = [find_xml(xmlspec)]
+
+                    matches = 0
+                    for xmlpath in xmlpaths:
+                        try:
+                            xml = create_xml_object(xmlpath)
+                            if not any(isinstance(xml, allowed) for allowed in types):
+                                raise PomException('Operation not supported on '
+                                                   'given file type.')
+                            fnargs['pom'] = xml
+                            xml.patch(function, fnargs)
+                            matches += 1
+                        except PomQueryNoMatch as exception:
+                            pass
+                    if matches == 0 and not options.force:
+                        raise exception
+
+            except (PomException, etree.XMLSyntaxError, IOError, TypeError) as exception:
+                if xmlpath:
+                    print >> sys.stderr, "Error in processing {0}".format(xmlpath)
+                print >> sys.stderr, exception.message
+                print_usage(function)
+                sys.exit(3)
+
+        macros[function.__name__] = decorated
+        return decorated
+    return decorator
+
+
 @macro()
 def pom_xpath_inject(where, xml_string, pom=None):
     """<XPath> [XML code] [POM location]"""
     for element in pom.xpath_query(where):
-        pom.inject_xml(element, Pom.comment(xml_string))
+        pom.inject_xml(element, xml_string, comment=COMMENT)
 
 @macro()
 def pom_xpath_replace(where, xml_string, pom=None):
     """<XPath> <XML code> [POM location]"""
     for element in pom.xpath_query(where):
-        pom.replace_xml(element, Pom.comment(xml_string))
+        pom.replace_xml(element, xml_string, comment=COMMENT)
 
 @macro()
 def pom_xpath_remove(where, pom=None):
     """<XPath> [POM location]"""
     for element in pom.xpath_query(where):
         pom.replace_xml(element,
-                "<!-- element removed by maintainer: {0} -->".format(where))
+                comment="<!-- element removed by maintainer: {0} -->".format(where))
 
 @macro()
 def pom_xpath_set(where, content, pom=None):
     """<XPath> <new contents> [POM location]"""
     for element in pom.xpath_query(where):
-        pom.replace_xml_content(element, Pom.comment(content))
+        pom.replace_xml_content(element, content, comment=COMMENT)
 
 @macro()
 def pom_remove_dep(dep, pom=None):
@@ -354,11 +396,11 @@ def pom_remove_dep(dep, pom=None):
         elements = pom.xpath_query(xpath)
         for element in elements:
             pom.replace_xml(element,
-                    "<!-- dependency removed by maintainer: {0} -->".format(dep))
+                    comment="<!-- dependency removed by maintainer: {0} -->".format(dep))
     except PomQueryNoMatch:
         raise PomQueryNoMatch("Dependency '{0}' not found.".format(dep))
 
-@macro()
+@macro(types=(Pom,))
 def pom_remove_plugin(plugin, pom=None):
     """[groupId]:[artifactId] [POM location]"""
     try:
@@ -367,11 +409,11 @@ def pom_remove_plugin(plugin, pom=None):
         elements = pom.xpath_query(xpath)
         for element in elements:
             pom.replace_xml(element,
-                    "<!-- plugin removed by maintainer: {0} -->".format(plugin))
+                    comment="<!-- plugin removed by maintainer: {0} -->".format(plugin))
     except PomQueryNoMatch:
         raise PomQueryNoMatch("Plugin '{0}' not found.".format(plugin))
 
-@macro()
+@macro(types=(Pom,))
 def pom_disable_module(module, pom=None):
     """<module name> [POM location]"""
     try:
@@ -379,11 +421,11 @@ def pom_disable_module(module, pom=None):
         elements = pom.xpath_query(xpath)
         for element in elements:
             pom.replace_xml(element,
-                    "<!-- module removed by maintainer: {0} -->".format(module))
+                    comment="<!-- module removed by maintainer: {0} -->".format(module))
     except PomQueryNoMatch:
         raise PomQueryNoMatch("Module '{0}' not found.".format(module))
 
-@macro()
+@macro(types=(Pom,))
 def pom_add_parent(parent, pom=None):
     """groupId:artifactId[:version] [POM location]"""
     if pom.root.find('pom:parent', namespaces=Pom.NSMAP) is not None:
@@ -391,16 +433,16 @@ def pom_add_parent(parent, pom=None):
     artifact = DefaultVersionedArtifact.from_mvn_str(parent)
     pom.inject_artifact('', 'parent', artifact)
 
-@macro()
+@macro(types=(Pom,))
 def pom_remove_parent(pom=None):
     """[POM location]"""
     try:
         pom.replace_xml(pom.xpath_query_element("/pom:project/pom:parent"),
-                        "<!-- parent POM reference removed by maintainer -->")
+                        comment="<!-- parent POM reference removed by maintainer -->")
     except PomQueryNoMatch:
         raise PomQueryNoMatch("POM doesn't specify parent.")
 
-@macro()
+@macro(types=(Pom,))
 def pom_set_parent(parent, pom=None):
     """groupId:artifactId[:version] [POM location]"""
     try:
@@ -417,14 +459,14 @@ def pom_add_dep(dep, pom=None, xml_string=''):
     pom.inject_artifact('pom:dependencies', 'dependency', artifact,
                         xml_string)
 
-@macro()
+@macro(types=(Pom,))
 def pom_add_dep_mgmt(dep, pom=None, xml_string=''):
     """groupId:artifactId[:version[:scope]] [POM location] [extra XML]"""
     artifact = DefaultScopedArtifact.from_mvn_str(dep)
     pom.inject_artifact('pom:dependencyManagement/pom:dependencies',
                         'dependency', artifact, xml_string)
 
-@macro()
+@macro(types=(Pom,))
 def pom_add_plugin(plugin, pom=None, xml_string=''):
     """groupId:artifactId[:version] [POM location] [extra XML]"""
     artifact = MetaArtifact(artifact_spec, version='any',

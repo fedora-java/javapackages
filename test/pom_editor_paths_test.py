@@ -9,12 +9,12 @@ class TestPomPath(WorkdirTestCase):
 
     def test_default_nonexistent(self):
         return_value, stderr, _ = exec_pom_macro('%pom_remove_parent', {})
-        self.assertIn("Couldn't locate POM file", stderr)
+        self.assertIn("Couldn't locate ", stderr)
         self.assertNotEqual(0, return_value)
 
     def test_submodule_nonexistent(self):
         return_value, stderr, _ = exec_pom_macro('%pom_remove_parent submodule', {})
-        self.assertIn("Couldn't locate POM file", stderr)
+        self.assertIn("Couldn't locate ", stderr)
         self.assertNotEqual(0, return_value)
 
     def test_default(self):
