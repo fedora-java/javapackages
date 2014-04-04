@@ -53,6 +53,11 @@ def MetaArtifact(specification, attributes=False, **defaults):
                 if value:
                     self[key] = value
 
+        def remove_items(self, fn):
+            for prop, val in dict(self.values).iteritems():
+                if fn(val):
+                    del self.values[prop]
+
         def __getitem__(self, key):
             return self.values.get(key, '')
 
@@ -532,8 +537,8 @@ def pom_change_dep(old, new, pom=None, xml_string=''):
         for element in elements:
             new_artifact = pom.create_artifact().from_xml(element)
             new_artifact.update(pom.create_artifact().from_mvn_str(new))
+            new_artifact.remove_items(lambda x: x == '-')
             new_xml = new_artifact.get_xml(extra=xml_string)
-            print etree.tostring(new_xml)
             pom.replace_xml_content(element, new_xml, replace_attrib=True)
     except PomQueryNoMatch:
         raise PomQueryNoMatch("Dependency '{0}' not found.".format(old))

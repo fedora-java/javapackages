@@ -72,3 +72,10 @@ class TestPomChange(WorkdirTestCase):
         self.assertEqual(0, return_value, stderr)
         self.assertEqual('', report, report)
 
+    def test_remove_scope(self):
+        return_value, stderr, report = exec_pom_macro_simple(\
+                "%pom_change_dep :::test :::-",
+                'simple_pom.xml', 'simple_removed_scope.xml')
+        self.assertEqual(0, return_value, stderr)
+        self.assertEqual('', report, report)
+
