@@ -276,7 +276,12 @@ class XmlFile(object):
         if not query.startswith('/'):
             query = '//' + query
         try:
-            query_result = self.root.xpath(query, namespaces=self.NSMAP)
+            nsmap = dict(self.NSMAP)
+            nsmap.update(self.root.nsmap)
+            if None in nsmap:
+                nsmap['default'] = nsmap[None]
+                del nsmap[None]
+            query_result = self.root.xpath(query, namespaces=nsmap)
         except etree.XPathEvalError as error:
             raise PomQueryInvalid("XPath query '{0}': {1}.".format(query,
                                                                error.message))
@@ -435,7 +440,10 @@ def pom_xpath_replace(where, xml_string, pom=None):
 def pom_xpath_remove(where, pom=None):
     """<XPath> [POM location]"""
     for element in pom.xpath_query(where):
-        pom.replace_xml(element, etree.Comment(" element removed by maintainer: {0} ".format(where)))
+        if hasattr(element, 'is_attribute') and element.is_attribute:
+            del element.getparent().attrib[element.attrname]
+        else:
+            pom.replace_xml(element, etree.Comment(" element removed by maintainer: {0} ".format(where)))
 
 @macro()
 def pom_xpath_set(where, content, pom=None):

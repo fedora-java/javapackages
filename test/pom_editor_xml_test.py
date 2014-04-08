@@ -38,6 +38,15 @@ class TestGeneric(WorkdirTestCase):
         self.assertEqual(0, return_value, stderr)
         self.assertEqual('', report, report)
 
+    def test_namespace(self):
+        return_value, stderr, report = exec_pom_macro_simple(\
+                """%pom_xpath_set "target/ivy:cachepath/@type" 'war' build.xml""",
+                'build_ns.xml', 'build_ns_set.xml', filename='build.xml')
+        self.assertEqual(0, return_value, stderr)
+        self.assertEqual('', report, report)
+
+
+
 class TestIvy(WorkdirTestCase):
     def test_inject(self):
         return_value, stderr, report = exec_pom_macro_simple(\
