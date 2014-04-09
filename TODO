@@ -32,3 +32,17 @@
 
 * FEATURES
 
+** %mvn_artifact - implement -D option
+
+    -Dkey=value adds artifact property.  (Properties are used by xmvn
+    installer to control the way artifacts are installed.  They are
+    also copied to metadata file and can affect other things like
+    requires generators.)
+
+    For example:
+
+    # Add artifact and mark is as native so it gets installed to _jnidir
+    %mvn_artifact ... -Dnative=true
+
+    # Causes auto-R on Java 8 to be generated
+    %mvn_artifact ... -DrequiresJava=1.8
