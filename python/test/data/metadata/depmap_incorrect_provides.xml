@@ -1,0 +1,23 @@
+<metadata>
+    <uuid>43948329</uuid>
+    <artifacts>
+        <artifact>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-idea-plugin</artifactId>
+            <version>2.2</version>
+            <path>/usr/share/java/maven-idea-plugin/maven-idea-plugin-2.2.jar</path>
+            <properties>
+                <requiresJava>1.5</requiresJava>
+            </properties>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-idea-plugin</artifactId>
+            <version>2.2</version>
+            <extension>pom</extension>
+            <path>/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin-2.2.pom</path>
+            <compatVersions>
+                <version>2.2</version>
+            </compatVersions>
+        </artifact>
+    </artifacts>
+</metadata>
+
