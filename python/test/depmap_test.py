@@ -136,8 +136,11 @@ class TestDepmap(unittest.TestCase):
 
         self.assertEqual(len(prov), 6)
         self.assertEqual(prov[0].namespace, "codehaus-plexus")
-        self.assertEqual(prov[1].namespace, "plexus")
-        self.assertEqual(prov[2].namespace, "codehaus")
+        self.assertEqual(prov[1].namespace, "codehaus-plexus")
+        self.assertEqual(prov[2].namespace, "plexus")
+        self.assertEqual(prov[3].namespace, "plexus")
+        self.assertEqual(prov[4].namespace, "codehaus")
+        self.assertEqual(prov[5].namespace, "codehaus")
 
     @depmapfile("depmap_namespace_requires.xml")
     def test_requires_namespace(self, d):
