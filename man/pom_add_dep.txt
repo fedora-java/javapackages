@@ -6,21 +6,24 @@ pom_add_dep(7)
 
 NAME
 ----
-pom_add_dep - add dependency to POM file
+pom_add_dep - add dependency to Maven POM file or Ivy module
 
 SYNOPSIS
 --------
 *%pom_add_dep* groupId**:**artifactId[**:**version[**:**scope]]
-  [POM-location] [extra-XML]
+  [POM-location]... [extra-XML]
+
+*%pom_add_dep* org**:**name[**:**rev[**:**conf[**:**transitive]]]
+  [Ivy-module-location]... [extra-XML]
 
 *%pom_add_dep_mgmt* groupId**:**articId[**:**version[**:**scope]]
-  [POM-location] [extra-XML]
+  [POM-location]... [extra-XML]
 
 DESCRIPTION
 -----------
-These macros patch specified POM file adding a dependency on given
-version of artifactId from groupId, with given scope (if
-any). *pom_add_dep* adds the dependency to *<dependencies>* XML node,
+These macros patch specified POM or Ivy file adding a dependency on given
+Maven artifact specified by artifact coordinates.
+*pom_add_dep* adds the dependency to *<dependencies>* XML node,
 while *pom_add_dep_mgmt* adds it to *<dependencyManagement>*.
 
 groupId and artifactId are identifiers of Maven artifact on which
@@ -29,9 +32,19 @@ specified then default value of *"any"* is used.  If scope is not
 specified then no scope is defined (Maven defaults to "compile" in
 this case).
 
-POM location can be either a full path to the POM file, or a path to
-the directory containing *pom.xml*.  If POM location is not given then
-*pom.xml* from current working directory is used.
+When modifying Ivy modules, the org, name and rev correspond to the
+Maven groupId and artifactId and version. Org and name must be
+specified, other attributes use defaults. The conf attribute specifies
+the configuration in which the dependency should apply. The transitive
+attribute specifies whether the dependency should also pull in it's
+dependencies. It accepts boolean values - true or false. When
+unspecified Ivy defaults to true.
+
+POM location can be either a full path to the POM or Ivy file, or a path
+to the directory containing *pom.xml* or *ivy.xml*.  If POM location is
+not given then *pom.xml* or *ivy.xml* from current working directory is
+used. When both *pom.xml* and *ivy.xml* are present, *pom.xml* is
+processed. You can specify more file locations which will be processed.
 
 Extra XML is additional XML code to be added into the *<dependency>*
 node. This parameter can be ommited, in which case no extra XML is
@@ -59,6 +72,7 @@ SEE ALSO
 *pom_remove_dep*(7),
 *pom_remove_parent*(7),
 *pom_remove_plugin*(7),
+*pom_change_dep*(7),
 *pom_set_parent*(7),
 *pom_xpath_inject*(7),
 *pom_xpath_remove*(7),

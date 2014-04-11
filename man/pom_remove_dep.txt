@@ -10,7 +10,24 @@ pom_remove_dep - remove dependency on Maven artifact from POM file
 
 SYNOPSIS
 --------
-*%pom_remove_dep* \[groupId]**:**[artifactId] [POM-location]
+*%pom_remove_dep* [OPTIONS]
+\[groupId]**:**[artifactId][**:**version[**:**scope]] [POM-location]...
+
+*%pom_remove_dep* [OPTIONS]
+\[org]**:**[name][**:**rev[**:**conf[**:**transitive]]]
+[Ivy-module-location]...
+
+OPTIONS
+-------
+
+*-r*::
+Work in recursive mode. That means that dependency is also removed from
+all enabled submodules of given POM file(s).
+
+*-f*::
+Do not throw an error when one of the specified files doesn't contain
+given dependency.
+
 
 DESCRIPTION
 -----------
@@ -21,9 +38,17 @@ groupId and artifactId are identifiers of Maven group and artifact of
 the module on which dependency is to be removed.  If they are ommited
 then all identifiers are matched.
 
-POM location can be either a full path to the POM file, or a path to
-the directory containing *pom.xml*.  If POM location is not given then
-*pom.xml* from current working directory is used.
+When modifying Ivy modules, the org and name correspond to the Maven
+groupId and artifactId.
+
+POM location can be either a full path to the POM or Ivy file, or a path
+to the directory containing *pom.xml* or *ivy.xml*.  If POM location is
+not given then *pom.xml* or *ivy.xml* from current working directory is
+used. When both *pom.xml* and *ivy.xml* are present, *pom.xml* is
+processed. You can specify more file locations. If the dependency is not
+found in all of given files, the command raises an error. This can be
+overriden with the `-f` option.
+
 
 EXAMPLES
 --------
@@ -52,6 +77,7 @@ SEE ALSO
 *pom_disable_module*(7),
 *pom_remove_parent*(7),
 *pom_remove_plugin*(7),
+*pom_change_dep*(7),
 *pom_set_parent*(7),
 *pom_xpath_inject*(7),
 *pom_xpath_remove*(7),

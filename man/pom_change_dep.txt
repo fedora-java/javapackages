@@ -1,0 +1,79 @@
+pom_add_dep(7)
+==============
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+pom_change_dep - change dependency in Maven POM file or Ivy module
+
+SYNOPSIS
+--------
+*%pom_change_dep* [OPTIONS] SOURCE_ARTIFACT CHANGED_ARTIFACT [POM-location]...
+    [extra-XML]
+
+*%pom_change_dep* [OPTIONS] SOURCE_ARTIFACT CHANGED_ARTIFACT
+    [Ivy-module-location]... [extra-XML]
+
+OPTIONS
+-------
+
+*-r*::
+Work in recursive mode. That means that given dependency is also changed
+in all enabled submodules of given POM file(s). Has no effect if the
+file is not Maven POM.
+
+*-f*::
+Do not throw an error when one of the specified files doesn't contain
+given dependency.
+
+DESCRIPTION
+-----------
+These macros patch specified POM or Ivy file changing a dependency on
+given Maven artifact specified by artifact coordinates to artifact
+specified by second set of Maven coordinates. The artifact specification
+has same format as *%pom_add_dep*. The omitted or empty parts in second
+artifact specification cause the original value to be left unmodified.
+Supplying a special value of *-* for given part causes that part of
+artifact specification to be deleted.
+
+POM location can be either a full path to the POM or Ivy file, or a path
+to the directory containing *pom.xml* or *ivy.xml*.  If POM location is
+not given then *pom.xml* or *ivy.xml* from current working directory is
+used. When both *pom.xml* and *ivy.xml* are present, *pom.xml* is
+processed. You can specify more file locations which will be processed.
+
+Extra XML is additional XML code to be added into the *<dependency>*
+node. This parameter can be ommited, in which case no extra XML is
+appended.
+
+EXAMPLES
+--------
+*pom_change_dep foo: com.example.foo:* - this call changes groupId of
+all dependencies which have groupId foo to com.example.foo. Their
+artifactId, versions and other possible parts are left unmodified.
+
+AUTHOR
+------
+Written by Michael Simacek.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*pom_add_dep*(7),
+*pom_add_parent*(7),
+*pom_add_plugin*(7),
+*pom_disable_module*(7),
+*pom_remove_dep*(7),
+*pom_remove_parent*(7),
+*pom_remove_plugin*(7),
+*pom_set_parent*(7),
+*pom_xpath_inject*(7),
+*pom_xpath_remove*(7),
+*pom_xpath_replace*(7),
+*pom_xpath_set*(7).

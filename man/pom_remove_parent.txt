@@ -10,7 +10,7 @@ pom_remove_parent - remove parent POM reference from POM file
 
 SYNOPSIS
 --------
-*%pom_remove_parent* [POM-location]
+*%pom_remove_parent* [POM-location]...
 
 DESCRIPTION
 -----------
@@ -19,7 +19,8 @@ POM.
 
 POM location can be either a full path to the POM file, or a path to
 the directory containing *pom.xml*.  If POM location is not given then
-*pom.xml* from current working directory is used.
+*pom.xml* from current working directory is used. You can specify more
+file locations which will be processed.
 
 EXAMPLES
 --------
@@ -43,6 +44,7 @@ SEE ALSO
 *pom_disable_module*(7),
 *pom_remove_dep*(7),
 *pom_remove_plugin*(7),
+*pom_change_dep*(7),
 *pom_set_parent*(7),
 *pom_xpath_inject*(7),
 *pom_xpath_remove*(7),
