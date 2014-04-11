@@ -63,7 +63,7 @@ class TestDepmap(unittest.TestCase):
             self.assertFalse(a.is_compat())
             self.assertEqual(a.groupId, "org.apache.maven.plugins")
             self.assertEqual(a.artifactId, "maven-idea-plugin")
-            self.assertEqual(a.version, "1.4")
+            self.assertEqual(a.version, "2.2")
 
     @depmapfile("depmap_new_compat.xml")
     def test_provided_versioned(self, d):
