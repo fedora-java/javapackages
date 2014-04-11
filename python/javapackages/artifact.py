@@ -53,13 +53,15 @@ class Artifact(object):
     """
 
     def __init__(self, groupId, artifactId, extension="",
-                 classifier="", version="", namespace=""):
+                 classifier="", version="", namespace="",
+                 compatVersions=[]):
         self.groupId = groupId.strip()
         self.artifactId = artifactId.strip()
         self.extension = extension.strip()
         self.classifier = classifier.strip()
         self.version = version.strip()
         self.namespace = namespace.strip()
+        self.compatVersions = compatVersions
 
     def __unicode__(self):
         return u"{gid}:{aid}:{ext}:{cls}:{ver}".format(gid=self.groupId,
@@ -263,8 +265,14 @@ class Artifact(object):
         if metadata.namespace:
             namespace = metadata.namespace.strip()
 
+        compatVersions = []
+        if metadata.compatVersions:
+            for cv in metadata.compatVersions.version:
+                compatVersions.append(cv)
+
         return cls(groupId, artifactId, extension,
-                   classifier, version, namespace)
+                   classifier, version, namespace,
+                   compatVersions)
 
 
 
