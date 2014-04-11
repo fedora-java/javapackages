@@ -29,12 +29,15 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
+from __future__ import print_function
+import javapackages.metadata as m
+from xml.dom.minidom import parse
+
 import gzip
 import os.path
 
-from lxml.etree import fromstring
-
 from javapackages.artifact import Artifact
+
 
 class DepmapLoadingException(Exception):
     pass
@@ -57,72 +60,45 @@ class Depmap(object):
     """
 
     def __init__(self, path):
-        self.__path = path
-        self.__load_depmap(path)
-        if self.__doc is None:
-            raise DepmapLoadingException("Failed to load fragment {path} You have a problem".format(path=path))
-        if not self.get_provided_mappings():
-            raise DepmapLoadingException("Depmap {path} does not contain any provided artifacts ".format(path=path))
-
-    def __load_depmap(self, fragment_path):
-        with open(fragment_path) as f:
-            try:
-                gzf = gzip.GzipFile(os.path.basename(fragment_path),
-                                    'rb',
-                                    fileobj=f)
-                data = gzf.read()
-            except IOError:
-                # not a compressed fragment, just rewind and read the data
-                f.seek(0)
-                data = f.read()
-
-            self.__doc = fromstring(data)
-
-
-    def is_compat(self):
-         """Return true if depmap is for compatibility package
-
-         This means package should have versioned provides"""
-
-         provided_maps = self.get_provided_mappings()
-         for m, l in provided_maps:
-             if l.version:
-                 return True
-         return self.__doc.find(".//skipProvides") is not None
+        xml = open(path).read()
+        self.__metadata = m.CreateFromDocument(xml)
 
     def get_provided_artifacts(self):
         """Returns list of Artifact provided by given depmap."""
+
         artifacts = []
-        for dep in self.__doc.findall('.//dependency'):
-            artifact = dep.findall('./maven')
-            if len(artifact) != 1:
-                raise DepmapInvalidException("Multiple maven nodes in dependency")
-            artifact = Artifact.from_xml_element(artifact[0])
+        for a in self.__metadata.artifacts.artifact:
+            artifact = Artifact(metadata=a)
             if not artifact.version:
                 raise DepmapInvalidException("Depmap {path} does not have version in maven provides".format(path=self.__path))
             artifacts.append(artifact)
         return artifacts
 
+    # FIXME: name... these are not "mappings" anymore
     def get_provided_mappings(self):
         """Return list of (Artifact, Artifact) tuples.
 
         First part of returned tuple is Maven artifact identification
         Second part of returned tuple is local artifact identification
         """
-        mappings = []
-        for dep in self.__doc.findall('.//dependency'):
-            m_artifact = dep.findall('./maven')
-            if len(m_artifact) != 1:
-                raise DepmapInvalidException("Multiple maven nodes in dependency")
-            m_artifact = Artifact.from_xml_element(m_artifact[0])
-            if not m_artifact.version:
-                raise DepmapInvalidException("Depmap {path} does not have version in maven provides".format(path=self.__path))
-            l_artifact = dep.findall('./jpp')
-            if len(l_artifact) != 1:
-                raise DepmapInvalidException("Multiple jpp nodes in dependency")
-            l_artifact = Artifact.from_xml_element(l_artifact[0])
-            mappings.append((m_artifact, l_artifact))
-        return mappings
+        #mappings = []
+        #for dep in self.__doc.findall('.//dependency'):
+        #    m_artifact = dep.findall('./maven')
+        #    if len(m_artifact) != 1:
+        #        raise DepmapInvalidException("Multiple maven nodes in dependency")
+        #    m_artifact = Artifact.from_xml_element(m_artifact[0])
+        #    if not m_artifact.version:
+        #        raise DepmapInvalidException("Depmap {path} does not have version in maven provides".format(path=self.__path))
+        #    l_artifact = dep.findall('./jpp')
+        #    if len(l_artifact) != 1:
+        #        raise DepmapInvalidException("Multiple jpp nodes in dependency")
+        #    l_artifact = Artifact.from_xml_element(l_artifact[0])
+        #    mappings.append((m_artifact, l_artifact))
+        #return mappings
+
+        # TODO: this method seems to be useless
+        return self.get_provided_artifacts()
+
 
     def get_required_artifacts(self):
         """Returns list of Artifact required by given depmap."""
@@ -146,6 +122,14 @@ class Depmap(object):
         if jreq is not None:
             jreq = jreq.text
         return jreq
+
+    #def get_java_requires(self, artifact):
+    #    """Returns JVM version required by artifact or None"""
+    #    for a in self.__metadata.artifacts.artifact:
+    #        curr = Artifact(a.groupId, a.artifactId, a.extension, a.classifier, a.version, a.namespace)
+    #        if artifact == curr and a.properties.requiresJava:
+    #            return a.properties.requiresJava
+    #    return jreq
 
     def get_java_devel_requires(self):
         """Returns JVM development version required by depmap or None"""
