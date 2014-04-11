@@ -2,6 +2,7 @@ import os
 import unittest
 
 from javapackages.depmap import Depmap, DepmapInvalidException
+from javapackages.artifact import Artifact
 
 from misc import exception_expected
 
@@ -23,7 +24,10 @@ class TestDepmap(unittest.TestCase):
 
     @depmapfile("depmap_compat_new.xml")
     def test_compat_new(self, d):
-        self.assertTrue(d.is_compat())
+        pa = d.get_provided_artifacts()
+        self.assertEqual(len(pa), 2)
+        for a in pa:
+            self.assertTrue(a.is_compat())
 
     @depmapfile("depmap_compat_new.xml")
     def test_java_requires(self, d):
@@ -31,7 +35,7 @@ class TestDepmap(unittest.TestCase):
 
     @depmapfile("depmap_java_devel.xml")
     def test_java_devel_requires(self, d):
-        self.assertEqual(d.get_java_requires(Artifact("org.apache.maven.plugins:maven-idea-plugin:2.2")), None)
+        self.assertEqual(d.get_java_requires(), None)
         self.assertEqual(d.get_java_devel_requires(), "1.5")
 
     @depmapfile("depmap_compat_new.xml")
@@ -53,16 +57,13 @@ class TestDepmap(unittest.TestCase):
 
     @depmapfile("depmap_new_versioned_compressed.xml.gz")
     def test_compressed_depmap(self, d):
-        self.assertFalse(d.is_compat())
-        maps = d.get_provided_mappings()
-        self.assertEqual(len(maps), 1)
-        for m, l in maps:
-            self.assertEqual(m.groupId, "org.apache.maven.plugins")
-            self.assertEqual(m.artifactId, "maven-idea-plugin")
-            self.assertEqual(m.version, "1.4")
-            self.assertEqual(l.groupId, "JPP/maven-idea-plugin")
-            self.assertEqual(l.artifactId, "maven-idea-plugin")
-            self.assertEqual(l.version, "")
+        pa = d.get_provided_artifacts()
+        self.assertEqual(len(pa), 2)
+        for a in pa:
+            self.assertFalse(a.is_compat())
+            self.assertEqual(a.groupId, "org.apache.maven.plugins")
+            self.assertEqual(a.artifactId, "maven-idea-plugin")
+            self.assertEqual(a.version, "1.4")
 
     @depmapfile("depmap_new_compat.xml")
     def test_provided_versioned(self, d):
