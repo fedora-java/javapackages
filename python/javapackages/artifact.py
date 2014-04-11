@@ -52,14 +52,20 @@ class Artifact(object):
     loading functions to prevent code duplication elsewhere
     """
 
-    def __init__(self, groupId, artifactId, extension="",
-                 classifier="", version="", namespace=""):
-        self.groupId = groupId.strip()
-        self.artifactId = artifactId.strip()
-        self.extension = extension.strip()
-        self.classifier = classifier.strip()
-        self.version = version.strip()
-        self.namespace = namespace.strip()
+    # FIXME: python doesn't support multiple constructors?
+    def __init__(metadata=None):
+        self.groupId = metadata.groupId.strip()
+        self.artifactId = metadata.artifactId.strip()
+        if metadata.version:
+            self.version = metadata.version.strip()
+        if metadata.extension:
+            self.extension = metadata.extension.strip()
+        if metadata.classifier:
+            self.classifier = metadata.classifier.strip()
+        if metadata.namespace:
+            self.namespace = metadata.namespace.strip()
+        if metadata.compatVersions:
+            self.compatVersions = metadata.compatVersions
 
     def __unicode__(self):
         return u"{gid}:{aid}:{ext}:{cls}:{ver}".format(gid=self.groupId,
@@ -161,6 +167,18 @@ class Artifact(object):
             raise ArtifactValidationException("Backreference used in artifact")
         return True
 
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.__dict__ == other.__dict__
+        return False
+
+    def is_compat(self):
+         """Return true if artifact has compat verions specified.
+         This means package should have versioned provides for this artifact"""
+
+         return self.compatVersions in not None
+
+
     @classmethod
     def merge_artifacts(cls, dominant, recessive):
         """
@@ -237,3 +255,4 @@ class Artifact(object):
 
         return cls(groupId, artifactId, extension,
                    classifier, version, namespace)
+
