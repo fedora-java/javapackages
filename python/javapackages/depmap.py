@@ -36,7 +36,7 @@ import gzip
 import os.path
 
 from javapackages.artifact import Artifact
-import javapackages.metadata
+import javapackages.metadata as metadata
 
 
 class DepmapLoadingException(Exception):
@@ -64,7 +64,7 @@ class Depmap(object):
         self.__load_metadata(path)
 
     def __load_metadata(self, metadata_path):
-        with open(fragment_path) as f:
+        with open(metadata_path) as f:
             try:
                 gzf = gzip.GzipFile(os.path.basename(metadata_path),
                                     'rb',
