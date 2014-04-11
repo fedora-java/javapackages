@@ -60,8 +60,23 @@ class Depmap(object):
     """
 
     def __init__(self, path):
-        xml = open(path).read()
-        self.__metadata = m.CreateFromDocument(xml)
+        self.__path = path
+        self.__load_metadata(path)
+
+    def __load_metadata(self, metadata_path):
+        with open(fragment_path) as f:
+            try:
+                gzf = gzip.GzipFile(os.path.basename(metadata_path),
+                                    'rb',
+                                    fileobj=f)
+                data = gzf.read()
+            except IOError:
+                # not a compressed fragment, just rewind and read the data
+                f.seek(0)
+                data = f.read()
+
+            self.__metadata = m.CreateFromDocument(data)
+
 
     def get_provided_artifacts(self):
         """Returns list of Artifact provided by given depmap."""
