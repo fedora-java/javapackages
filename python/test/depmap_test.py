@@ -31,12 +31,12 @@ class TestDepmap(unittest.TestCase):
 
     @depmapfile("depmap_java_devel.xml")
     def test_java_devel_requires(self, d):
-        self.assertEqual(d.get_java_requires(), None)
+        self.assertEqual(d.get_java_requires(Artifact("org.apache.maven.plugins:maven-idea-plugin:2.2")), None)
         self.assertEqual(d.get_java_devel_requires(), "1.5")
 
     @depmapfile("depmap_compat_new.xml")
     def test_single_provides(self, d):
-        self.assertEqual(len(d.get_provided_artifacts()), 1)
+        self.assertEqual(len(d.get_provided_artifacts()), 2)
 
     @depmapfile("depmap_new_versioned.xml")
     def test_provided_mappings(self, d):
@@ -133,7 +133,7 @@ class TestDepmap(unittest.TestCase):
     def test_multiple_namespaces(self, d):
         prov = d.get_provided_artifacts()
 
-        self.assertEqual(len(prov), 3)
+        self.assertEqual(len(prov), 6)
         self.assertEqual(prov[0].namespace, "codehaus-plexus")
         self.assertEqual(prov[1].namespace, "plexus")
         self.assertEqual(prov[2].namespace, "codehaus")
