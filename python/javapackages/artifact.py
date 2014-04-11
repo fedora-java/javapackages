@@ -256,6 +256,7 @@ class Artifact(object):
     def from_metadata(cls, metadata):
         groupId = metadata.groupId.strip()
         artifactId = metadata.artifactId.strip()
+        version = extension = classifier = namespace = ""
         if metadata.version:
             version = metadata.version.strip()
         if metadata.extension:
