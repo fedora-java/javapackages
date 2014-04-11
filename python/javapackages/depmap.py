@@ -75,7 +75,7 @@ class Depmap(object):
                 f.seek(0)
                 data = f.read()
 
-            self.__metadata = m.CreateFromDocument(data)
+            self.__metadata = metadata.CreateFromDocument(data)
 
 
     def get_provided_artifacts(self):
@@ -83,7 +83,7 @@ class Depmap(object):
 
         artifacts = []
         for a in self.__metadata.artifacts.artifact:
-            artifact = Artifact(metadata=a)
+            artifact = Artifact.from_metadata(a)
             if not artifact.version:
                 raise DepmapInvalidException("Depmap {path} does not have version in maven provides".format(path=self.__path))
             artifacts.append(artifact)

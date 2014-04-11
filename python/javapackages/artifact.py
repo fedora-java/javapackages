@@ -52,20 +52,14 @@ class Artifact(object):
     loading functions to prevent code duplication elsewhere
     """
 
-    # FIXME: python doesn't support multiple constructors?
-    def __init__(metadata=None):
-        self.groupId = metadata.groupId.strip()
-        self.artifactId = metadata.artifactId.strip()
-        if metadata.version:
-            self.version = metadata.version.strip()
-        if metadata.extension:
-            self.extension = metadata.extension.strip()
-        if metadata.classifier:
-            self.classifier = metadata.classifier.strip()
-        if metadata.namespace:
-            self.namespace = metadata.namespace.strip()
-        if metadata.compatVersions:
-            self.compatVersions = metadata.compatVersions
+    def __init__(self, groupId, artifactId, extension="",
+                 classifier="", version="", namespace=""):
+        self.groupId = groupId.strip()
+        self.artifactId = artifactId.strip()
+        self.extension = extension.strip()
+        self.classifier = classifier.strip()
+        self.version = version.strip()
+        self.namespace = namespace.strip()
 
     def __unicode__(self):
         return u"{gid}:{aid}:{ext}:{cls}:{ver}".format(gid=self.groupId,
@@ -255,4 +249,22 @@ class Artifact(object):
 
         return cls(groupId, artifactId, extension,
                    classifier, version, namespace)
+
+    @classmethod
+    def from_metadata(cls, metadata):
+        groupId = metadata.groupId.strip()
+        artifactId = metadata.artifactId.strip()
+        if metadata.version:
+            version = metadata.version.strip()
+        if metadata.extension:
+            extension = metadata.extension.strip()
+        if metadata.classifier:
+            classifier = metadata.classifier.strip()
+        if metadata.namespace:
+            namespace = metadata.namespace.strip()
+
+        return cls(groupId, artifactId, extension,
+                   classifier, version, namespace)
+
+
 
