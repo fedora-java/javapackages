@@ -257,17 +257,17 @@ class Artifact(object):
         groupId = metadata.groupId.strip()
         artifactId = metadata.artifactId.strip()
         version = extension = classifier = namespace = ""
-        if metadata.version:
+        if hasattr(metadata, 'version') and metadata.version: 
             version = metadata.version.strip()
-        if metadata.extension:
+        if hasattr(metadata, 'extension') and metadata.extension:
             extension = metadata.extension.strip()
-        if metadata.classifier:
+        if hasattr(metadata, 'classifier') and metadata.classifier:
             classifier = metadata.classifier.strip()
-        if metadata.namespace:
+        if hasattr(metadata, 'namespace') and metadata.namespace:
             namespace = metadata.namespace.strip()
 
         compatVersions = []
-        if metadata.compatVersions:
+        if hasattr(metadata, 'compatVersions') and metadata.compatVersions:
             for cv in metadata.compatVersions.version:
                 compatVersions.append(cv)
 
