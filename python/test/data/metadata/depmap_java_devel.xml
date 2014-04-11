@@ -1,14 +1,14 @@
 <metadata xmlns="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
     <uuid>43948343229</uuid>
+    <properties>
+        <requiresJavaDevel>1.5</requiresJavaDevel>
+    </properties>
     <artifacts>
         <artifact>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-idea-plugin</artifactId>
             <version>2.2</version>
             <path>/usr/share/java/maven-idea-plugin/maven-idea-plugin.jar</path>
-            <properties>
-                <requiresJavaDevel>1.5</requiresJavaDevel>
-            </properties>
         </artifact>
         <artifact>
             <groupId>org.apache.maven.plugins</groupId>

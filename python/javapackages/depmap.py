@@ -31,12 +31,14 @@
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 from __future__ import print_function
 from xml.dom.minidom import parse
-
 import gzip
 import os.path
 
+import pyxb
+
 from javapackages.artifact import Artifact
 import javapackages.metadata as metadata
+
 
 
 class DepmapLoadingException(Exception):
@@ -61,7 +63,11 @@ class Depmap(object):
 
     def __init__(self, path):
         self.__path = path
-        self.__load_metadata(path)
+        try:
+            self.__load_metadata(path)
+        except pyxb.UnrecognizedContentError, e:
+            raise DepmapInvalidException("Failed to parse metadata: {path}.".format(path=path))
+
 
     def __load_metadata(self, metadata_path):
         with open(metadata_path) as f:
@@ -118,9 +124,10 @@ class Depmap(object):
     def get_required_artifacts(self):
         """Returns list of Artifact required by given depmap."""
         artifacts = []
-        for dep in self.__doc.findall('.//autoRequires'):
-            artifact = Artifact.from_xml_element(dep)
-            artifacts.append(artifact)
+        for a in self.__metadata.artifacts.artifact:
+            for dep in a.dependencies.dependency:
+                artifact = Artifact.from_metadata(dep)
+                artifacts.append(artifact)
         return artifacts
 
     def get_skipped_artifacts(self):
@@ -133,22 +140,18 @@ class Depmap(object):
 
     def get_java_requires(self):
         """Returns JVM version required by depmap or None"""
-        jreq = self.__doc.find('.//requiresJava')
-        if jreq is not None:
-            jreq = jreq.text
-        return jreq
-
-    #def get_java_requires(self, artifact):
-    #    """Returns JVM version required by artifact or None"""
-    #    for a in self.__metadata.artifacts.artifact:
-    #        curr = Artifact(a.groupId, a.artifactId, a.extension, a.classifier, a.version, a.namespace)
-    #        if artifact == curr and a.properties.requiresJava:
-    #            return a.properties.requiresJava
-    #    return jreq
+        if not self.__metadata.properties:
+            return None
+        for prop in self.__metadata.properties.wildcardElements():
+            if prop.tagName == u'requiresJava':
+                return prop.firstChild.value
+        return None
 
     def get_java_devel_requires(self):
         """Returns JVM development version required by depmap or None"""
-        jreq = self.__doc.find('.//requiresJavaDevel')
-        if jreq is not None:
-            jreq = jreq.text
-        return jreq
+        if not self.__metadata.properties:
+            return None
+        for prop in self.__metadata.properties.wildcardElements():
+            if prop.tagName == u'requiresJavaDevel':
+                return prop.firstChild.value
+        return None
