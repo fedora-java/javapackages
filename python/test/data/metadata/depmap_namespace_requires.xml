@@ -1,4 +1,4 @@
-<metadata>
+<metadata xmlns="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
     <uuid>43948329</uuid>
     <artifacts>
         <artifact>
@@ -27,7 +27,6 @@
                 <dependency>
                     <groupId>org.codehaus.plexus</groupId>
                     <artifactId>plexus-container-default</artifactId>
-                    <version>1.0-alpha-7</version>
                     <requestedVersion>12</requestedVersion>
                 </dependency>
                 <dependency>
@@ -76,7 +75,6 @@
                 <dependency>
                     <groupId>org.codehaus.plexus</groupId>
                     <artifactId>plexus-container-default</artifactId>
-                    <version>1.0-alpha-7</version>
                     <requestedVersion>12</requestedVersion>
                 </dependency>
                 <dependency>
