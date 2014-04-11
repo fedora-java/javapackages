@@ -30,13 +30,13 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 from __future__ import print_function
-import javapackages.metadata as m
 from xml.dom.minidom import parse
 
 import gzip
 import os.path
 
 from javapackages.artifact import Artifact
+import javapackages.metadata
 
 
 class DepmapLoadingException(Exception):
