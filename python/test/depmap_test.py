@@ -109,19 +109,19 @@ class TestDepmap(unittest.TestCase):
         self.assertEqual(reqs[1].artifactId, "wagon-provider-api")
         self.assertEqual(reqs[1].classifier, "test-jar")
 
-        self.assertNotEqual(reqs[2].version, None)
-        self.assertEqual(reqs[2].extension, "")
+        self.assertEqual(reqs[2].version, "")
         self.assertEqual(reqs[2].classifier, "")
+        self.assertNotEqual(reqs[2].extension, None)
         self.assertEqual(reqs[2].groupId, "org.codehaus.plexus")
-        self.assertEqual(reqs[2].artifactId, "plexus-container-default")
-        self.assertEqual(reqs[2].version, "1.0-alpha-7")
+        self.assertEqual(reqs[2].artifactId, "plexus-utils")
+        self.assertEqual(reqs[2].extension, "war")
 
-        self.assertEqual(reqs[3].version, "")
+        self.assertNotEqual(reqs[3].version, None)
+        self.assertEqual(reqs[3].extension, "")
         self.assertEqual(reqs[3].classifier, "")
-        self.assertNotEqual(reqs[3].extension, None)
         self.assertEqual(reqs[3].groupId, "org.codehaus.plexus")
-        self.assertEqual(reqs[3].artifactId, "plexus-utils")
-        self.assertEqual(reqs[3].extension, "war")
+        self.assertEqual(reqs[3].artifactId, "plexus-container-default")
+        self.assertEqual(reqs[3].version, "1.0-alpha-7")
 
     @depmapfile("depmap_namespace.xml")
     def test_namespace(self, d):
