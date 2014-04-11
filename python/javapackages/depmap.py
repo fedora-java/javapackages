@@ -123,12 +123,12 @@ class Depmap(object):
 
     def get_required_artifacts(self):
         """Returns list of Artifact required by given depmap."""
-        artifacts = []
+        artifacts = set()
         for a in self.__metadata.artifacts.artifact:
             for dep in a.dependencies.dependency:
                 artifact = Artifact.from_metadata(dep)
-                artifacts.append(artifact)
-        return artifacts
+                artifacts.add(artifact)
+        return sorted(list(artifacts))
 
     def get_skipped_artifacts(self):
         """Returns list of Artifact that were build but not installed"""
