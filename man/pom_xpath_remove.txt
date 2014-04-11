@@ -6,36 +6,62 @@ pom_xpath_remove(7)
 
 NAME
 ----
-pom_xpath_remove - remove an XML node from POM file
+pom_xpath_remove - remove a node from XML file
 
 SYNOPSIS
 --------
-*%pom_xpath_remove* XPath [POM-location]
+*%pom_xpath_remove* [OPTIONS] XPath [XML-file-location]...
+
+OPTIONS
+-------
+
+*-r*::
+Work in recursive mode. That means that given node is also removed from
+all enabled submodules of given POM file(s). Has no effect if the file is
+not Maven POM.
+
+*-f*::
+Do not throw an error when one of the specified files doesn't contain
+given node.
 
 DESCRIPTION
 -----------
 This macro patches specified POM file removing all XML nodes described
-by the XPath expression.
+by the XPath expression. This also works on attributes and text nodes.
 
 XPath is an expression describing a set of XML nodes to be removed
 from the POM file.  It must be a properly formated XPath 1.0
 expression, as described in http://www.w3.org/TR/xpath/.
 
-POM location can be either a full path to the POM file, or a path to
-the directory containing *pom.xml*.  If POM location is not given then
-*pom.xml* from current working directory is used.
+Maven POM files use specific XML namespace
+`http://maven.apache.org/POM/4.0.0` as default. This namespace needs to
+be explicitly specified in XPath expressions by prefixing all node names
+with *pom* (i.e. *pom:modelVersion*).
+
+Many other XML formats also use namespaces which you have to explicitly
+specify. This script will use the namespace prefix names from the
+*xmlns* declarations in the document's root element. So if the document
+begins with `<root xmlns:my="myurl.com">` you would select the root node
+with XPath expression */my:root*. If the document specifies a default
+namespace (eg `xmlns="myurl.com"`) use the prefix named *default* to
+acces elements in that namespace.
+
+XML location can be either a full path to the XML, or a path to the
+directory containing *pom.xml* or *ivy.xml*.  If XML location is not
+given then *pom.xml* or *ivy.xml* from current working directory is
+used. When both *pom.xml* and *ivy.xml* are present, *pom.xml* is
+processed. You can specify more file locations.
 
 EXAMPLES
 --------
 *%pom_xpath_remove pom:project/pom:reporting* - this call removes
 reporting section from POM in current working directory.
 
-BUGS
-----
-POM files use a specific namespace -
-http://maven.apache.org/POM/4.0.0.  Currently this namespace needs to
-be explicitly specified in all XPath POM macros by prefixing all node
-names with *pom:*.
+*%pom_xpath_remove \'ivy:configure' build.xml* - this call disables
+loading of ivy configuration in build.xml file. Note the use of `ivy`
+namespace which was declared in the document as
+`xmlns:ivy="antlib:org.apache.ivy.ant"`.
+
 
 AUTHOR
 ------
@@ -55,6 +81,7 @@ SEE ALSO
 *pom_remove_dep*(7),
 *pom_remove_parent*(7),
 *pom_remove_plugin*(7),
+*pom_change_dep*(7),
 *pom_set_parent*(7),
 *pom_xpath_inject*(7),
 *pom_xpath_replace*(7),

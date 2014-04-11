@@ -5,11 +5,7 @@
     <version>2.6</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>
-  <!-- begin of code added by maintainer -->
-  commons
-
-  <!-- end of code added by maintainer --></groupId>
+  <groupId>commons</groupId>
   <artifactId>commons-lang</artifactId>
   <version>2.6</version>
   <name>Commons Lang</name>

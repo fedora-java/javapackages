@@ -10,7 +10,19 @@ pom_remove_plugin - remove Maven plugin invocation from POM file
 
 SYNOPSIS
 --------
-*%pom_remove_plugin* \[groupId]**:**[artifactId] [POM-location]
+*%pom_remove_plugin* [OPTIONS]
+\[groupId]**:**[artifactId][**:**version[**:**scope]] [POM-location]...
+
+OPTIONS
+-------
+
+*-r*::
+Work in recursive mode. That means that plugin is also removed from
+all enabled submodules of given POM file(s).
+
+*-f*::
+Do not throw an error when one of the specified files doesn't contain
+given dependency.
 
 DESCRIPTION
 -----------
@@ -23,7 +35,9 @@ then all identifiers are matched.
 
 POM location can be either a full path to the POM file, or a path to
 the directory containing *pom.xml*.  If POM location is not given then
-*pom.xml* from current working directory is used.
+*pom.xml* from current working directory is used. You can specify more
+file locations which will be processed. You can specify more file
+locations.
 
 EXAMPLES
 --------
@@ -47,6 +61,7 @@ SEE ALSO
 *pom_disable_module*(7),
 *pom_remove_dep*(7),
 *pom_remove_parent*(7),
+*pom_change_dep*(7),
 *pom_set_parent*(7),
 *pom_xpath_inject*(7),
 *pom_xpath_remove*(7),

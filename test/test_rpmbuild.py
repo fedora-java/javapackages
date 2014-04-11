@@ -5,7 +5,7 @@ import shutil
 
 from textwrap import dedent
 
-from test_common import DIRPATH
+DIRPATH = os.path.dirname(os.path.realpath(__file__))
 
 class Package(object):
     """Represents single RPM package that should be built.
@@ -19,7 +19,7 @@ class Package(object):
     """
     def __init__(self, name):
         self.__name = name
-        self.__sources = {}
+        self.__sources = []
         self.__begin = ''
         self.__prep = ''
         self.__build = ''
@@ -46,7 +46,7 @@ class Package(object):
             sourcepath = os.path.join(DIRPATH, sourcepath)
         if not newname:
             newname = os.path.basename(sourcepath)
-        self.__sources[sourcepath] = newname
+        self.__sources.append((sourcepath, newname))
 
     def prepend(self, to_prepend):
         """Prepends given string to spec file"""
@@ -70,9 +70,9 @@ class Package(object):
         return self.__invoke_rpmbuild(['-bp'] + (args or []))
 
     def run_build(self, args=None):
-        """Runs rpmbuild -bb (stop after build phase) with current settings."""
+        """Runs rpmbuild -bc (stop after build phase) with current settings."""
         self.__prepare_all()
-        return self.__invoke_rpmbuild(['-bb'] + (args or []))
+        return self.__invoke_rpmbuild(['-bc'] + (args or []))
 
     def run_install(self, args=None):
         """Runs rpmbuild -bi (stop after install) with current settings."""
@@ -114,10 +114,7 @@ class Package(object):
             pass
         _prepare_macros()
         self.__prepare_spec()
-        try:
-            self.__prepare_sources()
-        except IOError:
-            pass
+        self.__prepare_sources()
 
     def __prepare_spec(self):
         header = self.__begin + dedent("""
@@ -128,8 +125,9 @@ class Package(object):
         License:    GPL
         URL:        www.example.com
         """.format(name=self.__name))
-        for index, filename in enumerate(self.__sources.values() or []):
-            header += 'Source{index}: {filename}\n'.format(filename=filename,
+        for index, (_, filename) in enumerate(self.__sources):
+            filename = os.path.basename(filename)
+            header += 'Source{index}: {filename}{index}\n'.format(filename=filename,
                     index=index)
 
         header += dedent("""\
@@ -143,8 +141,12 @@ class Package(object):
         mkdir %{name}-%{version}
         cd %{name}-%{version}
         """)
-        for i in range(len(self.__sources)):
-            prep_section += 'cp -p %SOURCE{index} .\n'.format(index=i)
+        for index, (_, filename) in enumerate(self.__sources):
+            directory = os.path.dirname(filename)
+            prep_section += 'mkdir -p ./{d}\n'.format(d=directory)
+            prep_section += 'cp -p %SOURCE{index} ./{d}/{f}\n'.format(index=index,
+                d=directory, f=os.path.basename(filename))
+
         prep_section += self.__prep
 
         build_section = dedent("""\
@@ -169,8 +171,9 @@ class Package(object):
 
     def __prepare_sources(self):
         destpath = os.path.join('rpmbuild', 'SOURCES')
-        for sourcepath, targetname in self.__sources.iteritems():
-            shutil.copy(sourcepath, os.path.join(destpath, targetname))
+        for index, (sourcepath, targetname) in enumerate(self.__sources):
+            target = os.path.join(destpath, os.path.basename(targetname))
+            shutil.copy(sourcepath, '{0}{1}'.format(target, index))
 
 def _prepare_macros():
     macropath = os.path.join(DIRPATH, '..', 'macros.d')

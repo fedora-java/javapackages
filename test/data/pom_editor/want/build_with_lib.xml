@@ -1,0 +1,27 @@
+<project name="MyProject" default="dist" basedir=".">
+  <property name="src" location="src"/>
+  <property name="build" location="build"/>
+  <property name="dist" location="dist"/>
+
+  <target name="init" description="Create build directory">
+    <mkdir dir="lib"/>
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="compile" depends="init"
+        description="Compile the source">
+    <javac srcdir="${src}" destdir="${build}"/>
+  </target>
+
+  <target name="dist" depends="compile"
+        description="Generate jar">
+    <mkdir dir="${dist}/lib"/>
+
+    <jar jarfile="${dist}/myproject.jar" basedir="${build}"/>
+  </target>
+
+  <target name="clean" description="Clean build files">
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+</project>

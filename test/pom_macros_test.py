@@ -534,7 +534,7 @@ class PomMacrosTest(unittest.TestCase):
         _, stderr, returncode = package.run_prep()
 
         self.assertEqual(returncode, 1, stderr)
-        self.assertIn("Couldn't locate POM file using pattern", stderr)
+        self.assertIn("Couldn't locate ", stderr)
 
     def test_no_pom_explicit(self):
         package = Package("nonexistent_pom_explicit")
@@ -542,7 +542,7 @@ class PomMacrosTest(unittest.TestCase):
         _, stderr, returncode = package.run_prep()
 
         self.assertEqual(returncode, 1, stderr)
-        self.assertIn("Couldn't locate POM file using pattern", stderr)
+        self.assertIn("Couldn't locate ", stderr)
 
 if __name__ == '__main__':
     unittest.main()

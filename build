@@ -103,6 +103,7 @@ manpage pom_disable_module
 manpage pom_remove_dep
 manpage pom_remove_parent
 manpage pom_remove_plugin
+manpage pom_change_dep
 manpage pom_set_parent
 manpage pom_xpath_inject
 manpage pom_xpath_remove

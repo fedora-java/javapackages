@@ -10,7 +10,7 @@ pom_set_parent - set parent POM reference in POM file
 
 SYNOPSIS
 --------
-*%pom_set_parent* groupId**:**artifactId[**:**version] [POM-location]
+*%pom_set_parent* groupId**:**artifactId[**:**version] [POM-location]...
 
 DESCRIPTION
 -----------
@@ -22,6 +22,11 @@ one.  It's (more or less) equivalent to call to *%pom_remove_parent*
 followed by invocation of *%pom_add_parent*.  See
 *pom_remove_parent*(7) and *pom_add_parent*(7) for more information
 about parameters.
+
+POM location can be either a full path to the POM file, or a path to
+the directory containing *pom.xml*.  If POM location is not given then
+*pom.xml* from current working directory is used. You can specify more
+file locations which will be processed.
 
 EXAMPLES
 --------
@@ -46,6 +51,7 @@ SEE ALSO
 *pom_remove_dep*(7),
 *pom_remove_parent*(7),
 *pom_remove_plugin*(7),
+*pom_change_dep*(7),
 *pom_xpath_inject*(7),
 *pom_xpath_remove*(7),
 *pom_xpath_replace*(7),

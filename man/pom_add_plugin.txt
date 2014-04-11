@@ -10,7 +10,7 @@ pom_add_plugin - add plugin invocation to POM file
 
 SYNOPSIS
 --------
-*%pom_add_plugin* groupId**:**artifactId[**:**version] [POM-location]
+*%pom_add_plugin* groupId**:**artifactId[**:**version] [POM-location]...
   [extra-XML]
 
 DESCRIPTION
@@ -26,7 +26,8 @@ default value of "any" is used.
 
 POM location can be either a full path to the POM file, or a path to
 the directory containing *pom.xml*.  If POM location is not given then
-*pom.xml* from current working directory is used.
+*pom.xml* from current working directory is used. You can specify more
+file locations which will be processed.
 
 Extra XML is additional XML code to be added into the *<plugin>* node.
 This parameter can be ommited, in which case no extra XML is appended.
