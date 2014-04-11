@@ -168,6 +168,13 @@ class Artifact(object):
             return self.__dict__ == other.__dict__
         return False
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return self.groupId.__hash__() + \
+               self.artifactId.__hash__()
+
     def is_compat(self):
          """Return true if artifact has compat verions specified.
          This means package should have versioned provides for this artifact"""
