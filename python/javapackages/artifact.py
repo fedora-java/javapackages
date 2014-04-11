@@ -172,7 +172,7 @@ class Artifact(object):
          """Return true if artifact has compat verions specified.
          This means package should have versioned provides for this artifact"""
 
-         return self.compatVersions is not None
+         return self.compatVersions
 
 
     @classmethod
