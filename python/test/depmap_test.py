@@ -21,17 +21,9 @@ class TestDepmap(unittest.TestCase):
     def test_nonexisting_depmap(self, d):
         self.assertTrue(False, "IOError was expected!")
 
-    @depmapfile("depmap_compat_old")
-    def test_compat_old(self, d):
-        self.assertTrue(d.is_compat())
-
     @depmapfile("depmap_compat_new.xml")
     def test_compat_new(self, d):
         self.assertTrue(d.is_compat())
-
-    @depmapfile("depmap_compat_old")
-    def test_missing_java_requires(self, d):
-        self.assertEqual(d.get_java_requires(), None)
 
     @depmapfile("depmap_compat_new.xml")
     def test_java_requires(self, d):
@@ -45,20 +37,6 @@ class TestDepmap(unittest.TestCase):
     @depmapfile("depmap_compat_new.xml")
     def test_single_provides(self, d):
         self.assertEqual(len(d.get_provided_artifacts()), 1)
-
-    @depmapfile("depmap_compat_old")
-    def test_multiple_provides(self, d):
-        self.assertTrue(d.is_compat())
-        prov = d.get_provided_artifacts()
-        self.assertEqual(len(prov), 5)
-        for p in prov:
-            self.assertEqual(p.groupId, "org.apache.maven")
-            self.assertEqual(p.artifactId, "maven-artifact")
-        self.assertEqual(prov[0].version, "2.2.1")
-        self.assertEqual(prov[1].version, "2.0.2")
-        self.assertEqual(prov[2].version, "2.0.6")
-        self.assertEqual(prov[3].version, "2.0.7")
-        self.assertEqual(prov[4].version, "2.0.8")
 
     @depmapfile("depmap_new_versioned.xml")
     def test_provided_mappings(self, d):
@@ -111,12 +89,6 @@ class TestDepmap(unittest.TestCase):
     @depmapfile("depmap_invalid_nover.xml")
     def test_no_maven_version_mappings(self, d):
         d.get_provided_mappings()
-
-    @depmapfile("depmap_compat_old")
-    def test_no_requires(self, d):
-        reqs = d.get_required_artifacts()
-        self.assertTrue(type(reqs) == list)
-        self.assertEqual(len(reqs), 0)
 
     @depmapfile("depmap_compat_new.xml")
     def test_multiple_requires(self, d):
