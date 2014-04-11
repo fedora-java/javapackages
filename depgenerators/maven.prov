@@ -45,34 +45,25 @@ class TagBuilder:
         for path in paths:
             depmap = Depmap(path)
 
-            for m_artifact, l_artifact in depmap.get_provided_mappings():
-                prov_artifact = m_artifact
-                if l_artifact.version:
-                    prov_artifact = Artifact(m_artifact.groupId,
-                                             m_artifact.artifactId,
-                                             extension=m_artifact.extension,
-                                             classifier=m_artifact.classifier,
-                                             version=l_artifact.version,
-                                             namespace=l_artifact.namespace)
-                if prov_artifact.extension == 'jar':
-                    prov_artifact.extension = ''
+            for artifact in depmap.get_provided_mappings():
+                if artifact.extension == 'jar':
+                    artifact.extension = ''
 
                 print("{rpmstr} = {version}".format(
-                        rpmstr=prov_artifact.get_rpm_str(depmap.is_compat()),
+                        rpmstr=prov_artifact.get_rpm_str(prov_artifact.is_compat()),
                         version=m_artifact.version ))
                 # preserve compatibility and generate simple mvn(g:a) provides
                 # for pom artifacts
-                ns = l_artifact.namespace
-                if prov_artifact.extension == 'pom':
-                    if depmap.is_compat():
+                if artifact.extension == 'pom':
+                    if artifact.is_compat():
                         mvn_rpm_string = "{ns}mvn({gid}:{aid}:{version}) = {version}"
                     else:
                         mvn_rpm_string = "{ns}mvn({gid}:{aid}) = {version}"
                     print(mvn_rpm_string.format(
-                            ns=(ns + "-") if ns else "",
-                            gid=prov_artifact.groupId,
-                            aid=prov_artifact.artifactId,
-                            version=m_artifact.version))
+                            ns=(artifact.namespace + "-") if artifact.namespace else "",
+                            gid=artifact.groupId,
+                            aid=artifact.artifactId,
+                            version=artifact.version))
 
 
 if __name__ == "__main__":
