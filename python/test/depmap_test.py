@@ -2,7 +2,7 @@ import os
 import unittest
 
 from javapackages.depmap import Depmap, DepmapInvalidException
-from javapackages.artifact import Artifact, Dependency
+from javapackages.artifact import Artifact, Dependency, ProvidedArtifact
 
 from misc import exception_expected
 
@@ -44,33 +44,65 @@ class TestDepmap(unittest.TestCase):
 
     @depmapfile("depmap_new_versioned.xml")
     def test_provided_mappings(self, d):
-        artifacts = d.get_provided_mappings()
+        artifacts = d.get_provided_artifacts()
         self.assertEqual(len(artifacts), 2)
-        for a in artifacts:
-            self.assertEqual(a.groupId, "org.apache.maven.plugins")
-            self.assertEqual(a.artifactId, "maven-idea-plugin")
-            self.assertEqual(a.version, "2.2")
-            self.assertFalse(a.is_compat())
+        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+                                         "maven-idea-plugin",
+                                         version="2.2",
+                                         path="/usr/share/java/maven-idea-plugin/maven-idea-plugin.jar",
+                                         properties={'requiresJava':'1.5'}
+                                     ) in artifacts)
+        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+                                         "maven-idea-plugin",
+                                         version="2.2",
+                                         extension="pom",
+                                         path="/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin.pom")
+
+                        in artifacts)
 
     @depmapfile("depmap_new_versioned_compressed.xml.gz")
     def test_compressed_depmap(self, d):
-        pa = d.get_provided_artifacts()
-        self.assertEqual(len(pa), 2)
-        for a in pa:
-            self.assertFalse(a.is_compat())
-            self.assertEqual(a.groupId, "org.apache.maven.plugins")
-            self.assertEqual(a.artifactId, "maven-idea-plugin")
-            self.assertEqual(a.version, "2.2")
+        artifacts = d.get_provided_artifacts()
+        self.assertEqual(len(artifacts), 2)
+        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+                                         "maven-idea-plugin",
+                                         version="2.2",
+                                         path="/usr/share/java/maven-idea-plugin/maven-idea-plugin.jar",
+                                         properties={'requiresJava':'1.5'}
+                                     ) in artifacts)
+        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+                                         "maven-idea-plugin",
+                                         version="2.2",
+                                         path="/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin.pom",
+                                         extension="pom") in artifacts)
+
 
     @depmapfile("depmap_new_compat.xml")
     def test_provided_versioned(self, d):
-        artifacts = d.get_provided_mappings()
+        artifacts = d.get_provided_artifacts()
         self.assertEqual(len(artifacts), 4)
-        for a in artifacts:
-            self.assertEqual(a.groupId, "org.apache.maven.plugins")
-            self.assertEqual(a.artifactId, "maven-idea-plugin")
-            self.assertEqual(a.version, "1.4")
-            self.assertTrue(a.is_compat())
+        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+                                         "maven-idea-plugin",
+                                         version="1.4",
+                                         path="/usr/share/java/maven-idea-plugin/maven-idea-plugin-1.4.jar",
+                                         compatVersions=["1.4"]) in artifacts)
+        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+                                         "maven-idea-plugin",
+                                         version="1.4",
+                                         extension="pom",
+                                         path="/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin-1.4.pom",
+                                         compatVersions=["1.4"]) in artifacts)
+        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+                                         "maven-idea-plugin",
+                                         version="1.4",
+                                         path="/usr/share/java/maven-idea-plugin/maven-idea-plugin-1.4.jar",
+                                         compatVersions=["1.5"]) in artifacts)
+        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+                                         "maven-idea-plugin",
+                                         version="1.4",
+                                         extension="pom",
+                                         path="/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin-1.4.pom",
+                                         compatVersions=["1.5"]) in artifacts)
 
     @exception_expected(DepmapInvalidException)
     @depmapfile("depmap_invalid_nover.xml")
@@ -80,7 +112,7 @@ class TestDepmap(unittest.TestCase):
     @exception_expected(DepmapInvalidException)
     @depmapfile("depmap_invalid_nover.xml")
     def test_no_maven_version_mappings(self, d):
-        d.get_provided_mappings()
+        d.get_provided_artifacts()
 
     @depmapfile("depmap_compat_new.xml")
     def test_multiple_requires(self, d):
@@ -108,7 +140,7 @@ class TestDepmap(unittest.TestCase):
 
     @depmapfile("depmap_namespace.xml")
     def test_namespace(self, d):
-        artifacts = d.get_provided_mappings()
+        artifacts = d.get_provided_artifacts()
         for a in artifacts:
             self.assertEqual(a.namespace, "ns")
 
@@ -117,10 +149,46 @@ class TestDepmap(unittest.TestCase):
         prov = d.get_provided_artifacts()
 
         self.assertEqual(len(prov), 6)
-        self.assertEqual(prov[0].namespace, "codehaus-plexus")
-        self.assertEqual(prov[1].namespace, "codehaus-plexus")
-        self.assertEqual(prov[2].namespace, "plexus")
-        self.assertEqual(prov[3].namespace, "plexus")
+        self.assertTrue(ProvidedArtifact("org.codehaus.plexus",
+                                         "plexus-utils",
+                                         version="3.0",
+                                         namespace="codehaus-plexus",
+                                         path="/usr/share/java/plexus-utils/plexus-utils.jar",
+                                         properties={'requiresJava':'1.5'}) in prov)
+
+        self.assertTrue(ProvidedArtifact("org.codehaus.plexus",
+                                         "plexus-utils",
+                                         version="3.0",
+                                         extension="pom",
+                                         namespace="codehaus-plexus",
+                                         path="/usr/share/maven-poms/JPP.plexus-utils-plexus-utils.pom",
+                                         properties={'requiresJava':'1.5'}) in prov)
+        self.assertTrue(ProvidedArtifact("plexus",
+                                         "plexus-utils",
+                                         version="1.2",
+                                         namespace="plexus",
+                                         path="/usr/share/java/plexus-utils/plexus-utils.jar",
+                                         properties={'requiresJava':'1.5'}) in prov)
+        self.assertTrue(ProvidedArtifact("plexus",
+                                         "plexus-utils",
+                                         version="1.2",
+                                         namespace="plexus",
+                                         extension="pom",
+                                         path="/usr/share/maven-poms/JPP.plexus-utils-plexus-utils.pom",
+                                         properties={'requiresJava':'1.5'}) in prov)
+        self.assertTrue(ProvidedArtifact("codehaus",
+                                         "plexus-utils",
+                                         version="1.2",
+                                         namespace="codehaus",
+                                         path="/usr/share/java/plexus-utils/plexus-utils.jar",
+                                         properties={'requiresJava':'1.5'}) in prov)
+        self.assertTrue(ProvidedArtifact("codehaus",
+                                         "plexus-utils",
+                                         version="1.2",
+                                         namespace="codehaus",
+                                         extension="pom",
+                                         path="/usr/share/maven-poms/JPP.plexus-utils-plexus-utils.pom",
+                                         properties={'requiresJava':'1.5'}) in prov)
         self.assertEqual(prov[4].namespace, "codehaus")
         self.assertEqual(prov[5].namespace, "codehaus")
 
