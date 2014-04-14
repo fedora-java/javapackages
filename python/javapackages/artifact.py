@@ -346,15 +346,23 @@ class Dependency(object):
     def __init__(self, groupId, artifactId, requestedVersion,
                  resolvedVersion="", extension="", classifier="",
                  namespace="", exclusions=[]):
-        self.groupId = groupId
-        self.artifactId = artifactId
-        self.requestedVersion = requestedVersion
+        self.artifact = Artifact(groupId,
+                                 artifactId,
+                                 extension=extension,
+                                 classifier=classifier,
+                                 version=requestedVersion,
+                                 namespace=namespace)
         self.resolvedVersion = resolvedVersion
-        self.extension = extension
-        self.classifier = classifier
-        self.namespace = namespace
         self.exclusions = exclusions
 
+    def __getattr__(self, attrib):
+        return getattr(self.artifact, attrib)
+
+    def get_requestedVersion(self):
+        return self.artifact.version
+    def set_requestedVersion(self, version):
+        self.artifact.version = version
+    requestedVersion = property(get_requestedVersion, set_requestedVersion)
 
     def __eq__(self, other):
         if type(other) is type(self):
@@ -365,13 +373,9 @@ class Dependency(object):
         return not self.__eq__(other)
 
     def __hash__(self):
-        return self.groupId.__hash__() + \
-               self.artifactId.__hash__() + \
-               self.requestedVersion.__hash__() + \
+        return self.artifact.__hash__() + \
                self.resolvedVersion.__hash__() + \
-               self.extension.__hash__() + \
-               self.classifier.__hash__() + \
-               self.namespace.__hash__()
+               self.exclusions.__hash__()
 
     @classmethod
     def from_metadata(cls, metadata):
