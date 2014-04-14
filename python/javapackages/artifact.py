@@ -361,7 +361,7 @@ class Dependency(object):
 
     def __init__(self, groupId, artifactId, requestedVersion,
                  resolvedVersion="", extension="", classifier="",
-                 namespace="", exclusions=[]):
+                 namespace="", exclusions=set()):
         self.artifact = Artifact(groupId,
                                  artifactId,
                                  extension=extension,
@@ -390,8 +390,7 @@ class Dependency(object):
 
     def __hash__(self):
         return self.artifact.__hash__() + \
-               self.resolvedVersion.__hash__() + \
-               self.exclusions.__hash__()
+               self.resolvedVersion.__hash__()
 
     @classmethod
     def from_metadata(cls, metadata):
@@ -409,10 +408,10 @@ class Dependency(object):
         if hasattr(metadata, 'namespace') and metadata.namespace:
             namespace = metadata.namespace.strip()
 
-        exclusions = []
+        exclusions = set()
         if hasattr(metadata, 'exclusions') and metadata.exclusions:
             for excl in metadata.exclusions.exclusion:
-                eclusions.append(Artifact.from_metadata(excl))
+                exclusions.append(Artifact.from_metadata(excl))
 
         return cls(groupId, artifactId, requestedVersion, resolvedVersion,
                    extension, classifier, namespace, exclusions)
