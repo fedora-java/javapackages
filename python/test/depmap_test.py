@@ -197,7 +197,11 @@ class TestDepmap(unittest.TestCase):
     def test_requires_namespace(self, d):
         reqs = d.get_required_artifacts()
 
-        self.assertEqual(len(reqs), 5)
+        self.assertEqual(len(reqs), 6)
+
+        self.assertTrue(Dependency("org.apache.maven",
+                                   "maven-project",
+                                   "12") in reqs)
 
         self.assertTrue(Dependency("org.codehaus.plexus",
                                    "plexus-utils",
