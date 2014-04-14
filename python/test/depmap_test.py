@@ -3,6 +3,7 @@ import unittest
 
 from javapackages.depmap import Depmap, DepmapInvalidException
 from javapackages.artifact import Artifact
+from javapackages.dependency import Dependency
 
 from misc import exception_expected
 
@@ -87,31 +88,23 @@ class TestDepmap(unittest.TestCase):
         reqs = d.get_required_artifacts()
         self.assertEqual(len(reqs), 4)
 
-        self.assertNotEqual(reqs[0].version, None)
-        self.assertEqual(reqs[0].extension, "")
-        self.assertEqual(reqs[0].classifier, "")
-        self.assertEqual(reqs[0].groupId, "org.codehaus.plexus")
-        self.assertEqual(reqs[0].artifactId, "plexus-container-default")
+        self.assertTrue(Dependency("org.apache.maven",
+                                   "maven-project",
+                                   "12") in reqs)
 
-        self.assertEqual(reqs[1].version, "")
-        self.assertEqual(reqs[1].extension, "")
-        self.assertNotEqual(reqs[1].classifier, None)
-        self.assertEqual(reqs[1].groupId, "org.apache.maven.wagon")
-        self.assertEqual(reqs[1].artifactId, "wagon-provider-api")
-        self.assertEqual(reqs[1].classifier, "test-jar")
+        self.assertTrue(Dependency("org.codehaus.plexus",
+                                   "plexus-container-default",
+                                   "12") in reqs)
 
-        self.assertEqual(reqs[2].version, "")
-        self.assertEqual(reqs[2].classifier, "")
-        self.assertNotEqual(reqs[2].extension, None)
-        self.assertEqual(reqs[2].groupId, "org.codehaus.plexus")
-        self.assertEqual(reqs[2].artifactId, "plexus-utils")
-        self.assertEqual(reqs[2].extension, "war")
+        self.assertTrue(Dependency("org.codehaus.plexus",
+                                   "plexus-utils",
+                                   "12",
+                                   extension="war") in reqs)
 
-        self.assertEqual(reqs[3].version, "")
-        self.assertEqual(reqs[3].classifier, "")
-        self.assertEqual(reqs[3].extension, "")
-        self.assertEqual(reqs[3].groupId, "org.apache.maven")
-        self.assertEqual(reqs[3].artifactId, "maven-project")
+        self.assertTrue(Dependency("org.apache.maven.wagon",
+                                   "wagon-provider-api",
+                                   "12",
+                                   classifier="test-jar") in reqs)
 
 
     @depmapfile("depmap_namespace.xml")
@@ -137,11 +130,34 @@ class TestDepmap(unittest.TestCase):
         reqs = d.get_required_artifacts()
 
         self.assertTrue(len(reqs), 5)
-        self.assertEqual(reqs[0].namespace, "test")
-        self.assertEqual(reqs[1].namespace, "")
-        self.assertEqual(reqs[2].namespace, "plexus")
-        self.assertEqual(reqs[3].namespace, "codehaus")
-        self.assertEqual(reqs[4].namespace, "")
+
+        self.assertTrue(Dependency("org.codehaus.plexus",
+                                   "plexus-utils",
+                                   "12",
+                                   namespace="plexus") in reqs)
+
+        self.assertTrue(Dependency("org.codehaus.plexus",
+                                   "plexus-utils",
+                                   "12",
+                                   extension="war",
+                                   namespace="codehaus") in reqs)
+
+        self.assertTrue(Dependency("org.codehaus.plexus",
+                                   "plexus-utils",
+                                   "12",
+                                   resolvedVersion="0.9",
+                                   namespace="test") in reqs)
+
+        self.assertTrue(Dependency("org.apache.maven.wagon",
+                                   "wagon-provider-api",
+                                   "12",
+                                   classifier="test-jar") in reqs)
+
+        self.assertTrue(Dependency("org.codehaus.plexus",
+                                   "plexus-container-default",
+                                   "12") in reqs)
+
+
 
     @exception_expected(DepmapInvalidException)
     @depmapfile("depmap_incorrect_provides.xml")

@@ -37,6 +37,7 @@ import os.path
 import pyxb
 
 from javapackages.artifact import Artifact
+from javapackages.dependency import Dependency
 import javapackages.metadata as metadata
 
 
@@ -126,8 +127,7 @@ class Depmap(object):
         artifacts = set()
         for a in self.__metadata.artifacts.artifact:
             for dep in a.dependencies.dependency:
-                artifact = Artifact.from_metadata(dep)
-                artifacts.add(artifact)
+                artifacts.add(Dependency.from_metadata(dep))
         return sorted(list(artifacts))
 
     def get_skipped_artifacts(self):
