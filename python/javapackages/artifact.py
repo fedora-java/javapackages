@@ -134,15 +134,13 @@ class Artifact(object):
     """
 
     def __init__(self, groupId, artifactId, extension="",
-                 classifier="", version="", namespace="",
-                 compatVersions=[]):
+                 classifier="", version="", namespace=""):
         self.groupId = groupId.strip()
         self.artifactId = artifactId.strip()
         self.extension = extension.strip()
         self.classifier = classifier.strip()
         self.version = version.strip()
         self.namespace = namespace.strip()
-        self.compatVersions = compatVersions
 
     def __unicode__(self):
         return u"{gid}:{aid}:{ext}:{cls}:{ver}".format(gid=self.groupId,
@@ -339,6 +337,24 @@ class Artifact(object):
 
         return cls(groupId, artifactId, extension,
                    classifier, version, namespace)
+
+    @classmethod
+    def from_metadata(cls, metadata):
+        groupId = metadata.groupId.strip()
+        artifactId = metadata.artifactId.strip()
+
+        version = extension = classifier = namespace = ""
+        if hasattr(metadata, 'version') and metadata.version:
+            version = metadata.version.strip()
+        if hasattr(metadata, 'extension') and metadata.extension:
+            extension = metadata.extension.strip()
+        if hasattr(metadata, 'classifier') and metadata.classifier:
+            classifier = metadata.classifier.strip()
+        if hasattr(metadata, 'namespace') and metadata.namespace:
+            namespace = metadata.namespace.strip()
+
+        return cls(groupId, artifactId, extension, classifier,
+                   version, namespace)
 
 
 class Dependency(object):
