@@ -50,20 +50,8 @@ class TagBuilder:
                     artifact.extension = ''
 
                 print("{rpmstr} = {version}".format(
-                        rpmstr=prov_artifact.get_rpm_str(prov_artifact.is_compat()),
-                        version=m_artifact.version ))
-                # preserve compatibility and generate simple mvn(g:a) provides
-                # for pom artifacts
-                if artifact.extension == 'pom':
-                    if artifact.is_compat():
-                        mvn_rpm_string = "{ns}mvn({gid}:{aid}:{version}) = {version}"
-                    else:
-                        mvn_rpm_string = "{ns}mvn({gid}:{aid}) = {version}"
-                    print(mvn_rpm_string.format(
-                            ns=(artifact.namespace + "-") if artifact.namespace else "",
-                            gid=artifact.groupId,
-                            aid=artifact.artifactId,
-                            version=artifact.version))
+                        rpmstr=artifact.get_rpm_str(artifact.is_compat()),
+                        version=artifact.version ))
 
 
 if __name__ == "__main__":
