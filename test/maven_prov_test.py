@@ -9,7 +9,7 @@ class TestMavenProv(unittest.TestCase):
     @mavenprov(["simple.xml"])
     def test_simple(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
-        self.assertEquals(stdout, "ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0\n")
+        self.assertEquals(stdout, "ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0\nns-mvn(org.codehaus.plexus:plexus-ant-factory:pom:1.0) = 1.0\n")
 
     @mavenprov(["invalid.xml"])
     def test_invalid(self, stdout, stderr, return_value):
@@ -69,7 +69,7 @@ class TestMavenProv(unittest.TestCase):
     @mavenprov(["pom_extension.xml"])
     def test__pom_extension(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
-        self.assertEquals(stdout, "ns-mvn(org.mortbay.jetty:jsp-2.1-glassfish:6.0.18) = 9.1.1.B60.25.p2\n")
+        self.assertEquals(stdout, "ns-mvn(org.mortbay.jetty:jsp-2.1-glassfish:pom:) = 6.0.18\n")
 
     @mavenprov(["pom_namespace.xml"])
     def test_namespace_rhbz1017271(self, stdout, stderr, return_value):
