@@ -88,7 +88,7 @@ def xmvnconfig(name, fnargs):
 def build_depmap_paths(filelist):
     paths = []
     for filename in filelist:
-        paths.append(path.join(DIRPATH, 'depmaps', filename))
+        paths.append(os.path.join(DIRPATH, 'metadata', filename))
     return '\n'.join(paths)
 
 def mavenprov(filelist):
