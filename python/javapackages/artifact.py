@@ -173,7 +173,11 @@ class Artifact(object):
 
     def __hash__(self):
         return self.groupId.__hash__() + \
-               self.artifactId.__hash__()
+               self.artifactId.__hash__() + \
+               self.version.__hash__() + \
+               self.extension.__hash__() + \
+               self.classifier.__hash__() + \
+               self.namespace.__hash__()
 
     def is_compat(self):
          """Return true if artifact has compat verions specified.
