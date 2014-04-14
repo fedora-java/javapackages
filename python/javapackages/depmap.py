@@ -95,31 +95,6 @@ class Depmap(object):
             artifacts.append(artifact)
         return artifacts
 
-    # FIXME: name... these are not "mappings" anymore
-    def get_provided_mappings(self):
-        """Return list of (Artifact, Artifact) tuples.
-
-        First part of returned tuple is Maven artifact identification
-        Second part of returned tuple is local artifact identification
-        """
-        #mappings = []
-        #for dep in self.__doc.findall('.//dependency'):
-        #    m_artifact = dep.findall('./maven')
-        #    if len(m_artifact) != 1:
-        #        raise DepmapInvalidException("Multiple maven nodes in dependency")
-        #    m_artifact = Artifact.from_xml_element(m_artifact[0])
-        #    if not m_artifact.version:
-        #        raise DepmapInvalidException("Depmap {path} does not have version in maven provides".format(path=self.__path))
-        #    l_artifact = dep.findall('./jpp')
-        #    if len(l_artifact) != 1:
-        #        raise DepmapInvalidException("Multiple jpp nodes in dependency")
-        #    l_artifact = Artifact.from_xml_element(l_artifact[0])
-        #    mappings.append((m_artifact, l_artifact))
-        #return mappings
-
-        # TODO: this method seems to be useless
-        return self.get_provided_artifacts()
-
 
     def get_required_artifacts(self):
         """Returns list of Artifact required by given depmap."""
