@@ -356,6 +356,12 @@ class Artifact(object):
         return cls(groupId, artifactId, extension, classifier,
                    version, namespace)
 
+class SkippedArtifact(Artifact):
+    pass
+
+class ExclusionArtifact(Artifact):
+    pass
+
 
 class Dependency(object):
 
@@ -411,7 +417,7 @@ class Dependency(object):
         exclusions = set()
         if hasattr(metadata, 'exclusions') and metadata.exclusions:
             for excl in metadata.exclusions.exclusion:
-                exclusions.append(Artifact.from_metadata(excl))
+                exclusions.add(ExclusionArtifact.from_metadata(excl))
 
         return cls(groupId, artifactId, requestedVersion, resolvedVersion,
                    extension, classifier, namespace, exclusions)
