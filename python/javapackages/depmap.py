@@ -36,8 +36,7 @@ import os.path
 
 import pyxb
 
-from javapackages.artifact import Artifact
-from javapackages.dependency import Dependency
+from javapackages.artifact import Artifact, Dependency, ProvidedArtifact
 import javapackages.metadata as metadata
 
 
@@ -90,7 +89,7 @@ class Depmap(object):
 
         artifacts = []
         for a in self.__metadata.artifacts.artifact:
-            artifact = Artifact.from_metadata(a)
+            artifact = ProvidedArtifact.from_metadata(a)
             if not artifact.version:
                 raise DepmapInvalidException("Depmap {path} does not have version in maven provides".format(path=self.__path))
             artifacts.append(artifact)

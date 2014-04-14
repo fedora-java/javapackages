@@ -44,6 +44,87 @@ class ArtifactFormatException(ArtifactException):
 class ArtifactValidationException(ArtifactException):
     pass
 
+class ProvidedArtifact(object):
+    def __init__(self, groupId, artifactId, extension="",
+                 classifier="", version="", namespace="",
+                 path="", aliases=[], compatVersions=[],
+                 properties={}):
+
+        self.artifact = Artifact(groupId, artifactId, extension,
+                                 classifier, version, namespace)
+        self.compatVersions = compatVersions
+        self.aliases = aliases
+        self.properties = properties
+        self.path = path
+
+    def is_compat(self):
+         """Return true if artifact has compat verions specified.
+         This means package should have versioned provides for this artifact"""
+
+         return self.compatVersions
+
+    def __getattr__(self, attrib):
+        return getattr(self.artifact, attrib)
+
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.__dict__ == other.__dict__
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return self.artifact.__hash__() + \
+               self.compatVersions.__hash__() + \
+               self.aliases.__hash__() + \
+               self.properties.__hash__() + \
+               self.path.__hash__()
+
+    @classmethod
+    def from_metadata(cls, metadata):
+        groupId = metadata.groupId.strip()
+        artifactId = metadata.artifactId.strip()
+        version = extension = classifier = namespace = path =  ""
+        if hasattr(metadata, 'path') and metadata.path:
+            path = metadata.path.strip()
+        if hasattr(metadata, 'version') and metadata.version:
+            version = metadata.version.strip()
+        if hasattr(metadata, 'extension') and metadata.extension:
+            extension = metadata.extension.strip()
+        if hasattr(metadata, 'classifier') and metadata.classifier:
+            classifier = metadata.classifier.strip()
+        if hasattr(metadata, 'namespace') and metadata.namespace:
+            namespace = metadata.namespace.strip()
+
+        compatVersions = []
+        if hasattr(metadata, 'compatVersions') and metadata.compatVersions:
+            for cv in metadata.compatVersions.version:
+                compatVersions.append(cv)
+
+        aliases = []
+        if hasattr(metadata, 'aliases') and metadata.aliases:
+            for alias in metadata.aliases.alias:
+                extension = classifier = ""
+                if hasattr(alias, 'extension') and alias.extension:
+                    extension = alias.extension
+
+                if hasattr(alias, 'classifier') and alias.classifier:
+                    classifier = alias.classifier
+
+                aliases.append(Artifact(alias.groupId,
+                                        alias.artifactId,
+                                        extension,
+                                        classifier))
+        properties = {}
+        if hasattr(metadata, 'properties') and metadata.properties:
+            for prop in metadata.properties.wildcardElements():
+                properties[prop.tagName] = prop.firstChild.value
+
+        return cls(groupId, artifactId, extension, classifier, version,
+                   namespace, path=path, aliases=aliases,
+                   compatVersions=compatVersions, properties=properties)
+
 class Artifact(object):
     """
     Simplified representation of Maven artifact for purpose of packaging
@@ -179,12 +260,6 @@ class Artifact(object):
                self.classifier.__hash__() + \
                self.namespace.__hash__()
 
-    def is_compat(self):
-         """Return true if artifact has compat verions specified.
-         This means package should have versioned provides for this artifact"""
-
-         return self.compatVersions
-
 
     @classmethod
     def merge_artifacts(cls, dominant, recessive):
@@ -265,29 +340,6 @@ class Artifact(object):
         return cls(groupId, artifactId, extension,
                    classifier, version, namespace)
 
-    @classmethod
-    def from_metadata(cls, metadata):
-        groupId = metadata.groupId.strip()
-        artifactId = metadata.artifactId.strip()
-        version = extension = classifier = namespace = ""
-        if hasattr(metadata, 'version') and metadata.version:
-            version = metadata.version.strip()
-        if hasattr(metadata, 'extension') and metadata.extension:
-            extension = metadata.extension.strip()
-        if hasattr(metadata, 'classifier') and metadata.classifier:
-            classifier = metadata.classifier.strip()
-        if hasattr(metadata, 'namespace') and metadata.namespace:
-            namespace = metadata.namespace.strip()
-
-        compatVersions = []
-        if hasattr(metadata, 'compatVersions') and metadata.compatVersions:
-            for cv in metadata.compatVersions.version:
-                compatVersions.append(cv)
-
-        return cls(groupId, artifactId, extension,
-                   classifier, version, namespace,
-                   compatVersions)
-
 
 class Dependency(object):
 
@@ -320,8 +372,6 @@ class Dependency(object):
                self.extension.__hash__() + \
                self.classifier.__hash__() + \
                self.namespace.__hash__()
-
-
 
     @classmethod
     def from_metadata(cls, metadata):

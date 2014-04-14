@@ -2,8 +2,7 @@ import os
 import unittest
 
 from javapackages.depmap import Depmap, DepmapInvalidException
-from javapackages.artifact import Artifact
-from javapackages.dependency import Dependency
+from javapackages.artifact import Artifact, Dependency
 
 from misc import exception_expected
 
