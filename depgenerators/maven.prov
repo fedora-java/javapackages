@@ -45,7 +45,7 @@ class TagBuilder:
         for path in paths:
             depmap = Depmap(path)
 
-            for artifact in depmap.get_provided_mappings():
+            for artifact in depmap.get_provided_artifacts():
                 if artifact.extension == 'jar':
                     artifact.extension = ''
 
