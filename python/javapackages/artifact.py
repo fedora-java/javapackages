@@ -248,11 +248,13 @@ class Artifact(object):
         # groupId and artifactId are always present
         if len(tup) < 2:
             raise ArtifactFormatException("Artifact string '{mvnstr}' does not "
-                                          "contain ':' character. Can not parse".format(mvnstr=mvnstr))
+                                          "contain ':' character. Can not parse"
+                                          .format(mvnstr=mvnstr))
 
         if len(tup) > 5:
             raise ArtifactFormatException("Artifact string '{mvnstr}' contains "
-                                          "too many colons. Can not parse".format(mvnstr=mvnstr))
+                                          "too many colons. Can not parse"
+                                          .format(mvnstr=mvnstr))
 
         groupId = tup[0]
         artifactId = tup[1]
@@ -268,7 +270,7 @@ class Artifact(object):
         groupId = metadata.groupId.strip()
         artifactId = metadata.artifactId.strip()
         version = extension = classifier = namespace = ""
-        if hasattr(metadata, 'version') and metadata.version: 
+        if hasattr(metadata, 'version') and metadata.version:
             version = metadata.version.strip()
         if hasattr(metadata, 'extension') and metadata.extension:
             extension = metadata.extension.strip()
@@ -287,4 +289,60 @@ class Artifact(object):
                    compatVersions)
 
 
+class Dependency(object):
 
+    def __init__(self, groupId, artifactId, requestedVersion,
+                 resolvedVersion="", extension="", classifier="",
+                 namespace="", exclusions=[]):
+        self.groupId = groupId
+        self.artifactId = artifactId
+        self.requestedVersion = requestedVersion
+        self.resolvedVersion = resolvedVersion
+        self.extension = extension
+        self.classifier = classifier
+        self.namespace = namespace
+        self.exclusions = exclusions
+
+
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.__dict__ == other.__dict__
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return self.groupId.__hash__() + \
+               self.artifactId.__hash__() + \
+               self.requestedVersion.__hash__() + \
+               self.resolvedVersion.__hash__() + \
+               self.extension.__hash__() + \
+               self.classifier.__hash__() + \
+               self.namespace.__hash__()
+
+
+
+    @classmethod
+    def from_metadata(cls, metadata):
+        groupId = metadata.groupId.strip()
+        artifactId = metadata.artifactId.strip()
+        requestedVersion = metadata.requestedVersion.strip()
+
+        resolvedVersion = extension = classifier = namespace = ""
+        if hasattr(metadata, 'resolvedVersion') and metadata.resolvedVersion:
+            resolvedVersion = metadata.resolvedVersion.strip()
+        if hasattr(metadata, 'extension') and metadata.extension:
+            extension = metadata.extension.strip()
+        if hasattr(metadata, 'classifier') and metadata.classifier:
+            classifier = metadata.classifier.strip()
+        if hasattr(metadata, 'namespace') and metadata.namespace:
+            namespace = metadata.namespace.strip()
+
+        exclusions = []
+        if hasattr(metadata, 'exclusions') and metadata.exclusions:
+            for excl in metadata.exclusions.exclusion:
+                eclusions.append(Artifact.from_metadata(excl))
+
+        return cls(groupId, artifactId, requestedVersion, resolvedVersion,
+                   extension, classifier, namespace, exclusions)
