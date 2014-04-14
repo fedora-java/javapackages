@@ -3,7 +3,7 @@ import unittest
 
 from javapackages.depmap import Depmap, DepmapInvalidException
 from javapackages.artifact import (Artifact, Dependency, ProvidedArtifact,
-                                   SkippedArtifact)
+                                   SkippedArtifact, ExclusionArtifact)
 
 from misc import exception_expected
 
@@ -245,6 +245,18 @@ class TestDepmap(unittest.TestCase):
         self.assertTrue(SkippedArtifact("org.apache.maven.plugins",
                                         "maven-idea-plugin",
                                         classifier="test-jar") in skipped)
+
+    @depmapfile("depmap_exclusions.xml")
+    def test_skipped(self, d):
+        skipped = d.get_excluded_artifacts()
+
+        self.assertEqual(len(skipped), 2)
+
+        self.assertTrue(ExclusionArtifact("junit",
+                                          "junit") in skipped)
+
+        self.assertTrue(ExclusionArtifact("org.codehaus.plexus",
+                                          "plexus-utils") in skipped)
 
 
     @exception_expected(DepmapInvalidException)

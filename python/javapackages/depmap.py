@@ -37,7 +37,7 @@ import os.path
 import pyxb
 
 from javapackages.artifact import (Artifact, Dependency, ProvidedArtifact,
-                                   SkippedArtifact)
+                                   SkippedArtifact, ExclusionArtifact)
 import javapackages.metadata as metadata
 
 
@@ -118,6 +118,23 @@ class Depmap(object):
             artifact = SkippedArtifact.from_metadata(dep)
             artifacts.add(artifact)
         return sorted(list(artifacts))
+
+    def get_excluded_artifacts(self):
+        """Returns list of Artifacts that should be skipped for requires"""
+        artifacts = set()
+        for a in self.__metadata.artifacts.artifact:
+            if not a.dependencies:
+                continue
+
+            for dep in a.dependencies.dependency:
+                if not dep.exclusions:
+                    continue
+
+                for exclusion in dep.exclusions.exclusion:
+                    artifact = ExclusionArtifact.from_metadata(exclusion)
+            artifacts.add(artifact)
+        return sorted(list(artifacts))
+
 
     def get_java_requires(self):
         """Returns JVM version required by depmap or None"""
