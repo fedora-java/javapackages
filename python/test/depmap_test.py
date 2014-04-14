@@ -137,11 +137,11 @@ class TestDepmap(unittest.TestCase):
         reqs = d.get_required_artifacts()
 
         self.assertTrue(len(reqs), 5)
-        self.assertEqual(reqs[0].namespace, "")
+        self.assertEqual(reqs[0].namespace, "test")
         self.assertEqual(reqs[1].namespace, "")
         self.assertEqual(reqs[2].namespace, "plexus")
         self.assertEqual(reqs[3].namespace, "codehaus")
-        self.assertEqual(reqs[4].namespace, "test")
+        self.assertEqual(reqs[4].namespace, "")
 
     @exception_expected(DepmapInvalidException)
     @depmapfile("depmap_incorrect_provides.xml")
