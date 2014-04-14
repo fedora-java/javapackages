@@ -245,7 +245,7 @@ class TestDepmap(unittest.TestCase):
                                         classifier="test-jar") in skipped)
 
     @depmapfile("depmap_exclusions.xml")
-    def test_skipped(self, d):
+    def test_exlusions(self, d):
         skipped = d.get_excluded_artifacts()
 
         self.assertEqual(len(skipped), 2)
