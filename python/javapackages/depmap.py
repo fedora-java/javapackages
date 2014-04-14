@@ -100,8 +100,12 @@ class Depmap(object):
         """Returns list of Artifact required by given depmap."""
         artifacts = set()
         for a in self.__metadata.artifacts.artifact:
+            if not a.dependencies:
+                return []
+
             for dep in a.dependencies.dependency:
                 artifacts.add(Dependency.from_metadata(dep))
+
         return sorted(list(artifacts))
 
     def get_skipped_artifacts(self):
