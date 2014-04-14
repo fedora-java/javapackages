@@ -87,11 +87,11 @@ class TestDepmap(unittest.TestCase):
         reqs = d.get_required_artifacts()
         self.assertEqual(len(reqs), 4)
 
-        self.assertEqual(reqs[0].version, "")
-        self.assertEqual(reqs[0].classifier, "")
+        self.assertNotEqual(reqs[0].version, None)
         self.assertEqual(reqs[0].extension, "")
-        self.assertEqual(reqs[0].groupId, "org.apache.maven")
-        self.assertEqual(reqs[0].artifactId, "maven-project")
+        self.assertEqual(reqs[0].classifier, "")
+        self.assertEqual(reqs[0].groupId, "org.codehaus.plexus")
+        self.assertEqual(reqs[0].artifactId, "plexus-container-default")
 
         self.assertEqual(reqs[1].version, "")
         self.assertEqual(reqs[1].extension, "")
@@ -107,12 +107,12 @@ class TestDepmap(unittest.TestCase):
         self.assertEqual(reqs[2].artifactId, "plexus-utils")
         self.assertEqual(reqs[2].extension, "war")
 
-        self.assertNotEqual(reqs[3].version, None)
-        self.assertEqual(reqs[3].extension, "")
+        self.assertEqual(reqs[3].version, "")
         self.assertEqual(reqs[3].classifier, "")
-        self.assertEqual(reqs[3].groupId, "org.codehaus.plexus")
-        self.assertEqual(reqs[3].artifactId, "plexus-container-default")
-        self.assertEqual(reqs[3].version, "1.0-alpha-7")
+        self.assertEqual(reqs[3].extension, "")
+        self.assertEqual(reqs[3].groupId, "org.apache.maven")
+        self.assertEqual(reqs[3].artifactId, "maven-project")
+
 
     @depmapfile("depmap_namespace.xml")
     def test_namespace(self, d):
