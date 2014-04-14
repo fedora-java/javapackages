@@ -36,7 +36,8 @@ import os.path
 
 import pyxb
 
-from javapackages.artifact import Artifact, Dependency, ProvidedArtifact
+from javapackages.artifact import (Artifact, Dependency, ProvidedArtifact,
+                                   SkippedArtifact)
 import javapackages.metadata as metadata
 
 
@@ -110,11 +111,11 @@ class Depmap(object):
 
     def get_skipped_artifacts(self):
         """Returns list of Artifact that were build but not installed"""
-        artifacts = []
-        for dep in self.__doc.findall('.//skippedArtifact'):
-            artifact = Artifact.from_xml_element(dep)
-            artifacts.append(artifact)
-        return artifacts
+        artifacts = set()
+        for dep in self.__metadata.skippedArtifacts.skippedArtifact:
+            artifact = SkippedArtifact.from_metadata(dep)
+            artifacts.add(artifact)
+        return sorted(list(artifacts))
 
     def get_java_requires(self):
         """Returns JVM version required by depmap or None"""
