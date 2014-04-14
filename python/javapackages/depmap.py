@@ -102,7 +102,7 @@ class Depmap(object):
         artifacts = set()
         for a in self.__metadata.artifacts.artifact:
             if not a.dependencies:
-                return []
+                continue
 
             for dep in a.dependencies.dependency:
                 artifacts.add(Dependency.from_metadata(dep))
