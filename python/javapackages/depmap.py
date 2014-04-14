@@ -112,6 +112,8 @@ class Depmap(object):
     def get_skipped_artifacts(self):
         """Returns list of Artifact that were build but not installed"""
         artifacts = set()
+        if not self.__metadata.skippedArtifacts:
+            return []
         for dep in self.__metadata.skippedArtifacts.skippedArtifact:
             artifact = SkippedArtifact.from_metadata(dep)
             artifacts.add(artifact)
