@@ -197,7 +197,7 @@ class TestDepmap(unittest.TestCase):
     def test_requires_namespace(self, d):
         reqs = d.get_required_artifacts()
 
-        self.assertTrue(len(reqs), 5)
+        self.assertEqual(len(reqs), 5)
 
         self.assertTrue(Dependency("org.codehaus.plexus",
                                    "plexus-utils",
@@ -229,7 +229,7 @@ class TestDepmap(unittest.TestCase):
     def test_skipped(self, d):
         skipped = d.get_skipped_artifacts()
 
-        self.assertTrue(len(skipped), 3)
+        self.assertEqual(len(skipped), 3)
 
         self.assertTrue(SkippedArtifact("org.apache.maven.plugins",
                                         "maven-idea-plugin") in skipped)
