@@ -190,8 +190,6 @@ class TestDepmap(unittest.TestCase):
                                          extension="pom",
                                          path="/usr/share/maven-poms/JPP.plexus-utils-plexus-utils.pom",
                                          properties={'requiresJava':'1.5'}) in prov)
-        self.assertEqual(prov[4].namespace, "codehaus")
-        self.assertEqual(prov[5].namespace, "codehaus")
 
     @depmapfile("depmap_namespace_requires.xml")
     def test_requires_namespace(self, d):
