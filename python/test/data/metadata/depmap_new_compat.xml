@@ -8,17 +8,7 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-idea-plugin</artifactId>
             <version>1.4</version>
-            <path>/usr/share/java/maven-idea-plugin/maven-idea-plugin-2.2.jar</path>
-            <compatVersions>
-                <version>1.4</version>
-            </compatVersions>
-        </artifact>
-        <artifact>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-idea-plugin</artifactId>
-            <version>2.2</version>
-            <extension>pom</extension>
-            <path>/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin-2.2.pom</path>
+            <path>/usr/share/java/maven-idea-plugin/maven-idea-plugin-1.4.jar</path>
             <compatVersions>
                 <version>1.4</version>
             </compatVersions>
@@ -27,7 +17,17 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-idea-plugin</artifactId>
             <version>1.4</version>
-            <path>/usr/share/java/maven-idea-plugin/maven-idea-plugin-2.2.jar</path>
+            <extension>pom</extension>
+            <path>/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin-1.4.pom</path>
+            <compatVersions>
+                <version>1.4</version>
+            </compatVersions>
+        </artifact>
+        <artifact>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-idea-plugin</artifactId>
+            <version>1.4</version>
+            <path>/usr/share/java/maven-idea-plugin/maven-idea-plugin-1.4.jar</path>
             <compatVersions>
                 <version>1.5</version>
             </compatVersions>
@@ -37,7 +37,7 @@
             <artifactId>maven-idea-plugin</artifactId>
             <version>1.4</version>
             <extension>pom</extension>
-            <path>/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin-2.2.pom</path>
+            <path>/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin-1.4.pom</path>
             <compatVersions>
                 <version>1.5</version>
             </compatVersions>
