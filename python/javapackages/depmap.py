@@ -30,6 +30,7 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 from __future__ import print_function
+import xml
 from xml.dom.minidom import parse
 import gzip
 import os.path
@@ -66,8 +67,12 @@ class Depmap(object):
         self.__path = path
         try:
             self.__load_metadata(path)
-        except pyxb.UnrecognizedContentError, e:
-            raise DepmapInvalidException("Failed to parse metadata: {path}.".format(path=path))
+        except (pyxb.UnrecognizedContentError,
+                pyxb.UnrecognizedDOMRootNodeError,
+                xml.sax.SAXParseException) as e:
+            raise DepmapInvalidException("Failed to parse metadata {path}: {e}"
+                                         .format(path=path,
+                                                 e=e))
 
 
     def __load_metadata(self, metadata_path):
