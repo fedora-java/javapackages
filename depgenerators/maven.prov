@@ -49,9 +49,16 @@ class TagBuilder:
                 if artifact.extension == 'jar':
                     artifact.extension = ''
 
-                print("{rpmstr} = {version}".format(
-                        rpmstr=artifact.get_rpm_str(artifact.is_compat()),
-                        version=artifact.version ))
+                rpmstrs = []
+                if not artifact.is_compat():
+                    rpmstrs.append(artifact.get_rpm_str())
+                else:
+                    rpmstrs += artifact.get_versioned_rpm_strs()
+
+                for rpmstr in rpmstrs:
+                    print("{rpmstr} = {version}".format(
+                            rpmstr=rpmstr,
+                            version=artifact.version ))
 
 
 if __name__ == "__main__":
