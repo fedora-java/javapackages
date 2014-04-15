@@ -81,6 +81,17 @@ class ProvidedArtifact(object):
                self.properties.__hash__() + \
                self.path.__hash__()
 
+    def get_versioned_rpm_strs(self):
+
+        noverstr = self.get_rpm_str()
+        res = []
+
+        for ver in self.compatVersions:
+            rpmstr = noverstr[:-1]
+            res.append("{rpmstr}:{ver})".format(rpmstr=rpmstr,
+                                                ver=ver))
+        return res
+
     @classmethod
     def from_metadata(cls, metadata):
         groupId = metadata.groupId.strip()
@@ -184,17 +195,6 @@ class Artifact(object):
 
         return "{namespace}({mvnstr})".format(namespace=namespace,
                                               mvnstr=mvnstr)
-
-    def get_versioned_rpm_strs(self):
-
-        noverstr = self.get_rpm_str()
-        res = []
-
-        for ver in self.compatVersions:
-            rpmstr = noverstr[:-1]
-            res.append("{rpmstr}:{ver})".format(rpmstr=rpmstr,
-                                                ver=ver))
-        return res
 
     def get_xml_element(self, root="artifact"):
         """
