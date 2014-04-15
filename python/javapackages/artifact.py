@@ -81,17 +81,34 @@ class ProvidedArtifact(object):
                self.properties.__hash__() + \
                self.path.__hash__()
 
-    def get_versioned_rpm_strs(self):
-        """Return list of versioned rpm strings"""
+    def get_rpm_str(self, version=None):
+        """Return representation of artifact as used in RPM dependencies
 
-        noverstr = self.get_rpm_str()
-        res = []
+        Example outputs:
+        mvn(commons-logging:commons-logging) = 2.0
 
-        for ver in self.compatVersions:
-            rpmstr = noverstr[:-1]
-            res.append("{rpmstr}:{ver})".format(rpmstr=rpmstr,
-                                                ver=ver))
-        return res
+        Versioned:
+        mvn(commons-logging:commons-logging:war:1.0) = 1.2
+        mvn(commons-logging:commons-logging:war:1.2) = 1.2
+        """
+
+        strlist = []
+        if not self.compatVersions:
+            strlist.append(self.artifact.get_rpm_str())
+        else:
+            for ver in self.compatVersions:
+                rpmstr = self.artifact.get_rpm_str(ver)
+                strlist.append(rpmstr)
+
+        if not (self.version):
+            raise ArtifactFormatException(
+                "Cannot create versioned string from artifact without version: {art}".format(art=str(self)))
+
+        result = ""
+        for rpmstr in strlist:
+            result += "{rpmstr} = {version}".format(rpmstr=rpmstr, version=self.version)
+
+        return result
 
     @classmethod
     def from_metadata(cls, metadata):
@@ -164,13 +181,16 @@ class Artifact(object):
     def __str__(self):
         return unicode(self).encode(sys.getfilesystemencoding())
 
-    def get_rpm_str(self):
+    def get_rpm_str(self, version=None):
         """Return representation of artifact as used in RPM dependencies
 
         Example outputs:
         mvn(commons-logging:commons-logging)
+        mvn(commons-logging:commons-logging:1.2) # versioned
         mvn(commons-logging:commons-logging:war:)
+        mvn(commons-logging:commons-logging:war:1.2) # versioned
         mvn(commons-logging:commons-logging:war:test-jar:)
+        mvn(commons-logging:commons-logging:war:test-jar:1.2) # versioned
         maven31-mvn(commons-logging:commons-logging)
         """
         namespace = "mvn"
@@ -188,7 +208,9 @@ class Artifact(object):
                 mvnstr = mvnstr + ":"
             mvnstr = mvnstr + ":{clas}".format(clas=self.classifier)
 
-        if self.classifier or self.extension:
+        if version:
+            mvnstr = mvnstr + ":{ver}".format(ver=version)
+        elif self.classifier or self.extension:
             mvnstr = mvnstr + ":"
 
         return "{namespace}({mvnstr})".format(namespace=namespace,
@@ -386,6 +408,10 @@ class Dependency(object):
     def set_requestedVersion(self, version):
         self.artifact.version = version
     requestedVersion = property(get_requestedVersion, set_requestedVersion)
+
+    def get_rpm_str(self, version=None):
+        """Return representation of artifact as used in RPM dependencies"""
+        return self.artifact.get_rpm_str(self.resolvedVersion)
 
     def __eq__(self, other):
         if type(other) is type(self):
