@@ -40,7 +40,7 @@ import traceback
 from lxml import etree
 
 from javapackages import POM
-from javapackages.depmap import Depmap, DepmapInvalidException
+from javapackages.depmap import Depmap, MetadataInvalidException
 from javapackages.artifact import ProvidedArtifact, SkippedArtifact, Dependency
 
 class TagBuilder:
@@ -61,7 +61,7 @@ class TagBuilder:
                         depmap = Depmap(os.path.join(dirname, filename))
                         self.provided_artifacts.extend(depmap.get_provided_artifacts())
                         self.skipped_artifacts.extend(depmap.get_skipped_artifacts())
-                    except DepmapInvalidException:
+                    except MetadataInvalidException:
                         # let's ignore if some other files are incorrect'
                         pass
         for path in paths:

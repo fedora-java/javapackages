@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from javapackages.depmap import Depmap, DepmapInvalidException
+from javapackages.depmap import Depmap, MetadataInvalidException
 from javapackages.artifact import (Artifact, Dependency, ProvidedArtifact,
                                    SkippedArtifact, ExclusionArtifact)
 
@@ -105,12 +105,12 @@ class TestDepmap(unittest.TestCase):
                                          path="/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin-1.4.pom",
                                          compatVersions=["1.5"]) in artifacts)
 
-    @exception_expected(DepmapInvalidException)
+    @exception_expected(MetadataInvalidException)
     @depmapfile("depmap_invalid_nover.xml")
     def test_no_maven_version(self, d):
         d.get_provided_artifacts()
 
-    @exception_expected(DepmapInvalidException)
+    @exception_expected(MetadataInvalidException)
     @depmapfile("depmap_invalid_nover.xml")
     def test_no_maven_version_mappings(self, d):
         d.get_provided_artifacts()
@@ -257,7 +257,7 @@ class TestDepmap(unittest.TestCase):
                                           "plexus-utils") in skipped)
 
 
-    @exception_expected(DepmapInvalidException)
+    @exception_expected(MetadataInvalidException)
     @depmapfile("depmap_incorrect_provides.xml")
     def test_incorrect_provides(self, d):
         pass

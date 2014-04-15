@@ -43,10 +43,10 @@ import javapackages.metadata as metadata
 
 
 
-class DepmapLoadingException(Exception):
+class MetadataLoadingException(Exception):
     pass
 
-class DepmapInvalidException(Exception):
+class MetadataInvalidException(Exception):
     pass
 
 class Depmap(object):
@@ -70,7 +70,7 @@ class Depmap(object):
         except (pyxb.UnrecognizedContentError,
                 pyxb.UnrecognizedDOMRootNodeError,
                 xml.sax.SAXParseException) as e:
-            raise DepmapInvalidException("Failed to parse metadata {path}: {e}"
+            raise MetadataInvalidException("Failed to parse metadata {path}: {e}"
                                          .format(path=path,
                                                  e=e))
 
@@ -97,7 +97,7 @@ class Depmap(object):
         for a in self.__metadata.artifacts.artifact:
             artifact = ProvidedArtifact.from_metadata(a)
             if not artifact.version:
-                raise DepmapInvalidException("Depmap {path} does not have version in maven provides".format(path=self.__path))
+                raise MetadataInvalidException("Depmap {path} does not have version in maven provides".format(path=self.__path))
             artifacts.append(artifact)
         return artifacts
 
