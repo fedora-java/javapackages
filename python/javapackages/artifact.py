@@ -82,6 +82,7 @@ class ProvidedArtifact(object):
                self.path.__hash__()
 
     def get_versioned_rpm_strs(self):
+        """Return list of versioned rpm strings"""
 
         noverstr = self.get_rpm_str()
         res = []
