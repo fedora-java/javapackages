@@ -57,9 +57,13 @@ class TagBuilder:
                 for filename in filenames:
                     if filename.endswith(".pom"):
                         continue
-                    depmap = Depmap(os.path.join(dirname, filename))
-                    self.provided_artifacts.extend(depmap.get_provided_mappings())
-                    self.skipped_artifacts.extend(depmap.get_skipped_artifacts())
+                    try:
+                        depmap = Depmap(os.path.join(dirname, filename))
+                        self.provided_artifacts.extend(depmap.get_provided_artifacts())
+                        self.skipped_artifacts.extend(depmap.get_skipped_artifacts())
+                    except DepmapInvalidException:
+                        # let's ignore if some other files are incorrect'
+                        pass
         for path in paths:
             if path.endswith(".pom"):
                 continue
