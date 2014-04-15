@@ -169,11 +169,8 @@ class Artifact(object):
 
         Example outputs:
         mvn(commons-logging:commons-logging)
-        mvn(commons-logging:commons-logging:1.2) # versioned
         mvn(commons-logging:commons-logging:war:)
-        mvn(commons-logging:commons-logging:war:1.2) # versioned
         mvn(commons-logging:commons-logging:war:test-jar:)
-        mvn(commons-logging:commons-logging:war:test-jar:1.3) # versioned
         maven31-mvn(commons-logging:commons-logging)
         """
         namespace = "mvn"
