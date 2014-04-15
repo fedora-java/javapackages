@@ -152,10 +152,8 @@ class Artifact(object):
     def __str__(self):
         return unicode(self).encode(sys.getfilesystemencoding())
 
-    def get_rpm_str(self, versioned=False):
+    def get_rpm_str(self):
         """Return representation of artifact as used in RPM dependencies
-
-        versioned -- return artifact string including version
 
         Example outputs:
         mvn(commons-logging:commons-logging)
@@ -181,17 +179,22 @@ class Artifact(object):
                 mvnstr = mvnstr + ":"
             mvnstr = mvnstr + ":{clas}".format(clas=self.classifier)
 
-        if versioned:
-            if not (self.version):
-                raise ArtifactFormatException(
-                    "Cannot create versioned string from artifact without version: {art}".format(art=str(self)))
-            mvnstr = mvnstr + ":{ver}".format(ver=self.version)
-        elif self.classifier or self.extension:
+        if self.classifier or self.extension:
             mvnstr = mvnstr + ":"
 
         return "{namespace}({mvnstr})".format(namespace=namespace,
                                               mvnstr=mvnstr)
 
+    def get_versioned_rpm_strs(self):
+
+        noverstr = self.get_rpm_str()
+        res = []
+
+        for ver in self.compatVersions:
+            rpmstr = noverstr[:-1]
+            res.append("{rpmstr}:{ver})".format(rpmstr=rpmstr,
+                                                ver=ver))
+        return res
 
     def get_xml_element(self, root="artifact"):
         """
