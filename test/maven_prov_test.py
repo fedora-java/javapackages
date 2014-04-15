@@ -26,7 +26,10 @@ class TestMavenProv(unittest.TestCase):
     @mavenprov(["single_ns.xml"])
     def test_single_ns(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
-        self.assertEquals(stdout, "ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0\nns-mvn(org.mortbay.jetty:jsp-2.1-glassfish:6.0.18) = 9.1.1.B60.25.p2\n")
+        self.assertEquals(stdout, "ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0\n"
+                          "ns-mvn(org.codehaus.plexus:plexus-ant-factory:pom:1.0) = 1.0\n"
+                          "ns-mvn(org.mortbay.jetty:jsp-2.1-glassfish:1.0) = 9.1.1.B60.25.p2\n"
+                          "ns-mvn(org.mortbay.jetty:jsp-2.1-glassfish:pom:1.0) = 9.1.1.b60.25.p2\n")
 
     @mavenprov(["multi_ns.xml"])
     def test_multi_ns(self, stdout, stderr, return_value):
