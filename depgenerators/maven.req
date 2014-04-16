@@ -123,11 +123,7 @@ class TagBuilder:
                     provided.extension == dependency.extension and
                     provided.namespace == dependency.namespace):
 
-                    if dependency.resolvedVersion:
-                        if not provided.is_compat():
-                            # dependency is compat but provides is not
-                            continue
-
+                    if dependency.resolvedVersion and provided.is_compat():
                         # does it match one of provided compat?
                         for compatVer in provided.compatVersions:
                             if dependency.resolvedVersion == compatVer:
@@ -136,6 +132,12 @@ class TagBuilder:
                             # none of versions matched so we depend on a
                             # different package in fact
                             continue
+                    elif (not dependency.resolvedVersion and
+                          not provided.is_compat()):
+                        pass
+                    else:
+                        # one is compatibility the other is not
+                        continue
 
                     # requires on subpackages are always versioned
                     print("{rpmstr} = {version}".format(
