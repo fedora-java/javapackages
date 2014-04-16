@@ -125,16 +125,16 @@ def get_dependencies(ppath):
         adep = Artifact.from_xml_element(dep)
 
         # skip dependencies with scope "test" and "provided"
-        scope = dep.find('./scope')
+        scope = dep.find('./{*}scope')
         if scope is not None and scope.text in ["test", "provided"]:
             continue
 
         exclusions = set()
-        exclxml = dep.find('./exclusions')
+        exclxml = dep.find('./{*}exclusions')
         if exclxml is not None:
             for excl in exclxml:
-                gid = excl.find('./groupId').text
-                aid = excl.find('./artifactId').text
+                gid = excl.find('./{*}groupId').text
+                aid = excl.find('./{*}artifactId').text
                 e = m.DependencyExclusion(gid, aid)
                 exclusions.add(e)
 
