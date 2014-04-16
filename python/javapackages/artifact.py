@@ -81,6 +81,12 @@ class ProvidedArtifact(object):
                self.properties.__hash__() + \
                self.path.__hash__()
 
+    def __unicode__(self):
+        return self.artifact.__unicode__()
+
+    def __str__(self):
+        return self.artifact.__str__()
+
     def get_rpm_str(self, version=None):
         """Return representation of artifact as used in RPM dependencies
 
@@ -426,15 +432,10 @@ class Dependency(object):
                self.resolvedVersion.__hash__()
 
     def __unicode__(self):
-        return u"{gid}:{aid}:{ext}:{cls}:{ver}".format(gid=self.groupId,
-                                                       aid=self.artifactId,
-                                                       ext=self.extension,
-                                                       cls=self.classifier,
-                                                       ver=self.version)
+        return self.artifact.__unicode__()
 
     def __str__(self):
-        return unicode(self).encode(sys.getfilesystemencoding())
-
+        return self.artifact.__str__()
 
     @classmethod
     def from_metadata(cls, metadata):
