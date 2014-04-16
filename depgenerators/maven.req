@@ -142,7 +142,7 @@ class TagBuilder:
 
                     # requires on subpackages are always versioned
                     print("{rpmstr} = {version}".format(
-                        rpmstr=dependency.get_rpm_str(dependency.resolvedVersion),
+                        rpmstr=dependency.get_rpm_str(),
                         version=provided.version))
                     break
             else:
