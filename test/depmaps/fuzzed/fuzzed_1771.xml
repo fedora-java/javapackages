@@ -1,15 +1,0 @@
-<?xml version="1.0" encoding="US-ASCII"?>
-<depMap>
-<dependency><maven>
-  <groupId>		  
- 	</groupId>
-  <extension>		  
- 	xyzzy		  
- 	</extension>
-  <classifier>		  
- 	</classifier>
-</maven><jpp>
-  <groupId>JPP</groupId>
-  <artifactId>foo</artifactId>
-</jpp></dependency>
-</depMap>
