@@ -27,6 +27,7 @@ class TestMavenReq(unittest.TestCase):
     @mavenreq(["require1/require.xml"])
     def test_require1(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
         self.assertEquals(len(sout), 2)
         self.assertIn("jpackage-utils", sout)
         self.assertIn("mvn(org.apache.maven:maven-project)", sout)
@@ -34,6 +35,7 @@ class TestMavenReq(unittest.TestCase):
     @mavenreq(["require-java/require.xml"])
     def test_require_java(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
         self.assertEquals(len(sout), 3)
         self.assertIn("jpackage-utils", sout)
         self.assertIn("mvn(org.apache.maven:maven-project)", sout)
@@ -53,7 +55,7 @@ class TestMavenReq(unittest.TestCase):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
         self.assertEquals(len(sout), 4)
-        self.assertIn("jpackage-utils")
+        self.assertIn("jpackage-utils", sout)
         self.assertIn("mvn(org.apache.maven:maven-project)", sout)
         self.assertIn("java-headless >= 1:1.6", sout)
         self.assertIn("java-devel >= 1:1.6", sout)
@@ -63,7 +65,7 @@ class TestMavenReq(unittest.TestCase):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
         self.assertEquals(len(sout), 2)
-        self.assertIn("ns-runtime")
+        self.assertIn("ns-runtime", sout)
         self.assertIn("ns-mvn(org.codehaus.plexus:plexus-ant-factory)", sout)
 
     @mavenreq(["require_multi/require.xml"])
@@ -71,7 +73,7 @@ class TestMavenReq(unittest.TestCase):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
         self.assertEquals(len(sout), 4)
-        self.assertIn("ns-runtime")
+        self.assertIn("ns-runtime", sout)
         self.assertIn("ns-mvn(org.codehaus.plexus:plexus-ant-factory)", sout)
         self.assertIn("ns-mvn(codehaus:plexus-utils) = 1.2", sout)
         self.assertIn("mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)", sout)
