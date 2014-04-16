@@ -309,7 +309,7 @@ class Artifact(object):
                  'version':''}
 
         for key in parts:
-            node = xmlnode.find("./" + key)
+            node = xmlnode.find("./{*}" + key)
             if node is not None and node.text is not None:
                 parts[key] = node.text.strip()
 
