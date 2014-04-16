@@ -57,13 +57,14 @@ class TagBuilder:
                 for filename in filenames:
                     if filename.endswith(".pom"):
                         continue
+                    fpath = os.path.join(dirname, filename)
                     try:
-                        depmap = Depmap(os.path.join(dirname, filename))
+                        depmap = Depmap(fpath)
                         self.provided_artifacts.extend(depmap.get_provided_artifacts())
                         self.skipped_artifacts.extend(depmap.get_skipped_artifacts())
                     except MetadataInvalidException:
                         # let's ignore if some other files are incorrect'
-                        pass
+                        print >> sys.stderr, "Failed to load: {fpath}".format(fpath=fpath)
         for path in paths:
             if path.endswith(".pom"):
                 continue
