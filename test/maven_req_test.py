@@ -107,7 +107,7 @@ class TestMavenReq(unittest.TestCase):
     def test_mixed(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        self.assertEquals2(len(sout), 5)
+        self.assertEquals(len(sout), 5)
         self.assertIn("ns-runtime", sout)
         self.assertIn("ns-mvn(org.codehaus.plexus:plexus-ant-factory)", sout)
         self.assertIn("ns-mvn(codehaus:plexus-utils) = 1.2", sout)
