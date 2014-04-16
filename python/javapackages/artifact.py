@@ -425,6 +425,17 @@ class Dependency(object):
         return self.artifact.__hash__() + \
                self.resolvedVersion.__hash__()
 
+    def __unicode__(self):
+        return u"{gid}:{aid}:{ext}:{cls}:{ver}".format(gid=self.groupId,
+                                                       aid=self.artifactId,
+                                                       ext=self.extension,
+                                                       cls=self.classifier,
+                                                       ver=self.version)
+
+    def __str__(self):
+        return unicode(self).encode(sys.getfilesystemencoding())
+
+
     @classmethod
     def from_metadata(cls, metadata):
         groupId = metadata.groupId.strip()
