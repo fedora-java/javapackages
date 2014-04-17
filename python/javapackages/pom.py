@@ -32,6 +32,8 @@
 
 from lxml.etree import ElementTree, XMLParser
 
+from javapackages.artifact import Dependency
+
 class PomLoadingException(Exception):
     pass
 
@@ -53,16 +55,21 @@ class POM(object):
 
 
     def __find(self, xpath):
-        ret = self.__doc.xpath(xpath, namespaces=dict(pom='http://maven.apache.org/POM/4.0.0'))
-        # perhaps there is no namespace?
-        if len(ret) == 0:
-            ret = self.__doc.xpath(xpath.replace('pom:',''))
+        ret = self.__findall(xpath)
         if len(ret) > 0:
             ret = ret[0]
         else:
             ret = None
 
         return ret
+
+    def __findall(self, xpath):
+        ret = self.__doc.xpath(xpath, namespaces=dict(pom='http://maven.apache.org/POM/4.0.0'))
+        # perhaps there is no namespace?
+        if len(ret) == 0:
+            ret = self.__doc.xpath(xpath.replace('pom:',''))
+        return ret
+
 
     @property
     def parentArtifactId(self):
@@ -159,3 +166,15 @@ class POM(object):
         if p is not None:
             return 'ivy'
         return None
+
+    def get_dependencies(self, get_all=False):
+        ret = set()
+        dependencies = self.__findall('./pom:dependencies/pom:dependency')
+        print dependencies
+        if dependencies is not None:
+            for dep in dependencies:
+                adep = Dependency.from_xml_element(dep, create_all=get_all)
+                if not adep:
+                    continue
+                ret.add(adep)
+        return ret
