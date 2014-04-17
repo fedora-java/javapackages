@@ -31,9 +31,9 @@
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 from __future__ import print_function
 import xml
-from xml.dom.minidom import parse
 import gzip
 import os.path
+import logging
 
 import pyxb
 
@@ -64,15 +64,22 @@ class Depmap(object):
     """
 
     def __init__(self, path):
-        self.__path = path
-        try:
-            self.__load_metadata(path)
-        except (pyxb.UnrecognizedContentError,
-                pyxb.UnrecognizedDOMRootNodeError,
-                xml.sax.SAXParseException) as e:
-            raise MetadataInvalidException("Failed to parse metadata {path}: {e}"
-                                         .format(path=path,
-                                                 e=e))
+        if type(path) == list:
+            self.__paths = path
+        else:
+            self.__paths = [path]
+        self.__metadata = []
+        for p in self.__paths:
+            try:
+                self.__load_metadata(p)
+            except (pyxb.UnrecognizedContentError,
+                    pyxb.UnrecognizedDOMRootNodeError,
+                    xml.sax.SAXParseException) as e:
+                logging.warning("Failed to parse metadata {path}: {e}"
+                                .format(path=path,
+                                        e=e))
+        if len(self.__metadata) == 0:
+            raise MetadataInvalidException("None of metadata paths could be parsed")
 
 
     def __load_metadata(self, metadata_path):
@@ -87,74 +94,79 @@ class Depmap(object):
                 f.seek(0)
                 data = f.read()
 
-            self.__metadata = metadata.CreateFromDocument(data)
-
+            self.__metadata.append(metadata.CreateFromDocument(data))
 
     def get_provided_artifacts(self):
         """Returns list of Artifact provided by given depmap."""
 
         artifacts = []
-        for a in self.__metadata.artifacts.artifact:
-            artifact = ProvidedArtifact.from_metadata(a)
-            if not artifact.version:
-                raise MetadataInvalidException("Depmap {path} does not have version in maven provides".format(path=self.__path))
-            artifacts.append(artifact)
+        for m in self.__metadata:
+            for a in m.artifacts.artifact:
+                artifact = ProvidedArtifact.from_metadata(a)
+                if not artifact.version:
+                    raise MetadataInvalidException("Artifact {a} does not have version in maven provides".format(a=artifact))
+                artifacts.append(artifact)
         return artifacts
 
 
     def get_required_artifacts(self):
         """Returns list of Artifact required by given depmap."""
         artifacts = set()
-        for a in self.__metadata.artifacts.artifact:
-            if not a.dependencies:
-                continue
+        for m in self.__metadata:
+            for a in m.artifacts.artifact:
+                if not a.dependencies:
+                    continue
 
-            for dep in a.dependencies.dependency:
-                artifacts.add(Dependency.from_metadata(dep))
+                for dep in a.dependencies.dependency:
+                    artifacts.add(Dependency.from_metadata(dep))
 
         return sorted(list(artifacts))
 
     def get_skipped_artifacts(self):
         """Returns list of Artifact that were build but not installed"""
         artifacts = set()
-        if not self.__metadata.skippedArtifacts:
-            return []
-        for dep in self.__metadata.skippedArtifacts.skippedArtifact:
-            artifact = SkippedArtifact.from_metadata(dep)
-            artifacts.add(artifact)
+        for m in self.__metadata:
+            if not m.skippedArtifacts:
+                continue
+            for dep in m.skippedArtifacts.skippedArtifact:
+                artifact = SkippedArtifact.from_metadata(dep)
+                artifacts.add(artifact)
         return sorted(list(artifacts))
 
     def get_excluded_artifacts(self):
         """Returns list of Artifacts that should be skipped for requires"""
         artifacts = set()
-        for a in self.__metadata.artifacts.artifact:
-            if not a.dependencies:
-                continue
-
-            for dep in a.dependencies.dependency:
-                if not dep.exclusions:
+        for m in self.__metadata:
+            for a in m.artifacts.artifact:
+                if not a.dependencies:
                     continue
 
-                for exclusion in dep.exclusions.exclusion:
-                    artifact = ExclusionArtifact.from_metadata(exclusion)
-            artifacts.add(artifact)
+                for dep in a.dependencies.dependency:
+                    if not dep.exclusions:
+                        continue
+
+                    for exclusion in dep.exclusions.exclusion:
+                        artifact = ExclusionArtifact.from_metadata(exclusion)
+                artifacts.add(artifact)
         return sorted(list(artifacts))
 
 
     def get_java_requires(self):
         """Returns JVM version required by depmap or None"""
-        if not self.__metadata.properties:
-            return None
-        for prop in self.__metadata.properties.wildcardElements():
-            if prop.tagName == u'requiresJava':
-                return prop.firstChild.value
+        for m in self.__metadata:
+            if not m.properties:
+                return None
+            for prop in m.properties.wildcardElements():
+                if prop.tagName == u'requiresJava':
+                    return prop.firstChild.value
         return None
 
     def get_java_devel_requires(self):
         """Returns JVM development version required by depmap or None"""
-        if not self.__metadata.properties:
-            return None
-        for prop in self.__metadata.properties.wildcardElements():
-            if prop.tagName == u'requiresJavaDevel':
-                return prop.firstChild.value
+        for m in self.__metadata:
+            if not m.properties:
+                return None
+            for prop in m.properties.wildcardElements():
+                if prop.tagName == u'requiresJavaDevel':
+                    return prop.firstChild.value
         return None
