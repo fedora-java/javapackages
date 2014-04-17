@@ -202,6 +202,9 @@ if __name__ == "__main__":
         if len(args) == 1:
             parser.error("When using artifact specification artifact path must be "
                          "provided")
+        if not (uart.groupId and uart.artifactId and uart.version):
+            parser.error("Defined artifact has to include at least groupId, "
+                         "artifactId and version")
     except (ArtifactFormatException):
         uart = POM(args[0])
         pom_path = args[0]
