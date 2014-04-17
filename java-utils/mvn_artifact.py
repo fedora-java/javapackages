@@ -32,6 +32,7 @@
 
 from __future__ import print_function
 import javapackages.metadata as m
+from javapackages.depmap import Depmap
 from javapackages import Artifact
 
 import sys
@@ -84,72 +85,27 @@ class ExtensionsDontMatch(Exception):
     pass
 
 
-def find_parent_pom(parent):
-    # FIXME: not nice...
-    pomdir = "/usr/share/maven-poms"
+def load_metadata(metadatadir="/usr/share/maven-metadata"):
+    mfiles = [os.path.join(metadatadir, f) for f in os.listdir(metadatadir)]
+    return Depmap(mfiles)
 
-    for root, dirs, filenames in os.walk(pomdir):
-        for pomfile in filenames:
-            pompath = os.path.join(root, pomfile)
-            pom = POM(pompath)
-            if parent.groupId == pom.groupId and parent.artifactId == pom.artifactId:
-                return pompath
-    return None
-
-
-# TODO: something like this should be probably implemented in pom.py
-def pom_get_parent(ppath):
-
-    pom = etree.parse(ppath)
-    parent = pom.xpath('/pom:project/pom:parent', namespaces=dict(pom='http://maven.apache.org/POM/4.0.0'))
-    if len(parent) == 0:
-        parent = pom.xpath('/project/parent')
-    if len(parent) == 0:
-        return None
-
-    return Artifact.from_xml_element(parent[0])
-
-
-def get_dependencies(ppath):
+def get_dependencies(pom):
     """Return set of dependencies from specified POM file."""
-    pom = etree.parse(ppath)
-    # TODO: something like this should be probably implemented in
-    # pom.py/artifact.py
-    dependencies = pom.xpath('/pom:project/pom:dependencies/pom:dependency',
-                             namespaces=dict(pom='http://maven.apache.org/POM/4.0.0'))
-    if len(dependencies) == 0:
-        dependencies = pom.xpath('/project/dependencies/dependency')
-
     result = set()
-    for dep in dependencies:
-        adep = Artifact.from_xml_element(dep)
-
-        # skip dependencies with scope "test" and "provided"
-        scope = dep.find('./{*}scope')
-        if scope is not None and scope.text in ["test", "provided"]:
-            continue
-
-        exclusions = set()
-        exclxml = dep.find('./{*}exclusions')
-        if exclxml is not None:
-            for excl in exclxml:
-                gid = excl.find('./{*}groupId').text
-                aid = excl.find('./{*}artifactId').text
-                e = m.DependencyExclusion(gid, aid)
-                exclusions.add(e)
-
+    for dep in pom.get_dependencies():
         d = m.Dependency()
-        d.groupId = adep.groupId
-        d.artifactId = adep.artifactId
-        if adep.classifier:
-            d.classifier = adep.classifier
-        if adep.extension:
-            d.extension = adep.extension
-        d.requestedVersion = adep.version
-
-        if len(exclusions) != 0:
-            d.exclusions = pyxb.BIND(*exclusions)
-
+        d.groupId = dep.groupId
+        d.artifactId = dep.artifactId
+        if dep.classifier:
+            d.classifier = dep.classifier
+        if dep.extension:
+            d.extension = dep.extension
+        d.requestedVersion = dep.version
+        excl = set()
+        for e in dep.exclusions:
+            excl.add(m.DependencyExclusion(e.groupId,
+                                           e.artifactId))
+        d.exclusions = pyxb.BIND(*excl)
         result.add(d)
 
     return result
@@ -231,25 +187,17 @@ if __name__ == "__main__":
     else:
         metadata = m.metadata()
 
-    # try to locate all necessary pom files
-    poms = []
-    if pom_path:
-        poms.append(pom_path)
-        while True:
-            newparent = pom_get_parent(poms[-1])
-            if newparent:
-                parentfile = find_parent_pom(newparent)
-                if parentfile and parentfile not in poms:
-                    poms.append(parentfile)
-                else:
-                    break
-            else:
-                break
-
-    # read dependencies from all pom files
+    mets = load_metadata()
     deps = []
-    for pom in poms:
-        deps += get_dependencies(pom)
+    # try to locate all necessary pom files
+    if pom_path:
+        p = POM(pom_path)
+        deps+= get_dependencies(p)
+        for provided in mets.get_provided_artifacts():
+            if (provided.groupId == p.parentGroupId and
+                provided.artifactId == p.parentArtifactId):
+                for dep in provided.dependencies:
+                    deps.append(dep)
 
     add_artifact_elements(metadata, uart, deps, pom_path, jar_path)
 
