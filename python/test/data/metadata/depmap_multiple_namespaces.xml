@@ -10,30 +10,6 @@
             <properties>
                 <requiresJava>1.5</requiresJava>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.maven</groupId>
-                    <artifactId>maven-project</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.maven.wagon</groupId>
-                    <artifactId>wagon-provider-api</artifactId>
-                    <classifier>test-jar</classifier>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                    <resolvedVersion>1.0-alpha-7</resolvedVersion>
-                </dependency>
-            </dependencies>
         </artifact>
         <artifact>
             <groupId>org.codehaus.plexus</groupId>
@@ -45,30 +21,6 @@
             <properties>
                 <requiresJava>1.5</requiresJava>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.maven</groupId>
-                    <artifactId>maven-project</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.maven.wagon</groupId>
-                    <artifactId>wagon-provider-api</artifactId>
-                    <classifier>test-jar</classifier>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                    <resolvedVersion>1.0-alpha-7</resolvedVersion>
-                </dependency>
-            </dependencies>
         </artifact>
 
         <artifact>
@@ -80,30 +32,6 @@
             <properties>
                 <requiresJava>1.5</requiresJava>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.maven</groupId>
-                    <artifactId>maven-project</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.maven.wagon</groupId>
-                    <artifactId>wagon-provider-api</artifactId>
-                    <classifier>test-jar</classifier>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                    <resolvedVersion>1.0-alpha-7</resolvedVersion>
-                </dependency>
-            </dependencies>
         </artifact>
         <artifact>
             <groupId>plexus</groupId>
@@ -115,30 +43,6 @@
             <properties>
                 <requiresJava>1.5</requiresJava>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.maven</groupId>
-                    <artifactId>maven-project</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.maven.wagon</groupId>
-                    <artifactId>wagon-provider-api</artifactId>
-                    <classifier>test-jar</classifier>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                    <resolvedVersion>1.0-alpha-7</resolvedVersion>
-                </dependency>
-            </dependencies>
         </artifact>
 
         <artifact>
@@ -150,30 +54,6 @@
             <properties>
                 <requiresJava>1.5</requiresJava>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.maven</groupId>
-                    <artifactId>maven-project</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.maven.wagon</groupId>
-                    <artifactId>wagon-provider-api</artifactId>
-                    <classifier>test-jar</classifier>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                    <resolvedVersion>1.0-alpha-7</resolvedVersion>
-                </dependency>
-            </dependencies>
         </artifact>
         <artifact>
             <groupId>codehaus</groupId>
@@ -185,30 +65,6 @@
             <properties>
                 <requiresJava>1.5</requiresJava>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.maven</groupId>
-                    <artifactId>maven-project</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.maven.wagon</groupId>
-                    <artifactId>wagon-provider-api</artifactId>
-                    <classifier>test-jar</classifier>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                    <resolvedVersion>1.0-alpha-7</resolvedVersion>
-                </dependency>
-            </dependencies>
         </artifact>
     </artifacts>
 </metadata>

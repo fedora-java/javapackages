@@ -48,7 +48,7 @@ class ProvidedArtifact(object):
     def __init__(self, groupId, artifactId, extension="",
                  classifier="", version="", namespace="",
                  path="", aliases=None, compatVersions=None,
-                 properties=None):
+                 properties=None, dependencies=None):
 
         if not aliases:
             aliases = []
@@ -56,6 +56,8 @@ class ProvidedArtifact(object):
             compatVersions = []
         if not properties:
             properties = {}
+        if not dependencies:
+            dependencies = set()
 
         self.artifact = Artifact(groupId, artifactId, extension,
                                  classifier, version, namespace)
@@ -63,6 +65,7 @@ class ProvidedArtifact(object):
         self.aliases = aliases
         self.properties = properties
         self.path = path
+        self.dependencies = dependencies
 
     def is_compat(self):
         """Return true if artifact has compat verions specified.
@@ -163,9 +166,15 @@ class ProvidedArtifact(object):
             for prop in metadata.properties.wildcardElements():
                 properties[prop.tagName] = prop.firstChild.value
 
+        dependencies = set()
+        if hasattr(metadata, 'dependencies') and metadata.dependencies:
+            for dep in metadata.dependencies.dependency:
+                dependencies.add(Dependency.from_metadata(dep))
+
         return cls(groupId, artifactId, extension, classifier, version,
                    namespace, path=path, aliases=aliases,
-                   compatVersions=compatVersions, properties=properties)
+                   compatVersions=compatVersions, properties=properties,
+                   dependencies=dependencies)
 
 class Artifact(object):
     """
