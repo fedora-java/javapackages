@@ -58,10 +58,10 @@ class ProvidedArtifact(object):
         self.path = path
 
     def is_compat(self):
-         """Return true if artifact has compat verions specified.
-         This means package should have versioned provides for this artifact"""
+        """Return true if artifact has compat verions specified.
+        This means package should have versioned provides for this artifact"""
 
-         return self.compatVersions
+        return self.compatVersions
 
     def __getattr__(self, attrib):
         return getattr(self.artifact, attrib)
@@ -250,14 +250,14 @@ class Artifact(object):
         all_empty = True
         wildcard_used = False
         backref_used = False
-        backref_re = re.compile('@\d+')
+        backref_re = re.compile(r'@\d+')
         for key in ("artifactId", "groupId", "extension", "version",
                     "classifier", "namespace"):
             val = getattr(self, key)
             if not val:
                 continue
             if val:
-               all_empty = False
+                all_empty = False
             if val.find('*') != -1:
                 wildcard_used = True
             if backref_re.match(val):
