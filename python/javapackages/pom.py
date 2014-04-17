@@ -65,6 +65,28 @@ class POM(object):
         return ret
 
     @property
+    def parentArtifactId(self):
+        """
+        artifactId of the parent artifact of None
+        """
+        aId = self.__find('./pom:parent/pom:artifactId')
+        if aId is None:
+            return None
+        else:
+            return aId.text.strip()
+
+    @property
+    def parentGroupId(self):
+        """
+        groupId of the parent artifact of None
+        """
+        gId = self.__find('./pom:parent/pom:groupId')
+        if gId is None:
+            return None
+        else:
+            return gId.text.strip()
+
+    @property
     def groupId(self):
         """
         Effective groupId of the pom Artifact taking into account parent groupId
