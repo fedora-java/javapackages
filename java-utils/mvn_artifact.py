@@ -42,7 +42,7 @@ from javapackages.artifact import *
 from javapackages.pom import *
 #from lxml.etree import Element, ElementTree, SubElement, Comment
 from lxml import etree
-
+import pyxb
 
 class SaneParser(optparse.OptionParser):
     def format_epilog(self, formatter):
@@ -148,9 +148,7 @@ def get_dependencies(ppath):
         d.requestedVersion = adep.version
 
         if len(exclusions) != 0:
-            d.exclusions = m.CTD_ANON_7()
-            for e in exclusions:
-                d.exclusions.append(e)
+            d.exclusions = pyxb.BIND(*exclusions)
 
         result.add(d)
 
@@ -171,18 +169,23 @@ def artifact_to_metadata(artifact):
 
 
 def add_artifact_elements(root, ainfo, deps, ppath=None, jpath=None):
-    if root.artifacts is None:
-        root.artifacts = m.CTD_ANON_()
-
+    artifacts = []
     for path in [ppath, jpath]:
         if path:
             a = artifact_to_metadata(ainfo)
             if path is ppath:
                 a.extension = "pom"
             a.path = os.path.abspath(path)
-            a.dependencies = m.CTD_ANON_6()
+            dependencies = []
             for dep in deps:
-                a.dependencies.append(dep)
+                dependencies.append(dep)
+            a.dependencies = pyxb.BIND(*dependencies)
+            artifacts.append(a)
+
+    if root.artifacts is None:
+        root.artifacts = pyxb.BIND(*artifacts)
+    else:
+        for a in artifacts:
             root.artifacts.append(a)
 
 
