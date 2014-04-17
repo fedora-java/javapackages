@@ -35,6 +35,8 @@ import sys
 
 from lxml.etree import Element, SubElement, tostring
 
+import javapackages.metadata as m
+
 class ArtifactException(Exception):
     pass
 
@@ -479,3 +481,35 @@ class Dependency(object):
 
         return cls(groupId, artifactId, requestedVersion, resolvedVersion,
                    extension, classifier, namespace, exclusions)
+
+    @classmethod
+    def from_xml_element(cls, xmlnode, namespace="", create_all=False):
+        """
+        Create Dependency from xml.etree.ElementTree.Element as contained
+        within pom.xml
+        """
+        a = Artifact.from_xml_element(xmlnode)
+        if not a.version:
+            raise ArtifactFormatException("Empty version encountered in "
+                                          "dependency: {dep}".
+                                          format(dep=xmlnode))
+
+        scope = xmlnode.find('./{*}scope')
+        # by default don't create test, provided and other non-essential elements
+        if (create_all and
+            scope is not None and
+            scope.text not in ["compile", "runtime"]):
+            return None
+        exclusions = set()
+        exclxml = xmlnode.find('./{*}exclusions')
+        if exclxml is not None:
+            for excl in exclxml:
+                gid = excl.find('./{*}groupId').text
+                aid = excl.find('./{*}artifactId').text
+                e = m.DependencyExclusion(gid, aid)
+                exclusions.add(e)
+
+        return cls(a.groupId, a.artifactId,
+                   requestedVersion=a.version, extension=a.extension,
+                   classifier=a.classifier, namespace=namespace,
+                   exclusions=exclusions)
