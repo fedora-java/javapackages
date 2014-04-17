@@ -53,18 +53,19 @@ class TagBuilder:
         if paths:
             # let's first read all fragment files for provided artifacts
             self.fragment_dir = os.path.dirname(paths[0])
+            fpaths = []
             for dirname, dirnames, filenames in os.walk(self.fragment_dir):
                 for filename in filenames:
                     if filename.endswith(".pom"):
                         continue
-                    fpath = os.path.join(dirname, filename)
-                    try:
-                        depmap = Depmap(fpath)
-                        self.provided_artifacts.extend(depmap.get_provided_artifacts())
-                        self.skipped_artifacts.extend(depmap.get_skipped_artifacts())
-                    except MetadataInvalidException:
-                        # let's ignore if some other files are incorrect'
-                        print >> sys.stderr, "Failed to load: {fpath}".format(fpath=fpath)
+                    fpaths.append(os.path.join(dirname, filename))
+            try:
+                depmap = Depmap(fpaths)
+                self.provided_artifacts.extend(depmap.get_provided_artifacts())
+                self.skipped_artifacts.extend(depmap.get_skipped_artifacts())
+            except MetadataInvalidException:
+                # let's ignore if some other files are incorrect'
+                print >> sys.stderr, "Failed to load: {fpath}".format(fpath=fpath)
         for path in paths:
             if path.endswith(".pom"):
                 continue
