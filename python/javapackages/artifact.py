@@ -47,8 +47,15 @@ class ArtifactValidationException(ArtifactException):
 class ProvidedArtifact(object):
     def __init__(self, groupId, artifactId, extension="",
                  classifier="", version="", namespace="",
-                 path="", aliases=[], compatVersions=[],
-                 properties={}):
+                 path="", aliases=None, compatVersions=None,
+                 properties=None):
+
+        if not aliases:
+            aliases = []
+        if not compatVersions:
+            compatVersions = []
+        if not properties:
+            properties = {}
 
         self.artifact = Artifact(groupId, artifactId, extension,
                                  classifier, version, namespace)
@@ -396,7 +403,10 @@ class Dependency(object):
 
     def __init__(self, groupId, artifactId, requestedVersion,
                  resolvedVersion="", extension="", classifier="",
-                 namespace="", exclusions=set()):
+                 namespace="", exclusions=None):
+        if not exclusions:
+            exclusions = set()
+
         self.artifact = Artifact(groupId,
                                  artifactId,
                                  extension=extension,
