@@ -33,6 +33,7 @@
 import re
 import sys
 
+import pyxb
 from lxml.etree import Element, SubElement, tostring
 
 import javapackages.metadata as m
@@ -457,6 +458,23 @@ class Dependency(object):
 
     def __str__(self):
         return self.artifact.__str__()
+
+    def to_metadata(self):
+        d = m.Dependency()
+        d.groupId = self.groupId
+        d.artifactId = self.artifactId
+        d.requestedVersion = self.version
+        if self.classifier:
+            d.classifier = self.classifier
+        if self.extension:
+            d.extension = self.extension
+        if self.exclusions:
+            excl = set()
+            for e in self.exclusions:
+                excl.add(m.DependencyExclusion(e.groupId,
+                                               e.artifactId))
+            d.exclusions = pyxb.BIND(*excl)
+        return d
 
     @classmethod
     def from_metadata(cls, metadata):
