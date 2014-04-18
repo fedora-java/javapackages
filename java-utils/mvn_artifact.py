@@ -89,27 +89,6 @@ def load_metadata(metadatadir="/usr/share/maven-metadata"):
     mfiles = [os.path.join(metadatadir, f) for f in os.listdir(metadatadir)]
     return Depmap(mfiles)
 
-def get_dependencies(pom):
-    """Return set of dependencies from specified POM file."""
-    result = set()
-    for dep in pom.get_dependencies():
-        d = m.Dependency()
-        d.groupId = dep.groupId
-        d.artifactId = dep.artifactId
-        if dep.classifier:
-            d.classifier = dep.classifier
-        if dep.extension:
-            d.extension = dep.extension
-        d.requestedVersion = dep.version
-        excl = set()
-        for e in dep.exclusions:
-            excl.add(m.DependencyExclusion(e.groupId,
-                                           e.artifactId))
-        d.exclusions = pyxb.BIND(*excl)
-        result.add(d)
-
-    return result
-
 # TODO: move to artifact.py
 def artifact_to_metadata(artifact):
     a = m.ArtifactMetadata()
@@ -192,7 +171,7 @@ if __name__ == "__main__":
     # try to locate all necessary pom files
     if pom_path:
         p = POM(pom_path)
-        deps+= get_dependencies(p)
+        deps.extend([x.to_metadata() for x in p.get_dependencies()])
         for provided in mets.get_provided_artifacts():
             if (provided.groupId == p.parentGroupId and
                 provided.artifactId == p.parentArtifactId):
