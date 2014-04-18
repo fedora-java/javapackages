@@ -170,7 +170,6 @@ class POM(object):
     def get_dependencies(self, get_all=False):
         ret = set()
         dependencies = self.__findall('./pom:dependencies/pom:dependency')
-        print dependencies
         if dependencies is not None:
             for dep in dependencies:
                 adep = Dependency.from_xml_element(dep, create_all=get_all)
