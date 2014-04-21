@@ -76,7 +76,7 @@ Description::
 Prep section::
    * Unpacks the sources using `setup -q` or manually if needed
    * If a source file doesn't need to be extracted, it can be copied
-     to build directory by `cp -p $SOURCE0 .`
+     to build directory by `cp -p %SOURCE0 .`
    * Apply patches with `%patchX`, where X is the number of patch you
      want to apply. (You usually need the patch index, so it would be:
      `%patch0 -p1`)
