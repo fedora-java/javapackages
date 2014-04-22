@@ -41,7 +41,6 @@ import optparse
 
 from javapackages.artifact import *
 from javapackages.pom import *
-#from lxml.etree import Element, ElementTree, SubElement, Comment
 from lxml import etree
 import pyxb
 
