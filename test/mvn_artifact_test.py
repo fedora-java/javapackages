@@ -13,7 +13,7 @@ class TestMvnArtifact(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         dirpath = os.path.dirname(os.path.realpath(__file__))
-        cls.datadir = os.path.join(dirpath, 'data', 'artifact')
+        cls.datadir = os.path.join(dirpath, 'data', 'mvn_artifact')
 
         try:
             cls.olddir = os.getcwd()
