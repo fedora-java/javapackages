@@ -129,6 +129,21 @@ class ProvidedArtifact(object):
 
         return result
 
+    def to_metedata(self):
+        # TODO: add support for aliases, properties and compat versions
+        a = m.ArtifactMetadata()
+        a.groupId = self.groupId
+        a.artifactId = self.artifactId
+        a.version = self.version
+        if self.classifier:
+            a.classifier = self.classifier
+        if self.extension:
+            a.extension = self.extension
+        if self.dependencies:
+            a.dependencies = pyxb.BIND(*self.dependencies)
+
+        return a
+
     @classmethod
     def from_metadata(cls, metadata):
         groupId = metadata.groupId.strip()
