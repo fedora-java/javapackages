@@ -56,8 +56,8 @@ class ProvidedArtifact(object):
 
         self.artifact = Artifact(groupId, artifactId, extension,
                                  classifier, version, namespace)
-        self.compatVersions = compatVersions or []
-        self.aliases = aliases or []
+        self.compatVersions = compatVersions or set()
+        self.aliases = aliases or set()
         self.properties = properties or {}
         self.path = path
         self.dependencies = dependencies or set()
@@ -151,11 +151,11 @@ class ProvidedArtifact(object):
         if hasattr(metadata, 'namespace') and metadata.namespace:
             namespace = metadata.namespace.strip()
 
-        compatVersions = []
+        compatVersions = set()
         if hasattr(metadata, 'compatVersions') and metadata.compatVersions:
-            compatVersions = [cv for cv in metadata.compatVersions.version]
+            compatVersions = {cv for cv in metadata.compatVersions.version}
 
-        aliases = []
+        aliases = set()
         if hasattr(metadata, 'aliases') and metadata.aliases:
             for alias in metadata.aliases.alias:
                 extension = classifier = ""
@@ -165,10 +165,10 @@ class ProvidedArtifact(object):
                 if hasattr(alias, 'classifier') and alias.classifier:
                     classifier = alias.classifier
 
-                aliases.append(Artifact(alias.groupId,
-                                        alias.artifactId,
-                                        extension,
-                                        classifier))
+                aliases.add(Artifact(alias.groupId,
+                                     alias.artifactId,
+                                     extension,
+                                     classifier))
         properties = {}
         if hasattr(metadata, 'properties') and metadata.properties:
             properties = {prop.tagName:prop.firstChild.value
