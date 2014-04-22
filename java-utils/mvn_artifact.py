@@ -93,7 +93,7 @@ def add_artifact_elements(root, uart, deps, ppath=None, jpath=None):
     artifacts = []
     for path in [ppath, jpath]:
         if path:
-            a = uart.to_metedata()
+            a = uart.to_metadata()
             if path is ppath:
                 a.extension = "pom"
             a.path = os.path.abspath(path)

@@ -129,7 +129,7 @@ class ProvidedArtifact(object):
 
         return result
 
-    def to_metedata(self):
+    def to_metadata(self):
         # TODO: add support for aliases, properties and compat versions
         a = m.ArtifactMetadata()
         a.groupId = self.groupId
@@ -140,9 +140,7 @@ class ProvidedArtifact(object):
         if self.extension:
             a.extension = self.extension
         if self.dependencies:
-            deps = []
-            for d in self.dependencies:
-                deps.append(d.to_metadata())
+            deps = [d.to_metadata() for d in self.dependencies]
             a.dependencies = pyxb.BIND(*deps)
 
         return a
