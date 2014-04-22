@@ -158,14 +158,14 @@ if __name__ == "__main__":
     # try to locate all necessary pom files
     if pom_path:
         p = POM(pom_path)
-        deps.extend([x.to_metadata() for x in p.get_dependencies()])
+        deps.extend([x for x in p.get_dependencies()])
         try:
             mets = load_metadata()
             for provided in mets.get_provided_artifacts():
                 if (provided.groupId == p.parentGroupId and
                     provided.artifactId == p.parentArtifactId):
                     for dep in provided.dependencies:
-                        deps.append(dep)
+                        deps.append(Dependency.from_metadata(dep))
         except MetadataInvalidException:
             pass
 
