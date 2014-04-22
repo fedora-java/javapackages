@@ -163,8 +163,7 @@ class ProvidedArtifact(object):
 
         compatVersions = []
         if hasattr(metadata, 'compatVersions') and metadata.compatVersions:
-            for cv in metadata.compatVersions.version:
-                compatVersions.append(cv)
+            compatVersions = [cv for cv in metadata.compatVersions.version]
 
         aliases = []
         if hasattr(metadata, 'aliases') and metadata.aliases:
@@ -182,13 +181,13 @@ class ProvidedArtifact(object):
                                         classifier))
         properties = {}
         if hasattr(metadata, 'properties') and metadata.properties:
-            for prop in metadata.properties.wildcardElements():
-                properties[prop.tagName] = prop.firstChild.value
+            properties = {prop.tagName:prop.firstChild.value
+                          for prop in metadata.properties.wildcardElements()}
 
         dependencies = set()
         if hasattr(metadata, 'dependencies') and metadata.dependencies:
-            for dep in metadata.dependencies.dependency:
-                dependencies.add(Dependency.from_metadata(dep))
+            dependencies = {Dependency.from_metadata(dep)
+                            for dep in metadata.dependencies.dependency}
 
         return cls(groupId, artifactId, extension, classifier, version,
                    namespace, path=path, aliases=aliases,
@@ -485,10 +484,8 @@ class Dependency(object):
         if self.extension:
             d.extension = self.extension
         if self.exclusions:
-            excl = set()
-            for e in self.exclusions:
-                excl.add(m.DependencyExclusion(e.groupId,
-                                               e.artifactId))
+            excl = {m.DependencyExclusion(e.groupId, e.artifactId)
+                    for e in self.exclusions}
             d.exclusions = pyxb.BIND(*excl)
         return d
 
@@ -510,8 +507,8 @@ class Dependency(object):
 
         exclusions = set()
         if hasattr(metadata, 'exclusions') and metadata.exclusions:
-            for excl in metadata.exclusions.exclusion:
-                exclusions.add(ExclusionArtifact.from_metadata(excl))
+            exclusions = {ExclusionArtifact.from_metadata(excl)
+                          for excl in metadata.exclusions.exclusion}
 
         return cls(groupId, artifactId, requestedVersion, resolvedVersion,
                    extension, classifier, namespace, exclusions)
