@@ -2,9 +2,11 @@ import inspect
 import os
 import unittest
 import shutil
+import javapackages.metadata as m
 from test_common import *
 from lxml import etree
 from formencode import doctest_xml_compare
+
 
 class TestMvnArtifact(unittest.TestCase):
 
@@ -26,17 +28,12 @@ class TestMvnArtifact(unittest.TestCase):
             for filename in filenames:
                 if filename.endswith("-want.xml"):
                     want_file = os.path.join(dirname, filename)
-                    doc = etree.parse(want_file)
-                    pom_paths = doc.xpath("./artifact/rawPomPath")
-                    if len(pom_paths) > 0:
-                        for pom_path in pom_paths:
-                            pom_path.text = pom_path.text % (cls.workdir)
-                    jar_paths = doc.xpath("./artifact/file")
-                    if len(jar_paths) > 0:
-                        for jar_path in jar_paths:
-                            jar_path.text = jar_path.text % (cls.workdir)
+                    metadata = m.CreateFromDocument(open(want_file).read())
+                    for a in metadata.artifacts.artifact:
+                        a.path = a.path % (cls.workdir)
                     with open(want_file, "w") as f:
-                        f.write(etree.tostring(doc.getroot(), pretty_print=True))
+                        dom = metadata.toDOM(None)
+                        f.write(dom.toprettyxml(indent="   "))
 
     @classmethod
     def tearDownClass(cls):
