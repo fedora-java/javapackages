@@ -89,32 +89,15 @@ def load_metadata(metadatadir="/usr/share/maven-metadata"):
     mfiles = [os.path.join(metadatadir, f) for f in os.listdir(metadatadir)]
     return Depmap(mfiles)
 
-# TODO: move to artifact.py
-def artifact_to_metadata(artifact):
-    a = m.ArtifactMetadata()
-    a.groupId = artifact.groupId
-    a.artifactId = artifact.artifactId
-    a.version = artifact.version
-    if hasattr(artifact, "classifier") and artifact.classifier:
-        a.classifier = artifact.classifier
-    if artifact.extension:
-        a.extension = artifact.extension
 
-    return a
-
-
-def add_artifact_elements(root, ainfo, deps, ppath=None, jpath=None):
+def add_artifact_elements(root, uart, deps, ppath=None, jpath=None):
     artifacts = []
     for path in [ppath, jpath]:
         if path:
-            a = artifact_to_metadata(ainfo)
+            a = uart.to_metedata()
             if path is ppath:
                 a.extension = "pom"
             a.path = os.path.abspath(path)
-            dependencies = []
-            for dep in deps:
-                dependencies.append(dep)
-            a.dependencies = pyxb.BIND(*dependencies)
             artifacts.append(a)
 
     if root.artifacts is None:
@@ -149,16 +132,22 @@ if __name__ == "__main__":
     else:
         pom_path = None
 
+    art = ProvidedArtifact(uart.groupId, uart.artifactId, version=uart.version)
+    if hasattr(uart, "extension") and uart.extension:
+        art.artifact.extension = uart.extension
+    if hasattr(uart, "classifier") and uart.classifier:
+        art.artifact.classifier= uart.classifier
+
     jar_path = None
     if len(args) > 1:
         jar_path = args[1]
         extension = (os.path.splitext(jar_path)[1])[1:]
-        if hasattr(uart, "extension") and uart.extension and uart.extension != extension:
-            raise ExtensionsDontMatch("Extensions don't match: '%s' != '%s'" % (uart.extension, extension))
+        if hasattr(art, "extension") and art.extension and art.extension != extension:
+            raise ExtensionsDontMatch("Extensions don't match: '%s' != '%s'" % (art.extension, extension))
         else:
-            uart.extension = extension
+            art.extension = extension
     else:
-        uart.extension = "pom"
+        art.extension = "pom"
 
     if os.path.exists(config):
         xml = open(config).read()
@@ -178,7 +167,9 @@ if __name__ == "__main__":
                 for dep in provided.dependencies:
                     deps.append(dep)
 
-    add_artifact_elements(metadata, uart, deps, pom_path, jar_path)
+    art.dependencies = deps
+
+    add_artifact_elements(metadata, art, deps, pom_path, jar_path)
 
     with open(config, 'w') as f:
         dom = metadata.toDOM(None)
