@@ -32,7 +32,7 @@
 
 from __future__ import print_function
 import javapackages.metadata as m
-from javapackages.depmap import Depmap
+from javapackages.depmap import Depmap, MetadataInvalidException
 from javapackages import Artifact
 
 import sys
@@ -158,14 +158,17 @@ if __name__ == "__main__":
     deps = []
     # try to locate all necessary pom files
     if pom_path:
-        mets = load_metadata()
         p = POM(pom_path)
         deps.extend([x.to_metadata() for x in p.get_dependencies()])
-        for provided in mets.get_provided_artifacts():
-            if (provided.groupId == p.parentGroupId and
-                provided.artifactId == p.parentArtifactId):
-                for dep in provided.dependencies:
-                    deps.append(dep)
+        try:
+            mets = load_metadata()
+            for provided in mets.get_provided_artifacts():
+                if (provided.groupId == p.parentGroupId and
+                    provided.artifactId == p.parentArtifactId):
+                    for dep in provided.dependencies:
+                        deps.append(dep)
+        except MetadataInvalidException:
+            pass
 
     art.dependencies = deps
 
