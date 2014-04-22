@@ -166,10 +166,10 @@ if __name__ == "__main__":
     else:
         metadata = m.metadata()
 
-    mets = load_metadata()
     deps = []
     # try to locate all necessary pom files
     if pom_path:
+        mets = load_metadata()
         p = POM(pom_path)
         deps.extend([x.to_metadata() for x in p.get_dependencies()])
         for provided in mets.get_provided_artifacts():
