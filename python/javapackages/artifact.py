@@ -140,7 +140,10 @@ class ProvidedArtifact(object):
         if self.extension:
             a.extension = self.extension
         if self.dependencies:
-            a.dependencies = pyxb.BIND(*self.dependencies)
+            deps = []
+            for d in self.dependencies:
+                deps.append(d.to_metadata())
+            a.dependencies = pyxb.BIND(*deps)
 
         return a
 
