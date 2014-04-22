@@ -527,7 +527,7 @@ class Dependency(object):
 
         scope = xmlnode.find('./{*}scope')
         # by default don't create test, provided and other non-essential elements
-        if (create_all or
+        if (not create_all and
             scope is not None and
             scope.text not in ["compile", "runtime"]):
             return None
