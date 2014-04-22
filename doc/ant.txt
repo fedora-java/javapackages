@@ -102,4 +102,22 @@ Details:
     - `%mvn_artifact` supports installing artifacts described by Ivy
       configuration files
 
+.Ivy files manipulation
+A subset of macros used to modify Maven POMs also work with `ivy.xml`
+files allowing the maintainer to add/remove/change dependencies without
+the need of making patches and rebasing them with each change.
+You can use dependency handling macros `%pom_add_dep`,
+`%pom_remove_dep`, `%pom_change_dep` and generic `%pom_xpath_*` macros.
+For more details, see corresponding manpages.
+
+[source,spec]
+-----
+# Remove dependency on artifact with org="com.example" and
+# name="java-project" from ivy.xml file in current directory
+%pom_remove_dep com.example:java-project
+
+# Add dependency on artifact with org="com.example" and
+# name="foobar" to ./submodule/ivy.xml
+%pom_add_dep com.example:foobar submodule
+-----
 TODO: ivy:publish
