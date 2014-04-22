@@ -86,24 +86,24 @@ class TestDepmap(unittest.TestCase):
                                          "maven-idea-plugin",
                                          version="1.4",
                                          path="/usr/share/java/maven-idea-plugin/maven-idea-plugin-1.4.jar",
-                                         compatVersions=["1.4"]) in artifacts)
+                                         compatVersions=set(['1.4'])) in artifacts)
         self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
                                          "maven-idea-plugin",
                                          version="1.4",
                                          extension="pom",
                                          path="/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin-1.4.pom",
-                                         compatVersions=["1.4"]) in artifacts)
+                                         compatVersions=set(["1.4"])) in artifacts)
         self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
                                          "maven-idea-plugin",
                                          version="1.4",
                                          path="/usr/share/java/maven-idea-plugin/maven-idea-plugin-1.4.jar",
-                                         compatVersions=["1.5"]) in artifacts)
+                                         compatVersions=set(["1.5"])) in artifacts)
         self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
                                          "maven-idea-plugin",
                                          version="1.4",
                                          extension="pom",
                                          path="/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin-1.4.pom",
-                                         compatVersions=["1.5"]) in artifacts)
+                                         compatVersions=set(["1.5"])) in artifacts)
 
     @exception_expected(MetadataInvalidException)
     @depmapfile("depmap_invalid_nover.xml")
