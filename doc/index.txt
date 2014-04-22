@@ -45,6 +45,9 @@ include::common_errors.txt[]
 == Integration of Maven and XMvn Tools
 include::integration_maven_xmvn.txt[]
 
+== Migration from older tools
+include::migration.txt[]
+
 
 [appendix]
 == Appendix
