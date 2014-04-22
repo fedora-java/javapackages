@@ -44,6 +44,10 @@ ease this task:
 # Removes dependency on groupId:artifactId from ./submodule/pom.xml
 %pom_remove_dep groupId:artifactId submodule
 
+# Removes dependency on groupId:artifactId from ./submodule1/pom.xml and
+# ./submodule2/pom.xml
+%pom_remove_dep groupId:artifactId submodule1 submodule2
+
 # Removes dependency on groupId:artifactId from ./full/path/to/file.pom
 %pom_remove_dep groupId:artifactId full/path/to/file.pom
 
@@ -54,9 +58,38 @@ ease this task:
 %pom_remove_dep :
 --------
 
+.Recursive mode
+POM macros which remove elements can work in recursive mode, allowing
+the maintainer to remove given dependency/plugin from all the poms
+without the need to enumerate all POMs manually. It recursively
+traverses all enabled submodules of given `pom.xml` by looking at
+`<module>` nodes. It is activated by `-r` switch.
+
+[source,spec]
+-----
+# Removes dependency on groupId:artifactId from pom.xml and all its
+# submodules
+%pom_remove_dep -r groupId:artifactId
+-----
+
+.Adding dependencies
 Dependencies can also be added to `pom.xml` with `%pom_add_dep` macro.
 Usage is very similar to `%pom_remove_dep`, see `"man pom_add_dep"` for
 more information.
+
+.Changing dependencies
+Sometimes the artifact coordinates used in upstream `pom.xml` don't
+correspond to ones used in Fedora and you need to modify them.
+`%pom_change_dep` macro will modify all dependencies matching the first
+argument to artifact coordinates specified by the second argument. Note
+this macro also works in recursive mode.
+
+[source,spec]
+-----
+# For all artifacts in pom.xml that have groupId 'example' change it to
+# 'com.example' while leaving artifactId and other parts intact
+%pom_change_dep example: com.example:
+-----
 
 [[pom_remove_plugin]]
 ==== Adding/removing plugins
