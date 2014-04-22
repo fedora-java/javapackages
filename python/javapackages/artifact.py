@@ -53,22 +53,14 @@ class ProvidedArtifact(object):
                  path="", aliases=None, compatVersions=None,
                  properties=None, dependencies=None):
 
-        if not aliases:
-            aliases = []
-        if not compatVersions:
-            compatVersions = []
-        if not properties:
-            properties = {}
-        if not dependencies:
-            dependencies = set()
 
         self.artifact = Artifact(groupId, artifactId, extension,
                                  classifier, version, namespace)
-        self.compatVersions = compatVersions
-        self.aliases = aliases
-        self.properties = properties
+        self.compatVersions = compatVersions or []
+        self.aliases = aliases or []
+        self.properties = properties or {}
         self.path = path
-        self.dependencies = dependencies
+        self.dependencies = dependencies or set()
 
     def is_compat(self):
         """Return true if artifact has compat verions specified.
@@ -135,10 +127,8 @@ class ProvidedArtifact(object):
         a.groupId = self.groupId
         a.artifactId = self.artifactId
         a.version = self.version
-        if self.classifier:
-            a.classifier = self.classifier
-        if self.extension:
-            a.extension = self.extension
+        a.classifier = self.classifier or None
+        a.extension = self.extension or None
         if self.dependencies:
             deps = [d.to_metadata() for d in self.dependencies]
             a.dependencies = pyxb.BIND(*deps)
@@ -431,9 +421,6 @@ class Dependency(object):
     def __init__(self, groupId, artifactId, requestedVersion,
                  resolvedVersion="", extension="", classifier="",
                  namespace="", exclusions=None):
-        if not exclusions:
-            exclusions = set()
-
         self.artifact = Artifact(groupId,
                                  artifactId,
                                  extension=extension,
@@ -441,7 +428,7 @@ class Dependency(object):
                                  version=requestedVersion,
                                  namespace=namespace)
         self.resolvedVersion = resolvedVersion
-        self.exclusions = exclusions
+        self.exclusions = exclusions or set()
 
     def __getattr__(self, attrib):
         return getattr(self.artifact, attrib)
@@ -479,10 +466,8 @@ class Dependency(object):
         d.groupId = self.groupId
         d.artifactId = self.artifactId
         d.requestedVersion = self.version
-        if self.classifier:
-            d.classifier = self.classifier
-        if self.extension:
-            d.extension = self.extension
+        d.classifier = self.classifier or None
+        d.extension = self.extension or None
         if self.exclusions:
             excl = {m.DependencyExclusion(e.groupId, e.artifactId)
                     for e in self.exclusions}
