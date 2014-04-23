@@ -129,6 +129,7 @@ class ProvidedArtifact(object):
         a.version = self.version
         a.classifier = self.classifier or None
         a.extension = self.extension or None
+        a.path = self.path or None
         if self.dependencies:
             deps = [d.to_metadata() for d in self.dependencies]
             a.dependencies = pyxb.BIND(*deps)
