@@ -144,5 +144,11 @@ class TestMvnArtifact(unittest.TestCase):
         got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
         self.assertEqual(res, True)
 
+    @mvn_artifact('args4j-exclusions.pom', 'some.jar')
+    def test_dependencies_exclusions(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(res, True)
+
 if __name__ == '__main__':
     unittest.main()
