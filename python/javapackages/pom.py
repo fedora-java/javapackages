@@ -32,8 +32,6 @@
 
 from lxml.etree import ElementTree, XMLParser
 
-from javapackages.artifact import Dependency
-
 class PomLoadingException(Exception):
     pass
 
@@ -168,10 +166,13 @@ class POM(object):
         return None
 
     def get_dependencies(self, get_all=False):
+        # TODO: circular imports between artifact and pom (?)
+        from javapackages.artifact import Dependency
         ret = set()
         dependencies = self.__findall('./pom:dependencies/pom:dependency')
         if dependencies is not None:
             for dep in dependencies:
+                #adep = javapackages.artifact.Dependency.from_xml_element(dep, create_all=get_all)
                 adep = Dependency.from_xml_element(dep, create_all=get_all)
                 if not adep:
                     continue
