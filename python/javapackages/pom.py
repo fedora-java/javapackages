@@ -172,7 +172,6 @@ class POM(object):
         dependencies = self.__findall('./pom:dependencies/pom:dependency')
         if dependencies is not None:
             for dep in dependencies:
-                #adep = javapackages.artifact.Dependency.from_xml_element(dep, create_all=get_all)
                 adep = Dependency.from_xml_element(dep, create_all=get_all)
                 if not adep:
                     continue
