@@ -173,7 +173,7 @@ class ProvidedArtifact(object):
                 if hasattr(alias, 'classifier') and alias.classifier:
                     classifier = alias.classifier
 
-                aliases.add(Artifact(alias.groupId,
+                aliases.add(Alias(alias.groupId,
                                      alias.artifactId,
                                      extension,
                                      classifier))
