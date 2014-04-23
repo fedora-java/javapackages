@@ -36,6 +36,7 @@ import sys
 import pyxb
 from lxml.etree import Element, SubElement, tostring
 
+from javapackages.pom import POM
 import javapackages.metadata as m
 
 class ArtifactException(Exception):
@@ -122,7 +123,7 @@ class ProvidedArtifact(object):
         return result
 
     def to_metadata(self):
-        # TODO: add support for aliases, properties and compat versions
+        # TODO: add support for properties(?)
         a = m.ArtifactMetadata()
         a.groupId = self.groupId
         a.artifactId = self.artifactId
@@ -133,6 +134,12 @@ class ProvidedArtifact(object):
         if self.dependencies:
             deps = [d.to_metadata() for d in self.dependencies]
             a.dependencies = pyxb.BIND(*deps)
+        if self.compatVersions:
+            a.compatVersions = pyxb.BIND(*self.compatVersions)
+
+        if self.aliases:
+            als = [alias.to_metadata() for alias in self.aliases]
+            a.aliases = pyxb.BIND(*als)
 
         return a
 
@@ -184,6 +191,19 @@ class ProvidedArtifact(object):
                    namespace, path=path, aliases=aliases,
                    compatVersions=compatVersions, properties=properties,
                    dependencies=dependencies)
+
+    @classmethod
+    def from_pom(cls, pom_path):
+        pom = POM(pom_path)
+
+        return cls(pom.groupId, pom.artifactId, version=pom.version,
+                   path=pom_path, dependencies=pom.get_dependencies())
+
+    @classmethod
+    def from_mvn_str(cls, mvn_str):
+        a = Artifact.from_mvn_str(mvn_str)
+
+        return cls(a.groupId, a.artifactId, version=a.version)
 
 class Artifact(object):
     """
@@ -530,3 +550,25 @@ class Dependency(object):
                    requestedVersion=a.version, extension=a.extension,
                    classifier=a.classifier, namespace=namespace,
                    exclusions=exclusions)
+
+
+class Alias(object):
+    def __init__(self, groupId, artifactId, extension="", classifier=""):
+
+        self.artifact = Artifact(groupId, artifactId, extension, classifier)
+
+    def to_metadata(self):
+        a = m.ArtifactAlias()
+        a.groupId = self.artifact.groupId
+        a.artifactId = self.artifact.artifactId
+        a.classifier = self.artifact.classifier or None
+        a.extension = self.artifact.extension or None
+
+        return a
+
+    @classmethod
+    def from_mvn_str(cls, mvn_str):
+        a = Artifact.from_mvn_str(mvn_str)
+
+        return cls(a.groupId, a.artifactId, a.extension, a.classifier)
+
