@@ -38,7 +38,6 @@
 
 # TODO:
 # add back support for:
-# - namespaces
 # - prefixes
 # - injecting pom properties
 #
@@ -250,6 +249,9 @@ if __name__ == "__main__":
     artifact = add_compat_versions(artifact, add_versions)
     if add_versions:
         pom_path, jar_path = _make_files_versioned(add_versions, pom_path, jar_path)
+
+    if namespace:
+        artifact.namespace = namespace
 
     am = []
     if jar_path:
