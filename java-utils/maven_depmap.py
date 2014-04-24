@@ -48,6 +48,7 @@
 from optparse import OptionParser
 import os
 import shutil
+import sys
 
 from os.path import basename
 import zipfile
@@ -234,8 +235,13 @@ if __name__ == "__main__":
             have_pom = True
     else:
         # looks like POM only artifact
-        artifact = ProvidedArtifact.from_pom(pom_path)
-        have_pom = True
+        if ':' not in pom_path:
+            artifact = ProvidedArtifact.from_pom(pom_path)
+            have_pom = True
+        else:
+            print("JAR file path must be specified when using artifact coordinates")
+            sys.exit(1)
+
 
     # output file path for file lists
     print fragment_path
