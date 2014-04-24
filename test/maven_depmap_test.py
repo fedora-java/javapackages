@@ -8,6 +8,7 @@ from test_common import DIRPATH, mvn_depmap, call_script
 
 from lxml import etree
 from xml_compare import compare_lxml_etree
+import javapackages.metadata as m
 
 class TestMavenDepmap(unittest.TestCase):
 
@@ -19,13 +20,26 @@ class TestMavenDepmap(unittest.TestCase):
             self.datadir = os.path.join(DIRPATH,
                                         'data',
                                         'maven_depmap')
-            self.workdir = os.path.join(self.datadir, "..",
-                                        "maven_depmap_workdir")
+            self.workdir = os.path.realpath(os.path.join(self.datadir, "..",
+                                            "maven_depmap_workdir"))
 
             shutil.copytree(self.datadir, self.workdir)
             os.chdir(self.workdir)
         except OSError:
             pass
+
+        # TODO: same code as in mvn_artfact_test, move to test_common?
+        for dirname, dirnames, filenames in os.walk(self.workdir):
+            for filename in filenames:
+                if filename.endswith("-want.xml"):
+                    want_file = os.path.join(dirname, filename)
+                    xml = open(want_file).read()
+                    metadata = m.CreateFromDocument(xml)
+                    for a in metadata.artifacts.artifact:
+                        a.path = a.path % (self.workdir)
+                    with open(want_file, "w") as f:
+                        dom = metadata.toDOM(None)
+                        f.write(dom.toprettyxml(indent="   "))
 
     def tearDown(self):
         try:
