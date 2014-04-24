@@ -270,6 +270,7 @@ if __name__ == "__main__":
             print jar_path
     if have_pom:
         artifact.path = os.path.abspath(pom_path)
+        artifact.extension = "pom"
         am.append(artifact.to_metadata())
         # output file path for file list (if it's not versioned)
         if not add_versions:
