@@ -42,7 +42,6 @@
 # - injecting pom properties
 #
 # - compressed metadata?
-# - dependencies?
 
 from optparse import OptionParser
 import os
