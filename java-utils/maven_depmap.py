@@ -39,13 +39,12 @@
 # TODO:
 # add back support for:
 # - prefixes
-#
-# - compressed metadata?
 
 from optparse import OptionParser
 import os
 import shutil
 import sys
+import gzip
 
 from os.path import basename
 import zipfile
@@ -176,7 +175,17 @@ def add_aliases(artifact, additions):
     return artifact
 
 def write_metadata(metadata_file, artifacts):
-    root = m.metadata()
+    if os.path.exists(metadata_file):
+        try:
+            xml = gzip.open(metadata_file, 'rb').read()
+        except IOError:
+            # Not a gzipped file?
+            xml = open(metadata_file, "r").read()
+        root = m.CreateFromDocument(xml)
+        artifacts += [a for a in root.artifacts.artifact]
+    else:
+        root = m.metadata()
+
     root.artifacts = pyxb.BIND(*artifacts)
 
     with open(metadata_file, 'w') as f:
