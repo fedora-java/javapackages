@@ -232,6 +232,10 @@ if __name__ == "__main__":
         else:
             artifact = ProvidedArtifact.from_pom(pom_path)
             have_pom = True
+    else:
+        # looks like POM only artifact
+        artifact = ProvidedArtifact.from_pom(pom_path)
+        have_pom = True
 
     # output file path for file lists
     print fragment_path
