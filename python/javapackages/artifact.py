@@ -359,16 +359,33 @@ class Artifact(object):
         Create Artifact from xml.etree.ElementTree.Element as contained
         within pom.xml or a dependency map.
         """
+
+        # TODO: find better way of handling pom/ivy/xyz differences
         parts = {'groupId':'',
                  'artifactId':'',
                  'extension':'',
                  'classifier':'',
                  'version':''}
 
+        ivyparts = {'org': '',
+                    'name': '',
+                    'revision': ''}
+
         for key in parts:
             node = xmlnode.find("./{*}" + key)
             if node is not None and node.text is not None:
                 parts[key] = node.text.strip()
+
+        attribs = xmlnode.attrib
+        for key in ivyparts:
+            try:
+                ivyparts[key] = attribs[key]
+            except KeyError:
+                pass
+
+        parts['groupId'] = parts['groupId'] or ivyparts['org']
+        parts['artifactId'] = parts['artifactId'] or ivyparts['name']
+        parts['version'] = parts['version'] or ivyparts['revision']
 
         if not parts['groupId'] or not parts['artifactId']:
             raise ArtifactFormatException(
@@ -532,6 +549,13 @@ class Dependency(object):
         within pom.xml
         """
         a = Artifact.from_xml_element(xmlnode)
+
+        # ivy specifies version as "rev" in case of dependencies:
+        if xmlnode.attrib:
+            rev = xmlnode.attrib.get("rev")
+            if rev:
+                a.version = rev
+
         if not a.version:
             raise ArtifactFormatException("Empty version encountered in "
                                           "dependency: {dep}".
@@ -551,6 +575,7 @@ class Dependency(object):
                 aid = excl.find('./{*}artifactId').text
                 e = m.DependencyExclusion(gid, aid)
                 exclusions.add(e)
+
 
         return cls(a.groupId, a.artifactId,
                    requestedVersion=a.version, extension=a.extension,
