@@ -376,16 +376,17 @@ class Artifact(object):
             if node is not None and node.text is not None:
                 parts[key] = node.text.strip()
 
-        attribs = xmlnode.attrib
-        for key in ivyparts:
-            try:
-                ivyparts[key] = attribs[key]
-            except KeyError:
-                pass
+        if hasattr(xmlnode, "attrib"):
+            attribs = xmlnode.attrib
+            for key in ivyparts:
+                try:
+                    ivyparts[key] = attribs[key]
+                except KeyError:
+                    pass
 
-        parts['groupId'] = parts['groupId'] or ivyparts['org']
-        parts['artifactId'] = parts['artifactId'] or ivyparts['name']
-        parts['version'] = parts['version'] or ivyparts['revision']
+            parts['groupId'] = parts['groupId'] or ivyparts['org']
+            parts['artifactId'] = parts['artifactId'] or ivyparts['name']
+            parts['version'] = parts['version'] or ivyparts['revision']
 
         if not parts['groupId'] or not parts['artifactId']:
             raise ArtifactFormatException(
