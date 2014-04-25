@@ -44,6 +44,8 @@ from javapackages.pom import *
 from lxml import etree
 import pyxb
 
+from xml.dom.minidom import getDOMImplementation
+
 
 usage="usage: %prog [options] <MVN spec | POM path> [artifact path]"
 epilog="""
@@ -86,13 +88,32 @@ def load_metadata(metadatadir="/usr/share/maven-metadata"):
     return Depmap(mfiles)
 
 
+def is_it_ivy_file(fpath):
+    """Try to determine whether file in given path is Ivy file or not"""
+    et = ElementTree()
+    doc = et.parse(fpath)
+
+    return doc.tag == "ivy-module"
+
 def add_artifact_elements(root, uart, ppath=None, jpath=None):
     artifacts = []
     for path in [ppath, jpath]:
         if path:
             a = uart.to_metadata()
             if path is ppath:
-                a.extension = "pom"
+                if not is_it_ivy_file(ppath):
+                    a.extension = "pom"
+                else:
+                    a.extension = os.path.splitext(pom_path)[1]
+
+                    # add property "type"
+                    domimpl = getDOMImplementation()
+                    doc  = domimpl.createDocument(None, None, None)
+                    ty = doc.createElement('type')
+                    te = doc.createTextNode('ivy')
+                    ty.appendChild(te)
+                    a.properties = pyxb.BIND(ty)
+
             a.path = os.path.abspath(path)
             artifacts.append(a)
 
