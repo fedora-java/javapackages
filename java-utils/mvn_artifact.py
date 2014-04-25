@@ -104,12 +104,11 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
 
 
 if __name__ == "__main__":
-    usage = "usage: %prog [options] pom_path|<MVN spec> [jar_path]"
-
+    OptionParser.format_epilog = lambda self, formatter: self.epilog
     parser = OptionParser(usage=usage,
                         epilog=epilog)
     parser.add_option("--skip-dependencies", action="store_true", default=False,
-                      help="Skip dependencies section in resulting metadata")
+                      help="skip dependencies section in resulting metadata")
     for index, arg in enumerate(sys.argv):
         sys.argv[index] = arg.decode(sys.getfilesystemencoding())
 
