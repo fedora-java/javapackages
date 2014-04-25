@@ -37,16 +37,13 @@ from javapackages import Artifact
 
 import sys
 import os
-import optparse
+from optparse import OptionParser
 
 from javapackages.artifact import *
 from javapackages.pom import *
 from lxml import etree
 import pyxb
 
-class SaneParser(optparse.OptionParser):
-    def format_epilog(self, formatter):
-        return self.epilog
 
 usage="usage: %prog [options] <MVN spec | POM path> [artifact path]"
 epilog="""
@@ -107,8 +104,12 @@ def add_artifact_elements(root, uart, deps, ppath=None, jpath=None):
 
 
 if __name__ == "__main__":
-    parser = SaneParser(usage=usage,
+    usage = "usage: %prog [options] pom_path|<MVN spec> [jar_path]"
+
+    parser = OptionParser(usage=usage,
                         epilog=epilog)
+    parser.add_option("--skip-dependencies", action="store_true", default=False,
+                      help="Skip dependencies section in resulting metadata")
     for index, arg in enumerate(sys.argv):
         sys.argv[index] = arg.decode(sys.getfilesystemencoding())
 
@@ -155,21 +156,21 @@ if __name__ == "__main__":
         metadata = m.metadata()
 
     deps = []
-    # try to locate all necessary pom files
-    if pom_path:
-        p = POM(pom_path)
-        deps.extend([x for x in p.get_dependencies()])
-        try:
-            mets = load_metadata()
-            for provided in mets.get_provided_artifacts():
-                if (provided.groupId == p.parentGroupId and
-                    provided.artifactId == p.parentArtifactId):
-                    for dep in provided.dependencies:
-                        deps.append(Dependency.from_metadata(dep))
-        except MetadataInvalidException:
-            pass
-
-    art.dependencies = deps
+    if not options.skip_dependencies:
+        # try to locate all necessary pom files
+        if pom_path:
+            p = POM(pom_path)
+            deps.extend([x for x in p.get_dependencies()])
+            try:
+                mets = load_metadata()
+                for provided in mets.get_provided_artifacts():
+                    if (provided.groupId == p.parentGroupId and
+                        provided.artifactId == p.parentArtifactId):
+                        for dep in provided.dependencies:
+                            deps.append(Dependency.from_metadata(dep))
+            except MetadataInvalidException:
+                pass
+        art.dependencies = deps
 
     add_artifact_elements(metadata, art, deps, pom_path, jar_path)
 
