@@ -191,11 +191,13 @@ inst_data metadata/metadata-org-codehaus-mojo.xml "${sysconfdir}/maven"
 inst_exec target/mvn-local "${bindir}"
 inst_exec target/mvn-rpmbuild "${bindir}"
 
-inst_data configs/configuration-20.xml "${m2home}"
-inst_data configs/configuration-20-rpmbuild.xml "${m2home}"
-inst_data configs/configuration-20-rpmbuild-raw.xml "${m2home}"
+inst_data configs/configuration.xml "${m2home}"
+inst_data configs/configuration-rpmbuild.xml "${m2home}"
+inst_data configs/configuration-rpmbuild-raw.xml "${m2home}"
 
-link "${m2home}/configuration-20.xml" "${m2home}/configuration.xml"
+link "${m2home}/configuration.xml" "${m2home}/configuration-21.xml"
+link "${m2home}/configuration-rpmbuild.xml" "${m2home}/configuration-21-rpmbuild.xml"
+link "${m2home}/configuration-rpmbuild-raw.xml" "${m2home}/configuration-21-rpmbuild-raw.xml"
 
 
 exec >files-ivy
