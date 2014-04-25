@@ -10,7 +10,7 @@ mvn_artifact - request installation of Maven artifact
 
 SYNOPSIS
 --------
-*%mvn_artifact* model [artifact-file]
+*%mvn_artifact* [options] model [artifact-file]
 *%mvn_artifact* artifact-coordinates artifact-file
 
 DESCRIPTION
@@ -19,6 +19,11 @@ DESCRIPTION
 further call to *mvn_install*.  Multiple calls to *mvn_artifact*
 and/or *mvn_build* can be made to request installation of multiple
 artifacts.
+
+OPTIONS
+-------
+*--skip-dependencies*::
+    Do not try to gather list of dependencies for given Maven artifact.
 
 OPERANDS
 --------
