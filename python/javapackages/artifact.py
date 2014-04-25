@@ -118,6 +118,8 @@ class ProvidedArtifact(object):
 
         result = ""
         for rpmstr in strlist:
+            if result:
+                result += "\n"
             result += "{rpmstr} = {version}".format(rpmstr=rpmstr, version=self.version)
 
         return result
