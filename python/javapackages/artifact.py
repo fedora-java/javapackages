@@ -233,6 +233,25 @@ class Artifact(object):
     def __str__(self):
         return unicode(self).encode(sys.getfilesystemencoding())
 
+    def get_mvn_str(self, version=None):
+        mvnstr = "{gid}:{aid}".format(gid=self.groupId,
+                                      aid=self.artifactId)
+
+        if self.extension:
+            mvnstr = mvnstr + ":{ext}".format(ext=self.extension)
+
+        if self.classifier:
+            if not self.extension:
+                mvnstr = mvnstr + ":"
+            mvnstr = mvnstr + ":{clas}".format(clas=self.classifier)
+
+        if version:
+            mvnstr = mvnstr + ":{ver}".format(ver=version)
+        elif self.classifier or self.extension:
+            mvnstr = mvnstr + ":"
+
+        return mvnstr
+
     def get_rpm_str(self, version=None):
         """Return representation of artifact as used in RPM dependencies
 
@@ -249,21 +268,7 @@ class Artifact(object):
         if self.namespace:
             namespace = self.namespace + "-mvn"
 
-        mvnstr = "{gid}:{aid}".format(gid=self.groupId,
-                                      aid=self.artifactId)
-
-        if self.extension:
-            mvnstr = mvnstr + ":{ext}".format(ext=self.extension)
-
-        if self.classifier:
-            if not self.extension:
-                mvnstr = mvnstr + ":"
-            mvnstr = mvnstr + ":{clas}".format(clas=self.classifier)
-
-        if version:
-            mvnstr = mvnstr + ":{ver}".format(ver=version)
-        elif self.classifier or self.extension:
-            mvnstr = mvnstr + ":"
+        mvnstr = self.get_mvn_str(version)
 
         return "{namespace}({mvnstr})".format(namespace=namespace,
                                               mvnstr=mvnstr)
