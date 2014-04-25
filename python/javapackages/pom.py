@@ -53,16 +53,43 @@ class POM(object):
 
 
     def __find(self, xpath):
-        ret = self.__doc.xpath(xpath, namespaces=dict(pom='http://maven.apache.org/POM/4.0.0'))
-        # perhaps there is no namespace?
-        if len(ret) == 0:
-            ret = self.__doc.xpath(xpath.replace('pom:',''))
+        ret = self.__findall(xpath)
         if len(ret) > 0:
             ret = ret[0]
         else:
             ret = None
 
         return ret
+
+    def __findall(self, xpath):
+        ret = self.__doc.xpath(xpath, namespaces=dict(pom='http://maven.apache.org/POM/4.0.0'))
+        # perhaps there is no namespace?
+        if len(ret) == 0:
+            ret = self.__doc.xpath(xpath.replace('pom:',''))
+        return ret
+
+
+    @property
+    def parentArtifactId(self):
+        """
+        artifactId of the parent artifact of None
+        """
+        aId = self.__find('./pom:parent/pom:artifactId')
+        if aId is None:
+            return None
+        else:
+            return aId.text.strip()
+
+    @property
+    def parentGroupId(self):
+        """
+        groupId of the parent artifact of None
+        """
+        gId = self.__find('./pom:parent/pom:groupId')
+        if gId is None:
+            return None
+        else:
+            return gId.text.strip()
 
     @property
     def groupId(self):
@@ -137,3 +164,22 @@ class POM(object):
         if p is not None:
             return 'ivy'
         return None
+
+    def get_dependencies(self, get_all=False):
+        # TODO: circular imports between artifact and pom (?)
+        from javapackages.artifact import Dependency
+        ret = set()
+
+
+        dependencies = self.__findall('./pom:dependencies/pom:dependency')
+        if dependencies is not None:
+            if dependencies[0].attrib:
+                # this is probably ivy file, we currently don't really support
+                # reading dependencies from ivy files - returning empty set
+                return ret
+            for dep in dependencies:
+                adep = Dependency.from_xml_element(dep, create_all=get_all)
+                if not adep:
+                    continue
+                ret.add(adep)
+        return ret

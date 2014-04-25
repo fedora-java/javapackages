@@ -33,7 +33,11 @@
 import re
 import sys
 
+import pyxb
 from lxml.etree import Element, SubElement, tostring
+
+from javapackages.pom import POM
+import javapackages.metadata as m
 
 class ArtifactException(Exception):
     pass
@@ -43,6 +47,164 @@ class ArtifactFormatException(ArtifactException):
 
 class ArtifactValidationException(ArtifactException):
     pass
+
+class ProvidedArtifact(object):
+    def __init__(self, groupId, artifactId, extension="",
+                 classifier="", version="", namespace="",
+                 path="", aliases=None, compatVersions=None,
+                 properties=None, dependencies=None):
+
+
+        self.artifact = Artifact(groupId, artifactId, extension,
+                                 classifier, version, namespace)
+        self.compatVersions = compatVersions or set()
+        self.aliases = aliases or set()
+        self.properties = properties or {}
+        self.path = path
+        self.dependencies = dependencies or set()
+
+    def is_compat(self):
+        """Return true if artifact has compat verions specified.
+        This means package should have versioned provides for this artifact"""
+
+        return self.compatVersions
+
+    def __getattr__(self, attrib):
+        return getattr(self.artifact, attrib)
+
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.__dict__ == other.__dict__
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return self.artifact.__hash__() + \
+               self.compatVersions.__hash__() + \
+               self.aliases.__hash__() + \
+               self.properties.__hash__() + \
+               self.path.__hash__()
+
+    def __unicode__(self):
+        return self.artifact.__unicode__()
+
+    def __str__(self):
+        return self.artifact.__str__()
+
+    def get_rpm_str(self, version=None):
+        """Return representation of artifact as used in RPM dependencies
+
+        Example outputs:
+        mvn(commons-logging:commons-logging) = 2.0
+
+        Versioned:
+        mvn(commons-logging:commons-logging:war:1.0) = 1.2
+        mvn(commons-logging:commons-logging:war:1.2) = 1.2
+        """
+
+        strlist = []
+        if not self.compatVersions:
+            strlist.append(self.artifact.get_rpm_str())
+        else:
+            for ver in self.compatVersions:
+                rpmstr = self.artifact.get_rpm_str(ver)
+                strlist.append(rpmstr)
+
+        if not (self.version):
+            raise ArtifactFormatException(
+                "Cannot create versioned string from artifact without version: {art}".format(art=str(self)))
+
+        result = ""
+        for rpmstr in strlist:
+            result += "{rpmstr} = {version}".format(rpmstr=rpmstr, version=self.version)
+
+        return result
+
+    def to_metadata(self):
+        # TODO: add support for properties(?)
+        a = m.ArtifactMetadata()
+        a.groupId = self.groupId
+        a.artifactId = self.artifactId
+        a.version = self.version
+        a.classifier = self.classifier or None
+        a.extension = self.extension or None
+        a.namespace = self.namespace or None
+        a.path = self.path or None
+        if self.dependencies:
+            deps = [d.to_metadata() for d in self.dependencies]
+            a.dependencies = pyxb.BIND(*deps)
+        if self.compatVersions:
+            a.compatVersions = pyxb.BIND(*self.compatVersions)
+
+        if self.aliases:
+            als = [alias.to_metadata() for alias in self.aliases]
+            a.aliases = pyxb.BIND(*als)
+
+        return a
+
+    @classmethod
+    def from_metadata(cls, metadata):
+        groupId = metadata.groupId.strip()
+        artifactId = metadata.artifactId.strip()
+        version = extension = classifier = namespace = path =  ""
+        if hasattr(metadata, 'path') and metadata.path:
+            path = metadata.path.strip()
+        if hasattr(metadata, 'version') and metadata.version:
+            version = metadata.version.strip()
+        if hasattr(metadata, 'extension') and metadata.extension:
+            extension = metadata.extension.strip()
+        if hasattr(metadata, 'classifier') and metadata.classifier:
+            classifier = metadata.classifier.strip()
+        if hasattr(metadata, 'namespace') and metadata.namespace:
+            namespace = metadata.namespace.strip()
+
+        compatVersions = set()
+        if hasattr(metadata, 'compatVersions') and metadata.compatVersions:
+            compatVersions = {cv for cv in metadata.compatVersions.version}
+
+        aliases = set()
+        if hasattr(metadata, 'aliases') and metadata.aliases:
+            for alias in metadata.aliases.alias:
+                extension = classifier = ""
+                if hasattr(alias, 'extension') and alias.extension:
+                    extension = alias.extension
+
+                if hasattr(alias, 'classifier') and alias.classifier:
+                    classifier = alias.classifier
+
+                aliases.add(Alias(alias.groupId,
+                                     alias.artifactId,
+                                     extension,
+                                     classifier))
+        properties = {}
+        if hasattr(metadata, 'properties') and metadata.properties:
+            properties = {prop.tagName:prop.firstChild.value
+                          for prop in metadata.properties.wildcardElements()}
+
+        dependencies = set()
+        if hasattr(metadata, 'dependencies') and metadata.dependencies:
+            dependencies = {Dependency.from_metadata(dep)
+                            for dep in metadata.dependencies.dependency}
+
+        return cls(groupId, artifactId, extension, classifier, version,
+                   namespace, path=path, aliases=aliases,
+                   compatVersions=compatVersions, properties=properties,
+                   dependencies=dependencies)
+
+    @classmethod
+    def from_pom(cls, pom_path):
+        pom = POM(pom_path)
+
+        return cls(pom.groupId, pom.artifactId, version=pom.version,
+                   path=pom_path, dependencies=pom.get_dependencies())
+
+    @classmethod
+    def from_mvn_str(cls, mvn_str):
+        a = Artifact.from_mvn_str(mvn_str)
+
+        return cls(a.groupId, a.artifactId, version=a.version)
 
 class Artifact(object):
     """
@@ -71,24 +233,7 @@ class Artifact(object):
     def __str__(self):
         return unicode(self).encode(sys.getfilesystemencoding())
 
-    def get_rpm_str(self, versioned=False):
-        """Return representation of artifact as used in RPM dependencies
-
-        versioned -- return artifact string including version
-
-        Example outputs:
-        mvn(commons-logging:commons-logging)
-        mvn(commons-logging:commons-logging:1.2) # versioned
-        mvn(commons-logging:commons-logging:war:)
-        mvn(commons-logging:commons-logging:war:1.2) # versioned
-        mvn(commons-logging:commons-logging:war:test-jar:)
-        mvn(commons-logging:commons-logging:war:test-jar:1.3) # versioned
-        maven31-mvn(commons-logging:commons-logging)
-        """
-        namespace = "mvn"
-        if self.namespace:
-            namespace = self.namespace + "-mvn"
-
+    def get_mvn_str(self, version=None):
         mvnstr = "{gid}:{aid}".format(gid=self.groupId,
                                       aid=self.artifactId)
 
@@ -100,17 +245,33 @@ class Artifact(object):
                 mvnstr = mvnstr + ":"
             mvnstr = mvnstr + ":{clas}".format(clas=self.classifier)
 
-        if versioned:
-            if not (self.version):
-                raise ArtifactFormatException(
-                    "Cannot create versioned string from artifact without version: {art}".format(art=str(self)))
-            mvnstr = mvnstr + ":{ver}".format(ver=self.version)
+        if version:
+            mvnstr = mvnstr + ":{ver}".format(ver=version)
         elif self.classifier or self.extension:
             mvnstr = mvnstr + ":"
 
+        return mvnstr
+
+    def get_rpm_str(self, version=None):
+        """Return representation of artifact as used in RPM dependencies
+
+        Example outputs:
+        mvn(commons-logging:commons-logging)
+        mvn(commons-logging:commons-logging:1.2) # versioned
+        mvn(commons-logging:commons-logging:war:)
+        mvn(commons-logging:commons-logging:war:1.2) # versioned
+        mvn(commons-logging:commons-logging:war:test-jar:)
+        mvn(commons-logging:commons-logging:war:test-jar:1.2) # versioned
+        maven31-mvn(commons-logging:commons-logging)
+        """
+        namespace = "mvn"
+        if self.namespace:
+            namespace = self.namespace + "-mvn"
+
+        mvnstr = self.get_mvn_str(version)
+
         return "{namespace}({mvnstr})".format(namespace=namespace,
                                               mvnstr=mvnstr)
-
 
     def get_xml_element(self, root="artifact"):
         """
@@ -140,14 +301,14 @@ class Artifact(object):
         all_empty = True
         wildcard_used = False
         backref_used = False
-        backref_re = re.compile('@\d+')
+        backref_re = re.compile(r'@\d+')
         for key in ("artifactId", "groupId", "extension", "version",
                     "classifier", "namespace"):
             val = getattr(self, key)
             if not val:
                 continue
             if val:
-               all_empty = False
+                all_empty = False
             if val.find('*') != -1:
                 wildcard_used = True
             if backref_re.match(val):
@@ -160,6 +321,23 @@ class Artifact(object):
         if not allow_backref and backref_used:
             raise ArtifactValidationException("Backreference used in artifact")
         return True
+
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.__dict__ == other.__dict__
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return self.groupId.__hash__() + \
+               self.artifactId.__hash__() + \
+               self.version.__hash__() + \
+               self.extension.__hash__() + \
+               self.classifier.__hash__() + \
+               self.namespace.__hash__()
+
 
     @classmethod
     def merge_artifacts(cls, dominant, recessive):
@@ -181,16 +359,34 @@ class Artifact(object):
         Create Artifact from xml.etree.ElementTree.Element as contained
         within pom.xml or a dependency map.
         """
+
+        # TODO: find better way of handling pom/ivy/xyz differences
         parts = {'groupId':'',
                  'artifactId':'',
                  'extension':'',
                  'classifier':'',
                  'version':''}
 
+        ivyparts = {'org': '',
+                    'name': '',
+                    'revision': ''}
+
         for key in parts:
-            node = xmlnode.find("./" + key)
+            node = xmlnode.find("./{*}" + key)
             if node is not None and node.text is not None:
                 parts[key] = node.text.strip()
+
+        if hasattr(xmlnode, "attrib"):
+            attribs = xmlnode.attrib
+            for key in ivyparts:
+                try:
+                    ivyparts[key] = attribs[key]
+                except KeyError:
+                    pass
+
+            parts['groupId'] = parts['groupId'] or ivyparts['org']
+            parts['artifactId'] = parts['artifactId'] or ivyparts['name']
+            parts['version'] = parts['version'] or ivyparts['revision']
 
         if not parts['groupId'] or not parts['artifactId']:
             raise ArtifactFormatException(
@@ -223,11 +419,13 @@ class Artifact(object):
         # groupId and artifactId are always present
         if len(tup) < 2:
             raise ArtifactFormatException("Artifact string '{mvnstr}' does not "
-                                          "contain ':' character. Can not parse".format(mvnstr=mvnstr))
+                                          "contain ':' character. Can not parse"
+                                          .format(mvnstr=mvnstr))
 
         if len(tup) > 5:
             raise ArtifactFormatException("Artifact string '{mvnstr}' contains "
-                                          "too many colons. Can not parse".format(mvnstr=mvnstr))
+                                          "too many colons. Can not parse"
+                                          .format(mvnstr=mvnstr))
 
         groupId = tup[0]
         artifactId = tup[1]
@@ -237,3 +435,172 @@ class Artifact(object):
 
         return cls(groupId, artifactId, extension,
                    classifier, version, namespace)
+
+    @classmethod
+    def from_metadata(cls, metadata):
+        groupId = metadata.groupId.strip()
+        artifactId = metadata.artifactId.strip()
+
+        version = extension = classifier = namespace = ""
+        if hasattr(metadata, 'version') and metadata.version:
+            version = metadata.version.strip()
+        if hasattr(metadata, 'extension') and metadata.extension:
+            extension = metadata.extension.strip()
+        if hasattr(metadata, 'classifier') and metadata.classifier:
+            classifier = metadata.classifier.strip()
+        if hasattr(metadata, 'namespace') and metadata.namespace:
+            namespace = metadata.namespace.strip()
+
+        return cls(groupId, artifactId, extension, classifier,
+                   version, namespace)
+
+class SkippedArtifact(Artifact):
+    pass
+
+class ExclusionArtifact(Artifact):
+    pass
+
+
+class Dependency(object):
+
+    def __init__(self, groupId, artifactId, requestedVersion,
+                 resolvedVersion="", extension="", classifier="",
+                 namespace="", exclusions=None):
+        self.artifact = Artifact(groupId,
+                                 artifactId,
+                                 extension=extension,
+                                 classifier=classifier,
+                                 version=requestedVersion,
+                                 namespace=namespace)
+        self.resolvedVersion = resolvedVersion
+        self.exclusions = exclusions or set()
+
+    def __getattr__(self, attrib):
+        return getattr(self.artifact, attrib)
+
+    def get_requestedVersion(self):
+        return self.artifact.version
+    def set_requestedVersion(self, version):
+        self.artifact.version = version
+    requestedVersion = property(get_requestedVersion, set_requestedVersion)
+
+    def get_rpm_str(self, version=None):
+        """Return representation of artifact as used in RPM dependencies"""
+        return self.artifact.get_rpm_str(self.resolvedVersion)
+
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.__dict__ == other.__dict__
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return self.artifact.__hash__() + \
+               self.resolvedVersion.__hash__()
+
+    def __unicode__(self):
+        return self.artifact.__unicode__()
+
+    def __str__(self):
+        return self.artifact.__str__()
+
+    def to_metadata(self):
+        d = m.Dependency()
+        d.groupId = self.groupId
+        d.artifactId = self.artifactId
+        d.requestedVersion = self.version
+        d.classifier = self.classifier or None
+        d.extension = self.extension or None
+        if self.exclusions:
+            excl = {m.DependencyExclusion(e.groupId, e.artifactId)
+                    for e in self.exclusions}
+            d.exclusions = pyxb.BIND(*excl)
+        return d
+
+    @classmethod
+    def from_metadata(cls, metadata):
+        groupId = metadata.groupId.strip()
+        artifactId = metadata.artifactId.strip()
+        requestedVersion = metadata.requestedVersion.strip()
+
+        resolvedVersion = extension = classifier = namespace = ""
+        if hasattr(metadata, 'resolvedVersion') and metadata.resolvedVersion:
+            resolvedVersion = metadata.resolvedVersion.strip()
+        if hasattr(metadata, 'extension') and metadata.extension:
+            extension = metadata.extension.strip()
+        if hasattr(metadata, 'classifier') and metadata.classifier:
+            classifier = metadata.classifier.strip()
+        if hasattr(metadata, 'namespace') and metadata.namespace:
+            namespace = metadata.namespace.strip()
+
+        exclusions = set()
+        if hasattr(metadata, 'exclusions') and metadata.exclusions:
+            exclusions = {ExclusionArtifact.from_metadata(excl)
+                          for excl in metadata.exclusions.exclusion}
+
+        return cls(groupId, artifactId, requestedVersion, resolvedVersion,
+                   extension, classifier, namespace, exclusions)
+
+    @classmethod
+    def from_xml_element(cls, xmlnode, namespace="", create_all=False):
+        """
+        Create Dependency from xml.etree.ElementTree.Element as contained
+        within pom.xml
+        """
+        a = Artifact.from_xml_element(xmlnode)
+
+        # ivy specifies version as "rev" in case of dependencies:
+        if xmlnode.attrib:
+            rev = xmlnode.attrib.get("rev")
+            if rev:
+                a.version = rev
+
+        if not a.version:
+            raise ArtifactFormatException("Empty version encountered in "
+                                          "dependency: {dep}".
+                                          format(dep=a.get_mvn_str()))
+
+        scope = xmlnode.find('./{*}scope')
+        # by default don't create test, provided and other non-essential elements
+        if (not create_all and
+            scope is not None and
+            scope.text not in ["compile", "runtime"]):
+            return None
+        exclusions = set()
+        exclxml = xmlnode.find('./{*}exclusions')
+        if exclxml is not None:
+            for excl in exclxml:
+                gid = excl.find('./{*}groupId').text
+                aid = excl.find('./{*}artifactId').text
+                e = m.DependencyExclusion(gid, aid)
+                exclusions.add(e)
+
+
+        return cls(a.groupId, a.artifactId,
+                   requestedVersion=a.version, extension=a.extension,
+                   classifier=a.classifier, namespace=namespace,
+                   exclusions=exclusions)
+
+
+class Alias(object):
+    def __init__(self, groupId, artifactId, extension="", classifier=""):
+
+        self.artifact = Artifact(groupId, artifactId, extension, classifier)
+
+    def to_metadata(self):
+        a = m.ArtifactAlias()
+        a.groupId = self.artifact.groupId
+        a.artifactId = self.artifact.artifactId
+        a.classifier = self.artifact.classifier or None
+        a.extension = self.artifact.extension or None
+
+        return a
+
+    @classmethod
+    def from_mvn_str(cls, mvn_str):
+        a = Artifact.from_mvn_str(mvn_str)
+
+        return cls(a.groupId, a.artifactId, a.extension, a.classifier)
+

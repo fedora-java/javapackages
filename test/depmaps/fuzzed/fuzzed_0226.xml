@@ -1,13 +1,0 @@
-<?xml version="1.0" encoding="US-ASCII"?>
-<depMap>
-<dependency><maven>
-  <artifactId></artifactId>
-  <extension></extension>
-  <classifier>		  
- 	</classifier>
-  <version></version>
-</maven><jpp>
-  <groupId>JPP</groupId>
-  <artifactId>foo</artifactId>
-</jpp></dependency>
-</depMap>

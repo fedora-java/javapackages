@@ -10,6 +10,10 @@
 
 ** Include ivy-local in package diagram
 
+** Add more tests for new metadata
+
+** Test/improve Ivy support in mvn_artifact
+
 
 * BUGS
 

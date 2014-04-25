@@ -9,30 +9,6 @@
             <properties>
                 <requiresJava>1.5</requiresJava>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.maven</groupId>
-                    <artifactId>maven-project</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.maven.wagon</groupId>
-                    <artifactId>wagon-provider-api</artifactId>
-                    <classifier>test-jar</classifier>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-utils</artifactId>
-                    <extension>war</extension>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-            </dependencies>
         </artifact>
         <artifact>
             <groupId>org.apache.maven.plugins</groupId>
@@ -40,30 +16,6 @@
             <version>2.2</version>
             <extension>pom</extension>
             <path>/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin.pom</path>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.maven</groupId>
-                    <artifactId>maven-project</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.maven.wagon</groupId>
-                    <artifactId>wagon-provider-api</artifactId>
-                    <classifier>test-jar</classifier>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-utils</artifactId>
-                    <extension>war</extension>
-                    <requestedVersion>12</requestedVersion>
-                </dependency>
-            </dependencies>
         </artifact>
     </artifacts>
 </metadata>

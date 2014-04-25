@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<ns1:metadata xmlns:ns1="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
+   <ns1:artifacts>
+      <ns1:artifact>
+         <ns1:groupId>args4j</ns1:groupId>
+         <ns1:artifactId>arg</ns1:artifactId>
+         <ns1:extension>pom</ns1:extension>
+         <ns1:version>2.0.16</ns1:version>
+         <ns1:path>%s/args4j-deps.pom</ns1:path>
+         <ns1:dependencies>
+            <ns1:dependency>
+               <ns1:groupId>dep-compile</ns1:groupId>
+               <ns1:artifactId>dep-compile</ns1:artifactId>
+               <ns1:requestedVersion>1</ns1:requestedVersion>
+            </ns1:dependency>
+            <ns1:dependency>
+               <ns1:groupId>dep-runtime</ns1:groupId>
+               <ns1:artifactId>dep-runtime</ns1:artifactId>
+               <ns1:requestedVersion>8</ns1:requestedVersion>
+            </ns1:dependency>
+         </ns1:dependencies>
+      </ns1:artifact>
+   </ns1:artifacts>
+</ns1:metadata>

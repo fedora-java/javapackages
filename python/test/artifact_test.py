@@ -71,17 +71,6 @@ class TestArtifact(unittest.TestCase):
         self.assertEqual(self.fullArtifact.get_rpm_str(), "mvn(g:a:e:c:)")
         self.assertEqual(self.namespaceArtifact.get_rpm_str(), "n-mvn(g:a:e:c:)")
 
-        self.assertEqual(self.gavArtifact.get_rpm_str(True), "mvn(g:a:v)")
-        self.assertEqual(self.gacvArtifact.get_rpm_str(True), "mvn(g:a::c:v)")
-        self.assertEqual(self.gaevArtifact.get_rpm_str(True), "mvn(g:a:e:v)")
-        self.assertEqual(self.fullArtifact.get_rpm_str(True), "mvn(g:a:e:c:v)")
-        self.assertEqual(self.namespaceArtifact.get_rpm_str(True), "n-mvn(g:a:e:c:v)")
-
-        # These should fail, can't ask for versioned string out of unversioned artifact
-        self.assertRaises(ArtifactFormatException, self.gaArtifact.get_rpm_str, True)
-        self.assertRaises(ArtifactFormatException, self.gaeArtifact.get_rpm_str, True)
-        self.assertRaises(ArtifactFormatException, self.gacArtifact.get_rpm_str, True)
-
     def test_xml_str_ga(self):
         doc = fromstring(self.gaArtifact.get_xml_str())
         self.assertNotEqual(doc, None)

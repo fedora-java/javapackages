@@ -1,11 +1,0 @@
-<?xml version="1.0" encoding="US-ASCII"?>
-<depMap>
-<dependency><maven>
-  <artifactId>		  
- 	parent		  
- 	</artifactId>
-</maven><jpp>
-  <groupId>JPP</groupId>
-  <artifactId>foo</artifactId>
-</jpp></dependency>
-</depMap>

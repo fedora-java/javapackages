@@ -1,0 +1,13 @@
+<metadata xmlns="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
+    <uuid>432048235932</uuid>
+    <artifacts>
+        <artifact>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>apache-maven</artifactId>
+            <version>3.1.1</version>
+            <extension>pom</extension>
+            <namespace>maven31</namespace>
+            <path>/usr/share/maven-poms/JPP-apache-maven.pom</path>
+        </artifact>
+    </artifacts>
+</metadata>

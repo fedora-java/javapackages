@@ -1,0 +1,106 @@
+<metadata xmlns="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
+    <uuid>432048235932</uuid>
+    <artifacts>
+        <artifact>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jsp-2.1-glassfish</artifactId>
+            <version>9.1.1.B60.25.p2</version>
+            <namespace>ns</namespace>
+            <compatVersions>
+              <version>6.0.18</version>
+            </compatVersions>
+            <path>/usr/share/java/jetty/jsp-2.1-glassfish.jar</path>
+            <dependencies>
+                <dependency>
+                  <!-- ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0 -->
+                  <groupId>org.codehaus.plexus</groupId>
+                  <artifactId>plexus-ant-factory</artifactId>
+                  <namespace>ns</namespace>
+                  <requestedVersion>1.0</requestedVersion>
+                  <resolvedVersion>1.0</resolvedVersion>
+                </dependency>
+                <dependency>
+                  <!-- ns-mvn(codehaus:plexus-utils:1.2) -->
+                  <groupId>codehaus</groupId>
+                  <artifactId>plexus-utils</artifactId>
+                  <namespace>ns</namespace>
+                  <requestedVersion>1.2</requestedVersion>
+                  <resolvedVersion>1.2</resolvedVersion>
+                </dependency>
+                <dependency>
+                  <!-- ns-mvn(codehaus:plexus-cipher:1.0) = 1.1 -->
+                  <groupId>codehaus</groupId>
+                  <artifactId>plexus-cipher</artifactId>
+                  <namespace>ns</namespace>
+                  <requestedVersion>1.0</requestedVersion>
+                  <resolvedVersion>1.0</resolvedVersion>
+                </dependency>
+                <dependency>
+                  <!-- mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:) -->
+                  <groupId>org.apache.maven.wagon</groupId>
+                  <artifactId>wagon-provider-api</artifactId>
+                  <classifier>test-jar</classifier>
+                  <requestedVersion>1.0</requestedVersion>
+                </dependency>
+                <dependency>
+                  <!-- mvn(org.apache.maven.plugins:maven-idea-plugin:1.5) = 1.4 -->
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-idea-plugin</artifactId>
+                  <requestedVersion>1.5</requestedVersion>
+                  <resolvedVersion>1.5</resolvedVersion>
+                </dependency>
+            </dependencies>
+        </artifact>
+        <artifact>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jsp-2.1-glassfish</artifactId>
+            <version>9.1.1.B60.25.p2</version>
+            <extension>pom</extension>
+            <namespace>ns</namespace>
+            <compatVersions>
+              <version>6.0.18</version>
+            </compatVersions>
+            <path>/usr/share/java/jetty/jsp-2.1-glassfish.jar</path>
+            <dependencies>
+                <dependency>
+                  <!-- ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0 -->
+                  <groupId>org.codehaus.plexus</groupId>
+                  <artifactId>plexus-ant-factory</artifactId>
+                  <namespace>ns</namespace>
+                  <requestedVersion>1.0</requestedVersion>
+                  <resolvedVersion>1.0</resolvedVersion>
+                </dependency>
+                <dependency>
+                  <!-- ns-mvn(codehaus:plexus-utils:1.2) -->
+                  <groupId>codehaus</groupId>
+                  <artifactId>plexus-utils</artifactId>
+                  <namespace>ns</namespace>
+                  <requestedVersion>1.2</requestedVersion>
+                  <resolvedVersion>1.2</resolvedVersion>
+                </dependency>
+                <dependency>
+                  <!-- ns-mvn(codehaus:plexus-cipher:1.0) = 1.1 -->
+                  <groupId>codehaus</groupId>
+                  <artifactId>plexus-cipher</artifactId>
+                  <namespace>ns</namespace>
+                  <requestedVersion>1.0</requestedVersion>
+                  <resolvedVersion>1.0</resolvedVersion>
+                </dependency>
+                <dependency>
+                  <!-- mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:) -->
+                  <groupId>org.apache.maven.wagon</groupId>
+                  <artifactId>wagon-provider-api</artifactId>
+                  <classifier>test-jar</classifier>
+                  <requestedVersion>1.0</requestedVersion>
+                </dependency>
+                <dependency>
+                  <!-- mvn(org.apache.maven.plugins:maven-idea-plugin:1.5) = 1.4 -->
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-idea-plugin</artifactId>
+                  <requestedVersion>1.5</requestedVersion>
+                  <resolvedVersion>1.5</resolvedVersion>
+                </dependency>
+            </dependencies>
+        </artifact>
+    </artifacts>
+</metadata>
