@@ -44,6 +44,19 @@
   <repositories>
     <repository>
       <id>base-raw-pom</id>
+      <type>jpp</type>
+      <properties>
+        <root>usr/share/maven-poms</root>
+      </properties>
+      <filter>
+        <equals>
+          <extension/>
+          <string>pom</string>
+        </equals>
+      </filter>
+    </repository>
+    <repository>
+      <id>base-raw-pom-flat</id>
       <type>flat</type>
       <properties>
         <root>usr/share/maven-poms</root>
@@ -137,7 +150,7 @@
       <configuration>
         <repositories>
           <repository>base-effective-pom</repository>
-          <repository>base-raw-pom</repository>
+          <repository>base-raw-pom-flat</repository>
           <repository>base-jar</repository>
           <repository>base-jni</repository>
           <repository>jenkins-plugin</repository>
