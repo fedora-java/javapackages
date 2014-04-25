@@ -535,7 +535,7 @@ class Dependency(object):
         if not a.version:
             raise ArtifactFormatException("Empty version encountered in "
                                           "dependency: {dep}".
-                                          format(dep=xmlnode))
+                                          format(dep=a.get_mvn_str()))
 
         scope = xmlnode.find('./{*}scope')
         # by default don't create test, provided and other non-essential elements
