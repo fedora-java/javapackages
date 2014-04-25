@@ -172,8 +172,8 @@ class POM(object):
 
 
         dependencies = self.__findall('./pom:dependencies/pom:dependency')
-        if dependencies is not None:
-            if dependencies[0].attrib:
+        if dependencies:
+            if hasattr(dependencies[0], "attrib") and dependencies[0].attrib:
                 # this is probably ivy file, we currently don't really support
                 # reading dependencies from ivy files - returning empty set
                 return ret
