@@ -12,6 +12,10 @@
 
 ** Add more tests for new metadata
 
+** Add ability to skip dependencies for mvn_artifact
+
+** Test/improve Ivy support in mvn_artifact
+
 
 * BUGS
 
