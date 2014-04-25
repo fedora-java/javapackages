@@ -169,8 +169,14 @@ class POM(object):
         # TODO: circular imports between artifact and pom (?)
         from javapackages.artifact import Dependency
         ret = set()
+
+
         dependencies = self.__findall('./pom:dependencies/pom:dependency')
         if dependencies is not None:
+            if dependencies[0].attrib:
+                # this is probably ivy file, we currently don't really support
+                # reading dependencies from ivy files - returning empty set
+                return ret
             for dep in dependencies:
                 adep = Dependency.from_xml_element(dep, create_all=get_all)
                 if not adep:
