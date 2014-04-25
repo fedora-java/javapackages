@@ -104,7 +104,7 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
                 if not is_it_ivy_file(ppath):
                     a.extension = "pom"
                 else:
-                    a.extension = os.path.splitext(pom_path)[1]
+                    a.extension = os.path.splitext(pom_path)[1][1:]
 
                     # add property "type"
                     domimpl = getDOMImplementation()
