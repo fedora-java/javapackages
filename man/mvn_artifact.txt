@@ -11,7 +11,7 @@ mvn_artifact - request installation of Maven artifact
 SYNOPSIS
 --------
 *%mvn_artifact* [options] model [artifact-file]
-*%mvn_artifact* artifact-coordinates artifact-file
+*%mvn_artifact* [options] artifact-coordinates artifact-file
 
 DESCRIPTION
 -----------
