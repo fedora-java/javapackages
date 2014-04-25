@@ -48,11 +48,12 @@
       <properties>
         <root>usr/share/maven-poms</root>
       </properties>
-      <stereotypes>
-        <stereotype>
-          <extension>pom</extension>
-        </stereotype>
-      </stereotypes>
+      <filter>
+        <equals>
+          <extension/>
+          <string>pom</string>
+        </equals>
+      </filter>
     </repository>
     <repository>
       <id>base-effective-pom</id>
@@ -60,11 +61,12 @@
       <properties>
         <root>usr/share/maven-effective-poms</root>
       </properties>
-      <stereotypes>
-        <stereotype>
-          <extension>pom</extension>
-        </stereotype>
-      </stereotypes>
+      <filter>
+        <equals>
+          <extension/>
+          <string>pom</string>
+        </equals>
+      </filter>
     </repository>
     <repository>
       <id>base-jar</id>
@@ -72,18 +74,30 @@
       <properties>
         <root>usr/share/java</root>
       </properties>
-      <stereotypes>
-        <stereotype>
-          <extension>jar</extension>
-        </stereotype>
-        <!-- Maybe /usr/share/java is not the best place to store
-             ZIP files, but packages are doing so anyways and
-             allowing ZIPs here simplifies packaging.  TODO: find a
-             better location for ZIP files.  -->
-        <stereotype>
-          <extension>zip</extension>
-        </stereotype>
-      </stereotypes>
+      <filter>
+        <or>
+          <and>
+            <equals>
+              <extension/>
+              <string>jar</string>
+            </equals>
+            <not>
+              <equals>
+                <property>native</property>
+                <string>true</string>
+              </equals>
+            </not>
+          </and>
+          <!-- Maybe /usr/share/java is not the best place to store
+               ZIP files, but packages are doing so anyways and
+               allowing ZIPs here simplifies packaging.  TODO: find a
+               better location for ZIP files.  -->
+          <equals>
+            <extension/>
+            <string>zip</string>
+          </equals>
+        </or>
+      </filter>
     </repository>
     <repository>
       <id>jenkins-plugin</id>
@@ -91,11 +105,12 @@
       <properties>
         <root>usr/share/jenkins/plugins</root>
       </properties>
-      <stereotypes>
-        <stereotype>
-          <extension>hpi</extension>
-        </stereotype>
-      </stereotypes>
+      <filter>
+        <equals>
+          <extension/>
+          <string>hpi</string>
+        </equals>
+      </filter>
     </repository>
     <repository>
       <id>base-jni</id>
@@ -103,12 +118,18 @@
       <properties>
         <root>usr/lib/java</root>
       </properties>
-      <stereotypes>
-        <stereotype>
-          <extension>jar</extension>
-          <type>native</type>
-        </stereotype>
-      </stereotypes>
+      <filter>
+        <and>
+          <equals>
+            <extension/>
+            <string>jar</string>
+          </equals>
+          <equals>
+            <property>native</property>
+            <string>true</string>
+          </equals>
+        </and>
+      </filter>
     </repository>
     <repository>
       <id>base-resolve</id>
