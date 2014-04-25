@@ -86,7 +86,7 @@ def load_metadata(metadatadir="/usr/share/maven-metadata"):
     return Depmap(mfiles)
 
 
-def add_artifact_elements(root, uart, deps, ppath=None, jpath=None):
+def add_artifact_elements(root, uart, ppath=None, jpath=None):
     artifacts = []
     for path in [ppath, jpath]:
         if path:
@@ -172,7 +172,7 @@ if __name__ == "__main__":
                 pass
         art.dependencies = deps
 
-    add_artifact_elements(metadata, art, deps, pom_path, jar_path)
+    add_artifact_elements(metadata, art, pom_path, jar_path)
 
     with open(config, 'w') as f:
         dom = metadata.toDOM(None)
