@@ -34,8 +34,6 @@ class TestMavenDepmap(unittest.TestCase):
                 if filename.endswith("-want.xml"):
                     want_file = os.path.join(dirname, filename)
                     xml = open(want_file).read()
-                    print("want file:", want_file)
-                    print(xml)
                     metadata = m.CreateFromDocument(xml)
                     for a in metadata.artifacts.artifact:
                         a.path = a.path % (self.workdir)
