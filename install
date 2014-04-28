@@ -94,6 +94,7 @@ dir "${javadocdir}"
 dir "${mavenpomdir}"
 dir "${mavendepmapdir}"  # @Deprecated
 dir "${mavendepmapfragdir}"  # @Deprecated
+dir "${mavenmetadatadir}"
 dir "${rpmconfigdir}/fileattrs"
 
 
