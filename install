@@ -159,7 +159,7 @@ inst_data depgenerators/fileattrs/maven.attr "${rpmconfigdir}/fileattrs"
 inst_data depgenerators/fileattrs/osgi.attr "${rpmconfigdir}/fileattrs"
 inst_data depgenerators/fileattrs/javadoc.attr "${rpmconfigdir}/fileattrs"
 
-inst_data etc/javapackages-depmap.xml "${mavenmetadatadir}"
+inst_data etc/javapackages-depmap.xml "${mavendepmapfragdir}"
 
 
 exec >files-maven
