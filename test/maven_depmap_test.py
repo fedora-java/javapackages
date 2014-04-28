@@ -100,16 +100,16 @@ class TestMavenDepmap(unittest.TestCase):
     #                                       depmap)
     #    self.assertEqual(report, '', report)
 
-    #@mvn_depmap('JPP-commons-io.pom')
-    #def test_missing_jar_arg(self, stdout, stderr, return_value, depmap):
-    #    self.assertNotEqual(return_value, 0)
+    @mvn_depmap('JPP-commons-io.pom')
+    def test_missing_jar_arg(self, stdout, stderr, return_value, depmap):
+        self.assertNotEqual(return_value, 0)
 
-    #@mvn_depmap('JPP-apache-commons-io.pom')
-    #def test_packaging_pom_no_jar(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('JPP-apache-commons-io.pom')
+    def test_packaging_pom_no_jar(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
     #@mvn_depmap('JPP-noversion.pom')
     #def test_missing_version(self, stdout, stderr, return_value, depmap):
@@ -122,12 +122,12 @@ class TestMavenDepmap(unittest.TestCase):
     #                                       depmap)
     #    self.assertEqual(report, '', report)
 
-    #@mvn_depmap('JPP-commons-war.pom', 'usr/share/java/commons-war.war')
-    #def test_war(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('JPP-commons-war.pom', 'usr/share/java/commons-war.war')
+    def test_war(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
     #@mvn_depmap('JPP-commons-weird.pom', 'usr/share/java/commons-weird.war')
     #def test_weird_packaging(self, stdout, stderr, return_value, depmap):
