@@ -93,13 +93,6 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(report, '', report)
 
-    #@mvn_depmap('JPP-aqute-bndlib.pom', 'usr/share/java/aqute-bndlib.jar')
-    #def test_different_artifactId(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
-
     @mvn_depmap('JPP-commons-io.pom')
     def test_missing_jar_arg(self, stdout, stderr, return_value, depmap):
         self.assertNotEqual(return_value, 0)
@@ -128,40 +121,6 @@ class TestMavenDepmap(unittest.TestCase):
         report = self.check_result(inspect.currentframe().f_code.co_name,
                                            depmap)
         self.assertEqual(report, '', report)
-
-    #@mvn_depmap('JPP-commons-weird.pom', 'usr/share/java/commons-weird.war')
-    #def test_weird_packaging(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
-
-    #@mvn_depmap('JPP-packaging-pom.pom', 'usr/share/java/packaging-pom.jar')
-    #def test_packaging_pom_and_jar(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
-
-    #@mvn_depmap('JPP.commons-io-commons-io.pom',
-    #        'usr/share/java/commons-io/commons-io.jar')
-    #def test_subdirectory(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
-
-    #@mvn_depmap('JPP-commons-io-commons-io.pom', 'usr/share/java/commons-io.jar')
-    #def test_incorrect_subdir1(self, stdout, stderr, return_value, depmap):
-    #    self.assertNotEqual(return_value, 0)
-
-    #@mvn_depmap('JPP-commons-io.pom', 'usr/share/java/commons-io/commons-io.jar')
-    #def test_incorrect_subdir2(self, stdout, stderr, return_value, depmap):
-    #    self.assertNotEqual(return_value, 0)
-
-    #@mvn_depmap('FUU-commons-io.pom', 'usr/share/java/commons-io.jar')
-    #def test_not_JPP(self, stdout, stderr, return_value, depmap):
-    #    self.assertNotEqual(return_value, 0)
 
     def test_not_pom(self):
         stdout, stderr, return_value = call_script(os.path.join(DIRPATH, '..',
@@ -196,101 +155,94 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(report, '', report)
 
-    #@mvn_depmap('/builddir/build/BUILDROOT/pkg-2.5.2-2.fc21.x86_64/a:b:war::1',
-    #        'usr/share/java/commons-war.war')
-    #def test_mvn_spec_buildroot(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('/builddir/build/BUILDROOT/pkg-2.5.2-2.fc21.x86_64/a:b:war::1',
+            'usr/share/java/commons-war.war')
+    def test_mvn_spec_buildroot(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
-    #@mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['-a', 'x:y'])
-    #def test_append(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['-a', 'x:y'])
+    def test_append(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
-    #@mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['-a', 'x:y,z:w'])
-    #def test_append_multiple(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['-a', 'x:y,z:w'])
+    def test_append_multiple(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
-    #@mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['-n', 'myns'])
-    #def test_namespace(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['-n', 'myns'])
+    def test_namespace(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
-    #@mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['--namespace=myns',
-    #    '--append=x:y'])
-    #def test_append_and_namespace(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['--namespace=myns',
+        '--append=x:y'])
+    def test_append_and_namespace(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
-    #@mvn_depmap('a:b:12', 'usr/foo/share/java/foo.jar', ['-p', 'usr/foo'])
-    #def test_prefix(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('a:b:12', 'usr/foo/share/java/.out_archive.jar')
+    def test_compare_jar(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want = self.check_archive(inspect.currentframe().f_code.co_name,
+                'usr/foo/share/java/.out_archive.jar')
+        self.assertEqual(got, want)
 
-    #@mvn_depmap('a:b:12', 'usr/foo/share/java/.out_archive.jar')
-    #def test_compare_jar(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    got, want = self.check_archive(inspect.currentframe().f_code.co_name,
-    #            'usr/foo/share/java/.out_archive.jar')
-    #    self.assertEqual(got, want)
+    #test case for rhbz#1012982
+    @mvn_depmap('x:y:war:z:0.1', 'usr/foo/share/java/.out_archive-z.war')
+    def test_compare_jar_class_ext(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want = self.check_archive(inspect.currentframe().f_code.co_name,
+                'usr/foo/share/java/.out_archive-z.war')
+        self.assertEqual(got, want)
 
-    ##test case for rhbz#1012982
-    #@mvn_depmap('x:y:war:z:0.1', 'usr/foo/share/java/.out_archive-z.war')
-    #def test_compare_jar_class_ext(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    got, want = self.check_archive(inspect.currentframe().f_code.co_name,
-    #            'usr/foo/share/java/.out_archive-z.war')
-    #    self.assertEqual(got, want)
+    @mvn_depmap('a:b:12', 'usr/share/java/already-has-pom-properties.jar')
+    def test_compare_jar_unmodified(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want = self.check_archive(inspect.currentframe().f_code.co_name,
+                'usr/share/java/already-has-pom-properties.jar', keep_comments=True)
+        self.assertEqual(got, want)
 
-    #@mvn_depmap('a:b:12', 'usr/share/java/already-has-pom-properties.jar')
-    #def test_compare_jar_unmodified(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    got, want = self.check_archive(inspect.currentframe().f_code.co_name,
-    #            'usr/share/java/already-has-pom-properties.jar', keep_comments=True)
-    #    self.assertEqual(got, want)
+    @mvn_depmap('x:y:0.1', 'usr/share/java/already-has-pom-properties.jar')
+    def test_compare_jar_modified(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want = self.check_archive(inspect.currentframe().f_code.co_name,
+                'usr/share/java/already-has-pom-properties.jar')
+        self.assertEqual(got, want)
 
-    #@mvn_depmap('x:y:0.1', 'usr/share/java/already-has-pom-properties.jar')
-    #def test_compare_jar_modified(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    got, want = self.check_archive(inspect.currentframe().f_code.co_name,
-    #            'usr/share/java/already-has-pom-properties.jar')
-    #    self.assertEqual(got, want)
+    @mvn_depmap('/builddir/build/BUILDROOT/pkg-2.5.2-2.fc21.x86_64/x:y:0.1',
+            'usr/share/java/already-has-pom-properties.jar')
+    def test_rhbz1012245(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        got, want = self.check_archive('test_compare_jar_modified',
+                'usr/share/java/already-has-pom-properties.jar')
+        self.assertEqual(got, want)
 
-    #@mvn_depmap('/builddir/build/BUILDROOT/pkg-2.5.2-2.fc21.x86_64/x:y:0.1',
-    #        'usr/share/java/already-has-pom-properties.jar')
-    #def test_rhbz1012245(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    got, want = self.check_archive('test_compare_jar_modified',
-    #            'usr/share/java/already-has-pom-properties.jar')
-    #    self.assertEqual(got, want)
+    @mvn_depmap('x:y:jar:z:0.1', 'usr/share/java/commons-io-z.jar',
+            ['-a', 'a:b:war:c:12'])
+    def test_classifier(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
-    #@mvn_depmap('x:y:jar:z:0.1', 'usr/share/java/commons-io-z.jar',
-    #        ['-a', 'a:b:war:c:12'])
-    #def test_classifier(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
-
-    #@mvn_depmap('x:y:0.1', 'usr/share/java/commons-io.jar', ['-r', '1,2,3'])
-    #def test_version(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('x:y:0.1', 'usr/share/java/commons-io.jar', ['-r', '1,2,3'])
+    def test_version(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
     #@mvn_depmap('JPP/x:y:0.1', 'usr/share/java/commons-io.jar',
     #        ['--versions', '1,2,3'])
