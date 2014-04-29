@@ -206,7 +206,8 @@ class ProvidedArtifact(object):
     def from_mvn_str(cls, mvn_str):
         a = Artifact.from_mvn_str(mvn_str)
 
-        return cls(a.groupId, a.artifactId, version=a.version)
+        return cls(a.groupId, a.artifactId, version=a.version,
+                   extension=a.extension, classifier=a.classifier)
 
 class Artifact(object):
     """
