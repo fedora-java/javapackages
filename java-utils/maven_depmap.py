@@ -237,6 +237,7 @@ if __name__ == "__main__":
                 parser.error("Artifact definition has to include version")
         else:
             artifact = ProvidedArtifact.from_pom(pom_path)
+            artifact.extension = os.path.splitext(jar_path)[1][1:]
             have_pom = True
         if artifact:
             inject_pom_properties(jar_path, artifact)
