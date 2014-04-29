@@ -111,16 +111,16 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(report, '', report)
 
-    #@mvn_depmap('JPP-noversion.pom')
-    #def test_missing_version(self, stdout, stderr, return_value, depmap):
-    #    self.assertNotEqual(return_value, 0)
+    @mvn_depmap('JPP-noversion.pom')
+    def test_missing_version(self, stdout, stderr, return_value, depmap):
+        self.assertNotEqual(return_value, 0)
 
-    #@mvn_depmap('JPP-parent-version.pom')
-    #def test_parent_version(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('JPP-parent-version.pom')
+    def test_parent_version(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
     @mvn_depmap('JPP-commons-war.pom', 'usr/share/java/commons-war.war')
     def test_war(self, stdout, stderr, return_value, depmap):
@@ -163,38 +163,38 @@ class TestMavenDepmap(unittest.TestCase):
     #def test_not_JPP(self, stdout, stderr, return_value, depmap):
     #    self.assertNotEqual(return_value, 0)
 
-    #def test_not_pom(self):
-    #    stdout, stderr, return_value = call_script(os.path.join(DIRPATH, '..',
-    #        'java-utils', 'maven_depmap.py'),
-    #            ['.out', 'usr/share/java/commons-io.jar',
-    #                'usr/share/java/commons-io.jar'])
-    #    self.assertNotEqual(return_value, 0)
+    def test_not_pom(self):
+        stdout, stderr, return_value = call_script(os.path.join(DIRPATH, '..',
+            'java-utils', 'maven_depmap.py'),
+                ['.out', 'usr/share/java/commons-io.jar',
+                    'usr/share/java/commons-io.jar'])
+        self.assertNotEqual(return_value, 0)
 
-    #def test_no_pom(self):
-    #    stdout, stderr, return_value = call_script(os.path.join(DIRPATH, '..',
-    #        'java-utils', 'maven_depmap.py'),
-    #            ['.out'])
-    #    self.assertNotEqual(return_value, 0)
+    def test_no_pom(self):
+        stdout, stderr, return_value = call_script(os.path.join(DIRPATH, '..',
+            'java-utils', 'maven_depmap.py'),
+                ['.out'])
+        self.assertNotEqual(return_value, 0)
 
-    #def test_no_args(self):
-    #    stdout, stderr, return_value = call_script(os.path.join(DIRPATH, '..',
-    #        'java-utils', 'maven_depmap.py'),
-    #            [])
-    #    self.assertNotEqual(return_value, 0)
+    def test_no_args(self):
+        stdout, stderr, return_value = call_script(os.path.join(DIRPATH, '..',
+            'java-utils', 'maven_depmap.py'),
+                [])
+        self.assertNotEqual(return_value, 0)
 
-    #@mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar')
-    #def test_mvn_spec(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar')
+    def test_mvn_spec(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
-    #@mvn_depmap('a:b:war::1', 'usr/share/java/commons-war.war')
-    #def test_mvn_spec_war(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('a:b:war::1', 'usr/share/java/commons-war.war')
+    def test_mvn_spec_war(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
     #@mvn_depmap('/builddir/build/BUILDROOT/pkg-2.5.2-2.fc21.x86_64/a:b:war::1',
     #        'usr/share/java/commons-war.war')
