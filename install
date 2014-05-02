@@ -97,7 +97,6 @@ dir "${mavendepmapfragdir}"  # @Deprecated
 dir "${mavenmetadatadir}"
 dir "${rpmconfigdir}/fileattrs"
 
-
 for ver in 1.5.0 1.6.0 1.7.0 1.8.0; do
     dir "${javadir}-${ver}"
     dir "${jnidir}-${ver}"
@@ -161,6 +160,14 @@ inst_data depgenerators/fileattrs/javadoc.attr "${rpmconfigdir}/fileattrs"
 
 inst_data etc/javapackages-depmap.xml "${mavendepmapfragdir}"
 
+inst_data configs/configuration.xml "${m2home}"
+inst_data configs/configuration-rpmbuild.xml "${m2home}"
+inst_data configs/configuration-rpmbuild-raw.xml "${m2home}"
+
+link "${m2home}/configuration.xml" "${m2home}/configuration-21.xml"
+link "${m2home}/configuration-rpmbuild.xml" "${m2home}/configuration-21-rpmbuild.xml"
+link "${m2home}/configuration-rpmbuild-raw.xml" "${m2home}/configuration-21-rpmbuild-raw.xml"
+
 
 exec >files-maven
 
@@ -191,14 +198,6 @@ inst_data metadata/metadata-org-codehaus-mojo.xml "${sysconfdir}/maven"
 
 inst_exec target/mvn-local "${bindir}"
 inst_exec target/mvn-rpmbuild "${bindir}"
-
-inst_data configs/configuration.xml "${m2home}"
-inst_data configs/configuration-rpmbuild.xml "${m2home}"
-inst_data configs/configuration-rpmbuild-raw.xml "${m2home}"
-
-link "${m2home}/configuration.xml" "${m2home}/configuration-21.xml"
-link "${m2home}/configuration-rpmbuild.xml" "${m2home}/configuration-21-rpmbuild.xml"
-link "${m2home}/configuration-rpmbuild-raw.xml" "${m2home}/configuration-21-rpmbuild-raw.xml"
 
 
 exec >files-ivy
