@@ -38,7 +38,7 @@ fi
 
 (cd ./python && python setup.py test)
 r1=$?
-(cd ./test && ./run_tests.sh --all)
+(cd ./test && ./run_tests.sh ${1})
 r2=$?
 
 if [ ${r1} -lt ${r2} ]; then
