@@ -177,7 +177,6 @@ if __name__ == "__main__":
 
     deps = []
     if not options.skip_dependencies:
-        # try to locate all necessary pom files
         if pom_path:
             p = POM(pom_path)
             deps.extend([x for x in p.get_dependencies()])
