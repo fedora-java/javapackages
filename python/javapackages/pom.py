@@ -170,7 +170,6 @@ class POM(object):
         from javapackages.artifact import Dependency
         ret = set()
 
-
         dependencies = self.__findall('./pom:dependencies/pom:dependency')
         if dependencies:
             if hasattr(dependencies[0], "attrib") and dependencies[0].attrib:
@@ -183,3 +182,18 @@ class POM(object):
                     continue
                 ret.add(adep)
         return ret
+
+    def get_dependency_management(self):
+        result = set()
+
+        # TODO: circular imports between artifact and pom (?)
+        from javapackages.artifact import Dependency
+
+        deps = self.__findall('./pom:dependencyManagement/pom:dependency')
+        if deps:
+            for dep in deps:
+                adep = Dependency.from_xml_element(dep, create_all=False)
+                if not adep:
+                    continue
+                result.add(adep)
+        return result
