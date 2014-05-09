@@ -124,6 +124,25 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
             root.artifacts.append(a)
 
 
+def get_dependencies(pom_path):
+    deps = []
+
+    if pom_path:
+        p = POM(pom_path)
+        deps.extend([x for x in p.get_dependencies()])
+        try:
+            mets = load_metadata()
+            for provided in mets.get_provided_artifacts():
+                if (provided.groupId == p.parentGroupId and
+                    provided.artifactId == p.parentArtifactId):
+                    for dep in provided.dependencies:
+                        deps.append(Dependency.from_metadata(dep))
+        except MetadataInvalidException:
+            pass
+
+    return deps
+
+
 if __name__ == "__main__":
     OptionParser.format_epilog = lambda self, formatter: self.epilog
     parser = OptionParser(usage=usage,
@@ -175,21 +194,8 @@ if __name__ == "__main__":
     else:
         metadata = m.metadata()
 
-    deps = []
     if not options.skip_dependencies:
-        if pom_path:
-            p = POM(pom_path)
-            deps.extend([x for x in p.get_dependencies()])
-            try:
-                mets = load_metadata()
-                for provided in mets.get_provided_artifacts():
-                    if (provided.groupId == p.parentGroupId and
-                        provided.artifactId == p.parentArtifactId):
-                        for dep in provided.dependencies:
-                            deps.append(Dependency.from_metadata(dep))
-            except MetadataInvalidException:
-                pass
-        art.dependencies = deps
+        art.dependencies = get_dependencies(pom_path)
 
     add_artifact_elements(metadata, art, pom_path, jar_path)
 
