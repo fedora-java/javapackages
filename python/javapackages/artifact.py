@@ -581,6 +581,20 @@ class Dependency(object):
                    classifier=a.classifier, namespace=namespace,
                    exclusions=exclusions)
 
+    @classmethod
+    def merge_dependencies(cls, dominant, recessive):
+        """
+        Merge two dependencies into one. Information missing in dominant dependency will
+        be copied from recessive dependency. Returns new merged dependency.
+        """
+        ret = cls(dominant.groupId, dominant.artifactId, dominant.extension,
+                  dominant.classifier, dominant.version, dominant.namespace)
+        for key in ("artifactId", "groupId", "extension", "version",
+                    "classifier", "namespace"):
+            if not getattr(ret, key):
+                setattr(ret, key, getattr(recessive, key))
+        return ret
+
 
 class Alias(object):
     def __init__(self, groupId, artifactId, extension="", classifier=""):
