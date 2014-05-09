@@ -126,10 +126,20 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
 
 def get_dependencies(pom_path):
     deps = []
+    dep_management = []
 
     if pom_path:
         p = POM(pom_path)
         deps.extend([x for x in p.get_dependencies()])
+        dep_management.extend([x for x in p.get_dependency_management()])
+
+        for d in deps:
+            for dm in dep_management:
+                if d.artifactId == dm.artifactId and d.groupId == dm.groupId:
+                    deps.append(Dependency.merge_dependencies(d, dm))
+                    deps.remove(d)
+                    dep_management.remove(dm)
+
         try:
             mets = load_metadata()
             for provided in mets.get_provided_artifacts():
