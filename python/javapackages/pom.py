@@ -68,6 +68,9 @@ class POM(object):
             ret = self.__doc.xpath(xpath.replace('pom:',''))
         return ret
 
+    def __str__(self):
+        return ":".join([self.groupId, self.artifactId, self.version])
+
 
     @property
     def parentArtifactId(self):
