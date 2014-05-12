@@ -88,12 +88,19 @@ def load_metadata(metadatadir="/usr/share/maven-metadata"):
     return Depmap(mfiles)
 
 
+def load_poms(pomdir="/usr/share/maven-poms"):
+    pfiles = [os.path.join(pomdir, f) for f in os.listdir(pomdir)]
+    poms = []
+    return poms.extend([POM(p) for p in pfiles])
+
+
 def is_it_ivy_file(fpath):
     """Try to determine whether file in given path is Ivy file or not"""
     et = ElementTree()
     doc = et.parse(fpath)
 
     return doc.tag == "ivy-module"
+
 
 def add_artifact_elements(root, uart, ppath=None, jpath=None):
     artifacts = []
@@ -124,27 +131,50 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
             root.artifacts.append(a)
 
 
+def get_dependency_management(pom_path):
+
+    curr_pom = POM(pom_path)
+    dm = []
+
+    if not curr_pom.parentGroupId:
+        dm.extend([x for x in curr_pom.get_dependency_management()])
+        return dm
+
+    all_poms = load_poms()
+    poms = []
+    poms.append(curr_pom)
+
+    while poms[-1].parentGroupId:
+        for p in all_poms:
+            if poms[-1].parentGroupId == p.groupId and poms[-1].parentArtifactId == p.ArtifactId:
+                poms.append(p)
+
+    for p in reversed(poms):
+        # FIXME: not entirely correct
+        dm.append([x for x in p.get_dependency_management()])
+
+    return dm
+
+
 def get_dependencies(pom_path):
     deps = []
-    dep_management = []
 
     if pom_path:
         p = POM(pom_path)
         deps.extend([x for x in p.get_dependencies()])
-        dep_management.extend([x for x in p.get_dependency_management()])
+        dep_management = get_dependency_management(pom_path)
 
         for d in deps:
             for dm in dep_management:
                 if d.artifactId == dm.artifactId and d.groupId == dm.groupId:
                     deps.append(Dependency.merge_dependencies(d, dm))
-                    deps.remove(d)
-                    dep_management.remove(dm)
+                    deps.pop(deps.index(d))
+                    dep_management.pop(dep_management.index(dm))
 
         try:
             mets = load_metadata()
             for provided in mets.get_provided_artifacts():
-                if (provided.groupId == p.parentGroupId and
-                    provided.artifactId == p.parentArtifactId):
+                if provided.groupId == p.parentGroupId and provided.artifactId == p.parentArtifactId:
                     for dep in provided.dependencies:
                         deps.append(Dependency.from_metadata(dep))
         except MetadataInvalidException:
