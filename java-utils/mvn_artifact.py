@@ -146,7 +146,7 @@ def get_dependency_management(pom_path):
 
     while poms[-1].parentGroupId:
         for p in all_poms:
-            if poms[-1].parentGroupId == p.groupId and poms[-1].parentArtifactId == p.ArtifactId:
+            if poms[-1].parentGroupId == p.groupId and poms[-1].parentArtifactId == p.artifactId:
                 poms.append(p)
 
     for p in reversed(poms):
