@@ -164,12 +164,12 @@ def get_dependencies(pom_path):
         deps.extend([x for x in p.get_dependencies()])
         dep_management = get_dependency_management(pom_path)
 
-        for d in deps:
-            for dm in dep_management:
+        for d in deps[:]:
+            for dm in dep_management[:]:
                 if d.artifactId == dm.artifactId and d.groupId == dm.groupId:
                     deps.append(Dependency.merge_dependencies(d, dm))
-                    deps.pop(deps.index(d))
-                    dep_management.pop(dep_management.index(dm))
+                    deps.remove(d)
+                    dep_management.remove(dm)
 
         try:
             mets = load_metadata()
