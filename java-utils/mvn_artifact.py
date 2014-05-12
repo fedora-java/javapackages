@@ -91,7 +91,8 @@ def load_metadata(metadatadir="/usr/share/maven-metadata"):
 def load_poms(pomdir="/usr/share/maven-poms"):
     pfiles = [os.path.join(pomdir, f) for f in os.listdir(pomdir)]
     poms = []
-    return poms.extend([POM(p) for p in pfiles])
+    poms.extend([POM(p) for p in pfiles])
+    return poms
 
 
 def is_it_ivy_file(fpath):
