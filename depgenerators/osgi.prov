@@ -85,10 +85,15 @@ class TagBuilder:
                 manifest = open(path)
                 self.handle_manifest(manifest)
             if zipfile.is_zipfile(path):
-                jarfile = ZipFile(path)
-                if "META-INF/MANIFEST.MF" in jarfile.namelist():
-                    manifest = jarfile.open("META-INF/MANIFEST.MF")
-                    self.handle_manifest(manifest)
+                # looks like "zipfile.is_zipfile()" is not reliable
+                # see rhbz#889131 for more details
+                try:
+                    jarfile = ZipFile(path)
+                    if "META-INF/MANIFEST.MF" in jarfile.namelist():
+                        manifest = jarfile.open("META-INF/MANIFEST.MF")
+                        self.handle_manifest(manifest)
+                except IOError:
+                    pass
 
 
 if __name__ == "__main__":
