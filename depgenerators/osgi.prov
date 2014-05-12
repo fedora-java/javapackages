@@ -58,7 +58,7 @@ class TagBuilder:
             filelist = sys.stdin
         paths = map (lambda x: x.rstrip (), filelist.readlines ())
         for path in paths:
-	        self.get_osgi_provide (path)
+            self.get_osgi_provide (path)
 
     def normalize_manifest(self, manifest):
         lines = []
