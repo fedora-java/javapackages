@@ -115,7 +115,7 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
 
                     # add property "type"
                     domimpl = getDOMImplementation()
-                    doc  = domimpl.createDocument(None, None, None)
+                    doc = domimpl.createDocument(None, None, None)
                     ty = doc.createElement('type')
                     te = doc.createTextNode('ivy')
                     ty.appendChild(te)
