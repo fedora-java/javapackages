@@ -172,6 +172,7 @@ def get_dependencies(pom_path):
                 if d.artifactId == dm.artifactId and d.groupId == dm.groupId:
                     final_deps.append(Dependency.merge_dependencies(d, dm))
                     merged = True
+                    break
             if not merged:
                 final_deps.append(d)
 
