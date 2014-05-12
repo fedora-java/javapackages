@@ -152,7 +152,7 @@ def get_dependency_management(pom_path):
 
     for p in reversed(poms):
         # FIXME: not entirely correct
-        dm.append([x for x in p.get_dependency_management()])
+        dm.extend([x for x in p.get_dependency_management()])
 
     return dm
 
