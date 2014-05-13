@@ -45,13 +45,12 @@ import os
 import shutil
 import sys
 import gzip
-import re
 
 from os.path import basename
 import zipfile
 from time import gmtime, strftime
 
-from javapackages.artifact import ProvidedArtifact, Alias
+from javapackages.artifact import ProvidedArtifact, Alias, POM
 import javapackages.metadata as m
 import pyxb
 
@@ -249,6 +248,9 @@ if __name__ == "__main__":
         if ':' not in pom_path:
             artifact = ProvidedArtifact.from_pom(pom_path)
             have_pom = True
+
+            if POM(pom_path).packaging != "pom":
+                raise PackagingTypeMissingFile(pom_path)
         else:
             print("JAR file path must be specified when using artifact coordinates")
             sys.exit(1)
