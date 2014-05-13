@@ -680,3 +680,24 @@ class MavenExclusion:
 
     def __str__(self):
         return ":".join([self.groupId, self.artifactId])
+
+
+class MavenDependencyManagement(object):
+    """ Section for management of default dependency information
+        for use in a group of POMs. """
+    def __init__(self, dependencies=set()):
+        self.dependencies = dependencies
+
+    def __str__(self):
+        return self.dependencies.__str__()
+
+    def get(self, dependency):
+        for d in self.dependencies:
+            if d.groupId == dependency.groupId and d.artifactId == dependency.artifactId:
+                return d
+        return None
+
+    def contains(self, dependency):
+        if self.get(dependency):
+            return True
+        return False
