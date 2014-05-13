@@ -658,6 +658,14 @@ class MavenDependency(object):
         return ":".join([self.groupId, self.artifactId, self.extension,
                          self.classifier, self.version])
 
+    def update(self, other):
+        self.version = other.version or self.version
+        self.extension = other.extension or self.extension
+        self.classifier = other.classifier or self.classifier
+        self.scope = other.scope or self.scope
+        self.systemPath = other.systemPath or self.systemPath
+        self.optional = other.optional or self.optional
+        # TODO: exclusions
 
 class MavenExclusion(object):
     """ The <exclusion> element contains informations required to exclude
@@ -701,3 +709,18 @@ class MavenDependencyManagement(object):
         if self.get(dependency):
             return True
         return False
+
+    def add(self, dependency):
+        if not self.contains(dependency):
+            self.dependencies.add(dependency)
+            return True
+        return False
+
+    def merge(self, dep_management):
+        """ Merge this dependency managements with another """
+        for d in dep_management:
+            if not self.contains(d):
+                self.add(d)
+            else:
+                curr = self.get(d)
+                curr.update(d)
