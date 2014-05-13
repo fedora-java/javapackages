@@ -45,6 +45,7 @@ import os
 import shutil
 import sys
 import gzip
+import re
 
 from os.path import basename
 import zipfile
@@ -264,15 +265,19 @@ if __name__ == "__main__":
     if namespace:
         artifact.namespace = namespace
 
+
+    buildroot = os.environ.get('RPM_BUILD_ROOT')
     am = []
     if jar_path:
-        artifact.path = os.path.abspath(jar_path)
+        metadata_jar_path = os.path.abspath(jar_path)
+        artifact.path = metadata_jar_path.replace(buildroot, "") if buildroot else metadata_jar_path
         am.append(artifact.to_metadata())
         # output file path for file list (if it's not versioned)
         if not add_versions:
             print jar_path
     if have_pom:
-        artifact.path = os.path.abspath(pom_path)
+        metadata_pom_path = os.path.abspath(pom_path)
+        artifact.path = metadata_pom_path.replace(buildroot, "") if buildroot else metadata_pom_path
         artifact.extension = "pom"
         am.append(artifact.to_metadata())
         # output file path for file list (if it's not versioned)
