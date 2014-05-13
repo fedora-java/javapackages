@@ -667,6 +667,12 @@ class MavenDependency(object):
         self.optional = other.optional or self.optional
         # TODO: exclusions
 
+    def update_from_dep_management(self, dep_management):
+        for dep in dep_management:
+            if self.groupId == dep.groupId and self.artifactId == dep.artifactId:
+                self.update(dep)
+                break
+
 class MavenExclusion(object):
     """ The <exclusion> element contains informations required to exclude
         an artifact to the project. """
