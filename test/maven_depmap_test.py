@@ -164,6 +164,14 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(report, '', report)
 
+    @mvn_depmap('builddir/build/BUILDROOT/usr/share/maven-poms/JPP-commons-war.pom',
+                'usr/share/java/commons-war.war')
+    def test_buildroot(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                   depmap)
+        self.assertEqual(report, '', report)
+
     @mvn_depmap('a:b:12', 'usr/share/java/commons-io.jar', ['-a', 'x:y'])
     def test_append(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)

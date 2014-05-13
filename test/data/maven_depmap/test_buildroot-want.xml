@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<ns1:metadata xmlns:ns1="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
+   <ns1:artifacts>
+      <ns1:artifact>
+         <ns1:groupId>commons</ns1:groupId>
+         <ns1:artifactId>commons-war</ns1:artifactId>
+         <ns1:version>17</ns1:version>
+         <ns1:extension>war</ns1:extension>
+         <ns1:path>%s/usr/share/java/commons-war.war</ns1:path>
+      </ns1:artifact>
+      <ns1:artifact>
+         <ns1:groupId>commons</ns1:groupId>
+         <ns1:artifactId>commons-war</ns1:artifactId>
+         <ns1:version>17</ns1:version>
+         <ns1:extension>pom</ns1:extension>
+         <ns1:path>/usr/share/maven-poms/JPP-commons-war.pom</ns1:path>
+      </ns1:artifact>
+   </ns1:artifacts>
+</ns1:metadata>

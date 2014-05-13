@@ -130,12 +130,14 @@ def mvn_depmap(pom, jar=None, fnargs=None):
     def test_decorator(fun):
         def test_decorated(self):
             os.chdir(self.workdir)
+            buildroot = os.path.join(self.workdir, "builddir/build/BUILDROOT")
+            env = {'RPM_BUILD_ROOT': buildroot}
             scriptpath = path.join(DIRPATH, '..', 'java-utils', 'maven_depmap.py')
             args = ['.fragment_data', pom]
             if jar:
                 args.append(path.join(os.getcwd(), jar))
             args.extend(fnargs or [])
-            (stdout, stderr, return_value) = call_script(scriptpath, args)
+            (stdout, stderr, return_value) = call_script(scriptpath, args, extra_env = env)
             frag = None
             if return_value == 0:
                 with open('.fragment_data','r') as frag_file:
