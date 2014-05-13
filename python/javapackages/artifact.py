@@ -659,7 +659,7 @@ class MavenDependency(object):
                          self.classifier, self.version])
 
 
-class MavenExclusion:
+class MavenExclusion(object):
     """ The <exclusion> element contains informations required to exclude
         an artifact to the project. """
     def __init__(self, groupId, artifactId):
