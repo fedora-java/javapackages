@@ -616,3 +616,67 @@ class Alias(object):
 
         return cls(a.groupId, a.artifactId, a.extension, a.classifier)
 
+
+class MavenDependency(object):
+    """ The <dependency> element contains information
+        about a dependency of the project. """
+    def __init__(self, groupId, artifactId, version="",
+                 extension="", classifier="", scope="",
+                 systemPath="", exclusions=None, optional=False):
+
+        self.groupId = groupId
+        self.artifactId = artifactId
+        self.version = version.strip()
+        self.extension = extension.strip()
+        self.classifier = classifier.strip()
+        self.scope = scope.strip()
+        self.systemPath = systemPath.strip()
+        self.exclusions = exclusions or set()
+        self.optional = optional
+
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.__dict__ == other.__dict__
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        # TODO: guess this can be simplified somehow
+        return self.groupId.__hash__() + \
+               self.artifactId.__hash__() + \
+               self.version.__hash__() + \
+               self.extension.__hash__() + \
+               self.classifier.__hash__() + \
+               self.scope.__hash__() + \
+               self.systemPath.__hash__() + \
+               self.exclusions.__hash__() + \
+               self.optional.__hash__()
+
+    def __str__(self):
+        return ":".join([self.groupId, self.artifactId, self.extension,
+                         self.classifier, self.version])
+
+
+class MavenExclusion:
+    """ The <exclusion> element contains informations required to exclude
+        an artifact to the project. """
+    def __init__(self, groupId, artifactId):
+        self.groupId = groupId.strip()
+        self.artifactId = artifactId.strip()
+
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.__dict__ == other.__dict__
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return self.groupId.__hash__() + \
+               self.artifactId.__hash__()
+
+    def __str__(self):
+        return ":".join([self.groupId, self.artifactId])
