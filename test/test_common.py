@@ -16,12 +16,13 @@ SCRIPT_ENV = {'PATH':'{mock}:{real}'.format(mock=DIRPATH,
                                             real=os.environ['PATH']),
               'PYTHONPATH':PYTHONPATH}
 
-def call_script(name, args, stdin = None, wrapped = False):
+def call_script(name, args, stdin = None, wrapped = False, extra_env = {}):
     outfile = open("tmpout", 'w')
     errfile = open("tmperr", 'w')
     procargs = [sys.executable, path.join(DIRPATH, 'wrapper.py'), name]
+    env = dict(SCRIPT_ENV.items() + extra_env.items())
     proc = subprocess.Popen(procargs + args, shell = False,
-        stdout = outfile, stderr = errfile, env = SCRIPT_ENV,
+        stdout = outfile, stderr = errfile, env = env,
         stdin = subprocess.PIPE)
     proc.communicate(stdin)
     ret = proc.wait()
