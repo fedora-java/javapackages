@@ -621,7 +621,7 @@ class MavenDependency(object):
     """ The <dependency> element contains information
         about a dependency of the project. """
     def __init__(self, groupId, artifactId, version="",
-                 extension="", classifier="", scope="",
+                 extension="jar", classifier="", scope="",
                  systemPath="", exclusions=None, optional=False):
 
         self.groupId = groupId
