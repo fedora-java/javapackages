@@ -36,7 +36,8 @@ class TestMavenDepmap(unittest.TestCase):
                     xml = open(want_file).read()
                     metadata = m.CreateFromDocument(xml)
                     for a in metadata.artifacts.artifact:
-                        a.path = a.path % (self.workdir)
+                        if '%' in a.path:
+                            a.path = a.path % (self.workdir)
                     with open(want_file, "w") as f:
                         dom = metadata.toDOM(None)
                         f.write(dom.toprettyxml(indent="   "))
