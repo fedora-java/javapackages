@@ -163,20 +163,20 @@ def get_dependencies(pom_path):
     if pom_path:
         p = POM(pom_path)
         deps.extend([x for x in p.get_dependencies()])
-        dep_management = get_dependency_management(pom_path)
-
-        final_deps = []
-        for d in deps[:]:
-            merged = False
-            for dm in dep_management[:]:
-                if d.artifactId == dm.artifactId and d.groupId == dm.groupId:
-                    final_deps.append(Dependency.merge_dependencies(d, dm))
-                    merged = True
-                    break
-            if not merged:
-                final_deps.append(d)
-
-        deps = final_deps
+        #dep_management = get_dependency_management(pom_path)
+        #
+        #final_deps = []
+        #for d in deps[:]:
+        #    merged = False
+        #    for dm in dep_management[:]:
+        #        if d.artifactId == dm.artifactId and d.groupId == dm.groupId:
+        #            final_deps.append(Dependency.merge_dependencies(d, dm))
+        #            merged = True
+        #            break
+        #    if not merged:
+        #        final_deps.append(d)
+        #
+        #deps = final_deps
 
         try:
             mets = load_metadata()
