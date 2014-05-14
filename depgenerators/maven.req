@@ -118,6 +118,11 @@ class TagBuilder:
                     skipped.classifier == dependency.classifier and
                     skipped.extension == dependency.extension):
                     skipped_but_required.append(dependency)
+            # FIXME: this is not nice, refactoring needed
+            # "do_not_print" is an auxiliary variable, indicates whether
+            # current dependency is on artifact from same package and thus
+            # shouldn't be printed out.
+            do_not_print = False
             for provided in self.provided_artifacts:
                 if (provided.groupId == dependency.groupId and
                     provided.artifactId == dependency.artifactId and
@@ -133,13 +138,14 @@ class TagBuilder:
                         else:
                             # none of versions matched so we depend on a
                             # different package in fact
-                            continue
+                            pass
                     elif (not dependency.resolvedVersion and
                           not provided.is_compat()):
-                        pass
+                        do_not_print = True
+                        continue
                     else:
                         # one is compatibility the other is not
-                        continue
+                        pass
 
                     # requires on subpackages are always versioned
                     print("{rpmstr} = {version}".format(
@@ -151,7 +157,8 @@ class TagBuilder:
                 # do not generate requires like "a:b:pom:" yet
                 if dependency.extension == "pom":
                     dependency.extension = ""
-                print(dependency.get_rpm_str(dependency.version))
+                if not do_not_print:
+                    print(dependency.get_rpm_str(dependency.version))
 
         if unknown_deps:
             unknown_msg = "Following dependencies were not resolved and " \
