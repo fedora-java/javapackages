@@ -9,7 +9,7 @@
             <compatVersions>
               <version>6.0.18</version>
             </compatVersions>
-            <path>/usr/share/java/jetty/jsp-2.1-glassfish.jar</path>
+            <path>/usr/share/java/jetty/jsp-2.1-glassfish-6.0.18.jar</path>
             <dependencies>
                 <dependency>
                   <groupId>org.codehaus.plexus</groupId>
@@ -45,7 +45,7 @@
             <compatVersions>
               <version>6.0.18</version>
             </compatVersions>
-            <path>/usr/share/java/jetty/jsp-2.1-glassfish.jar</path>
+            <path>/usr/share/maven-poms/jetty/jsp-2.1-glassfish-6.0.18.pom</path>
             <dependencies>
                 <dependency>
                   <groupId>org.codehaus.plexus</groupId>
