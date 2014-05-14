@@ -144,6 +144,13 @@ class TestMavenReq(unittest.TestCase):
         self.assertIn("jpackage-utils", sout)
         self.assertIn("mvn(org.apache.maven:maven-plugin-api)", sout)
 
+    @mavenreq(["requires_on_artifact_from_same_package/require.xml"])
+    def test_simple_artifact_in_same_package(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        self.assertEquals(len(sout), 1)
+        self.assertIn("jpackage-utils", sout)
+
     #test for rhbz#1012980
     @mavenreq(["require_skipped/require.xml"])
     def test_require_skipped(self, stdout, stderr, return_value):
