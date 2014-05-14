@@ -134,7 +134,8 @@ class TagBuilder:
                         # does it match one of provided compat?
                         for compatVer in provided.compatVersions:
                             if dependency.resolvedVersion == compatVer:
-                                break
+                                do_not_print = True
+                                continue
                         else:
                             # none of versions matched so we depend on a
                             # different package in fact
