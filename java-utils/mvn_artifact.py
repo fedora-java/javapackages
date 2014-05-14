@@ -88,12 +88,20 @@ def load_metadata(metadatadir="/usr/share/maven-metadata"):
     return Depmap(mfiles)
 
 
+def load_poms(pomdir="/usr/share/maven-poms"):
+    pfiles = [os.path.join(pomdir, f) for f in os.listdir(pomdir)]
+    poms = []
+    poms.extend([POM(p) for p in pfiles])
+    return poms
+
+
 def is_it_ivy_file(fpath):
     """Try to determine whether file in given path is Ivy file or not"""
     et = ElementTree()
     doc = et.parse(fpath)
 
     return doc.tag == "ivy-module"
+
 
 def add_artifact_elements(root, uart, ppath=None, jpath=None):
     artifacts = []
@@ -108,7 +116,7 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
 
                     # add property "type"
                     domimpl = getDOMImplementation()
-                    doc  = domimpl.createDocument(None, None, None)
+                    doc = domimpl.createDocument(None, None, None)
                     ty = doc.createElement('type')
                     te = doc.createTextNode('ivy')
                     ty.appendChild(te)
@@ -122,6 +130,64 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
     else:
         for a in artifacts:
             root.artifacts.append(a)
+
+
+def get_dependency_management(pom_path):
+
+    curr_pom = POM(pom_path)
+    dm = []
+
+    if not curr_pom.parentGroupId:
+        dm.extend([x for x in curr_pom.get_dependency_management()])
+        return dm
+
+    all_poms = load_poms()
+    poms = []
+    poms.append(curr_pom)
+
+    while poms[-1].parentGroupId:
+        for p in all_poms:
+            if poms[-1].parentGroupId == p.groupId and poms[-1].parentArtifactId == p.artifactId:
+                poms.append(p)
+
+    for p in reversed(poms):
+        # FIXME: not entirely correct
+        dm.extend([x for x in p.get_dependency_management()])
+
+    return dm
+
+
+def get_dependencies(pom_path):
+    deps = []
+
+    if pom_path:
+        p = POM(pom_path)
+        deps.extend([x for x in p.get_dependencies()])
+        #dep_management = get_dependency_management(pom_path)
+        #
+        #final_deps = []
+        #for d in deps[:]:
+        #    merged = False
+        #    for dm in dep_management[:]:
+        #        if d.artifactId == dm.artifactId and d.groupId == dm.groupId:
+        #            final_deps.append(Dependency.merge_dependencies(d, dm))
+        #            merged = True
+        #            break
+        #    if not merged:
+        #        final_deps.append(d)
+        #
+        #deps = final_deps
+
+        try:
+            mets = load_metadata()
+            for provided in mets.get_provided_artifacts():
+                if provided.groupId == p.parentGroupId and provided.artifactId == p.parentArtifactId:
+                    for dep in provided.dependencies:
+                        deps.append(Dependency.from_metadata(dep))
+        except MetadataInvalidException:
+            pass
+
+    return deps
 
 
 if __name__ == "__main__":
@@ -175,22 +241,8 @@ if __name__ == "__main__":
     else:
         metadata = m.metadata()
 
-    deps = []
     if not options.skip_dependencies:
-        # try to locate all necessary pom files
-        if pom_path:
-            p = POM(pom_path)
-            deps.extend([x for x in p.get_dependencies()])
-            try:
-                mets = load_metadata()
-                for provided in mets.get_provided_artifacts():
-                    if (provided.groupId == p.parentGroupId and
-                        provided.artifactId == p.parentArtifactId):
-                        for dep in provided.dependencies:
-                            deps.append(Dependency.from_metadata(dep))
-            except MetadataInvalidException:
-                pass
-        art.dependencies = deps
+        art.dependencies = get_dependencies(pom_path)
 
     add_artifact_elements(metadata, art, pom_path, jar_path)
 

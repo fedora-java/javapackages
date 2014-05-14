@@ -16,12 +16,13 @@ SCRIPT_ENV = {'PATH':'{mock}:{real}'.format(mock=DIRPATH,
                                             real=os.environ['PATH']),
               'PYTHONPATH':PYTHONPATH}
 
-def call_script(name, args, stdin = None, wrapped = False):
+def call_script(name, args, stdin = None, wrapped = False, extra_env = {}):
     outfile = open("tmpout", 'w')
     errfile = open("tmperr", 'w')
     procargs = [sys.executable, path.join(DIRPATH, 'wrapper.py'), name]
+    env = dict(SCRIPT_ENV.items() + extra_env.items())
     proc = subprocess.Popen(procargs + args, shell = False,
-        stdout = outfile, stderr = errfile, env = SCRIPT_ENV,
+        stdout = outfile, stderr = errfile, env = env,
         stdin = subprocess.PIPE)
     proc.communicate(stdin)
     ret = proc.wait()
@@ -102,6 +103,18 @@ def mavenprov(filelist):
         return test_decorated
     return test_decorator
 
+def osgiprov(filelist):
+    def test_decorator(fun):
+        def test_decorated(self):
+            scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'osgi.prov')
+            #stdin = build_depmap_paths(filelist)
+            stdin = "\n".join(filelist)
+            (stdout, stderr, return_value) = call_script(scriptpath,
+                    [], stdin=stdin, wrapped=True)
+            fun(self, stdout, stderr, return_value)
+        return test_decorated
+    return test_decorator
+
 def mavenreq(filelist):
     def test_decorator(fun):
         def test_decorated(self):
@@ -117,12 +130,14 @@ def mvn_depmap(pom, jar=None, fnargs=None):
     def test_decorator(fun):
         def test_decorated(self):
             os.chdir(self.workdir)
+            buildroot = os.path.join(self.workdir, "builddir/build/BUILDROOT")
+            env = {'RPM_BUILD_ROOT': buildroot}
             scriptpath = path.join(DIRPATH, '..', 'java-utils', 'maven_depmap.py')
             args = ['.fragment_data', pom]
             if jar:
                 args.append(path.join(os.getcwd(), jar))
             args.extend(fnargs or [])
-            (stdout, stderr, return_value) = call_script(scriptpath, args)
+            (stdout, stderr, return_value) = call_script(scriptpath, args, extra_env = env)
             frag = None
             if return_value == 0:
                 with open('.fragment_data','r') as frag_file:

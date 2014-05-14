@@ -50,7 +50,7 @@ from os.path import basename
 import zipfile
 from time import gmtime, strftime
 
-from javapackages.artifact import ProvidedArtifact, Alias
+from javapackages.artifact import ProvidedArtifact, Alias, POM
 import javapackages.metadata as m
 import pyxb
 
@@ -248,6 +248,9 @@ if __name__ == "__main__":
         if ':' not in pom_path:
             artifact = ProvidedArtifact.from_pom(pom_path)
             have_pom = True
+
+            if POM(pom_path).packaging != "pom":
+                raise PackagingTypeMissingFile(pom_path)
         else:
             print("JAR file path must be specified when using artifact coordinates")
             sys.exit(1)
@@ -264,15 +267,19 @@ if __name__ == "__main__":
     if namespace:
         artifact.namespace = namespace
 
+
+    buildroot = os.environ.get('RPM_BUILD_ROOT')
     am = []
     if jar_path:
-        artifact.path = os.path.abspath(jar_path)
+        metadata_jar_path = os.path.abspath(jar_path)
+        artifact.path = metadata_jar_path.replace(buildroot, "") if buildroot else metadata_jar_path
         am.append(artifact.to_metadata())
         # output file path for file list (if it's not versioned)
         if not add_versions:
             print jar_path
     if have_pom:
-        artifact.path = os.path.abspath(pom_path)
+        metadata_pom_path = os.path.abspath(pom_path)
+        artifact.path = metadata_pom_path.replace(buildroot, "") if buildroot else metadata_pom_path
         artifact.extension = "pom"
         am.append(artifact.to_metadata())
         # output file path for file list (if it's not versioned)
