@@ -16,7 +16,7 @@ class Registry(RegistryBase):
     group = 'Java.guidelines'
     external_plugin = True
 
-    def is_applicable(self):        
+    def is_applicable(self):
         """ Use the is_applicable() defined in main group: """
         return self.checks.groups['Java'].is_applicable()
 
