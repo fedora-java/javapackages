@@ -105,9 +105,13 @@
 
 #
 # @Deprecated
-# Directory for maven depmaps
+# Directory for Maven depmaps
 #
 %_mavendepmapdir %{_sysconfdir}/maven
+
+#
+# Directory for Maven metadata
+#
 %_mavendepmapfragdir %{_datadir}/maven-metadata
 
 #
