@@ -89,7 +89,7 @@ def load_metadata(metadatadir="/usr/share/maven-metadata"):
         mfiles = [os.path.join(metadatadir, f) for f in os.listdir(metadatadir)]
     except OSError:
         # directory doesn't exist?
-        print(traceback.format_exc())
+        print(traceback.format_exc(), file=sys.stderr)
         mfiles = []
     return Depmap(mfiles)
 
