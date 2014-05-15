@@ -113,7 +113,7 @@
 # Directory for maven depmaps
 #
 %_mavendepmapdir %{_sysconfdir}/maven
-%_mavendepmapfragdir %{_datadir}/maven-fragments
+%_mavendepmapfragdir %{_datadir}/maven-metadata
 
 #
 # Current default JVM home.
