@@ -1,5 +1,3 @@
-import os
-import sys
 import unittest
 
 from test_common import *
@@ -110,9 +108,48 @@ class TestMavenReq(unittest.TestCase):
         self.assertEquals(len(sout), 5)
         self.assertIn("ns-runtime", sout)
         self.assertIn("ns-mvn(org.codehaus.plexus:plexus-ant-factory)", sout)
-        self.assertIn("ns-mvn(codehaus:plexus-utils) = 1.2", sout)
         self.assertIn("mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)", sout)
         self.assertIn("mvn(org.apache.maven.plugins:maven-idea-plugin)", sout)
+
+    @mavenreq(["requires_simple_subpackages/require.xml"])
+    def test_simple_subpackage(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        self.assertEquals(len(sout), 2)
+        self.assertIn("jpackage-utils", sout)
+        self.assertIn("mvn(org.apache.maven:maven-plugin-api) = 3.2.1", sout)
+
+    @mavenreq(["requires_simple_subpackages2/require.xml"])
+    def test_simple_subpackage2(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        self.assertEquals(len(sout), 3)
+        self.assertIn("jpackage-utils", sout)
+        self.assertIn("mvn(org.apache.maven:maven-plugin-api) = 3.2.1", sout)
+        self.assertIn("mvn(org.codehaus.plexus:plexus-utils)", sout)
+
+    @mavenreq(["requires_simple_subpackages2_compat/require.xml"])
+    def test_simple_subpackage3(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        self.assertEquals(len(sout), 2)
+        self.assertIn("jpackage-utils", sout)
+        self.assertIn("mvn(org.apache.maven:maven-plugin-api:3.2.0) = 3.2.1", sout)
+
+    @mavenreq(["requires_simple_subpackages2_compat2/require.xml"])
+    def test_simple_subpackage4(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        self.assertEquals(len(sout), 2)
+        self.assertIn("jpackage-utils", sout)
+        self.assertIn("mvn(org.apache.maven:maven-plugin-api)", sout)
+
+    @mavenreq(["requires_on_artifact_from_same_package/require.xml"])
+    def test_simple_artifact_in_same_package(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        self.assertEquals(len(sout), 1)
+        self.assertIn("jpackage-utils", sout)
 
     #test for rhbz#1012980
     @mavenreq(["require_skipped/require.xml"])
