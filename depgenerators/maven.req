@@ -94,6 +94,30 @@ class TagBuilder:
             print(name)
 
 
+    def __is_dep_on_same_package(self, dependency, depmap):
+        # TODO: what about requires on same compat and non-compat deps in same
+        # package?
+        # TODO: this duplicates code down below a bit, refactoring needed
+        for provided in depmap.get_provided_artifacts():
+            if (provided.groupId == dependency.groupId and
+                provided.artifactId == dependency.artifactId and
+                provided.classifier == dependency.classifier and
+                provided.extension == dependency.extension and
+                provided.namespace == dependency.namespace):
+                if dependency.resolvedVersion and provided.is_compat():
+                    # does it match one of provided compat?
+                    for compatVer in provided.compatVersions:
+                        if dependency.resolvedVersion == compatVer:
+                            return True
+                        else:
+                            return False
+                elif (not dependency.resolvedVersion and
+                    not provided.is_compat()):
+                    return True
+                else:
+                    return False
+
+
     def print_mvn_requires(self, path):
         depmap = Depmap(path)
         skipped_but_required = []
@@ -122,7 +146,6 @@ class TagBuilder:
             # "do_not_print" is an auxiliary variable, indicates whether
             # current dependency is on artifact from same package and thus
             # shouldn't be printed out.
-            do_not_print = False
             for provided in self.provided_artifacts:
                 if (provided.groupId == dependency.groupId and
                     provided.artifactId == dependency.artifactId and
@@ -134,32 +157,31 @@ class TagBuilder:
                         # does it match one of provided compat?
                         for compatVer in provided.compatVersions:
                             if dependency.resolvedVersion == compatVer:
-                                do_not_print = True
-                                continue
+                                break
                         else:
                             # none of versions matched so we depend on a
                             # different package in fact
-                            pass
+                            continue
                     elif (not dependency.resolvedVersion and
                           not provided.is_compat()):
-                        do_not_print = True
-                        continue
+                        pass
                     else:
                         # one is compatibility the other is not
-                        pass
+                        continue
 
-                    # requires on subpackages are always versioned
-                    print("{rpmstr} = {version}".format(
-                        rpmstr=dependency.get_rpm_str(),
-                        version=provided.version))
+                    if not self.__is_dep_on_same_package(dependency, depmap):
+                        # requires on subpackages are always versioned
+                        print("{rpmstr} = {version}".format(
+                            rpmstr=dependency.get_rpm_str(),
+                            version=provided.version))
+
                     break
             else:
                 # TODO: remove when not needed
                 # do not generate requires like "a:b:pom:" yet
                 if dependency.extension == "pom":
                     dependency.extension = ""
-                if not do_not_print:
-                    print(dependency.get_rpm_str(dependency.version))
+                print(dependency.get_rpm_str(dependency.version))
 
         if unknown_deps:
             unknown_msg = "Following dependencies were not resolved and " \
