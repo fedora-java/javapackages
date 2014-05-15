@@ -95,6 +95,8 @@ dir "${mavenpomdir}"
 dir "${mavendepmapdir}"  # @Deprecated
 dir "${mavendepmapfragdir}"  # @Deprecated
 dir "${rpmconfigdir}/fileattrs"
+# TODO: remove this when version 4.0.0 hits rawhide
+dir "${datadir}/maven-fragments"
 
 for ver in 1.5.0 1.6.0 1.7.0 1.8.0; do
     dir "${javadir}-${ver}"
@@ -158,6 +160,8 @@ inst_data depgenerators/fileattrs/osgi.attr "${rpmconfigdir}/fileattrs"
 inst_data depgenerators/fileattrs/javadoc.attr "${rpmconfigdir}/fileattrs"
 
 inst_data etc/javapackages-metadata.xml "${mavendepmapfragdir}"
+# TODO: remove this when version 4.0.0 hits rawhide
+inst_data etc/javapackages-depmap.xml "${datadir}/maven-fragments"
 
 inst_data configs/configuration.xml "${m2home}"
 inst_data configs/configuration-rpmbuild.xml "${m2home}"
