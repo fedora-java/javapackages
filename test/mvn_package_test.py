@@ -13,6 +13,7 @@ class TestMvnPackage(unittest.TestCase):
     def setUp(self):
         self.olddir = os.getcwd()
         self.workdir = os.path.join(DIRPATH, 'workdir')
+        shutil.rmtree(self.workdir, ignore_errors=True)
         os.mkdir(self.workdir)
         os.chdir(self.workdir)
 
