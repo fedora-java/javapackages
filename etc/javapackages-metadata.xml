@@ -1,4 +1,4 @@
-<!-- Dependency map for com.sun:tools so that packages don't
+<!-- Metadata for com.sun:tools so that packages don't
      need to use system scope and provide systemPath. -->
 <metadata xmlns="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
     <artifacts>
