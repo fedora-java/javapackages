@@ -37,6 +37,7 @@ from javapackages import Artifact
 
 import sys
 import os
+import traceback
 from optparse import OptionParser
 
 from javapackages.artifact import *
@@ -84,7 +85,12 @@ class ExtensionsDontMatch(Exception):
 
 
 def load_metadata(metadatadir="/usr/share/maven-metadata"):
-    mfiles = [os.path.join(metadatadir, f) for f in os.listdir(metadatadir)]
+    try:
+        mfiles = [os.path.join(metadatadir, f) for f in os.listdir(metadatadir)]
+    except OSError:
+        # directory doesn't exist?
+        print(traceback.format_exc())
+        mfiles = []
     return Depmap(mfiles)
 
 
