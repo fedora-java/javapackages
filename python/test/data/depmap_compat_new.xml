@@ -1,12 +1,14 @@
 <metadata xmlns="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
-    <uuid>432048235932</uuid>
+    <uuid>43948329</uuid>
+    <properties>
+        <requiresJava>1.5</requiresJava>
+    </properties>
     <artifacts>
         <artifact>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-idea-plugin</artifactId>
             <version>2.2</version>
-            <extension>jar</extension>
-            <path>/usr/share/java/maven-idea-plugin-2.2.jar</path>
+            <path>/usr/share/java/maven-idea-plugin/maven-idea-plugin-2.2.jar</path>
             <compatVersions>
                 <version>2.2</version>
             </compatVersions>
@@ -14,30 +16,24 @@
                 <dependency>
                     <groupId>org.apache.maven</groupId>
                     <artifactId>maven-project</artifactId>
-                    <requestedVersion>2.2.1</requestedVersion>
+                    <requestedVersion>12</requestedVersion>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.maven.wagon</groupId>
                     <artifactId>wagon-provider-api</artifactId>
                     <classifier>test-jar</classifier>
-                    <requestedVersion>2</requestedVersion>
+                    <requestedVersion>12</requestedVersion>
                 </dependency>
                 <dependency>
                     <groupId>org.codehaus.plexus</groupId>
                     <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>2.1</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <resolvedVersion>1.0-alpha-7</resolvedVersion>
-                    <requestedVersion>1</requestedVersion>
+                    <requestedVersion>12</requestedVersion>
                 </dependency>
                 <dependency>
                     <groupId>org.codehaus.plexus</groupId>
                     <artifactId>plexus-utils</artifactId>
                     <extension>war</extension>
-                    <requestedVersion>3.1</requestedVersion>
+                    <requestedVersion>12</requestedVersion>
                 </dependency>
             </dependencies>
         </artifact>
@@ -46,7 +42,7 @@
             <artifactId>maven-idea-plugin</artifactId>
             <version>2.2</version>
             <extension>pom</extension>
-            <path>/usr/share/java/maven-idea-plugin-2.2.jar</path>
+            <path>/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin-2.2.pom</path>
             <compatVersions>
                 <version>2.2</version>
             </compatVersions>
@@ -54,30 +50,24 @@
                 <dependency>
                     <groupId>org.apache.maven</groupId>
                     <artifactId>maven-project</artifactId>
-                    <requestedVersion>2.2.1</requestedVersion>
+                    <requestedVersion>12</requestedVersion>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.maven.wagon</groupId>
                     <artifactId>wagon-provider-api</artifactId>
                     <classifier>test-jar</classifier>
-                    <requestedVersion>2</requestedVersion>
+                    <requestedVersion>12</requestedVersion>
                 </dependency>
                 <dependency>
                     <groupId>org.codehaus.plexus</groupId>
                     <artifactId>plexus-container-default</artifactId>
-                    <requestedVersion>2.1</requestedVersion>
-                </dependency>
-                <dependency>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-container-default</artifactId>
-                    <resolvedVersion>1.0-alpha-7</resolvedVersion>
-                    <requestedVersion>1</requestedVersion>
+                    <requestedVersion>12</requestedVersion>
                 </dependency>
                 <dependency>
                     <groupId>org.codehaus.plexus</groupId>
                     <artifactId>plexus-utils</artifactId>
                     <extension>war</extension>
-                    <requestedVersion>3.1</requestedVersion>
+                    <requestedVersion>12</requestedVersion>
                 </dependency>
             </dependencies>
         </artifact>
