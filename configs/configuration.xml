@@ -2,7 +2,7 @@
 <configuration xmlns="http://fedorahosted.org/xmvn/CONFIG/0.6.0">
   <resolverSettings>
     <metadataRepositories>
-      <repository>/usr/share/maven-fragments</repository>
+      <repository>/usr/share/maven-metadata</repository>
     </metadataRepositories>
     <prefixes>
       <prefix>/</prefix>
@@ -29,7 +29,7 @@
   <installerSettings>
     <enableRawPoms>true</enableRawPoms>
     <enableEffectivePoms>true</enableEffectivePoms>
-    <metadataDir>usr/share/maven-fragments</metadataDir>
+    <metadataDir>usr/share/maven-metadata</metadataDir>
     <installRoot>.xmvn/root</installRoot>
   </installerSettings>
   <artifactManagement>
