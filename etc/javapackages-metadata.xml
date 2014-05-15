@@ -6,13 +6,13 @@
             <groupId>com.sun</groupId>
             <artifactId>tools</artifactId>
             <version>SYSTEM</version>
-            <path>/usr/lib/jvm/java/lib/tools.jar</path>
+            <path>${JAVA_HOME}/../lib/tools.jar</path>
         </artifact>
         <artifact>
             <groupId>com.jdk</groupId>
             <artifactId>jconsole</artifactId>
             <version>SYSTEM</version>
-            <path>/usr/lib/jvm/java/lib/jconsole.jar</path>
+            <path>${JAVA_HOME}/../lib/jconsole.jar</path>
         </artifact>
     </artifacts>
 </metadata>
