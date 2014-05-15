@@ -56,7 +56,6 @@ jvmlibdir
 jvmprivdir
 jvmsysconfdir
 mavenpomdir
-mavenmetadatadir
 "
 
 vars="$vars mavendepmapdir mavendepmapfragdir" # @Deprecated
