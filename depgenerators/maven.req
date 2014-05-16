@@ -73,7 +73,7 @@ class TagBuilder:
 
     def __process_jvm_req(self, name, version):
         if not version:
-            return
+            return ""
         try:
             jsplit = version.split('.')
             if len(jsplit) != 2:
@@ -82,16 +82,16 @@ class TagBuilder:
             major = int(jsplit[0])
             minor = int(jsplit[1])
             if major > 1 or minor > 5:
-                print("{name} >= 1:{major}.{minor}".format(name=name,
+                return "{name} >= 1:{major}.{minor}".format(name=name,
                                                            major=major,
-                                                           minor=minor))
+                                                           minor=minor)
             else:
-                print("{name} >= {major}.{minor}".format(name=name,
+                return "{name} >= {major}.{minor}".format(name=name,
                                                          major=major,
-                                                         minor=minor))
+                                                         minor=minor)
         except ValueError:
             # what? not a numbered major/minor java release?
-            print(name)
+            return name
 
 
     def __is_dep_on_same_package(self, dependency, depmap):
@@ -209,10 +209,15 @@ class TagBuilder:
                            "in %prep.\n"
             raise Exception(skipped_msg)
 
-        reqs = {'java-headless': depmap.get_java_requires(),
-                'java-devel': depmap.get_java_devel_requires()}
-        for name, version in reqs.iteritems():
-            self.__process_jvm_req(name, version)
+        java_req = self.__process_jvm_req('java-headless', depmap.get_java_requires())
+        java_devel_req = self.__process_jvm_req('java-devel',
+                         depmap.get_java_devel_requires())
+        if java_req:
+            print(java_req)
+        else:
+            print('java-headless')
+        if java_devel_req:
+            print(java_devel_req)
 
     def find_what_requires(self, artifact):
         """
