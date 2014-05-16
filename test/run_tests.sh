@@ -1,6 +1,6 @@
 #!/bin/bash
 
-nosetests --with-xunit --exclude=maven_prov_test_fuzzed.py
+PYTHONPATH="../python" nosetests --with-xunit --exclude=maven_prov_test_fuzzed.py
 r1=$?
 r2=0
 
