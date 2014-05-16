@@ -150,5 +150,9 @@ class TestMvnArtifact(unittest.TestCase):
         got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
         self.assertEqual(res, True)
 
+    @mvn_artifact('asm-analysis-5.0.2.pom')
+    def test_missing_version(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0, stderr)
+
 if __name__ == '__main__':
     unittest.main()
