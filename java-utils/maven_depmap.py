@@ -63,6 +63,10 @@ class IncompatibleFilenames(Exception):
     def __init__(self, pom_path, jar_path):
         self.args=("Filenames of POM %s and JAR %s does not match properly. Check that JAR subdirectories matches '.' in pom name." % (pom_path, jar_path),)
 
+class ExtensionsDontMatch(Exception):
+    def __init__(self, coordinates_ext, file_ext):
+        raise ExtensionsDontMatch("Extensions don't match: '%s' != '%s'" % (coordinates_ext, file_ext),)
+
 class MissingJarFile(Exception):
     def __init__(self):
         self.args=("JAR seems to be missing in standard directories. Make sure you have installed it",)
@@ -231,8 +235,14 @@ if __name__ == "__main__":
         if ':' in pom_path:
             pom_str = pom_path.rsplit('/')[-1]
             artifact = ProvidedArtifact.from_mvn_str(pom_str)
+            artifact_ext = artifact.extension or "jar"
+            file_ext = os.path.splitext(jar_path)[1][1:]
+            if artifact_ext != file_ext:
+                raise ExtensionsDontMatch(artifact_ext, file_ext)
+
             if artifact.extension == 'jar':
                 artifact.extension = ''
+
             if not artifact.version:
                 parser.error("Artifact definition has to include version")
         else:
