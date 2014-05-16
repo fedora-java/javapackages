@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<ns1:metadata xmlns:ns1="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
+   <ns1:artifacts>
+      <ns1:artifact>
+         <ns1:groupId>x</ns1:groupId>
+         <ns1:artifactId>y</ns1:artifactId>
+         <ns1:version>0.1</ns1:version>
+         <ns1:path>%s/usr/share/java/commons-io-1.jar</ns1:path>
+         <ns1:namespace>ns</ns1:namespace>
+         <ns1:compatVersions>
+            <ns1:version>1</ns1:version>
+            <ns1:version>2</ns1:version>
+            <ns1:version>3</ns1:version>
+         </ns1:compatVersions>
+         <ns1:aliases>
+            <ns1:alias>
+               <ns1:groupId>a</ns1:groupId>
+               <ns1:artifactId>b</ns1:artifactId>
+            </ns1:alias>
+         </ns1:aliases>
+      </ns1:artifact>
+   </ns1:artifacts>
+</ns1:metadata>

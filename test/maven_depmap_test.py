@@ -253,44 +253,40 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(report, '', report)
 
-    #@mvn_depmap('JPP/x:y:0.1', 'usr/share/java/commons-io.jar',
-    #        ['--versions', '1,2,3'])
-    #def test_version2(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result('test_version', depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('JPP/x:y:0.1', 'usr/share/java/commons-io.jar',
+            ['--versions', '1,2,3'])
+    def test_version2(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result('test_version', depmap)
+        self.assertEqual(report, '', report)
 
-    #@mvn_depmap('x:y:0.1', 'usr/share/java/commons-io.jar',
-    #        ['-r', '1,2,3', '-a', 'a:b:32'])
-    #def test_version_append(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('x:y:0.1', 'usr/share/java/commons-io.jar',
+            ['-r', '1,2,3', '-a', 'a:b:32'])
+    def test_version_append(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
-    #@mvn_depmap('x:y:0.1', 'usr/share/java/commons-io.jar',
-    #        ['-r', '1,2,3', '-n', 'ns', '-a', 'a:b:32'])
-    #def test_version_namespace(self, stdout, stderr, return_value, depmap):
-    #    self.assertEqual(return_value, 0, stderr)
-    #    report = self.check_result(inspect.currentframe().f_code.co_name,
-    #                                       depmap)
-    #    self.assertEqual(report, '', report)
+    @mvn_depmap('x:y:0.1', 'usr/share/java/commons-io.jar',
+            ['-r', '1,2,3', '-n', 'ns', '-a', 'a:b:32'])
+    def test_version_namespace(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
-    #@mvn_depmap('x:y', 'usr/share/java/commons-io.jar')
-    #def test_missing_version2(self, stdout, stderr, return_value, depmap):
-    #    self.assertNotEqual(return_value, 0)
+    @mvn_depmap('x:y', 'usr/share/java/commons-io.jar')
+    def test_missing_version2(self, stdout, stderr, return_value, depmap):
+        self.assertNotEqual(return_value, 0)
 
-    #@mvn_depmap('x:y:war:1', 'usr/share/java/commons-io.jar')
-    #def test_incorrect_extension(self, stdout, stderr, return_value, depmap):
-    #    self.assertNotEqual(return_value, 0)
+    @mvn_depmap('x:y:war:1', 'usr/share/java/commons-io.jar')
+    def test_incorrect_extension(self, stdout, stderr, return_value, depmap):
+        self.assertNotEqual(return_value, 0)
 
-    #@mvn_depmap('evil:', 'usr/share/java/commons-io.jar')
-    #def test_incorrect_artifact(self, stdout, stderr, return_value, depmap):
-    #    self.assertNotEqual(return_value, 0)
-
-    #@mvn_depmap('x:y::classfier:1', 'usr/share/java/commons-io.war')
-    #def test_incorrect_classifier(self, stdout, stderr, return_value, depmap):
-    #    self.assertNotEqual(return_value, 0)
+    @mvn_depmap('evil:', 'usr/share/java/commons-io.jar')
+    def test_incorrect_artifact(self, stdout, stderr, return_value, depmap):
+        self.assertNotEqual(return_value, 0)
 
     #@mvn_depmap('x:y:1', 'usr/share/java/commons-io/commons-io.jar')
     #def test_group_id(self, stdout, stderr, return_value, depmap):
