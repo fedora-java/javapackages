@@ -101,6 +101,9 @@ Details:
       override local resolution.
     - `%mvn_artifact` supports installing artifacts described by Ivy
       configuration files
+    - `%mvn_install` performs the actual installation. Optional `-J`
+      parameter requests installation of generated Javadoc from given
+      directory
 
 .Ivy files manipulation
 A subset of macros used to modify Maven POMs also work with `ivy.xml`
@@ -120,4 +123,37 @@ For more details, see corresponding manpages.
 # name="foobar" to ./submodule/ivy.xml
 %pom_add_dep com.example:foobar submodule
 -----
-TODO: ivy:publish
+
+.Using the `ivy:publish` task
+Ivy supports publishing built artifact with `ivy:publish` task. If your
+`build.xml` file already contains a task that calls `ivy:publish`, you
+can set the resolver attribute of the `ivy:publish` element to `xmvn`.
+This can be done with simple `%pom_xpath_set` call.  Then when the task
+is run, XMvn can pick the published artifacts and install them during
+the run of `%mvn_install` without needing you to manually specify them
+with
+`%mvn_artifact`.
+
+.Spec file using the `ivy:publish` task
+[source,spec]
+-------------
+BuildRequires: ivy-local
+....
+%prep
+%pom_xpath_set ivy:publish/@resolver xmvn build.xml
+
+%build
+ant -Divy.mode=local test publish-local
+
+%install
+%mvn_install -J api/
+
+%files -f .mfiles
+%files -javadoc -f .mfiles-javadoc
+-------------
+
+Details:
+
+    - The publish target may be named differently. Search the `build.xml`
+      for occurences of `ivy:publish`.
+    - `%mvn_install` will install all the published artifacts.
