@@ -83,6 +83,9 @@ config = ".xmvn-reactor"
 class ExtensionsDontMatch(Exception):
     pass
 
+class UnknownVersion(Exception):
+    pass
+
 
 def load_metadata(metadatadir="/usr/share/maven-metadata"):
     try:
@@ -169,6 +172,10 @@ def get_dependencies(pom_path):
     if pom_path:
         p = POM(pom_path)
         deps.extend([x for x in p.get_dependencies()])
+
+        for d in deps:
+            if not d.requestedVersion:
+                raise UnknownVersion("Unknown version of dependency {d}".format(d=d))
         #dep_management = get_dependency_management(pom_path)
         #
         #final_deps = []
