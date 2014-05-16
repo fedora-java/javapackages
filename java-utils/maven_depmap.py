@@ -198,7 +198,7 @@ def write_metadata(metadata_file, artifacts):
 
 if __name__ == "__main__":
 
-    usage="usage: %prog [options] fragment_path pom_path|<MVN spec> [jar_path]"
+    usage="usage: %prog [options] metadata_path pom_path|<MVN spec> [jar_path]"
     parser = OptionParser(usage=usage)
     parser.add_option("-a","--append",type="str",
                       help="Additional depmaps to add (gid:aid)  [default: %default]")
@@ -221,7 +221,7 @@ if __name__ == "__main__":
     if len(args) < 2:
         parser.error("Incorrect number of arguments")
     # These will fail when incorrect number of arguments is given.
-    fragment_path = args[0].strip()
+    metadata_path = args[0].strip()
     pom_path = args[1].strip()
     jar_path = None
 
@@ -267,7 +267,7 @@ if __name__ == "__main__":
 
 
     # output file path for file lists
-    print fragment_path
+    print metadata_path
 
     artifact = add_aliases(artifact, append_deps)
     artifact = add_compat_versions(artifact, add_versions)
@@ -296,4 +296,4 @@ if __name__ == "__main__":
         if not add_versions:
             print pom_path
 
-    write_metadata(fragment_path, am)
+    write_metadata(metadata_path, am)
