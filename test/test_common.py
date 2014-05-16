@@ -131,13 +131,15 @@ def osgiprov(filelist):
         return test_decorated
     return test_decorator
 
-def mavenreq(filelist):
+def mavenreq(filelist, config='default'):
     def test_decorator(fun):
         def test_decorated(self):
             scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'maven.req')
             stdin = build_depmap_paths(filelist)
+            config_path = os.path.join(DIRPATH, 'data', 'config', config + '.json')
+            env = {'JAVAPACKAGES_CONFIG': config_path}
             (stdout, stderr, return_value) = call_script(scriptpath,
-                    [], stdin=stdin, wrapped=True)
+                    [], stdin=stdin, wrapped=True, extra_env=env)
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator

@@ -1,0 +1,16 @@
+{
+    "java_requires": {
+        "package_name": "java-headless",
+        "always_generate": true,
+        "skip": false
+    },
+    "java_devel_requires": {
+        "package_name": "java-devel",
+        "always_generate": false,
+        "skip": false
+    },
+    "filter_requires": [
+        "com.sun:tools",
+        "sun.jdk:jconsole"
+    ]
+}

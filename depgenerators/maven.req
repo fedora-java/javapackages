@@ -32,6 +32,7 @@
 #   Stanislav Ochotnicky <sochotnicky@redhat.com>
 #
 
+import json
 import os
 import sys
 import signal
@@ -43,56 +44,64 @@ from javapackages import POM
 from javapackages.depmap import Depmap, MetadataInvalidException
 from javapackages.artifact import Artifact, ProvidedArtifact, SkippedArtifact, Dependency
 
-class TagBuilder:
-    def __init__ (self, filelist=None):
+def process_java_version(version_string):
+    version = version_string.split('.')
+    if len(version) != 2:
+        # if we don't have major.minor format, just ignore version
+        raise ValueError("Required Java version not in major.minor format")
+    major = int(version[0])
+    minor = int(version[1])
+    if major > 1 or minor > 5:
+        return "1:{0}.{1}".format(major, minor)
+    else:
+        return "{0}.{1}".format(major, minor)
+
+class TagBuilder(object):
+    def __init__(self, filelist=None):
         if filelist == None:
             filelist = sys.stdin
-        paths = map (lambda x: x.rstrip (), filelist.readlines ())
+
+        config_path = os.environ.get('JAVAPACKAGES_CONFIG', '/etc/javapackages/config.json')
+        try:
+            with open(config_path) as config_file:
+                self.config = json.load(config_file)
+        except (OSError, IOError):
+            raise Exception('Cannot load config file.')
+
+        paths = [line.rstrip() for line in filelist.readlines()]
         self.provided_artifacts = []
         self.skipped_artifacts = []
         if paths:
             # let's first read all fragment files for provided artifacts
             self.fragment_dir = os.path.dirname(paths[0])
             fpaths = []
-            for dirname, dirnames, filenames in os.walk(self.fragment_dir):
+            for dirname, _, filenames in os.walk(self.fragment_dir):
                 for filename in filenames:
                     if filename.endswith(".pom"):
                         continue
                     fpaths.append(os.path.join(dirname, filename))
-            try:
-                depmap = Depmap(fpaths)
-                self.provided_artifacts.extend(depmap.get_provided_artifacts())
-                self.skipped_artifacts.extend(depmap.get_skipped_artifacts())
-            except MetadataInvalidException:
-                # let's ignore if some other files are incorrect'
-                print >> sys.stderr, "Failed to load: {fpath}".format(fpath=fpath)
+            depmap = Depmap(fpaths)
+            self.provided_artifacts.extend(depmap.get_provided_artifacts())
+            self.skipped_artifacts.extend(depmap.get_skipped_artifacts())
         for path in paths:
             if path.endswith(".pom"):
                 continue
             self.print_mvn_requires(path)
 
-    def __process_jvm_req(self, name, version):
-        if not version:
-            return ""
-        try:
-            jsplit = version.split('.')
-            if len(jsplit) != 2:
-                # if we don't have major.minor format, just ignore version
-                raise ValueError("Required Java version not in major.minor format")
-            major = int(jsplit[0])
-            minor = int(jsplit[1])
-            if major > 1 or minor > 5:
-                return "{name} >= 1:{major}.{minor}".format(name=name,
-                                                           major=major,
-                                                           minor=minor)
-            else:
-                return "{name} >= {major}.{minor}".format(name=name,
-                                                         major=major,
-                                                         minor=minor)
-        except ValueError:
-            # what? not a numbered major/minor java release?
-            return name
-
+    def __generate_java_requires(self, depmap):
+        for rule_name, fn in (('java_requires', Depmap.get_java_requires),
+                              ('java_devel_requires', Depmap.get_java_devel_requires)):
+            rules = self.config[rule_name]
+            if not rules.get('skip', False):
+                required_version = fn(depmap)
+                if required_version:
+                    version_string = process_java_version(required_version)
+                    parts = {'pkg': rules['package_name'],
+                             'op': rules.get('cmp_operator', '>='),
+                             'version': version_string}
+                    print("{pkg} {op} {version}".format(**parts))
+                elif rules['always_generate']:
+                    print(rules['package_name'])
 
     def __is_dep_on_same_package(self, dependency, depmap):
         # TODO: what about requires on same compat and non-compat deps in same
@@ -121,7 +130,7 @@ class TagBuilder:
     def print_mvn_requires(self, path):
         depmap = Depmap(path)
         skipped_but_required = []
-        base_package_requires=set()
+        base_package_requires = set()
 
         for provided in depmap.get_provided_artifacts():
             if provided.namespace:
@@ -209,15 +218,7 @@ class TagBuilder:
                            "in %prep.\n"
             raise Exception(skipped_msg)
 
-        java_req = self.__process_jvm_req('java-headless', depmap.get_java_requires())
-        java_devel_req = self.__process_jvm_req('java-devel',
-                         depmap.get_java_devel_requires())
-        if java_req:
-            print(java_req)
-        else:
-            print('java-headless')
-        if java_devel_req:
-            print(java_devel_req)
+        self.__generate_java_requires(depmap)
 
     def find_what_requires(self, artifact):
         """
