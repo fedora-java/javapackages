@@ -16,6 +16,8 @@
 
 ** Move POM related classes from artifact.py to separate (sub)module/library(?)
 
+** Update documentation - it still refers to %{_mavendepmapfragdir} and so on
+
 
 * BUGS
 

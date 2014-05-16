@@ -10,3 +10,4 @@ target/
 root/
 python/build/
 python/javapackages.egg-info/
+python/javapackages/version.py
