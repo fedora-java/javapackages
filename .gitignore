@@ -11,3 +11,4 @@ root/
 python/build/
 python/javapackages.egg-info/
 python/javapackages/version.py
+test/nosetests.xml

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-nosetests --exclude=maven_prov_test_fuzzed.py
+nosetests --with-xunit --exclude=maven_prov_test_fuzzed.py
 r1=$?
 r2=0
 
