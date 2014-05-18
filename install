@@ -151,7 +151,7 @@ inst_exec depgenerators/maven.prov "${rpmconfigdir}"
 inst_exec target/maven.req "${rpmconfigdir}"
 inst_exec depgenerators/osgi.prov "${rpmconfigdir}"
 inst_exec depgenerators/osgi.req "${rpmconfigdir}"
-inst_exec depgenerators/javadoc.req "${rpmconfigdir}"
+inst_exec target/javadoc.req "${rpmconfigdir}"
 
 inst_data depgenerators/fileattrs/maven.attr "${rpmconfigdir}/fileattrs"
 inst_data depgenerators/fileattrs/osgi.attr "${rpmconfigdir}/fileattrs"

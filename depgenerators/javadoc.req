@@ -1,4 +1,10 @@
-#!/bin/sh
-cat >/dev/null
-# always required for javadocs
-echo jpackage-utils
+#!/usr/bin/python
+import json
+
+CONFIG_PATH = '%{sysconfdir}/javapackages/config.json'
+
+with open(CONFIG_PATH) as config_file:
+    config = json.load(config_file)['javadoc.req']
+
+for pkg in config['always_generate']:
+    print pkg

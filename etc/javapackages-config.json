@@ -1,5 +1,8 @@
 {
     "maven.req": {
+        "always_generate": [
+            "jpackage-utils"
+        ],
         "java_requires": {
             "package_name": "java-headless",
             "always_generate": true,
@@ -13,6 +16,11 @@
         "filter_requires": [
             "com.sun:tools",
             "sun.jdk:jconsole"
+        ]
+    },
+    "javadoc.req": {
+        "always_generate": [
+            "jpackage-utils"
         ]
     }
 }
