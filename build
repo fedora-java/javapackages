@@ -85,6 +85,7 @@ expand macros.d/macros.jpackage
 expand macros.d/macros.fjava
 expand macros.d/macros.xmvn
 expand java-utils/java-functions
+expand depgenerators/maven.req
 
 manpage abs2rel
 manpage find-jar

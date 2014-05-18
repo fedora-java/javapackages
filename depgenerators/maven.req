@@ -56,17 +56,18 @@ def process_java_version(version_string):
     else:
         return "{0}.{1}".format(major, minor)
 
+CONFIG_PATH = '%{sysconfdir}/javapackages/config.json'
+
 class TagBuilder(object):
     def __init__(self, filelist=None):
         if filelist == None:
             filelist = sys.stdin
 
-        config_path = os.environ.get('JAVAPACKAGES_CONFIG', '/etc/javapackages/config.json')
         try:
-            with open(config_path) as config_file:
-                self.config = json.load(config_file)
+            with open(CONFIG_PATH) as config_file:
+                self.config = json.load(config_file)['maven.req']
         except (OSError, IOError):
-            raise Exception('Cannot load config file.')
+            raise Exception('Cannot load config file {0}.'.format(CONFIG_PATH))
 
         paths = [line.rstrip() for line in filelist.readlines()]
         self.provided_artifacts = []

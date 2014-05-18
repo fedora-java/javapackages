@@ -17,14 +17,14 @@ SCRIPT_ENV = {'PATH':'{mock}:{real}'.format(mock=DIRPATH,
                                             real=os.environ['PATH']),
               'PYTHONPATH':PYTHONPATH}
 
-def call_script(name, args, stdin = None, wrapped = False, extra_env = {}):
+def call_script(name, args, stdin=None, wrapped=False, extra_env={}, config_path=''):
     outfile = open("tmpout", 'w')
     errfile = open("tmperr", 'w')
-    procargs = [sys.executable, path.join(DIRPATH, 'wrapper.py'), name]
+    procargs = [sys.executable, path.join(DIRPATH, 'wrapper.py'), name, config_path]
     env = dict(SCRIPT_ENV.items() + extra_env.items())
-    proc = subprocess.Popen(procargs + args, shell = False,
-        stdout = outfile, stderr = errfile, env = env,
-        stdin = subprocess.PIPE)
+    proc = subprocess.Popen(procargs + args, shell=False,
+        stdout=outfile, stderr=errfile, env=env,
+        stdin=subprocess.PIPE)
     proc.communicate(stdin)
     ret = proc.wait()
     outfile = open("tmpout", 'r+')
@@ -131,15 +131,20 @@ def osgiprov(filelist):
         return test_decorated
     return test_decorator
 
-def mavenreq(filelist, config='default'):
+def mavenreq(filelist, config=None):
     def test_decorator(fun):
         def test_decorated(self):
             scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'maven.req')
             stdin = build_depmap_paths(filelist)
-            config_path = os.path.join(DIRPATH, 'data', 'config', config + '.json')
-            env = {'JAVAPACKAGES_CONFIG': config_path}
+            env = {}
+            if config:
+                config_path = os.path.join(DIRPATH, 'data', 'config', config + '.json')
+            else:
+                config_path = os.path.join(DIRPATH, '..', 'etc',
+                        'javapackages-config.json')
             (stdout, stderr, return_value) = call_script(scriptpath,
-                    [], stdin=stdin, wrapped=True, extra_env=env)
+                    [], stdin=stdin, wrapped=True, extra_env=env,
+                    config_path=config_path)
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
