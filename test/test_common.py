@@ -131,10 +131,10 @@ def osgiprov(filelist):
         return test_decorated
     return test_decorator
 
-def mavenreq(filelist, config=None):
+def requires_generator(name, filelist, config=None):
     def test_decorator(fun):
         def test_decorated(self):
-            scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'maven.req')
+            scriptpath = path.join(DIRPATH, '..', 'depgenerators', name)
             stdin = build_depmap_paths(filelist)
             env = {}
             if config:
@@ -148,6 +148,12 @@ def mavenreq(filelist, config=None):
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
+
+def mavenreq(*args, **kwargs):
+    return requires_generator('maven.req', *args, **kwargs)
+
+def javadocreq(*args, **kwargs):
+    return requires_generator('javadoc.req', *args, **kwargs)
 
 def mvn_depmap(pom, jar=None, fnargs=None):
     def test_decorator(fun):
