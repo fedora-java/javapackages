@@ -30,7 +30,8 @@ class TestMvnArtifact(unittest.TestCase):
                     want_file = os.path.join(dirname, filename)
                     metadata = m.CreateFromDocument(open(want_file).read())
                     for a in metadata.artifacts.artifact:
-                        a.path = a.path % (cls.workdir)
+                        if '%' in a.path:
+                            a.path = a.path % (cls.workdir)
                     with open(want_file, "w") as f:
                         dom = metadata.toDOM(None)
                         f.write(dom.toprettyxml(indent="   "))
