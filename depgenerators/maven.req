@@ -142,10 +142,6 @@ class TagBuilder:
                     skipped.classifier == dependency.classifier and
                     skipped.extension == dependency.extension):
                     skipped_but_required.append(dependency)
-            # FIXME: this is not nice, refactoring needed
-            # "do_not_print" is an auxiliary variable, indicates whether
-            # current dependency is on artifact from same package and thus
-            # shouldn't be printed out.
             for provided in self.provided_artifacts:
                 if (provided.groupId == dependency.groupId and
                     provided.artifactId == dependency.artifactId and
