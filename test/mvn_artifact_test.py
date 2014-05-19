@@ -24,17 +24,7 @@ class TestMvnArtifact(unittest.TestCase):
         except OSError:
             pass
 
-        for dirname, dirnames, filenames in os.walk(cls.workdir):
-            for filename in filenames:
-                if filename.endswith("-want.xml"):
-                    want_file = os.path.join(dirname, filename)
-                    metadata = m.CreateFromDocument(open(want_file).read())
-                    for a in metadata.artifacts.artifact:
-                        if '%' in a.path:
-                            a.path = a.path % (cls.workdir)
-                    with open(want_file, "w") as f:
-                        dom = metadata.toDOM(None)
-                        f.write(dom.toprettyxml(indent="   "))
+        prepare_metadata(cls.workdir)
 
     @classmethod
     def tearDownClass(cls):

@@ -3,7 +3,7 @@ from zipfile import ZipFile
 import os
 import unittest
 import shutil
-from test_common import DIRPATH, mvn_depmap, call_script
+from test_common import DIRPATH, mvn_depmap, call_script, prepare_metadata
 
 
 from lxml import etree
@@ -28,19 +28,7 @@ class TestMavenDepmap(unittest.TestCase):
         except OSError:
             pass
 
-        # TODO: same code as in mvn_artfact_test, move to test_common?
-        for dirname, dirnames, filenames in os.walk(self.workdir):
-            for filename in filenames:
-                if filename.endswith("-want.xml"):
-                    want_file = os.path.join(dirname, filename)
-                    xml = open(want_file).read()
-                    metadata = m.CreateFromDocument(xml)
-                    for a in metadata.artifacts.artifact:
-                        if '%' in a.path:
-                            a.path = a.path % (self.workdir)
-                    with open(want_file, "w") as f:
-                        dom = metadata.toDOM(None)
-                        f.write(dom.toprettyxml(indent="   "))
+        prepare_metadata(self.workdir)
 
     def tearDown(self):
         try:

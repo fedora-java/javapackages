@@ -5,6 +5,7 @@ import subprocess
 import sys
 import unittest
 
+import javapackages.metadata as m
 from os import path
 from test_rpmbuild import Package
 from xml_compare import compare_xml_files
@@ -76,6 +77,21 @@ def preload_xmvn_config(name, filename, dstname=None, update_index=False):
             fun(self)
         return test_decorated
     return test_decorator
+
+
+def prepare_metadata(metadata_dir):
+    for dirname, dirnames, filenames in os.walk(metadata_dir):
+        for filename in filenames:
+            if filename.endswith("-want.xml"):
+                want_file = os.path.join(dirname, filename)
+                metadata = m.CreateFromDocument(open(want_file).read())
+                for a in metadata.artifacts.artifact:
+                    if '%' in a.path:
+                        a.path = a.path % (metadata_dir)
+                with open(want_file, "w") as f:
+                    dom = metadata.toDOM(None)
+                    f.write(dom.toprettyxml(indent="   "))
+
 
 def xmvnconfig(name, fnargs):
     def test_decorator(fun):
