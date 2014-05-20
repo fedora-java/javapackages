@@ -214,23 +214,5 @@
         </repositories>
       </configuration>
     </repository>
-    <repository>
-      <id>install-raw-pom</id>
-      <type>compound</type>
-      <configuration>
-        <repositories>
-          <repository>base-raw-pom</repository>
-        </repositories>
-      </configuration>
-    </repository>
-    <repository>
-      <id>install-effective-pom</id>
-      <type>compound</type>
-      <configuration>
-        <repositories>
-          <repository>base-effective-pom</repository>
-        </repositories>
-      </configuration>
-    </repository>
   </repositories>
 </configuration>
