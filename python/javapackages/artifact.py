@@ -169,17 +169,17 @@ class ProvidedArtifact(object):
         aliases = set()
         if hasattr(metadata, 'aliases') and metadata.aliases:
             for alias in metadata.aliases.alias:
-                extension = classifier = ""
+                alias_extension = alias_classifier = ""
                 if hasattr(alias, 'extension') and alias.extension:
-                    extension = alias.extension
+                    alias_extension = alias.extension
 
                 if hasattr(alias, 'classifier') and alias.classifier:
-                    classifier = alias.classifier
+                    alias_classifier = alias.classifier
 
                 aliases.add(Alias(alias.groupId,
                                      alias.artifactId,
-                                     extension,
-                                     classifier))
+                                     alias_extension,
+                                     alias_classifier))
         properties = {}
         if hasattr(metadata, 'properties') and metadata.properties:
             properties = {prop.tagName:prop.firstChild.value
