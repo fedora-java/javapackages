@@ -113,5 +113,23 @@ class TestMavenProv(unittest.TestCase):
         self.assertEquals(len(sout), 1)
         self.assertIn("mvn(org.apache.maven:apache-maven:pom:3.1.1) = 3.1.1", sout)
 
+    @mavenprov(["alias.xml"])
+    def test_alias(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        self.assertEquals(len(sout), 2)
+        self.assertIn("mvn(jakarta-regexp:jakarta-regexp:pom:) = 1.0", sout)
+        self.assertIn("mvn(regexp:regexp:pom:) = 1.0", sout)
+
+    @mavenprov(["alias2.xml"])
+    def test_alias2(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        self.assertEquals(len(sout), 4)
+        self.assertIn("mvn(jakarta-regexp:jakarta-regexp:pom:) = 1.0", sout)
+        self.assertIn("mvn(jakarta-regexp:jakarta-regexp) = 1.0", sout)
+        self.assertIn("mvn(regexp:regexp:pom:) = 1.0", sout)
+        self.assertIn("mvn(regexp:regexp) = 1.0", sout)
+
 if __name__ == '__main__':
     unittest.main()
