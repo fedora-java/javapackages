@@ -126,6 +126,25 @@
       </filter>
     </repository>
     <repository>
+      <id>base-ivy-xml</id>
+      <type>jpp</type>
+      <properties>
+        <root>usr/share/ivy-xmls</root>
+      </properties>
+      <filter>
+        <and>
+          <equals>
+            <extension/>
+            <string>xml</string>
+          </equals>
+          <equals>
+            <property>type</property>
+            <string>ivy</string>
+          </equals>
+        </and>
+      </filter>
+    </repository>
+    <repository>
       <id>base-jni</id>
       <type>jpp</type>
       <properties>
@@ -154,6 +173,7 @@
           <repository>base-jar</repository>
           <repository>base-jni</repository>
           <repository>base-jenkins-plugin</repository>
+          <repository>base-ivy-xml</repository>
         </repositories>
       </configuration>
     </repository>
@@ -166,6 +186,7 @@
           <repository>base-jni</repository>
           <repository>base-jar</repository>
           <repository>base-jenkins-plugin</repository>
+          <repository>base-ivy-xml</repository>
         </repositories>
       </configuration>
     </repository>
