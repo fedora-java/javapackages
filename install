@@ -94,7 +94,6 @@ dir "${javadocdir}"
 dir "${mavenpomdir}"
 dir "${datadir}/maven-metadata"
 dir "${rpmconfigdir}/fileattrs"
-dir "$(sysconfdir)/javapackages"
 
 for ver in 1.5.0 1.6.0 1.7.0 1.8.0; do
     dir "${javadir}-${ver}"
@@ -167,7 +166,7 @@ link "${m2home}/configuration.xml" "${m2home}/configuration-21.xml"
 link "${m2home}/configuration-rpmbuild.xml" "${m2home}/configuration-21-rpmbuild.xml"
 link "${m2home}/configuration-rpmbuild-raw.xml" "${m2home}/configuration-21-rpmbuild-raw.xml"
 
-inst_config etc/javapackages-config.json "${sysconfdir}/javapackages"
+inst_config etc/javapackages-config.json "${javaconfdir}"
 
 
 exec >files-maven

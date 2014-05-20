@@ -24,7 +24,7 @@ script[index:index] = injected.split('\n')
 
 if sys.argv[2]:
     config = sys.argv[2]
-    script = [re.sub(r'(CONFIG_PATH\s*=\s*).*', r'\1"{0}"'.format(config), line)
+    script = [re.sub(r'%{javaconfdir}', config, line)
              for line in script]
 
 with open('.script.py', 'w') as newscript:

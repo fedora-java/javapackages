@@ -138,10 +138,9 @@ def requires_generator(name, filelist, config=None):
             stdin = build_depmap_paths(filelist)
             env = {}
             if config:
-                config_path = os.path.join(DIRPATH, 'data', 'config', config + '.json')
+                config_path = os.path.join(DIRPATH, 'data', 'config', config)
             else:
-                config_path = os.path.join(DIRPATH, '..', 'etc',
-                        'javapackages-config.json')
+                config_path = os.path.join(DIRPATH, '..', 'etc')
             (stdout, stderr, return_value) = call_script(scriptpath,
                     [], stdin=stdin, wrapped=True, extra_env=env,
                     config_path=config_path)

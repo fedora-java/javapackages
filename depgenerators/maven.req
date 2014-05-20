@@ -56,7 +56,7 @@ def process_java_version(version_string):
     else:
         return "{0}.{1}".format(major, minor)
 
-CONFIG_PATH = '%{sysconfdir}/javapackages/config.json'
+CONFIG_PATH = '%{javaconfdir}/javapackages-config.json'
 
 class TagBuilder(object):
     def __init__(self, filelist=None):
