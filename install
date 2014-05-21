@@ -171,10 +171,8 @@ inst_config etc/javapackages-config.json "${javaconfdir}"
 exec >files-local
 inst_data target/macros.xmvn "${rpmconfigdir}/macros.d"
 
-inst_data java-utils/builddep.py "${javadir}-utils"
 inst_data java-utils/mvn_alias.py "${javadir}-utils"
 inst_data java-utils/mvn_artifact.py "${javadir}-utils"
-inst_data java-utils/mvn_build.py "${javadir}-utils"
 inst_data java-utils/mvn_compat_version.py "${javadir}-utils"
 inst_data java-utils/mvn_config.py "${javadir}-utils"
 inst_data java-utils/mvn_file.py "${javadir}-utils"
@@ -182,7 +180,6 @@ inst_data java-utils/mvn_package.py "${javadir}-utils"
 
 inst_data target/mvn_alias.7 "${mandir}/man7"
 inst_data target/mvn_artifact.7 "${mandir}/man7"
-inst_data target/mvn_build.7 "${mandir}/man7"
 inst_data target/mvn_compat_version.7 "${mandir}/man7"
 inst_data target/mvn_config.7 "${mandir}/man7"
 inst_data target/mvn_file.7 "${mandir}/man7"
@@ -195,6 +192,11 @@ dir "${m2home}"
 
 inst_data metadata/metadata-org-apache-maven-plugins.xml "${sysconfdir}/maven"
 inst_data metadata/metadata-org-codehaus-mojo.xml "${sysconfdir}/maven"
+
+inst_data java-utils/builddep.py "${javadir}-utils"
+inst_data java-utils/mvn_build.py "${javadir}-utils"
+
+inst_data target/mvn_build.7 "${mandir}/man7"
 
 inst_exec target/mvn-local "${bindir}"
 inst_exec target/mvn-rpmbuild "${bindir}"
