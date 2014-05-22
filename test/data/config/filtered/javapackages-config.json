@@ -1,0 +1,26 @@
+{
+    "maven.req": {
+        "always_generate": [
+            "jpackage-utils"
+        ],
+        "java_requires": {
+            "package_name": "java-headless",
+            "always_generate": true,
+            "skip": false
+        },
+        "java_devel_requires": {
+            "package_name": "java-devel",
+            "always_generate": false,
+            "skip": false
+        },
+        "requires_filter": [
+            "codehaus:plexus-utils",
+            "ns-runtime"
+        ]
+    },
+    "javadoc.req": {
+        "always_generate": [
+            "jpackage-utils"
+        ]
+    }
+}

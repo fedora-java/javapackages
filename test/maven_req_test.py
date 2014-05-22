@@ -159,5 +159,21 @@ class TestMavenReq(unittest.TestCase):
         self.assertEquals(set(want), set(sout))
 
 
+    @mavenreq(["require1/require.xml"], config='alternative-java')
+    def test_java_config(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("jpackage-utils", "java-spineless",
+                "mvn(org.apache.maven:maven-project)")
+        self.assertEquals(set(want), set(sout))
+
+    @mavenreq(["require_multi/require.xml"], config='filtered')
+    def test_dep_filtering(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("ns-mvn(org.codehaus.plexus:plexus-ant-factory)", "java-headless",
+                "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)")
+        self.assertEquals(set(want), set(sout))
+
 if __name__ == '__main__':
     unittest.main()
