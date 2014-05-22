@@ -103,6 +103,20 @@
 #
 %_ivyxmldir     %{_datadir}/ivy-xmls
 
+
+#
+# @Deprecated
+# Directory for Maven depmaps
+#
+%_mavendepmapdir %{_sysconfdir}/maven
+
+#
+# @Deprecated
+# Directory for Maven depmaps
+#
+%_mavendepmapfragdir %{_datadir}/maven-fragments
+
+
 #
 # Current default JVM home.
 #
