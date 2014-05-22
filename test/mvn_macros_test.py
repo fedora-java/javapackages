@@ -439,3 +439,5 @@ class MvnMacrosTest(unittest.TestCase):
             self.assertEqual(mfiles.read(),
                              '/usr/share/javadoc/test_mvn_install_directory\n')
 
+if __name__ == '__main__':
+    unittest.main()
