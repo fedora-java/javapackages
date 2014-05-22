@@ -175,5 +175,22 @@ class TestMavenReq(unittest.TestCase):
                 "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)")
         self.assertEquals(set(want), set(sout))
 
+    @mavenreq(["require_multi/require.xml"], javaconfdirs=['data/config/filtered'])
+    def test_config_env1(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("ns-mvn(org.codehaus.plexus:plexus-ant-factory)", "java-headless",
+                "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)")
+        self.assertEquals(set(want), set(sout))
+
+    @mavenreq(["require_multi/require.xml"],
+              javaconfdirs=['data/config/filtered', 'data/config/alternative-java'])
+    def test_config_env2(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("ns-mvn(org.codehaus.plexus:plexus-ant-factory)", "java-spineless",
+                "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)")
+        self.assertEquals(set(want), set(sout))
+
 if __name__ == '__main__':
     unittest.main()

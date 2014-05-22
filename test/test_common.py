@@ -131,12 +131,15 @@ def osgiprov(filelist):
         return test_decorated
     return test_decorator
 
-def requires_generator(name, filelist, config=None):
+def requires_generator(name, filelist, config=None, javaconfdirs=None):
     def test_decorator(fun):
         def test_decorated(self):
             scriptpath = path.join(DIRPATH, '..', 'depgenerators', name)
             stdin = build_depmap_paths(filelist)
             env = {}
+            if javaconfdirs:
+                confdirs = [os.path.join(DIRPATH, conf) for conf in javaconfdirs]
+                env['JAVACONFDIRS'] = os.pathsep.join(confdirs)
             if config:
                 config_path = os.path.join(DIRPATH, 'data', 'config', config)
             else:
