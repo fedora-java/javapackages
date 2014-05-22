@@ -92,9 +92,6 @@ if __name__ == "__main__":
     parser.add_option("-X", "--debug",
                       action="store_true",
                       help="Enable Maven debugging output (implies -d).")
-    parser.add_option("-n", "--name", type="str",
-                      help="RPM package name",
-                      default="")
 
 
     for index, arg in enumerate(sys.argv):
@@ -102,9 +99,6 @@ if __name__ == "__main__":
 
     (options, args) = parser.parse_args()
     xc = XMvnConfig()
-
-    if options.name:
-        xc.add_custom_option("installerSettings/packageName", options.name)
 
     base_goal="verify"
     mvn_args = ["xmvn", "--batch-mode"]

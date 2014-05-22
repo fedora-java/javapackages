@@ -136,23 +136,6 @@ class TestMvnBuild(unittest.TestCase):
         self.assertEquals(get_actual_args(),
                 get_expected_args('mvn_build', 'skip_both'))
 
-    @xmvnconfig('mvn_build',['-n', 'pkgname', ])
-    def test_name(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
-        filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
-        for filename in filelist:
-            report = compare_xml_files(get_actual_config(filename),
-                 get_expected_config(filename, 'mvn_build', 'name'),
-                 ['artifactGlob'])
-            self.assertFalse(report, '\n' + report)
-
-    @xmvnconfig('mvn_build',['-n', 'pkgname', ])
-    def test_name1(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
-        self.assertEquals(get_actual_args(),
-                get_expected_args('mvn_build', 'name1'))
-
     @xmvnconfig('mvn_build',['-dfijsX', ])
     def test_all(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
