@@ -123,27 +123,27 @@ class TestMvnArtifact(unittest.TestCase):
     def test_extension_not_specified(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
 
-    @mvn_artifact('args4j-deps.pom')
-    def test_dependencies_1(self, stdout, stderr, return_value):
-        self.assertEqual(return_value, 0, stderr)
-        got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-        self.assertEqual(res, True)
+    #@mvn_artifact('args4j-deps.pom')
+    #def test_dependencies_1(self, stdout, stderr, return_value):
+    #    self.assertEqual(return_value, 0, stderr)
+    #    got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
+    #    self.assertEqual(res, True)
 
-    @mvn_artifact('args4j-deps.pom', 'some.jar')
-    def test_dependencies_2(self, stdout, stderr, return_value):
-        self.assertEqual(return_value, 0, stderr)
-        got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-        self.assertEqual(res, True)
+    #@mvn_artifact('args4j-deps.pom', 'some.jar')
+    #def test_dependencies_2(self, stdout, stderr, return_value):
+    #    self.assertEqual(return_value, 0, stderr)
+    #    got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
+    #    self.assertEqual(res, True)
 
-    @mvn_artifact('args4j-exclusions.pom', 'some.jar')
-    def test_dependencies_exclusions(self, stdout, stderr, return_value):
-        self.assertEqual(return_value, 0, stderr)
-        got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-        self.assertEqual(res, True)
+    #@mvn_artifact('args4j-exclusions.pom', 'some.jar')
+    #def test_dependencies_exclusions(self, stdout, stderr, return_value):
+    #    self.assertEqual(return_value, 0, stderr)
+    #    got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
+    #    self.assertEqual(res, True)
 
-    @mvn_artifact('asm-analysis-5.0.2.pom')
-    def test_missing_version(self, stdout, stderr, return_value):
-        self.assertNotEqual(return_value, 0, stderr)
+    #@mvn_artifact('asm-analysis-5.0.2.pom')
+    #def test_missing_version(self, stdout, stderr, return_value):
+    #    self.assertNotEqual(return_value, 0, stderr)
 
 if __name__ == '__main__':
     unittest.main()

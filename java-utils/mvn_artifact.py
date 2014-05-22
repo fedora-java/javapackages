@@ -254,8 +254,8 @@ if __name__ == "__main__":
     else:
         metadata = m.metadata()
 
-    if not options.skip_dependencies:
-        art.dependencies = get_dependencies(pom_path)
+    #if not options.skip_dependencies:
+    #    art.dependencies = get_dependencies(pom_path)
 
     add_artifact_elements(metadata, art, pom_path, jar_path)
 
