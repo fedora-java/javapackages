@@ -12,11 +12,7 @@
             "package_name": "java-devel",
             "always_generate": false,
             "skip": false
-        },
-        "filter_requires": [
-            "com.sun:tools",
-            "sun.jdk:jconsole"
-        ]
+        }
     },
     "javadoc.req": {
         "always_generate": [

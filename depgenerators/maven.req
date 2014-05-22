@@ -34,8 +34,9 @@
 
 import json
 import os
-import sys
+import re
 import signal
+import sys
 import traceback
 
 from lxml import etree
@@ -90,6 +91,7 @@ class TagBuilder(object):
             self.print_mvn_requires(path)
 
     def __generate_java_requires(self, depmap):
+        requires = set()
         for rule_name, fn in (('java_requires', Depmap.get_java_requires),
                               ('java_devel_requires', Depmap.get_java_devel_requires)):
             rules = self.config[rule_name]
@@ -100,9 +102,10 @@ class TagBuilder(object):
                     parts = {'pkg': rules['package_name'],
                              'op': rules.get('cmp_operator', '>='),
                              'version': version_string}
-                    print("{pkg} {op} {version}".format(**parts))
+                    requires.add("{pkg} {op} {version}".format(**parts))
                 elif rules['always_generate']:
-                    print(rules['package_name'])
+                    requires.add(rules['package_name'])
+        return requires
 
     def __is_dep_on_same_package(self, dependency, depmap):
         # TODO: what about requires on same compat and non-compat deps in same
@@ -128,18 +131,29 @@ class TagBuilder(object):
                     return False
 
 
+    def filter_requires(self, requires):
+        filters = self.config.get('requires_filter', [])
+        filtered = set()
+        regexes = []
+        for filt in filters:
+            artifact_glob = re.sub(r'\\\*', '.*', re.escape(filt))
+            regexes.append(re.compile(r'^{}(\s*[<>=].*)?$'.format(artifact_glob)))
+            regexes.append(re.compile(r'mvn\({0}\)'.format(artifact_glob)))
+        for req in requires:
+            if not any([regex.search(req) for regex in regexes]):
+                filtered.add(req)
+        return filtered
+
     def print_mvn_requires(self, path):
         depmap = Depmap(path)
         skipped_but_required = []
-        base_package_requires = set()
+        requires = set()
 
         for provided in depmap.get_provided_artifacts():
             if provided.namespace:
-                base_package_requires.add("{ns}-runtime".format(ns=provided.namespace))
+                requires.add("{ns}-runtime".format(ns=provided.namespace))
             else:
-                base_package_requires.add("jpackage-utils")
-        for basereq in base_package_requires:
-            print basereq
+                requires.add("jpackage-utils")
 
         unknown_deps = []
         for dependency in depmap.get_required_artifacts():
@@ -177,7 +191,7 @@ class TagBuilder(object):
 
                     if not self.__is_dep_on_same_package(dependency, depmap):
                         # requires on subpackages are always versioned
-                        print("{rpmstr} = {version}".format(
+                        requires.add("{rpmstr} = {version}".format(
                             rpmstr=dependency.get_rpm_str(),
                             version=provided.version))
 
@@ -187,7 +201,7 @@ class TagBuilder(object):
                 # do not generate requires like "a:b:pom:" yet
                 if dependency.extension == "pom":
                     dependency.extension = ""
-                print(dependency.get_rpm_str(dependency.version))
+                requires.add(dependency.get_rpm_str(dependency.version))
 
         if unknown_deps:
             unknown_msg = "Following dependencies were not resolved and " \
@@ -219,7 +233,12 @@ class TagBuilder(object):
                            "in %prep.\n"
             raise Exception(skipped_msg)
 
-        self.__generate_java_requires(depmap)
+        requires.update(self.__generate_java_requires(depmap))
+
+        requires = self.filter_requires(requires)
+
+        for req in requires:
+            print(req)
 
     def find_what_requires(self, artifact):
         """
