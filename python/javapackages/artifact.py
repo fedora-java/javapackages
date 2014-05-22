@@ -202,9 +202,8 @@ class ProvidedArtifact(object):
     @classmethod
     def from_pom(cls, pom_path):
         pom = POM(pom_path)
-
         return cls(pom.groupId, pom.artifactId, version=pom.version,
-                   path=pom_path, dependencies=pom.get_dependencies())
+                   path=pom_path)
 
     @classmethod
     def from_mvn_str(cls, mvn_str):

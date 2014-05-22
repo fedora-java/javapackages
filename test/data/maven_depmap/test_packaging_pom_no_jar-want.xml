@@ -7,13 +7,6 @@
             <ns1:extension>pom</ns1:extension>
             <ns1:version>2</ns1:version>
             <ns1:path>%s/JPP-apache-commons-io.pom</ns1:path>
-            <ns1:dependencies>
-                <ns1:dependency>
-                    <ns1:groupId>G</ns1:groupId>
-                    <ns1:artifactId>G</ns1:artifactId>
-                    <ns1:requestedVersion>1000</ns1:requestedVersion>
-                </ns1:dependency>
-            </ns1:dependencies>
         </ns1:artifact>
     </ns1:artifacts>
 </ns1:metadata>
