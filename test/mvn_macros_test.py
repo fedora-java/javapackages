@@ -282,8 +282,8 @@ class MvnMacrosTest(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
         filelist = sorted(os.listdir(confpath))
-        self.assertEquals(len(filelist), 3)
-        for i in range(3):
+        self.assertEquals(len(filelist), 2)
+        for i in range(2):
             actfile = os.path.join(confpath, filelist[i])
             filename = 'singleton_0000{i}.xml'.format(i=i + 1)
             expfile = os.path.join(DIRPATH, 'data', 'mvn_build', filename)
@@ -367,30 +367,6 @@ class MvnMacrosTest(unittest.TestCase):
                   'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
                   'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
             self.assertEquals(argsfile.read(), exp)
-
-    @rpm_test()
-    def test_mvn_build_scl(self, pack):
-        pack.prepend('%{?scl:%scl_package mypackage}')
-        pack.prepend('%{?scl:%global pkg_name pkgname}')
-        pack.append_to_build('%mvn_build')
-
-        _, stderr, return_value = pack.run_build(['--define', 'scl myscl'])
-        self.assertEqual(return_value, 0, stderr)
-        argspath = os.path.join(pack.buildpath, '.xmvn', 'out')
-        with open(argspath, 'r') as argsfile:
-            exp = '--batch-mode --offline ' + \
-                  'verify org.fedoraproject.xmvn:xmvn-mojo:install ' + \
-                  'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
-                  'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
-            self.assertEquals(argsfile.read(), exp)
-
-        confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
-        filelist = sorted(os.listdir(confpath))
-        self.assertEquals(len(filelist), 1)
-        actfile = os.path.join(confpath, filelist[0])
-        expfile = os.path.join(DIRPATH, 'data', 'mvn_build', 'name_00001.xml')
-        report = compare_xml_files(actfile, expfile, ['artifactGlob'])
-        self.assertEquals(report, '', report)
 
     @rpm_test()
     def test_mvn_install(self, pack):
