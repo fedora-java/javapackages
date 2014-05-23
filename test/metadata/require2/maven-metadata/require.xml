@@ -1,0 +1,15 @@
+<metadata xmlns="http://fedorahosted.org/xmvn/METADATA/2.0.0">
+    <uuid>432048235932</uuid>
+    <artifacts>
+        <artifact>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-ant-factory</artifactId>
+            <version>1.0</version>
+            <extension>pom</extension>
+            <compatVersions>
+              <version>1.0</version>
+            </compatVersions>
+            <path>/usr/share/maven-poms/plexus-plexus-ant-factory.pom</path>
+        </artifact>
+    </artifacts>
+</metadata>
