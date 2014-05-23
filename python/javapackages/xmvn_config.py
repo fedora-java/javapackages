@@ -52,11 +52,11 @@ class XMvnConfig(object):
 
     INDEX_PATH = os.path.join(".xmvn", "javapackages-rule-index")
     CONFIG_DIR = os.path.join(".xmvn", "config.d")
-    XMLNS = "http://fedorahosted.org/xmvn/CONFIG/0.6.0"
+    XMLNS = "http://fedorahosted.org/xmvn/CONFIG/2.0.0"
 
     def __init__(self):
         self.templateXML ="""<?xml version='1.0' encoding='utf-8'?>
-<configuration xmlns="http://fedorahosted.org/xmvn/CONFIG/0.6.0">
+<configuration xmlns="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
 {content}
 </configuration>
 """
