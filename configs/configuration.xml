@@ -27,10 +27,7 @@
     </blacklist>
   </resolverSettings>
   <installerSettings>
-    <enableRawPoms>true</enableRawPoms>
-    <enableEffectivePoms>true</enableEffectivePoms>
     <metadataDir>usr/share/maven-metadata</metadataDir>
-    <installRoot>.xmvn/root</installRoot>
   </installerSettings>
   <artifactManagement>
     <rule>
