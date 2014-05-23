@@ -41,10 +41,11 @@ See pom and depmap modules for more information
 """
 __all__ = ["Depmap", "POM", "Artifact", "XMvnConfig"]
 
+from javapackages.artifact import Artifact
 from javapackages.depmap import Depmap
 from javapackages.pom import POM
-from javapackages.artifact import Artifact
 from javapackages.xmvn_config import XMvnConfig
+
 
 try:
     from javapackages.version import __version__

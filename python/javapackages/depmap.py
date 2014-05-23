@@ -30,17 +30,17 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 from __future__ import print_function
-import xml
-import gzip
-import os.path
-import logging
 
-import pyxb
+import gzip
+import logging
+import os.path
+import xml
 
 from javapackages.artifact import (Artifact, Dependency, ProvidedArtifact,
                                    SkippedArtifact, ExclusionArtifact)
-import javapackages.metadata as metadata
+import pyxb
 
+import javapackages.metadata as metadata
 
 
 class MetadataLoadingException(Exception):

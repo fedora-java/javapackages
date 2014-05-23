@@ -33,11 +33,12 @@
 import re
 import sys
 
-import pyxb
-from lxml.etree import Element, SubElement, tostring
-
 from javapackages.pom import POM
+from lxml.etree import Element, SubElement, tostring
+import pyxb
+
 import javapackages.metadata as m
+
 
 class ArtifactException(Exception):
     pass
@@ -154,7 +155,7 @@ class ProvidedArtifact(object):
     def from_metadata(cls, metadata):
         groupId = metadata.groupId.strip()
         artifactId = metadata.artifactId.strip()
-        version = extension = classifier = namespace = path =  ""
+        version = extension = classifier = namespace = path = ""
         if hasattr(metadata, 'path') and metadata.path:
             path = metadata.path.strip()
         if hasattr(metadata, 'version') and metadata.version:
@@ -287,7 +288,7 @@ class Artifact(object):
 
         for key in ("artifactId", "groupId", "extension", "version",
                     "classifier", "namespace"):
-            if hasattr(self, key) and getattr(self,key):
+            if hasattr(self, key) and getattr(self, key):
                 item = SubElement(root, key)
                 item.text = getattr(self, key)
         return root

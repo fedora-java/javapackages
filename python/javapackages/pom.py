@@ -65,7 +65,7 @@ class POM(object):
         ret = self.__doc.xpath(xpath, namespaces=dict(pom='http://maven.apache.org/POM/4.0.0'))
         # perhaps there is no namespace?
         if len(ret) == 0:
-            ret = self.__doc.xpath(xpath.replace('pom:',''))
+            ret = self.__doc.xpath(xpath.replace('pom:', ''))
         return ret
 
     def __str__(self):

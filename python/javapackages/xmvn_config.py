@@ -30,17 +30,18 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 
-import codecs
-import os
-import errno
-import re
 from StringIO import StringIO
-
-import lxml
-import lxml.etree as ET
-from lxml.etree import ElementTree, Element, SubElement
+import codecs
+import errno
+import os
+import re
 
 from javapackages.artifact import ArtifactValidationException
+from lxml.etree import ElementTree, Element, SubElement
+import lxml
+
+import lxml.etree as ET
+
 
 class XMvnConfigException(Exception):
     pass
@@ -55,7 +56,7 @@ class XMvnConfig(object):
     XMLNS = "http://fedorahosted.org/xmvn/CONFIG/2.0.0"
 
     def __init__(self):
-        self.templateXML ="""<?xml version='1.0' encoding='utf-8'?>
+        self.templateXML = """<?xml version='1.0' encoding='utf-8'?>
 <configuration xmlns="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
 {content}
 </configuration>
@@ -104,8 +105,8 @@ class XMvnConfig(object):
         et._setroot(elem)
         et.write(xmlbuf,
                  xml_declaration=True,
-                 encoding = 'utf-8',
-                 method = "xml",
+                 encoding='utf-8',
+                 method="xml",
                  pretty_print=True)
         return  xmlbuf.getvalue()
 
@@ -280,7 +281,7 @@ class XMvnConfig(object):
             par = SubElement(par, node)
 
         try:
-            #wrap content into something to allow text content
+            # wrap content into something to allow text content
             inserted = "<root>{0}</root>".format(content)
             contentRoot = ET.fromstring(inserted)
             par.text = contentRoot.text
