@@ -200,3 +200,86 @@ class POM(object):
                     continue
                 result.add(adep)
         return result
+
+    def get_plugins(self):
+        result = set()
+
+        plugs = self.__findall('./pom:build/pom:plugins/pom:plugin')
+        if plugs:
+            for p in plugs:
+                plug = MavenPlugin.from_xml_element(p)
+                if not plug:
+                    continue
+                result.add(plug)
+        return result
+
+    def get_extensions(self):
+        result = set()
+
+        extensions = self.__findall('./pom:build/pom:extensions/pom:extension')
+        if extensions:
+            for e in extensions:
+                ext = MavenExtension.from_xml_element(e)
+                if not ext:
+                    continue
+                result.add(ext)
+        return result
+
+
+class MavenPlugin(object):
+    def __init__(self, groupId, artifactId, version="", dependencies=set()):
+        self.groupId = groupId or "org.apache.maven.plugins"
+        self.artifactId = artifactId
+        self.version = version
+        self.dependencies = dependencies
+        # TODO: <extensions/>?
+
+    @classmethod
+    def from_xml_element(cls, xmlnode):
+        """
+        Create Dependency from xml.etree.ElementTree.Element as contained
+        within pom.xml
+        """
+        parts = {'groupId': '',
+                 'artifactId': '',
+                 'version': ''}
+
+        for key in parts:
+            node = xmlnode.find("./{*}" + key)
+            if node is not None and node.text is not None:
+                parts[key] = node.text.strip()
+
+        dependencies = set()
+        deps = xmlnode.find('./{*}dependencies')
+        if deps is not None:
+            for depxml in deps:
+                # TODO: circular imports between artifact and pom (?)
+                from javapackages.artifact import Dependency
+                dep = Dependency.from_xml_element(depxml, create_all=True)
+                dependencies.add(dep)
+
+        return cls(parts['groupId'], parts['artifactId'], parts['version'], dependencies)
+
+
+class MavenExtension(object):
+    def __init__(self, groupId, artifactId, version=""):
+        self.groupId = groupId
+        self.artifactId = artifactId
+        self.version = version
+
+    @classmethod
+    def from_xml_element(cls, xmlnode):
+        """
+        Create Dependency from xml.etree.ElementTree.Element as contained
+        within pom.xml
+        """
+        parts = {'groupId': '',
+                 'artifactId': '',
+                 'version': ''}
+
+        for key in parts:
+            node = xmlnode.find("./{*}" + key)
+            if node is not None and node.text is not None:
+                parts[key] = node.text.strip()
+
+        return cls(parts['groupId'], parts['artifactId'], parts['version'])

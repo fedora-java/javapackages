@@ -77,6 +77,18 @@ def get_config():
             raise Exception('Cannot load config file {0}.'.format(config_path))
     return new_config
 
+
+def is_it_pom_only_pkg(metadata_path):
+    """ Check if the package contains only POM file and no JARs """
+    metadata = Depmap(metadata_path)
+    provided = metadata.get_provided_artifacts()
+
+    for a in provided:
+        if a.extension != "pom":
+            return False
+    return True
+
+
 class TagBuilder(object):
     def __init__(self, filelist=None):
         if filelist == None:
@@ -96,13 +108,45 @@ class TagBuilder(object):
                     if filename.endswith(".pom"):
                         continue
                     fpaths.append(os.path.join(dirname, filename))
+
+            self.pom_dir = paths[0].rsplit('/', 2)[0]
+            self.pom_dir = os.path.join(self.pom_dir, "maven-poms")
+            ppaths = []
+            for dirname, _, filenames in os.walk(self.pom_dir):
+                for filename in filenames:
+                    ppaths.append(os.path.join(dirname, filename))
+
             depmap = Depmap(fpaths)
             self.provided_artifacts.extend(depmap.get_provided_artifacts())
             self.skipped_artifacts.extend(depmap.get_skipped_artifacts())
+
+        if is_it_pom_only_pkg(paths[0]):
+            self.__generate_requires_from_pom(ppaths[0])
+
         for path in paths:
             if path.endswith(".pom"):
                 continue
             self.print_mvn_requires(path)
+
+    def __generate_requires_from_pom(self, pomfile):
+        pom = POM(pomfile)
+        plugins = pom.get_plugins()
+        extensions = pom.get_extensions()
+
+        for p in plugins:
+            # TODO: namespaces
+            plug = Dependency(p.groupId, p.artifactId, requestedVersion=p.version)
+            print(plug.get_rpm_str())
+            for pd in p.dependencies:
+                # TODO: namespaces
+                dep = Dependency(pd.groupId, pd.artifactId, requestedVersion=pd.version)
+                print(dep.get_rpm_str())
+
+        for e in extensions:
+            # TODO: namespaces
+            ext = Dependency(e.groupId, e.artifactId, requestedVersion=e.version)
+            print(ext.get_rpm_str())
+
 
     def __generate_java_requires(self, depmap):
         requires = set()
