@@ -38,6 +38,7 @@ import re
 import signal
 import sys
 import traceback
+import subprocess
 
 from lxml import etree
 
@@ -45,6 +46,16 @@ from javapackages import POM
 from javapackages.depmap import Depmap, MetadataInvalidException
 from javapackages.artifact import Artifact, ProvidedArtifact, SkippedArtifact, Dependency
 
+def resolve_artifact(coordinates):
+    # TODO: add support for namespaces
+    outfile = open("/dev/null", 'w')
+    procargs = ['/usr/bin/xmvn-resolve', coordinates]
+    proc = subprocess.Popen(procargs, shell=False, stdout=outfile)
+    out = proc.communicate()[0]
+    ret = proc.wait()
+    if ret:
+        return False
+    return True
 
 def process_java_version(version_string):
     version = version_string.split('.')
@@ -57,6 +68,7 @@ def process_java_version(version_string):
         return "1:{0}.{1}".format(major, minor)
     else:
         return "{0}.{1}".format(major, minor)
+
 
 def get_config():
     if 'JAVACONFDIRS' in os.environ:
@@ -77,6 +89,12 @@ def get_config():
         except (OSError, IOError):
             raise Exception('Cannot load config file {0}.'.format(config_path))
     return new_config
+
+
+def resolve_pom_dependency(coordinates):
+    if not resolve_artifact(coordinates):
+        raise Exception("Unable to generate requires on unresolvable artifact {}".format(coordinates))
+    return True
 
 
 def is_it_pom_only_pkg(metadata_path):
@@ -129,24 +147,40 @@ class TagBuilder(object):
                 continue
             self.print_mvn_requires(path)
 
+
     def __generate_requires_from_pom(self, pomfile):
         pom = POM(pomfile)
         plugins = pom.get_plugins()
         extensions = pom.get_extensions()
 
+        unresolvable = []
+
         for p in plugins:
             # TODO: namespaces
             plug = Dependency(p.groupId, p.artifactId, requestedVersion=p.version)
-            print(plug.get_rpm_str())
+            if resolve_artifact(plug.get_mvn_str()):
+                print(plug.get_rpm_str())
+            else:
+                unresolvable.append(plug.get_mvn_str())
             for pd in p.dependencies:
                 # TODO: namespaces
                 dep = Dependency(pd.groupId, pd.artifactId, requestedVersion=pd.version)
-                print(dep.get_rpm_str())
+                if resolve_artifact(dep.get_mvn_str()):
+                    print(dep.get_rpm_str())
+                else:
+                    unresolvable.append(plug.get_mvn_str())
 
         for e in extensions:
             # TODO: namespaces
             ext = Dependency(e.groupId, e.artifactId, requestedVersion=e.version)
-            print(ext.get_rpm_str())
+            if resolve_artifact(ext.get_mvn_str()):
+                print(ext.get_rpm_str())
+            else:
+                unresolvable.append(plug.get_mvn_str())
+
+        if unresolvable:
+            raise Exception("Unable to generate requires on unresolvable artifact{}: {}"
+                            .format('s' if len(unresolvable) > 1 else '', ", ".join(unresolvable)))
 
 
     def __generate_java_requires(self, depmap):
