@@ -45,15 +45,6 @@ from javapackages import POM
 from javapackages.depmap import Depmap, MetadataInvalidException
 from javapackages.artifact import Artifact, ProvidedArtifact, SkippedArtifact, Dependency
 
-def call_xmvn_resolve():
-    #procargs = ['/usr/bin', path.join(DIRPATH, 'wrapper.py'), name, config_path]
-    env = dict(SCRIPT_ENV.items() + extra_env.items())
-    proc = subprocess.Popen(procargs + args, shell=False,
-        stdout=outfile, stderr=errfile, env=env,
-        stdin=subprocess.PIPE)
-    proc.communicate(stdin)
-    ret = proc.wait()
-
 
 def process_java_version(version_string):
     version = version_string.split('.')
