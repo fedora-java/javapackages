@@ -11,7 +11,6 @@
             <ns1:alias>
                <ns1:groupId>a</ns1:groupId>
                <ns1:artifactId>b</ns1:artifactId>
-               <ns1:extension>war</ns1:extension>
                <ns1:classifier>c</ns1:classifier>
             </ns1:alias>
          </ns1:aliases>

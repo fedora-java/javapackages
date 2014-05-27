@@ -227,7 +227,7 @@ class TestMavenDepmap(unittest.TestCase):
         self.assertEqual(got, want)
 
     @mvn_depmap('x:y:jar:z:0.1', 'usr/share/java/commons-io-z.jar',
-            ['-a', 'a:b:war:c:12'])
+            ['-a', 'a:b:jar:c:12'])
     def test_classifier(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
         report = self.check_result(inspect.currentframe().f_code.co_name,
@@ -320,6 +320,12 @@ class TestMavenDepmap(unittest.TestCase):
         self.assertEqual(False, os.path.exists('usr/share/java/testversioned.jar'))
         self.assertEqual(True, os.path.exists('usr/share/java/testversioned-2013.10.jar'))
 
+    @mvn_depmap('JPP-alias.pom', 'usr/share/java/commons-io.jar', ['-a', 'a:b'])
+    def test_alias_extension(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
 
 if __name__ == '__main__':
     unittest.main()
