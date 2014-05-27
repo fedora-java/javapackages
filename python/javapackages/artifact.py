@@ -605,6 +605,9 @@ class Alias(object):
 
         self.artifact = Artifact(groupId, artifactId, extension, classifier)
 
+    def __getattr__(self, attrib):
+        return getattr(self.artifact, attrib)
+
     def to_metadata(self):
         a = m.ArtifactAlias()
         a.groupId = self.artifact.groupId
@@ -619,3 +622,6 @@ class Alias(object):
         a = Artifact.from_mvn_str(mvn_str)
 
         return cls(a.groupId, a.artifactId, a.extension, a.classifier)
+
+    def __str__(self):
+        return self.artifact.__str__()
