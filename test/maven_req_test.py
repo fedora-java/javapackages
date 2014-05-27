@@ -202,5 +202,13 @@ class TestMavenReq(unittest.TestCase):
     #            "mvn(org.apache.maven.scm:maven-scm-manager-plexus)")
     #    self.assertEquals(set(want), set(sout))
 
+    #@mavenreq(["require3/maven-metadata/require.xml"])
+    #def test_deps_from_pom_with_parent(self, stdout, stderr, return_value):
+    #    self.assertEquals(return_value, 0, stderr)
+    #    sout = [x for x in stdout.split('\n') if x]
+    #    want = ("mvn(org.apache.maven.plugins:maven-plugin-plugin)", "jpackage-utils",
+    #            "mvn(org.apache.maven:maven-parent:pom:)", "java-headless")
+    #    self.assertEquals(set(want), set(sout))
+
 if __name__ == '__main__':
     unittest.main()

@@ -146,9 +146,12 @@ class TagBuilder(object):
         pom = POM(pomfile)
         plugins = pom.get_plugins()
         extensions = pom.get_extensions()
+        pgid = pom.parentGroupId
+        paid = pom.parentArtifactId
 
         unresolvable = []
 
+        # TODO: compat versions?
         for p in plugins:
             # TODO: namespaces
             plug = Dependency(p.groupId, p.artifactId, requestedVersion=p.version)
@@ -171,6 +174,14 @@ class TagBuilder(object):
                 print(ext.get_rpm_str())
             else:
                 unresolvable.append(plug.get_mvn_str())
+
+        if paid:
+            parent_mvn_str = "{}:{}:pom:".format(pgid, paid)
+            if resolve_artifact(parent_mvn_str):
+                # TODO: namespaces
+                print("mvn({})".format(parent_mvn_str))
+            else:
+                unresolvable.append(parent_mvn_str)
 
         if unresolvable:
             raise Exception("Unable to generate requires on unresolvable artifact{}: {}"
