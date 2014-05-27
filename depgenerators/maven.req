@@ -91,12 +91,6 @@ def get_config():
     return new_config
 
 
-def resolve_pom_dependency(coordinates):
-    if not resolve_artifact(coordinates):
-        raise Exception("Unable to generate requires on unresolvable artifact {}".format(coordinates))
-    return True
-
-
 def is_it_pom_only_pkg(metadata_path):
     """ Check if the package contains only POM file and no JARs """
     metadata = Depmap(metadata_path)
