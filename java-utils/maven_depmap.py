@@ -65,7 +65,7 @@ class IncompatibleFilenames(Exception):
 
 class ExtensionsDontMatch(Exception):
     def __init__(self, coordinates_ext, file_ext):
-        raise ExtensionsDontMatch("Extensions don't match: '%s' != '%s'" % (coordinates_ext, file_ext),)
+        self.args=("Extensions don't match: '%s' != '%s'" % (coordinates_ext, file_ext),)
 
 class MissingJarFile(Exception):
     def __init__(self):
@@ -173,6 +173,10 @@ def add_aliases(artifact, additions):
     result = set()
     for a in aliases:
         alias = Alias.from_mvn_str(a)
+        a_ext = artifact.extension or "jar"
+        if alias.artifact.extension and alias.artifact.extension != a_ext:
+            raise ExtensionsDontMatch(alias.artifact.extension, a_ext)
+        alias.artifact.extension = artifact.extension
         result.add(alias)
 
     artifact.aliases = result
@@ -269,7 +273,6 @@ if __name__ == "__main__":
     # output file path for file lists
     print metadata_path
 
-    artifact = add_aliases(artifact, append_deps)
     artifact = add_compat_versions(artifact, add_versions)
     if add_versions:
         pom_path, jar_path = _make_files_versioned(add_versions, pom_path, jar_path)
@@ -278,11 +281,13 @@ if __name__ == "__main__":
         artifact.namespace = namespace
 
 
+
     buildroot = os.environ.get('RPM_BUILD_ROOT')
     am = []
     if jar_path:
         metadata_jar_path = os.path.abspath(jar_path)
         artifact.path = metadata_jar_path.replace(buildroot, "") if buildroot else metadata_jar_path
+        artifact = add_aliases(artifact, append_deps)
         am.append(artifact.to_metadata())
         # output file path for file list (if it's not versioned)
         if not add_versions:
@@ -291,6 +296,8 @@ if __name__ == "__main__":
         metadata_pom_path = os.path.abspath(pom_path)
         artifact.path = metadata_pom_path.replace(buildroot, "") if buildroot else metadata_pom_path
         artifact.extension = "pom"
+        artifact.aliases = None
+        artifact = add_aliases(artifact, append_deps)
         am.append(artifact.to_metadata())
         # output file path for file list (if it's not versioned)
         if not add_versions:
