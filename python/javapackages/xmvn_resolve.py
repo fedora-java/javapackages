@@ -87,14 +87,18 @@ class ResolutionResult(object):
 
 
 class ResolutionRequest(object):
-    def __init__(self, artifact):
-        self.artifact = artifact
+    def __init__(self, groupId, artifactId, extension="", classifier="", version=""):
+        self.groupId = groupId
+        self.artifactId = artifactId
+        self.extension = extension
+        self.classifier = classifier
+        self.version = version
 
     def get_xml(self):
-        return ResolutionRequest.create_raw_request_xml(self.artifact)
+        return ResolutionRequest.create_raw_request_xml(self.groupId, self.artifactId, self.extension, self.classifier, self.version)
 
     @staticmethod
-    def create_raw_request_xml(artifact):
+    def create_raw_request_xml(groupId, artifactId, extension="", classifier="", version=""):
         template = """
 <request>
     <artifact>
@@ -103,24 +107,29 @@ class ResolutionRequest(object):
     </artifact>
 </request>
 """
-        version = ""
-        classifier = ""
-        extension = ""
-        if artifact.extension:
-            extension = "<extension>{ext}</extension>".format(ext=extension)
-        if artifact.classifier:
-            classifier = "<classifier>{cla}</classifier>".format(cla=classifier)
-        if artifact.version:
-            version = "<version>{ver}</version>".format(ver=artifact.version)
+        ver = ""
+        cla = ""
+        ext = ""
+        if extension:
+            ext = "<extension>{ext}</extension>".format(ext=extension)
+        if classifier:
+            cla = "<classifier>{cla}</classifier>".format(cla=classifier)
+        if version:
+            ver = "<version>{ver}</version>".format(ver=version)
 
-        return template.format(gid=artifact.groupId, aid=artifact.artifactId,
-                               ext=extension, cla=classifier, ver=version)
+        return template.format(gid=groupId, aid=artifactId,
+                               ext=ext, cla=cla, ver=ver)
+
+    @classmethod
+    def from_artifact(cls, artifact):
+        return cls(artifact.artifactId, artifact.groupId,
+                   artifact.extension, artifact.classifier, artifact.version)
 
 
 if __name__ == "__main__":
     artifact = Artifact("junit", "junit")
 
-    req = ResolutionRequest(artifact)
+    req = ResolutionRequest.from_artifact(artifact)
 
     results = XMvnResolve.process_raw_request([req])
     print(len(results))
