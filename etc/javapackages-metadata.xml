@@ -9,7 +9,7 @@
             <path>${JAVA_HOME}/../lib/tools.jar</path>
         </artifact>
         <artifact>
-            <groupId>com.jdk</groupId>
+            <groupId>sun.jdk</groupId>
             <artifactId>jconsole</artifactId>
             <version>SYSTEM</version>
             <path>${JAVA_HOME}/../lib/jconsole.jar</path>
