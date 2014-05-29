@@ -95,6 +95,17 @@ class POM(object):
             return gId.text.strip()
 
     @property
+    def parentVersion(self):
+        """
+        version of the parent artifact of None
+        """
+        ver = self.__find('./pom:parent/pom:version')
+        if ver is None:
+            return None
+        else:
+            return ver.text.strip()
+
+    @property
     def groupId(self):
         """
         Effective groupId of the pom Artifact taking into account parent groupId
