@@ -242,13 +242,10 @@ class TagBuilder(object):
                     for compatVer in provided.compatVersions:
                         if dependency.resolvedVersion == compatVer:
                             return True
-                        else:
-                            return False
                 elif (not dependency.resolvedVersion and
                     not provided.is_compat()):
                     return True
-                else:
-                    return False
+        return False
 
 
     def filter_requires(self, requires):
