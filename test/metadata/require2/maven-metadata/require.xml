@@ -2,9 +2,9 @@
     <uuid>432048235932</uuid>
     <artifacts>
         <artifact>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-ant-factory</artifactId>
-            <version>1.0</version>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>pom</artifactId>
+            <version>8</version>
             <extension>pom</extension>
             <compatVersions>
               <version>1.0</version>
