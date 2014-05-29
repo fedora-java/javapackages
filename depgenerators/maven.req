@@ -267,6 +267,7 @@ class TagBuilder(object):
         requires = set()
 
         for provided in depmap.get_provided_artifacts():
+            # TODO: use javapackages-config.json
             if provided.namespace:
                 requires.add("{ns}-runtime".format(ns=provided.namespace))
             else:
