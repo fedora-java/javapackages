@@ -137,7 +137,9 @@ class TagBuilder(object):
 
         if os.path.exists(XMVN_RESOLVE_PATH):
             if is_it_pom_only_pkg(paths[0]):
-                self.__generate_requires_from_pom(ppaths[0])
+                poms = self.__find_poms_for_metadata(ppaths, paths[0])
+                for p in poms:
+                    self.__generate_requires_from_pom(p)
 
         for path in paths:
             if path.endswith(".pom"):
@@ -154,8 +156,23 @@ class TagBuilder(object):
         return None
 
 
-    def __generate_requires_from_pom(self, pomfile):
-        pom = POM(pomfile)
+    # TODO: move functions like this to some POMUtils, or similar module
+    def __find_poms_for_metadata(self, pom_paths, metadata_path):
+        poms = []
+        depmap = Depmap([metadata_path])
+        provided = depmap.get_provided_artifacts()
+        for prov in provided:
+            for p in pom_paths:
+                pom = POM(p)
+                if (pom.groupId == prov.groupId and
+                    pom.artifactId == prov.artifactId and
+                    pom.version == prov.version):
+
+                    poms.append(pom)
+                    break
+        return poms
+
+    def __generate_requires_from_pom(self, pom):
         plugins = pom.get_plugins()
         extensions = pom.get_extensions()
         pgid = pom.parentGroupId
