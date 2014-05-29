@@ -46,10 +46,12 @@ from javapackages import POM
 from javapackages.depmap import Depmap, MetadataInvalidException
 from javapackages.artifact import Artifact, ProvidedArtifact, SkippedArtifact, Dependency
 
+XMVN_RESOLVE_PATH='/usr/bin/xmvn-resolve'
+
 def resolve_artifact(coordinates):
     # TODO: add support for namespaces
     outfile = open("/dev/null", 'w')
-    procargs = ['/usr/bin/xmvn-resolve', coordinates]
+    procargs = [XMVN_RESOLVE_PATH, coordinates]
     proc = subprocess.Popen(procargs, shell=False, stdout=outfile)
     out = proc.communicate()[0]
     ret = proc.wait()
@@ -133,8 +135,9 @@ class TagBuilder(object):
             self.provided_artifacts.extend(depmap.get_provided_artifacts())
             self.skipped_artifacts.extend(depmap.get_skipped_artifacts())
 
-        if is_it_pom_only_pkg(paths[0]):
-            self.__generate_requires_from_pom(ppaths[0])
+        if os.path.exists(XMVN_RESOLVE_PATH):
+            if is_it_pom_only_pkg(paths[0]):
+                self.__generate_requires_from_pom(ppaths[0])
 
         for path in paths:
             if path.endswith(".pom"):
