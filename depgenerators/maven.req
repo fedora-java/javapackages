@@ -144,6 +144,15 @@ class TagBuilder(object):
                 continue
             self.print_mvn_requires(path)
 
+    def __is_provided_by_subpackage(self, dependency):
+        for provided in self.provided_artifacts:
+           if (provided.groupId == dependency.groupId and
+               provided.artifactId == dependency.artifactId and
+               provided.classifier == dependency.classifier and
+               provided.extension == dependency.extension):
+                return True
+        return False
+
 
     def __generate_requires_from_pom(self, pomfile):
         pom = POM(pomfile)
@@ -151,6 +160,7 @@ class TagBuilder(object):
         extensions = pom.get_extensions()
         pgid = pom.parentGroupId
         paid = pom.parentArtifactId
+        pver = pom.parentVersion
 
         unresolvable = []
 
@@ -158,7 +168,7 @@ class TagBuilder(object):
         for p in plugins:
             # TODO: namespaces
             plug = Dependency(p.groupId, p.artifactId, requestedVersion=p.version)
-            if resolve_artifact(plug.get_mvn_str()):
+            if resolve_artifact(plug.get_mvn_str()) or self.__is_provided_by_subpackage(plug):
                 print(plug.get_rpm_str())
             else:
                 unresolvable.append(plug.get_mvn_str())
@@ -173,18 +183,18 @@ class TagBuilder(object):
         for e in extensions:
             # TODO: namespaces
             ext = Dependency(e.groupId, e.artifactId, requestedVersion=e.version)
-            if resolve_artifact(ext.get_mvn_str()):
+            if resolve_artifact(ext.get_mvn_str()) or self.__is_provided_by_subpackage(ext):
                 print(ext.get_rpm_str())
             else:
                 unresolvable.append(plug.get_mvn_str())
 
-        if paid:
-            parent_mvn_str = "{}:{}:pom:".format(pgid, paid)
-            if resolve_artifact(parent_mvn_str):
+        if paid and pver:
+            parent_dep = Dependency(pgid, paid, requestedVersion=pver, extension="pom")
+            if resolve_artifact(parent_dep.get_mvn_str()) or self.__is_provided_by_subpackage(parent_dep):
                 # TODO: namespaces
-                print("mvn({})".format(parent_mvn_str))
+                print(parent_dep.get_rpm_str())
             else:
-                unresolvable.append(parent_mvn_str)
+                unresolvable.append(parent_dep.get_mvn_str())
 
         if unresolvable:
             raise Exception("Unable to generate requires on unresolvable artifact{}: {}"
