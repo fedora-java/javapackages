@@ -130,7 +130,6 @@ class ProvidedArtifact(object):
         return result
 
     def to_metadata(self):
-        # TODO: add support for properties(?)
         a = m.ArtifactMetadata()
         a.groupId = self.groupId
         a.artifactId = self.artifactId
@@ -148,6 +147,12 @@ class ProvidedArtifact(object):
         if self.aliases:
             als = [alias.to_metadata() for alias in self.aliases]
             a.aliases = pyxb.BIND(*als)
+
+        if self.properties:
+            for k, v in self.properties.iteritems():
+                import javapackages.depmap
+                prop = javapackages.depmap.Depmap.build_property(k, v)
+                a.properties = pyxb.BIND(prop)
 
         return a
 
