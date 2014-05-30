@@ -149,10 +149,9 @@ class ProvidedArtifact(object):
             a.aliases = pyxb.BIND(*als)
 
         if self.properties:
-            for k, v in self.properties.iteritems():
-                import javapackages.depmap
-                prop = javapackages.depmap.Depmap.build_property(k, v)
-                a.properties = pyxb.BIND(prop)
+            import javapackages.depmap
+            prop = [javapackages.depmap.Depmap.build_property(k, v) for k, v in self.properties.iteritems()]
+            a.properties = pyxb.BIND(*prop)
 
         return a
 
