@@ -280,6 +280,7 @@ if __name__ == "__main__":
     if namespace:
         artifact.namespace = namespace
 
+    artifact.properties["xmvn.resolver.disableEffectivePom"] = "true"
 
 
     buildroot = os.environ.get('RPM_BUILD_ROOT')
