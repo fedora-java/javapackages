@@ -41,6 +41,7 @@ from javapackages.artifact import (Artifact, Dependency, ProvidedArtifact,
 import pyxb
 
 import javapackages.metadata as metadata
+from xml.dom.minidom import getDOMImplementation
 
 
 class MetadataLoadingException(Exception):
@@ -170,3 +171,12 @@ class Depmap(object):
                 if prop.tagName == u'requiresJavaDevel':
                     return prop.firstChild.value
         return None
+
+    @staticmethod
+    def build_property(name, value):
+        domimpl = getDOMImplementation()
+        doc = domimpl.createDocument(None, None, None)
+        elem = doc.createElement(name)
+        tnode = doc.createTextNode(value)
+        elem.appendChild(tnode)
+        return elem

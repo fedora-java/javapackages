@@ -45,8 +45,6 @@ from javapackages.pom import *
 from lxml import etree
 import pyxb
 
-from xml.dom.minidom import getDOMImplementation
-
 
 usage="usage: %prog [options] <MVN spec | POM path> [artifact path]"
 epilog="""
@@ -124,11 +122,12 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
                     a.extension = os.path.splitext(pom_path)[1][1:]
 
                     # add property "type"
-                    domimpl = getDOMImplementation()
-                    doc = domimpl.createDocument(None, None, None)
-                    ty = doc.createElement('type')
-                    te = doc.createTextNode('ivy')
-                    ty.appendChild(te)
+                    #domimpl = getDOMImplementation()
+                    #doc = domimpl.createDocument(None, None, None)
+                    #ty = doc.createElement('type')
+                    #te = doc.createTextNode('ivy')
+                    #ty.appendChild(te)
+                    ty = Depmap.build_property('type', 'ivy')
                     a.properties = pyxb.BIND(ty)
 
             a.path = os.path.abspath(path)
