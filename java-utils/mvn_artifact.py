@@ -115,17 +115,17 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
     for path in [ppath, jpath]:
         if path:
             a = uart.to_metadata()
+            props = []
             if path is ppath:
                 if not is_it_ivy_file(ppath):
                     a.extension = "pom"
                 else:
                     a.extension = os.path.splitext(pom_path)[1][1:]
-                    ty = Depmap.build_property('type', 'ivy')
-                    a.properties = pyxb.BIND(ty)
+                    props.append(Depmap.build_property('type', 'ivy'))
 
             a.path = os.path.abspath(path)
-            prop = Depmap.build_property('xmvn.resolver.disableEffectivePom', 'true')
-            a.properties = pyxb.BIND(prop)
+            props.append(Depmap.build_property('xmvn.resolver.disableEffectivePom', 'true'))
+            a.properties = pyxb.BIND(*props)
             artifacts.append(a)
 
     if root.artifacts is None:
