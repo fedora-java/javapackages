@@ -120,17 +120,12 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
                     a.extension = "pom"
                 else:
                     a.extension = os.path.splitext(pom_path)[1][1:]
-
-                    # add property "type"
-                    #domimpl = getDOMImplementation()
-                    #doc = domimpl.createDocument(None, None, None)
-                    #ty = doc.createElement('type')
-                    #te = doc.createTextNode('ivy')
-                    #ty.appendChild(te)
                     ty = Depmap.build_property('type', 'ivy')
                     a.properties = pyxb.BIND(ty)
 
             a.path = os.path.abspath(path)
+            prop = Depmap.build_property('xmvn.resolver.disableEffectivePom', 'true')
+            a.properties = pyxb.BIND(prop)
             artifacts.append(a)
 
     if root.artifacts is None:
