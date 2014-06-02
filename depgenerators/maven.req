@@ -45,19 +45,8 @@ from lxml import etree
 from javapackages import POM
 from javapackages.depmap import Depmap, MetadataInvalidException
 from javapackages.artifact import Artifact, ProvidedArtifact, SkippedArtifact, Dependency
+from javapackages.xmvn_resolve import XMvnResolve, ResolutionRequest, ResolutionResult
 
-XMVN_RESOLVE_PATH='/usr/bin/xmvn-resolve'
-
-def resolve_artifact(coordinates):
-    # TODO: add support for namespaces
-    outfile = open("/dev/null", 'w')
-    procargs = [XMVN_RESOLVE_PATH, coordinates]
-    proc = subprocess.Popen(procargs, shell=False, stdout=outfile)
-    out = proc.communicate()[0]
-    ret = proc.wait()
-    if ret:
-        return False
-    return True
 
 def process_java_version(version_string):
     version = version_string.split('.')
@@ -172,59 +161,52 @@ class TagBuilder(object):
                     break
         return poms
 
-    def __generate_requires_from_pom(self, pom):
-        plugins = pom.get_plugins()
-        extensions = pom.get_extensions()
+    def __generate_requires_from_pom(self, pomfile):
+        pom = POM(pomfile)
+        plugins = list(pom.get_plugins())
+        extensions = list(pom.get_extensions())
         pgid = pom.parentGroupId
         paid = pom.parentArtifactId
         pver = pom.parentVersion
 
+        deps = plugins + extensions
         unresolvable = []
 
-        # TODO: compat versions?
-        for p in plugins:
-            # TODO: namespaces
-            plug = Dependency(p.groupId, p.artifactId, requestedVersion=p.version)
-            aver = self.__is_provided_by_subpackage(plug)
-            if resolve_artifact(plug.get_mvn_str()):
-                print(plug.get_rpm_str())
-            elif aver is not None:
-                print("{rpmstr} = {version}".format(rpmstr=plug.get_rpm_str(), version=aver))
-            else:
-                unresolvable.append(plug.get_mvn_str())
-            for pd in p.dependencies:
-                # TODO: namespaces
-                dep = Dependency(pd.groupId, pd.artifactId, requestedVersion=pd.version)
-                if resolve_artifact(dep.get_mvn_str()):
-                    print(dep.get_rpm_str())
-                else:
-                    unresolvable.append(plug.get_mvn_str())
+        reqs = []
+        for d in deps:
+            reqs.append(ResolutionRequest(d.groupId, d.artifactId, version=d.version))
+        results = XMvnResolve.process_raw_request(reqs)
+        for i, r in enumerate(results):
+            dep = Dependency(deps[i].groupId, deps[i].artifactId, requestedVersion=deps[i].version)
+            if not r:
+                unresolvable.append(dep)
+                continue
+            if r.compatVersion != "SYSTEM":
+                dep.resolvedVersion = r.compatVersion
+            if r.namespace:
+                dep.namespace = r.namespace
+            print(dep.get_rpm_str())
 
-        for e in extensions:
-            # TODO: namespaces
-            ext = Dependency(e.groupId, e.artifactId, requestedVersion=e.version)
-            aver = self.__is_provided_by_subpackage(ext)
-            if resolve_artifact(ext.get_mvn_str()):
-                print(ext.get_rpm_str())
-            elif aver is not None:
-                print("{rpmstr} = {version}".format(rpmstr=ext.get_rpm_str(), version=aver))
-            else:
-                unresolvable.append(plug.get_mvn_str())
+        if paid:
+            if not pver:
+                raise Exception("Unable to generate requires for artifact {}:{},".format(POM.groupId, POM.artifactId),
+                                "because its parent POM {}:{} has unknown version".format(pgid, paid))
 
-        if paid and pver:
-            parent_dep = Dependency(pgid, paid, requestedVersion=pver, extension="pom")
-            aver = self.__is_provided_by_subpackage(parent_dep)
-            if resolve_artifact(parent_dep.get_mvn_str()):
-                # TODO: namespaces
-                print(parent_dep.get_rpm_str())
-            elif aver is not None:
-                print("{rpmstr} = {version}".format(rpmstr=parent_dep.get_rpm_str(), version=aver))
+            req = ResolutionRequest(pgid, paid, extension="pom")
+            r = XMvnResolve.process_raw_request([req])[0]
+            dep = Dependency(pgid, paid, pver, extension="pom")
+            if not r:
+                unresolvable.append(dep)
             else:
-                unresolvable.append(parent_dep.get_mvn_str())
+                if r.compatVersion != "SYSTEM":
+                    dep.resolvedVersion = r.compatVersion
+                if r.namespace:
+                    dep.namespace = r.namespace
+                print(dep.get_rpm_str())
 
         if unresolvable:
-            raise Exception("Unable to generate requires on unresolvable artifact{}: {}"
-                            .format('s' if len(unresolvable) > 1 else '', ", ".join(unresolvable)))
+            raise Exception("Unable to generate requires on unresolvable artifacts: {}"
+                            .format(", ".join([x.get_mvn_str() for x in unresolvable])))
 
 
     def __generate_java_requires(self, depmap):
