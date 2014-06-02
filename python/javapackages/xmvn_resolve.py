@@ -124,13 +124,3 @@ class ResolutionRequest(object):
     def from_artifact(cls, artifact):
         return cls(artifact.artifactId, artifact.groupId,
                    artifact.extension, artifact.classifier, artifact.version)
-
-
-if __name__ == "__main__":
-    artifact = Artifact("junit", "junit")
-
-    req = ResolutionRequest.from_artifact(artifact)
-
-    results = XMvnResolve.process_raw_request([req])
-    print(len(results))
-    print(results[0])
