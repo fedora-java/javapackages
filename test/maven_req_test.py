@@ -215,7 +215,7 @@ class TestMavenReq(unittest.TestCase):
     #    self.assertEquals(return_value, 0, stderr)
     #    sout = [x for x in stdout.split('\n') if x]
     #    want = ("mvn(org.apache.maven.plugins:maven-plugin-plugin)", "jpackage-utils",
-    #            "mvn(org.codehaus.plexus:plexus-ant-factory-dep:pom:) = 1.0", "java-headless")
+    #            "mvn(org.fedoraproject.xmvn:xmvn-api:pom:) = 1.0", "java-headless")
     #    self.assertEquals(set(want), set(sout))
 
 if __name__ == '__main__':
