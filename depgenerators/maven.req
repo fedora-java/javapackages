@@ -48,6 +48,8 @@ from javapackages.artifact import Artifact, ProvidedArtifact, SkippedArtifact, D
 from javapackages.xmvn_resolve import XMvnResolve, ResolutionRequest, ResolutionResult
 
 
+XMVN_RESOLVE_PATH="/usr/bin/xmvn-resolve"
+
 def process_java_version(version_string):
     version = version_string.split('.')
     if len(version) != 2:
@@ -161,8 +163,7 @@ class TagBuilder(object):
                     break
         return poms
 
-    def __generate_requires_from_pom(self, pomfile):
-        pom = POM(pomfile)
+    def __generate_requires_from_pom(self, pom):
         plugins = list(pom.get_plugins())
         extensions = list(pom.get_extensions())
         pgid = pom.parentGroupId
