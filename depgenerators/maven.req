@@ -179,6 +179,10 @@ class TagBuilder(object):
         results = XMvnResolve.process_raw_request(reqs)
         for i, r in enumerate(results):
             dep = Dependency(deps[i].groupId, deps[i].artifactId, requestedVersion=deps[i].version)
+            dver = self.__is_provided_by_subpackage(dep)
+            if dver is not None:
+                print("{rpmstr} = {version}".format(rpmstr=dep.get_rpm_str(), version=dver))
+                continue
             if not r:
                 unresolvable.append(dep)
                 continue
@@ -196,7 +200,11 @@ class TagBuilder(object):
             req = ResolutionRequest(pgid, paid, extension="pom")
             r = XMvnResolve.process_raw_request([req])[0]
             dep = Dependency(pgid, paid, pver, extension="pom")
-            if not r:
+
+            dver = self.__is_provided_by_subpackage(dep)
+            if dver is not None:
+                print("{rpmstr} = {version}".format(rpmstr=dep.get_rpm_str(), version=dver))
+            elif not r:
                 unresolvable.append(dep)
             else:
                 if r.compatVersion != "SYSTEM":
