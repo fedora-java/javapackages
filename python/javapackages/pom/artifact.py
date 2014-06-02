@@ -100,9 +100,7 @@ class Artifact(AbstractArtifact):
                self.artifactId.__hash__() + \
                self.version.__hash__() + \
                self.extension.__hash__() + \
-               self.classifier.__hash__() + \
-               self.namespace.__hash__()
-
+               self.classifier.__hash__()
 
     @classmethod
     def merge_artifacts(cls, dominant, recessive):
