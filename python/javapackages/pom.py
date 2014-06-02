@@ -97,7 +97,7 @@ class POM(object):
     @property
     def parentVersion(self):
         """
-        version of the parent artifact of None
+        version of the parent artifact or None
         """
         ver = self.__find('./pom:parent/pom:version')
         if ver is None:
