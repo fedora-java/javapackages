@@ -106,24 +106,6 @@ class Dependency(AbstractArtifact):
 
         Where last part is always considered to be version unless empty
         """
-        tup = mvnstr.split(":")
-
-        # groupId and artifactId are always present
-        if len(tup) < 2:
-            raise ArtifactFormatException("Artifact string '{mvnstr}' does not "
-                                          "contain ':' character. Can not parse"
-                                          .format(mvnstr=mvnstr))
-
-        if len(tup) > 5:
-            raise ArtifactFormatException("Artifact string '{mvnstr}' contains "
-                                          "too many colons. Can not parse"
-                                          .format(mvnstr=mvnstr))
-
-        groupId = tup[0]
-        artifactId = tup[1]
-        extension = tup[2] if len(tup) >= 4 else ""
-        classifier = tup[3] if len(tup) >= 5 else ""
-        version = tup[-1] if len(tup) >= 3 else ""
-
-        return cls(groupId, artifactId, extension,
-                   classifier, version)
+        p = cls.get_parts_from_mvn_str(mvnstr)
+        return cls(p['groupId'], p['artifactId'], p['extension'],
+                   p['classifier'], p['version'])
