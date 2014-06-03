@@ -1,4 +1,5 @@
 from pomreader import POMReader, PomLoadingException
+from dependency import Dependency
 
 
 class POM(object):
@@ -93,3 +94,11 @@ class POM(object):
         if len(p) != 0:
             raise PomLoadingException("Unexpected child nodes under packaging")
         return p.text.strip()
+
+    @property
+    def dependencies(self):
+        """
+        List of artifact's dependencies
+        """
+        depsxml = POMReader.xpath(self.__doc, './pom:dependencies/pom:dependency')
+        return [Dependency.from_xml_element(x) for x in depsxml]
