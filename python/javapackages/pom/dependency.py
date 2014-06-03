@@ -43,12 +43,12 @@ class Dependency(AbstractArtifact):
             item = SubElement(root, "optional")
             item.text = str(self.optional).lower()
 
-        exc_root = Element("exclusions")
         if self.exclusions:
+            exc_root = Element("exclusions")
             for e in self.exclusions:
                 exc_root.insert(len(exc_root), e.get_xml_element())
+            root.insert(len(root), exc_root)
 
-        root.insert(len(root), exc_root)
         return root
 
     def get_xml_str(self, root="artifact"):
