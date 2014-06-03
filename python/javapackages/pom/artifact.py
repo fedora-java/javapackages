@@ -28,7 +28,8 @@ class AbstractArtifact(object):
                                    m['version'], namespace=namespace,
                                    compat=compat, pkgver=pkgver)
 
-    def get_parts_from_mvn_str(self, mvnstr):
+    @staticmethod
+    def get_parts_from_mvn_str(mvnstr):
         tup = mvnstr.split(":")
 
         # groupId and artifactId are always present
