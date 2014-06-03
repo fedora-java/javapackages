@@ -78,6 +78,14 @@ class AbstractArtifact(object):
         root = self.get_xml_element(root)
         return tostring(root, pretty_print=True)
 
+    def get_artifact(self, extension="", classifier="", version=""):
+        m = self.__get_members()
+
+        return Artifact(m['groupId'], m['artifactId'],
+                        extension or m['extension'],
+                        classifier or m['classifier'],
+                        version or m['version'])
+
     def __get_members(self):
         m = {'groupId': '',
              'artifactId': '',
