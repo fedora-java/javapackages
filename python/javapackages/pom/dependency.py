@@ -1,6 +1,7 @@
 import sys
 
 from artifact import AbstractArtifact, ArtifactFormatException
+from exclusion import Exclusion
 from pomreader import POMReader
 from lxml.etree import Element, SubElement, tostring
 
@@ -83,7 +84,6 @@ class Dependency(AbstractArtifact):
                  'version': '',
                  'scope': '',
                  'optional': False}
-        # TODO: exclusions
 
         parts = POMReader.find_parts(xmlnode, parts)
 
@@ -98,9 +98,16 @@ class Dependency(AbstractArtifact):
             elif parts['optional'] == "true":
                 parts['optional'] = True
 
+        # exclusions
+        excnodes = POMReader.xpath(xmlnode, "./exclusions/exclusion")
+
+        exclusions = set()
+        for e in [Exclusion.from_xml_element(x) for x in excnodes]:
+            exclusions.add(e)
+
         return cls(parts['groupId'], parts['artifactId'], parts['extension'],
                    parts['classifier'], parts['version'], parts['scope'],
-                   parts['optional'])
+                   parts['optional'], exclusions)
 
     @classmethod
     def from_mvn_str(cls, mvnstr):
