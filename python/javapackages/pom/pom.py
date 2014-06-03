@@ -120,3 +120,18 @@ class POM(object):
         """
         xmlnodes = POMReader.xpath(self.__doc, './pom:build/pom:extensions/pom:extension')
         return [Extension.from_xml_element(x) for x in xmlnodes]
+
+    @property
+    def properties(self):
+        """
+        Dictionary consisting of properties specified in pom.xml
+        """
+        properties = {}
+        xmlnodes = POMReader.find(self.__doc, './pom:properties')
+        if xmlnodes is None:
+            return properties
+        propnodes = xmlnodes.getchildren()
+        for node in propnodes:
+            properties[node.tag] = node.text
+
+        return properties
