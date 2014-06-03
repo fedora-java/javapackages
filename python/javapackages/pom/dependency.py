@@ -32,21 +32,27 @@ class Dependency(AbstractArtifact):
         """
         Return XML Element node representation of the Artifact
         """
-        root = Element(root)
+        root = AbstractArtifact.get_xml_element(self, root)
 
-        for key in ("artifactId", "groupId", "extension", "version",
-                    "classifier"):
-            if hasattr(self, key) and getattr(self, key):
-                item = SubElement(root, key)
-                item.text = getattr(self, key)
+        if self.scope:
+            item = SubElement(root, "scope")
+            item.text = self.scope
+
+        if self.optional:
+            item = SubElement(root, "optional")
+            item.text = str(self.optional).lower()
+
+        exc_root = Element("exclusions")
+        if self.exclusions:
+            for e in self.exclusions:
+                exc_root.insert(len(exc_root), e.get_xml_element())
         return root
 
     def get_xml_str(self, root="artifact"):
         """
         Return XML formatted string representation of the Artifact
         """
-        root = self.get_xml_element(root)
-        return tostring(root, pretty_print=True)
+        return self.get_xml_str(root)
 
     def __eq__(self, other):
         if type(other) is type(self):

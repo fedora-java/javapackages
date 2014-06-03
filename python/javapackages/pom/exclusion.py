@@ -21,20 +21,13 @@ class Exclusion(AbstractArtifact):
         """
         Return XML Element node representation of the Exclusion
         """
-        root = Element(root)
-
-        for key in ("artifactId", "groupId"):
-            if hasattr(self, key) and getattr(self, key):
-                item = SubElement(root, key)
-                item.text = getattr(self, key)
-        return root
+        return AbstractArtifact.get_xml_element(self, root)
 
     def get_xml_str(self, root="exclusion"):
         """
         Return XML formatted string representation of the Exclusion
         """
-        root = self.get_xml_element(root)
-        return tostring(root, pretty_print=True)
+        return AbstractArtifact.get_xml_str(self, root)
 
     def __eq__(self, other):
         if type(other) is type(self):
