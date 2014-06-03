@@ -38,3 +38,11 @@ class POMReader(object):
         if len(ret) == 0:
             ret = doc.xpath(xpath.replace('pom:', ''))
         return ret
+
+    @staticmethod
+    def find_parts(doc, parts, xpath="./{*}", namespace=POM_NAMESPACE):
+        for key in parts:
+            node = POMReader.find(doc, xpath + key, namespace=namespace)
+            if node is not None and node.text is not None:
+                parts[key] = node.text.strip()
+        return parts
