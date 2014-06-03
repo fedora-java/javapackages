@@ -126,7 +126,7 @@ class POM(object):
         """
         List of artifact's plugins
         """
-        xmlnodes = POMReader.xpath(self.__doc, './pom:plugins/pom:plugin')
+        xmlnodes = POMReader.xpath(self.__doc, './pom:build/pom:plugins/pom:plugin')
         return [Plugin.from_xml_element(x) for x in xmlnodes]
 
     @property
