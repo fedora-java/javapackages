@@ -1,5 +1,6 @@
 from pomreader import POMReader, PomLoadingException
 from dependency import Dependency
+from plugin import Plugin
 
 
 class POM(object):
@@ -102,3 +103,11 @@ class POM(object):
         """
         depsxml = POMReader.xpath(self.__doc, './pom:dependencies/pom:dependency')
         return [Dependency.from_xml_element(x) for x in depsxml]
+
+    @property
+    def plugins(self):
+        """
+        List of artifact's plugins
+        """
+        plugsxml = POMReader.xpath(self.__doc, './pom:plugins/pom:plugin')
+        return [Plugin.from_xml_element(x) for x in plugsxml]
