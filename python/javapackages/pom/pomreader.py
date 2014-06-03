@@ -40,9 +40,9 @@ class POMReader(object):
         return ret
 
     @staticmethod
-    def find_parts(doc, parts, xpath="./{*}", namespace=POM_NAMESPACE):
+    def find_parts(doc, parts, xpath="./{*}"):
         for key in parts:
-            node = POMReader.find(doc, xpath + key, namespace=namespace)
+            node = doc.find(xpath + key)
             if node is not None and node.text is not None:
                 parts[key] = node.text.strip()
         return parts
