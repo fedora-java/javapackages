@@ -106,6 +106,22 @@ class POM(object):
         return [Dependency.from_xml_element(x) for x in xmlnodes]
 
     @property
+    def dependencyManagement(self):
+        """
+        List of dependencies from dependency management section
+        """
+        xmlnodes = POMReader.xpath(self.__doc, './pom:dependencyManagement/pom:dependencies/pom:dependency')
+        return [Dependency.from_xml_element(x) for x in xmlnodes]
+
+    @property
+    def pluginManagement(self):
+        """
+        List of plugins from plugin management section
+        """
+        xmlnodes = POMReader.xpath(self.__doc, './pom:pluginManagement/pom:plugins/pom:plugin')
+        return [Plugin.from_xml_element(x) for x in xmlnodes]
+
+    @property
     def plugins(self):
         """
         List of artifact's plugins
