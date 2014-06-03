@@ -56,6 +56,27 @@ class AbstractArtifact(object):
 
         return parts
 
+    def get_xml_element(self, root="abstractArtifact"):
+        """
+        Return XML Element node representation of the Artifact
+        """
+        root = Element(root)
+
+        members = self.__get_members()
+
+        for key in members:
+            if members[key]:
+                item = SubElement(root, key)
+                item.text = members[key]
+        return root
+
+    def get_xml_str(self, root="abstractArtifact"):
+        """
+        Return XML formatted string representation of the Artifact
+        """
+        root = self.get_xml_element(root)
+        return tostring(root, pretty_print=True)
+
     def __get_members(self):
         m = {'groupId': '',
              'artifactId': '',
@@ -100,21 +121,13 @@ class Artifact(AbstractArtifact):
         """
         Return XML Element node representation of the Artifact
         """
-        root = Element(root)
-
-        for key in ("artifactId", "groupId", "extension", "version",
-                    "classifier"):
-            if hasattr(self, key) and getattr(self, key):
-                item = SubElement(root, key)
-                item.text = getattr(self, key)
-        return root
+        return AbstractArtifact.get_xml_element(self, root)
 
     def get_xml_str(self, root="artifact"):
         """
         Return XML formatted string representation of the Artifact
         """
-        root = self.get_xml_element(root)
-        return tostring(root, pretty_print=True)
+        return AbstractArtifact.get_xml_str(self, root)
 
     def __eq__(self, other):
         if type(other) is type(self):
@@ -178,6 +191,6 @@ class Artifact(AbstractArtifact):
 
         Where last part is always considered to be version unless empty
         """
-        p = cls.get_parts_from_mvn_str(mvnstr)
+        p = Artifact.get_parts_from_mvn_str(mvnstr)
         return cls(p['groupId'], p['artifactId'], p['extension'],
                    p['classifier'], p['version'])
