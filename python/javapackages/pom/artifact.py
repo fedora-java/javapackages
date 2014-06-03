@@ -1,5 +1,6 @@
 import sys
 
+from pomreader import POMReader
 from printer import Printer
 from lxml.etree import Element, SubElement, tostring
 
@@ -151,39 +152,18 @@ class Artifact(AbstractArtifact):
         within pom.xml or a dependency map.
         """
 
-        # TODO: find better way of handling pom/ivy/xyz differences
         parts = {'groupId':'',
                  'artifactId':'',
                  'extension':'',
                  'classifier':'',
                  'version':''}
 
-        ivyparts = {'org': '',
-                    'name': '',
-                    'revision': ''}
-
-        for key in parts:
-            node = xmlnode.find("./{*}" + key)
-            if node is not None and node.text is not None:
-                parts[key] = node.text.strip()
-
-        if hasattr(xmlnode, "attrib"):
-            attribs = xmlnode.attrib
-            for key in ivyparts:
-                try:
-                    ivyparts[key] = attribs[key]
-                except KeyError:
-                    pass
-
-            parts['groupId'] = parts['groupId'] or ivyparts['org']
-            parts['artifactId'] = parts['artifactId'] or ivyparts['name']
-            parts['version'] = parts['version'] or ivyparts['revision']
+        parts = POMReader.find_parts(xmlnode, parts)
 
         if not parts['groupId'] or not parts['artifactId']:
             raise ArtifactFormatException(
                 "Empty groupId or artifactId encountered. "
                 "This is a bug, please report it!")
-
 
         return cls(parts['groupId'], parts['artifactId'], parts['extension'],
                    parts['classifier'], parts['version'])
