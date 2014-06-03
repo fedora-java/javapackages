@@ -47,13 +47,15 @@ class Dependency(AbstractArtifact):
         if self.exclusions:
             for e in self.exclusions:
                 exc_root.insert(len(exc_root), e.get_xml_element())
+
+        root.insert(len(root), exc_root)
         return root
 
     def get_xml_str(self, root="artifact"):
         """
         Return XML formatted string representation of the Artifact
         """
-        return self.get_xml_str(root)
+        return AbstractArtifact.get_xml_str(self, root)
 
     def __eq__(self, other):
         if type(other) is type(self):
