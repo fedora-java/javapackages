@@ -19,8 +19,7 @@ class POM(object):
         gId = POMReader.find(self.__doc, './pom:parent/pom:groupId')
         if gId is None:
             return None
-        else:
-            return gId.text.strip()
+        return gId.text.strip()
 
     @property
     def parentArtifactId(self):
@@ -30,8 +29,7 @@ class POM(object):
         aId = POMReader.find(self.__doc, './pom:parent/pom:artifactId')
         if aId is None:
             return None
-        else:
-            return aId.text.strip()
+        return aId.text.strip()
 
     @property
     def parentVersion(self):
@@ -41,8 +39,7 @@ class POM(object):
         ver = POMReader.find(self.__doc, './pom:parent/pom:version')
         if ver is None:
             return None
-        else:
-            return ver.text.strip()
+        return ver.text.strip()
 
     @property
     def groupId(self):
@@ -52,12 +49,6 @@ class POM(object):
         gId = POMReader.find(self.__doc, './pom:groupId')
         if gId is None:
             gId = POMReader.find(self.__doc, './pom:parent/pom:groupId')
-        if gId is None:
-            gId = POMReader.find(self.__doc, '/ivy-module/info')
-            if gId is not None:
-                gId = gId.attrib["organisation"]
-            if gId is not None:
-                return gId
         if gId is None:
             raise PomLoadingException("Unable to determine groupId")
         if len(gId) != 0:
@@ -71,13 +62,7 @@ class POM(object):
         """
         aId = POMReader.find(self.__doc, './pom:artifactId')
         if aId is None:
-            aId = POMReader.find(self.__doc, '/ivy-module/info')
-            if aId is not None:
-                aId = aId.attrib["module"]
-            if aId is not None:
-                return aId
-        if aId is None:
-            raise PomLoadingException("Unable to determine artifactID")
+            raise PomLoadingException("Unable to determine artifactId")
         if len(aId) != 0:
             raise PomLoadingException("Unexpected child nodes under artifactId")
         return aId.text.strip()
@@ -92,12 +77,6 @@ class POM(object):
         if version is None:
             version = POMReader.find(self.__doc, './pom:parent/pom:version')
         if version is None:
-            version = POMReader.find(self.__doc, '/ivy-module/info')
-            if version is not None:
-                version = version.attrib["revision"]
-            if version is not None:
-                return version
-        if version is None:
             raise PomLoadingException("Unable to determine artifact version")
         if len(version) != 0:
             raise PomLoadingException("Unexpected child nodes under version")
@@ -109,11 +88,8 @@ class POM(object):
         Packaging type of artifact or None if unspecified
         """
         p = POMReader.find(self.__doc, './pom:packaging')
-        if p is not None:
-            if len(p) != 0:
-                raise PomLoadingException("Unexpected child nodes under packaging")
-            return p.text.strip()
-        p = POMReader.find(self.__doc, '/ivy-module/info')
-        if p is not None:
-            return 'ivy'
-        return None
+        if p is None:
+            raise PomLoadingException("Unable to determine packaging type")
+        if len(p) != 0:
+            raise PomLoadingException("Unexpected child nodes under packaging")
+        return p.text.strip()
