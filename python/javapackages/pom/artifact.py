@@ -86,6 +86,12 @@ class AbstractArtifact(object):
                         classifier or m['classifier'],
                         version or m['version'])
 
+    def __unicode__(self):
+        return unicode(self.get_mvn_str())
+
+    def __str__(self):
+        return unicode(self).encode(sys.getfilesystemencoding())
+
     def __get_members(self):
         m = {'groupId': '',
              'artifactId': '',
@@ -115,16 +121,6 @@ class Artifact(AbstractArtifact):
         self.extension = extension.strip()
         self.classifier = classifier.strip()
         self.version = version.strip()
-
-    def __unicode__(self):
-        return u"{gid}:{aid}:{ext}:{cla}:{ver}".format(gid=self.groupId,
-                                                       aid=self.artifactId,
-                                                       ext=self.extension,
-                                                       cla=self.classifier,
-                                                       ver=self.version)
-
-    def __str__(self):
-        return unicode(self).encode(sys.getfilesystemencoding())
 
     def get_xml_element(self, root="artifact"):
         """
