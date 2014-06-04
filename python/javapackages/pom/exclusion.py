@@ -44,29 +44,7 @@ class Exclusion(AbstractArtifact):
         self.groupId = groupId.strip()
         self.artifactId = artifactId.strip()
 
-    def get_xml_element(self, root="exclusion"):
-        """
-        Return XML Element node representation of the Exclusion
-        """
-        return AbstractArtifact.get_xml_element(self, root)
-
-    def get_xml_str(self, root="exclusion"):
-        """
-        Return XML formatted string representation of the Exclusion
-        """
-        return AbstractArtifact.get_xml_str(self, root)
-
-    def __eq__(self, other):
-        if type(other) is type(self):
-            return self.__dict__ == other.__dict__
-        return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __hash__(self):
-        return self.groupId.__hash__() + \
-               self.artifactId.__hash__()
+        self._root_element_name = "exclusion"
 
     @classmethod
     def from_xml_element(cls, xmlnode):

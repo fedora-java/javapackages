@@ -52,6 +52,8 @@ class Dependency(AbstractArtifact):
         self.optional = optional
         self.exclusions = exclusions
 
+        self._root_element_name = "dependency"
+
     def get_xml_element(self, root="dependency"):
         """
         Return XML Element node representation of the Artifact
@@ -73,27 +75,6 @@ class Dependency(AbstractArtifact):
             root.insert(len(root), exc_root)
 
         return root
-
-    def get_xml_str(self, root="artifact"):
-        """
-        Return XML formatted string representation of the Artifact
-        """
-        return AbstractArtifact.get_xml_str(self, root)
-
-    def __eq__(self, other):
-        if type(other) is type(self):
-            return self.__dict__ == other.__dict__
-        return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __hash__(self):
-        return self.groupId.__hash__() + \
-               self.artifactId.__hash__() + \
-               self.version.__hash__() + \
-               self.extension.__hash__() + \
-               self.classifier.__hash__()
 
     @classmethod
     def from_xml_element(cls, xmlnode):

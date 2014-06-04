@@ -48,6 +48,8 @@ class Plugin(AbstractArtifact):
         self.version = version.strip()
         self.dependencies = dependencies
 
+        self._root_element_name = "plugin"
+
     def get_xml_element(self, root="plugin"):
         """
         Return XML Element node representation of the Plugin
@@ -61,25 +63,6 @@ class Plugin(AbstractArtifact):
             root.insert(len(root), dep_root)
 
         return root
-
-    def get_xml_str(self, root="plugin"):
-        """
-        Return XML formatted string representation of the Exclusion
-        """
-        return AbstractArtifact.get_xml_str(self, root)
-
-    def __eq__(self, other):
-        if type(other) is type(self):
-            return self.__dict__ == other.__dict__
-        return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __hash__(self):
-        return self.groupId.__hash__() + \
-               self.artifactId.__hash__() + \
-               self.version.__hash__()
 
     @classmethod
     def from_xml_element(cls, xmlnode):

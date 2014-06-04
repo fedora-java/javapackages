@@ -44,30 +44,7 @@ class Extension(AbstractArtifact):
         self.artifactId = artifactId.strip()
         self.version = version.strip()
 
-    def get_xml_element(self, root="extension"):
-        """
-        Return XML Element node representation of the Extension
-        """
-        return AbstractArtifact.get_xml_element(self, root)
-
-    def get_xml_str(self, root="extension"):
-        """
-        Return XML formatted string representation of the Exclusion
-        """
-        return AbstractArtifact.get_xml_str(self, root)
-
-    def __eq__(self, other):
-        if type(other) is type(self):
-            return self.__dict__ == other.__dict__
-        return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __hash__(self):
-        return self.groupId.__hash__() + \
-               self.artifactId.__hash__() + \
-               self.version.__hash__()
+        self._root_element_name = "extension"
 
     @classmethod
     def from_xml_element(cls, xmlnode):
