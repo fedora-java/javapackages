@@ -44,12 +44,6 @@ class Exclusion(AbstractArtifact):
         self.groupId = groupId.strip()
         self.artifactId = artifactId.strip()
 
-    def __unicode__(self):
-        return u"{gid}:{aid}".format(gid=self.groupId, aid=self.artifactId)
-
-    def __str__(self):
-        return unicode(self).encode(sys.getfilesystemencoding())
-
     def get_xml_element(self, root="exclusion"):
         """
         Return XML Element node representation of the Exclusion

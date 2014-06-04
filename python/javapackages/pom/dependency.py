@@ -52,16 +52,6 @@ class Dependency(AbstractArtifact):
         self.optional = optional
         self.exclusions = exclusions
 
-    def __unicode__(self):
-        return u"{gid}:{aid}:{ext}:{cla}:{ver}".format(gid=self.groupId,
-                                                       aid=self.artifactId,
-                                                       ext=self.extension,
-                                                       cla=self.classifier,
-                                                       ver=self.version)
-
-    def __str__(self):
-        return unicode(self).encode(sys.getfilesystemencoding())
-
     def get_xml_element(self, root="dependency"):
         """
         Return XML Element node representation of the Artifact

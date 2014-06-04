@@ -44,14 +44,6 @@ class Extension(AbstractArtifact):
         self.artifactId = artifactId.strip()
         self.version = version.strip()
 
-    def __unicode__(self):
-        return u"{gid}:{aid}:{ver}".format(gid=self.groupId,
-                                           aid=self.artifactId,
-                                           ver=self.version)
-
-    def __str__(self):
-        return unicode(self).encode(sys.getfilesystemencoding())
-
     def get_xml_element(self, root="extension"):
         """
         Return XML Element node representation of the Extension

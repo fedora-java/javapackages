@@ -48,14 +48,6 @@ class Plugin(AbstractArtifact):
         self.version = version.strip()
         self.dependencies = dependencies
 
-    def __unicode__(self):
-        return u"{gid}:{aid}:{ver}".format(gid=self.groupId,
-                                           aid=self.artifactId,
-                                           ver=self.version)
-
-    def __str__(self):
-        return unicode(self).encode(sys.getfilesystemencoding())
-
     def get_xml_element(self, root="plugin"):
         """
         Return XML Element node representation of the Plugin
