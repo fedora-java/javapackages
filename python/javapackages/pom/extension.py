@@ -44,8 +44,6 @@ class Extension(AbstractArtifact):
         self.artifactId = artifactId.strip()
         self.version = version.strip()
 
-        self._root_element_name = "extension"
-
     @classmethod
     def from_xml_element(cls, xmlnode):
         """

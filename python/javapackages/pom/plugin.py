@@ -48,8 +48,6 @@ class Plugin(AbstractArtifact):
         self.version = version.strip()
         self.dependencies = dependencies
 
-        self._root_element_name = "plugin"
-
     def get_xml_element(self, root="plugin"):
         """
         Return XML Element node representation of the Plugin

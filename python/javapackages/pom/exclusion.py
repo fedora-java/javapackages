@@ -44,8 +44,6 @@ class Exclusion(AbstractArtifact):
         self.groupId = groupId.strip()
         self.artifactId = artifactId.strip()
 
-        self._root_element_name = "exclusion"
-
     @classmethod
     def from_xml_element(cls, xmlnode):
         """

@@ -49,9 +49,6 @@ class ArtifactFormatException(Exception):
 
 class AbstractArtifact(object):
 
-    def __init__(self):
-        self._root_element_name = "abstractArtifact"
-
     def get_mvn_str(self):
         m = self.__get_members()
         return Printer.get_mvn_str(m['groupId'], m['artifactId'],
@@ -99,7 +96,8 @@ class AbstractArtifact(object):
         Return XML Element node representation of the Artifact
         """
         if root_element_name is None:
-            root_element_name = self._root_element_name
+            clsname = self.__class__.__name__
+            root_element_name = clsname[0].lower() + clsname[1:]
         root = Element(root_element_name)
 
         members = self.__get_members()
@@ -115,7 +113,8 @@ class AbstractArtifact(object):
         Return XML formatted string representation of the Artifact
         """
         if root_element_name is None:
-            root_element_name = self._root_element_name
+            clsname = self.__class__.__name__
+            root_element_name = clsname[0].lower() + clsname[1:]
 
         root = self.get_xml_element(root_element_name)
         return tostring(root, pretty_print=True)
@@ -185,8 +184,6 @@ class Artifact(AbstractArtifact):
         self.extension = extension.strip()
         self.classifier = classifier.strip()
         self.version = version.strip()
-
-        self._root_element_name = "artifact"
 
     @classmethod
     def merge_artifacts(cls, dominant, recessive):

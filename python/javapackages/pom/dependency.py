@@ -52,8 +52,6 @@ class Dependency(AbstractArtifact):
         self.optional = optional
         self.exclusions = exclusions
 
-        self._root_element_name = "dependency"
-
     def get_xml_element(self, root="dependency"):
         """
         Return XML Element node representation of the Artifact
