@@ -49,6 +49,9 @@ class ArtifactFormatException(Exception):
 
 class AbstractArtifact(object):
 
+    def __init__(self):
+        self._root_element_name = "abstractArtifact"
+
     def get_mvn_str(self):
         m = self.__get_members()
         return Printer.get_mvn_str(m['groupId'], m['artifactId'],
@@ -91,11 +94,13 @@ class AbstractArtifact(object):
 
         return parts
 
-    def get_xml_element(self, root="abstractArtifact"):
+    def get_xml_element(self, root_element_name=None):
         """
         Return XML Element node representation of the Artifact
         """
-        root = Element(root)
+        if root_element_name is None:
+            root_element_name = self._root_element_name
+        root = Element(root_element_name)
 
         members = self.__get_members()
 
@@ -105,11 +110,14 @@ class AbstractArtifact(object):
                 item.text = members[key]
         return root
 
-    def get_xml_str(self, root="abstractArtifact"):
+    def get_xml_str(self, root_element_name=None):
         """
         Return XML formatted string representation of the Artifact
         """
-        root = self.get_xml_element(root)
+        if root_element_name is None:
+            root_element_name = self._root_element_name
+
+        root = self.get_xml_element(root_element_name)
         return tostring(root, pretty_print=True)
 
     def get_artifact(self, extension="", classifier="", version=""):
@@ -178,17 +186,7 @@ class Artifact(AbstractArtifact):
         self.classifier = classifier.strip()
         self.version = version.strip()
 
-    def get_xml_element(self, root="artifact"):
-        """
-        Return XML Element node representation of the Artifact
-        """
-        return AbstractArtifact.get_xml_element(self, root)
-
-    def get_xml_str(self, root="artifact"):
-        """
-        Return XML formatted string representation of the Artifact
-        """
-        return AbstractArtifact.get_xml_str(self, root)
+        self._root_element_name = "artifact"
 
     @classmethod
     def merge_artifacts(cls, dominant, recessive):
