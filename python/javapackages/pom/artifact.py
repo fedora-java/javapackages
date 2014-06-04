@@ -136,7 +136,7 @@ class AbstractArtifact(object):
 
     def __eq__(self, other):
         if type(other) is type(self):
-            return self.__get_significant_members() == other.__dict__
+            return self.__get_significant_members() == other.__get_significant_members()
         return False
 
     def __ne__(self, other):
