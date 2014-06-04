@@ -126,6 +126,28 @@ class AbstractArtifact(object):
     def __str__(self):
         return unicode(self).encode(sys.getfilesystemencoding())
 
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.__get_significant_members() == other.__dict__
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        result = 0
+        for key in self.__get_significant_members():
+            var = getattr(self, key)
+            result += var.__hash__()
+        return result
+
+    def __get_significant_members(self):
+        m = {}
+        for mname in ["groupId", "artifactId", "extension", "classifier", "version"]:
+            if hasattr(self, mname):
+                m[mname] = getattr(self, mname)
+        return m
+
     def __get_members(self):
         m = {'groupId': '',
              'artifactId': '',
@@ -167,21 +189,6 @@ class Artifact(AbstractArtifact):
         Return XML formatted string representation of the Artifact
         """
         return AbstractArtifact.get_xml_str(self, root)
-
-    def __eq__(self, other):
-        if type(other) is type(self):
-            return self.__dict__ == other.__dict__
-        return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __hash__(self):
-        return self.groupId.__hash__() + \
-               self.artifactId.__hash__() + \
-               self.version.__hash__() + \
-               self.extension.__hash__() + \
-               self.classifier.__hash__()
 
     @classmethod
     def merge_artifacts(cls, dominant, recessive):
