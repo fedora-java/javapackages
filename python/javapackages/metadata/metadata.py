@@ -38,8 +38,11 @@ import logging
 import os.path
 import xml
 
-from javapackages.maven.artifact import (MetadataDependency, MetadataArtifact,
-                                         MetadataSkippedArtifact, MetadataExclusion)
+from artifact import MetadataArtifact
+from dependency import MetadataDependency
+from skippedartifact import MetadataSkippedArtifact
+from exclusion import MetadataExclusion
+
 import pyxb
 
 import javapackages.metadata.pyxbmetadata as metadata
@@ -93,7 +96,7 @@ class Metadata(object):
         artifacts = []
         for m in self.__metadata:
             for a in m.artifacts.artifact:
-                artifact = ProvidedArtifact.from_metadata(a)
+                artifact = MetadataArtifact.from_metadata(a)
                 if not artifact.version:
                     raise MetadataInvalidException("Artifact {a} does not have version in maven provides".format(a=artifact))
                 artifacts.append(artifact)
@@ -109,7 +112,7 @@ class Metadata(object):
                     continue
 
                 for dep in a.dependencies.dependency:
-                    artifacts.add(Dependency.from_metadata(dep))
+                    artifacts.add(MetadataDependency.from_metadata(dep))
 
         return sorted(list(artifacts))
 
@@ -120,7 +123,7 @@ class Metadata(object):
             if not m.skippedArtifacts:
                 continue
             for dep in m.skippedArtifacts.skippedArtifact:
-                artifact = SkippedArtifact.from_metadata(dep)
+                artifact = MetadataSkippedArtifact.from_metadata(dep)
                 artifacts.add(artifact)
         return sorted(list(artifacts))
 
@@ -137,7 +140,7 @@ class Metadata(object):
                         continue
 
                     for exclusion in dep.exclusions.exclusion:
-                        artifact = ExclusionArtifact.from_metadata(exclusion)
+                        artifact = MetadataExclusion.from_metadata(exclusion)
                 artifacts.add(artifact)
         return sorted(list(artifacts))
 
