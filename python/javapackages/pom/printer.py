@@ -53,9 +53,10 @@ class Printer(object):
 
     @staticmethod
     def get_rpm_str(gid, aid, ext="", cla="", ver="", namespace="",
-                    compat=False, pkgver=None):
+                    compat=None, pkgver=None):
 
-        mvnstr = Printer.get_mvn_str(gid, aid, ext, cla, ver if compat else "")
+        mvnstr = Printer.get_mvn_str(gid, aid, ext, cla,
+                                     compat if compat is not None else "")
         rpmstr = "mvn({mvnstr})".format(mvnstr=mvnstr)
 
         if namespace:
