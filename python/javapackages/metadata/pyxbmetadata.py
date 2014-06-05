@@ -1,4 +1,4 @@
-# ./metadata.py
+# ./pyxbmetadata.py
 # -*- coding: utf-8 -*-
 # PyXB bindings for NM:cc7c37311c49f3aaf8d407a5a18021140495bbc9
 # Generated 2014-05-23 07:14:31.868577 by PyXB version 1.2.3
@@ -86,32 +86,32 @@ class PackageMetadata (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}uuid uses Python identifier uuid
     __uuid = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'uuid'), 'uuid', '__httpfedorahosted_orgxmvnMETADATA2_0_0_PackageMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0uuid', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 23, 6),)
 
-    
+
     uuid = property(__uuid.value, __uuid.set, None, u'2.0.0+\n            Universally unique identifier of this piece of metadata.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}properties uses Python identifier properties
     __properties = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'properties'), 'properties', '__httpfedorahosted_orgxmvnMETADATA2_0_0_PackageMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0properties', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 31, 6),)
 
-    
+
     properties = property(__properties.value, __properties.set, None, u'2.0.0+\n            Properties of this piece of metadata.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifacts uses Python identifier artifacts
     __artifacts = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifacts'), 'artifacts', '__httpfedorahosted_orgxmvnMETADATA2_0_0_PackageMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0artifacts', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 44, 6),)
 
-    
+
     artifacts = property(__artifacts.value, __artifacts.set, None, u'2.0.0+\n            List of installed artifacts described by this piece of\n            metadata.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}skippedArtifacts uses Python identifier skippedArtifacts
     __skippedArtifacts = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'skippedArtifacts'), 'skippedArtifacts', '__httpfedorahosted_orgxmvnMETADATA2_0_0_PackageMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0skippedArtifacts', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 58, 6),)
 
-    
+
     skippedArtifacts = property(__skippedArtifacts.value, __skippedArtifacts.set, None, u'2.0.0+\n            List of artifacts built but not installed in any package.\n            Useful for detecting broken package dependencies.\n          ')
 
     _ElementMap.update({
@@ -121,7 +121,7 @@ class PackageMetadata (pyxb.binding.basis.complexTypeDefinition):
         __skippedArtifacts.name() : __skippedArtifacts
     })
     _AttributeMap.update({
-        
+
     })
 Namespace.addCategoryObject('typeBinding', u'PackageMetadata', PackageMetadata)
 
@@ -141,10 +141,10 @@ class CTD_ANON (pyxb.binding.basis.complexTypeDefinition):
     # Base type is pyxb.binding.datatypes.anyType
     _HasWildcardElement = True
     _ElementMap.update({
-        
+
     })
     _AttributeMap.update({
-        
+
     })
 
 
@@ -163,18 +163,18 @@ class CTD_ANON_ (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifact uses Python identifier artifact
     __artifact = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifact'), 'artifact', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON__httpfedorahosted_orgxmvnMETADATA2_0_0artifact', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 54, 12),)
 
-    
+
     artifact = property(__artifact.value, __artifact.set, None, None)
 
     _ElementMap.update({
         __artifact.name() : __artifact
     })
     _AttributeMap.update({
-        
+
     })
 
 
@@ -193,18 +193,18 @@ class CTD_ANON_2 (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}skippedArtifact uses Python identifier skippedArtifact
     __skippedArtifact = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'skippedArtifact'), 'skippedArtifact', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_2_httpfedorahosted_orgxmvnMETADATA2_0_0skippedArtifact', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 68, 12),)
 
-    
+
     skippedArtifact = property(__skippedArtifact.value, __skippedArtifact.set, None, None)
 
     _ElementMap.update({
         __skippedArtifact.name() : __skippedArtifact
     })
     _AttributeMap.update({
-        
+
     })
 
 
@@ -223,32 +223,32 @@ class SkippedArtifactMetadata (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}groupId uses Python identifier groupId
     __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_SkippedArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 83, 6),)
 
-    
+
     groupId = property(__groupId.value, __groupId.set, None, u'2.0.0+\n            Group ID of skipped artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifactId uses Python identifier artifactId
     __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_SkippedArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 91, 6),)
 
-    
+
     artifactId = property(__artifactId.value, __artifactId.set, None, u'2.0.0+\n            Artifact ID of skipped artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}extension uses Python identifier extension
     __extension = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'extension'), 'extension', '__httpfedorahosted_orgxmvnMETADATA2_0_0_SkippedArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0extension', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 99, 6),)
 
-    
+
     extension = property(__extension.value, __extension.set, None, u'2.0.0+\n            Extension of skipped artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}classifier uses Python identifier classifier
     __classifier = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'classifier'), 'classifier', '__httpfedorahosted_orgxmvnMETADATA2_0_0_SkippedArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0classifier', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 107, 6),)
 
-    
+
     classifier = property(__classifier.value, __classifier.set, None, u'2.0.0+\n            Classifier of skipped artifact.\n          ')
 
     _ElementMap.update({
@@ -258,7 +258,7 @@ class SkippedArtifactMetadata (pyxb.binding.basis.complexTypeDefinition):
         __classifier.name() : __classifier
     })
     _AttributeMap.update({
-        
+
     })
 Namespace.addCategoryObject('typeBinding', u'SkippedArtifactMetadata', SkippedArtifactMetadata)
 
@@ -276,88 +276,88 @@ class ArtifactMetadata (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}groupId uses Python identifier groupId
     __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 125, 6),)
 
-    
+
     groupId = property(__groupId.value, __groupId.set, None, u'2.0.0+\n            Group identifier of the artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifactId uses Python identifier artifactId
     __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 133, 6),)
 
-    
+
     artifactId = property(__artifactId.value, __artifactId.set, None, u'2.0.0+\n            Identifier of the artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}extension uses Python identifier extension
     __extension = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'extension'), 'extension', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0extension', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 141, 6),)
 
-    
+
     extension = property(__extension.value, __extension.set, None, u'2.0.0+\n            Extension of artifact file.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}classifier uses Python identifier classifier
     __classifier = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'classifier'), 'classifier', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0classifier', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 149, 6),)
 
-    
+
     classifier = property(__classifier.value, __classifier.set, None, u'2.0.0+\n            Classifier of the artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}version uses Python identifier version
     __version = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'version'), 'version', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0version', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 157, 6),)
 
-    
+
     version = property(__version.value, __version.set, None, u'2.0.0+\n            Artifact version.  This is always upstream version, never\n            compat version nor SYSTEM.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}path uses Python identifier path
     __path = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'path'), 'path', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0path', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 166, 6),)
 
-    
+
     path = property(__path.value, __path.set, None, u'2.0.0+\n            Absolute path to artifact file stored in the local file\n            system.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}namespace uses Python identifier namespace
     __namespace = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'namespace'), 'namespace', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0namespace', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 175, 6),)
 
-    
+
     namespace = property(__namespace.value, __namespace.set, None, u'2.0.0+\n            A namespace within which this artifact is stored.  This\n            usually is an identifier of software collection.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}uuid uses Python identifier uuid
     __uuid = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'uuid'), 'uuid', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0uuid', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 184, 6),)
 
-    
+
     uuid = property(__uuid.value, __uuid.set, None, u'2.0.0+\n            Universally unique identifier of this artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}properties uses Python identifier properties
     __properties = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'properties'), 'properties', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0properties', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 192, 6),)
 
-    
+
     properties = property(__properties.value, __properties.set, None, u'2.0.0+\n            Extra properties of this artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}compatVersions uses Python identifier compatVersions
     __compatVersions = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'compatVersions'), 'compatVersions', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0compatVersions', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 205, 6),)
 
-    
+
     compatVersions = property(__compatVersions.value, __compatVersions.set, None, u'2.0.0+\n            Compatibility versions of this artifact.  If the list is\n            empty then this artifact is not considered as\n            compatibility artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}aliases uses Python identifier aliases
     __aliases = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'aliases'), 'aliases', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0aliases', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 220, 6),)
 
-    
+
     aliases = property(__aliases.value, __aliases.set, None, u'2.0.0+\n            Alternative identifiers of the artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}dependencies uses Python identifier dependencies
     __dependencies = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'dependencies'), 'dependencies', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0dependencies', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 233, 6),)
 
-    
+
     dependencies = property(__dependencies.value, __dependencies.set, None, u'2.0.0+\n            List of artifact dependencies.\n          ')
 
     _ElementMap.update({
@@ -375,7 +375,7 @@ class ArtifactMetadata (pyxb.binding.basis.complexTypeDefinition):
         __dependencies.name() : __dependencies
     })
     _AttributeMap.update({
-        
+
     })
 Namespace.addCategoryObject('typeBinding', u'ArtifactMetadata', ArtifactMetadata)
 
@@ -395,10 +395,10 @@ class CTD_ANON_3 (pyxb.binding.basis.complexTypeDefinition):
     # Base type is pyxb.binding.datatypes.anyType
     _HasWildcardElement = True
     _ElementMap.update({
-        
+
     })
     _AttributeMap.update({
-        
+
     })
 
 
@@ -418,18 +418,18 @@ class CTD_ANON_4 (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}version uses Python identifier version
     __version = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'version'), 'version', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_4_httpfedorahosted_orgxmvnMETADATA2_0_0version', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 216, 12),)
 
-    
+
     version = property(__version.value, __version.set, None, None)
 
     _ElementMap.update({
         __version.name() : __version
     })
     _AttributeMap.update({
-        
+
     })
 
 
@@ -447,18 +447,18 @@ class CTD_ANON_5 (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}alias uses Python identifier alias
     __alias = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'alias'), 'alias', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_5_httpfedorahosted_orgxmvnMETADATA2_0_0alias', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 229, 12),)
 
-    
+
     alias = property(__alias.value, __alias.set, None, None)
 
     _ElementMap.update({
         __alias.name() : __alias
     })
     _AttributeMap.update({
-        
+
     })
 
 
@@ -476,18 +476,18 @@ class CTD_ANON_6 (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}dependency uses Python identifier dependency
     __dependency = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'dependency'), 'dependency', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_6_httpfedorahosted_orgxmvnMETADATA2_0_0dependency', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 242, 12),)
 
-    
+
     dependency = property(__dependency.value, __dependency.set, None, None)
 
     _ElementMap.update({
         __dependency.name() : __dependency
     })
     _AttributeMap.update({
-        
+
     })
 
 
@@ -505,32 +505,32 @@ class ArtifactAlias (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}groupId uses Python identifier groupId
     __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactAlias_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 256, 6),)
 
-    
+
     groupId = property(__groupId.value, __groupId.set, None, u'2.0.0+\n            Group ID of the artifact alias.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifactId uses Python identifier artifactId
     __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactAlias_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 264, 6),)
 
-    
+
     artifactId = property(__artifactId.value, __artifactId.set, None, u'2.0.0+\n            Artifact ID of the artifact alias.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}extension uses Python identifier extension
     __extension = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'extension'), 'extension', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactAlias_httpfedorahosted_orgxmvnMETADATA2_0_0extension', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 272, 6),)
 
-    
+
     extension = property(__extension.value, __extension.set, None, u'2.0.0+\n            Extension of the artifact alias.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}classifier uses Python identifier classifier
     __classifier = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'classifier'), 'classifier', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactAlias_httpfedorahosted_orgxmvnMETADATA2_0_0classifier', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 280, 6),)
 
-    
+
     classifier = property(__classifier.value, __classifier.set, None, u'2.0.0+\n            Classifier of the artifact alias.\n          ')
 
     _ElementMap.update({
@@ -540,7 +540,7 @@ class ArtifactAlias (pyxb.binding.basis.complexTypeDefinition):
         __classifier.name() : __classifier
     })
     _AttributeMap.update({
-        
+
     })
 Namespace.addCategoryObject('typeBinding', u'ArtifactAlias', ArtifactAlias)
 
@@ -558,60 +558,60 @@ class Dependency (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}groupId uses Python identifier groupId
     __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 298, 6),)
 
-    
+
     groupId = property(__groupId.value, __groupId.set, None, u'2.0.0+\n            Group ID of the dependency artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifactId uses Python identifier artifactId
     __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 306, 6),)
 
-    
+
     artifactId = property(__artifactId.value, __artifactId.set, None, u'2.0.0+\n            Artifact ID of the dependency artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}extension uses Python identifier extension
     __extension = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'extension'), 'extension', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0extension', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 314, 6),)
 
-    
+
     extension = property(__extension.value, __extension.set, None, u'2.0.0+\n            Extension of the dependency artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}classifier uses Python identifier classifier
     __classifier = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'classifier'), 'classifier', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0classifier', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 322, 6),)
 
-    
+
     classifier = property(__classifier.value, __classifier.set, None, u'2.0.0+\n            Classifier of the dependency artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}requestedVersion uses Python identifier requestedVersion
     __requestedVersion = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'requestedVersion'), 'requestedVersion', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0requestedVersion', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 330, 6),)
 
-    
+
     requestedVersion = property(__requestedVersion.value, __requestedVersion.set, None, u'2.0.0+\n            Version of the dependency artifact as defined in the main\n            artifact descriptor.  This may be a version range as\n            supported by Aether.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}resolvedVersion uses Python identifier resolvedVersion
     __resolvedVersion = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'resolvedVersion'), 'resolvedVersion', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0resolvedVersion', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 340, 6),)
 
-    
+
     resolvedVersion = property(__resolvedVersion.value, __resolvedVersion.set, None, u'2.0.0+\n            Version of the dependency artifact, as resolved during\n            build.  Absence of this field indicates a dependency on\n            default artifact version.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}namespace uses Python identifier namespace
     __namespace = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'namespace'), 'namespace', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0namespace', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 350, 6),)
 
-    
+
     namespace = property(__namespace.value, __namespace.set, None, u'2.0.0+\n            A namespace within which this artifact is stored.  This\n            usually is an identifier of software collection.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}exclusions uses Python identifier exclusions
     __exclusions = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'exclusions'), 'exclusions', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0exclusions', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 359, 6),)
 
-    
+
     exclusions = property(__exclusions.value, __exclusions.set, None, u'2.0.0+\n            List of dependency exclusions.\n          ')
 
     _ElementMap.update({
@@ -625,7 +625,7 @@ class Dependency (pyxb.binding.basis.complexTypeDefinition):
         __exclusions.name() : __exclusions
     })
     _AttributeMap.update({
-        
+
     })
 Namespace.addCategoryObject('typeBinding', u'Dependency', Dependency)
 
@@ -643,18 +643,18 @@ class CTD_ANON_7 (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}exclusion uses Python identifier exclusion
     __exclusion = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'exclusion'), 'exclusion', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_7_httpfedorahosted_orgxmvnMETADATA2_0_0exclusion', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 368, 12),)
 
-    
+
     exclusion = property(__exclusion.value, __exclusion.set, None, None)
 
     _ElementMap.update({
         __exclusion.name() : __exclusion
     })
     _AttributeMap.update({
-        
+
     })
 
 
@@ -672,18 +672,18 @@ class DependencyExclusion (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}groupId uses Python identifier groupId
     __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_DependencyExclusion_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 382, 6),)
 
-    
+
     groupId = property(__groupId.value, __groupId.set, None, u'2.0.0+\n            Group ID of the excluded artifact.\n          ')
 
-    
+
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifactId uses Python identifier artifactId
     __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_DependencyExclusion_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 390, 6),)
 
-    
+
     artifactId = property(__artifactId.value, __artifactId.set, None, u'2.0.0+\n            Artifact ID of the excluded artifact.\n          ')
 
     _ElementMap.update({
@@ -691,7 +691,7 @@ class DependencyExclusion (pyxb.binding.basis.complexTypeDefinition):
         __artifactId.name() : __artifactId
     })
     _AttributeMap.update({
-        
+
     })
 Namespace.addCategoryObject('typeBinding', u'DependencyExclusion', DependencyExclusion)
 
