@@ -127,6 +127,17 @@ class AbstractArtifact(object):
                         classifier or m['classifier'],
                         version or m['version'])
 
+    def merge_with(self, artifact):
+        if type(self) != type(artifact):
+            raise Exception("Unable to merge artifacts of different types. "
+                            "{this} cannot be merged with {other}"
+                            .format(this=type(self), other=type(artifact)))
+
+        for member in self.__dict__:
+            if not member.startswith('_') and not getattr(self, member):
+                setattr(self, member, getattr(artifact, member))
+        return True
+
     def __unicode__(self):
         return unicode(self.get_mvn_str())
 
