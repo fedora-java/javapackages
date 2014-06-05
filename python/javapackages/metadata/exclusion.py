@@ -1,0 +1,31 @@
+from pom.artifact import Artifact
+from pom.printer import Printer
+
+import metadata as m
+
+
+class MetadataExclusion(object):
+    def __init__(self, groupId, artifactId):
+
+        self.groupId = groupId
+        self.artifactId = artifactId
+
+    def get_mvn_str(self):
+        return Printer.get_mvn_str(self.groupId, self.artifactId)
+
+    def to_metadata(self):
+        return m.DependencyExclusion(self.groupId, self.artifactId)
+
+    @classmethod
+    def from_metadata(cls, metadata):
+        groupId = metadata.groupId.strip()
+        artifactId = metadata.artifactId.strip()
+
+        return cls(groupId, artifactId)
+
+    @classmethod
+    def from_mvn_str(cls, mvn_str):
+        a = Artifact.from_mvn_str(mvn_str)
+
+        return cls(a.groupId, a.artifactId, version=a.version,
+                   extension=a.extension, classifier=a.classifier)
