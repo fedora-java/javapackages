@@ -1,6 +1,6 @@
-from pom.artifact import Artifact
-from pom.pom import POM
-from pom.printer import Printer
+from javapackages.maven.artifact import Artifact
+from javapackages.maven.pom import POM
+from javapackages.maven.printer import Printer
 
 import metadata as m
 import pyxb

@@ -38,11 +38,11 @@ import logging
 import os.path
 import xml
 
-from javapackages.artifact import (Dependency, ProvidedArtifact,
-                                   SkippedArtifact, ExclusionArtifact)
+from javapackages.maven.artifact import (MetadataDependency, MetadataArtifact,
+                                         MetadataSkippedArtifact, MetadataExclusion)
 import pyxb
 
-import javapackages.metadata as metadata
+import javapackages.metadata.pyxbmetadata as metadata
 from xml.dom.minidom import getDOMImplementation
 
 
