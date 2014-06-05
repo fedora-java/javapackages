@@ -37,6 +37,30 @@ class MetadataArtifact(object):
                                    self.extension, self.classifier,
                                    self.version)
 
+    def get_rpm_str(self, namespace="", compat=False, pkgver=None):
+        result = []
+
+        if not self.is_compat():
+            # non-compat rpm string for main artifact
+            result.append(Printer.get_rpm_str(self.groupId, self.artifactId,
+                          self.extension, self.classifier, namespace=namespace, pkgver=pkgver))
+
+            # non-compat rpm string(s) for aliases
+            for alias in self.aliases:
+                result.append(Printer.get_rpm_str(alias.groupId, alias.artifactId, alias.extension, alias.classifier,
+                                                  namespace=namespace, pkgver=pkgver))
+        else:
+            # compat rpm string(s) for main artifact
+            for compat_ver in self.compatVersions:
+                result.append(Printer.get_rpm_str(self.groupId, self.artifactId, self.extension, self.classifier,
+                                                  compat=compat_ver, namespace=namespace, pkgver=pkgver))
+
+                # compat rpm string(s) for aliases
+                for alias in self.aliases:
+                    result.append(Printer.get_rpm_str(alias.groupId, alias.artifactId, alias.extension, alias.classifier,
+                                                  compat=compat_ver, namespace=namespace, pkgver=pkgver))
+        return result
+
     def to_metadata(self):
         a = m.ArtifactMetadata()
         a.groupId = self.groupId
