@@ -1,7 +1,7 @@
 from pom.artifact import Artifact
 from pom.printer import Printer
 
-import metadata as m
+import pyxbmetadata as m
 
 
 # TODO: this is very similar to MetadataAlias

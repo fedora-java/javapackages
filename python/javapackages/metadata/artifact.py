@@ -2,7 +2,7 @@ from javapackages.maven.artifact import Artifact
 from javapackages.maven.pom import POM
 from javapackages.maven.printer import Printer
 
-import metadata as m
+import pyxbmetadata as m
 import pyxb
 
 

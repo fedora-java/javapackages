@@ -1,7 +1,7 @@
 from javapackages.maven.artifact import Artifact
 from javapackages.maven.printer import Printer
 
-import metadata as m
+import pyxbmetadata as m
 
 
 class MetadataExclusion(object):
