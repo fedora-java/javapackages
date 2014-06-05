@@ -1,4 +1,6 @@
 #!/usr/bin/python
+from __future__ import print_function
+
 import inspect
 import re
 import shutil
@@ -160,8 +162,8 @@ def get_indent(node):
     return re.sub(r'\S.*', '', text)
 
 def print_usage(function):
-    print >> sys.stderr, "Usage: %{name} {doc}".format(name=function.__name__,
-                                                       doc=function.__doc__)
+    print("Usage: %{name} {doc}".format(name=function.__name__, doc=function.__doc__),
+          file=sys.stderr)
 
 def parse_args(function, args):
     (arglist, _, _, defaults) = inspect.getargspec(function)
@@ -414,8 +416,8 @@ def macro(types=(XmlFile,)):
 
             except (PomException, etree.XMLSyntaxError, IOError) as exception:
                 if xmlpath:
-                    print >> sys.stderr, "Error in processing {0}".format(xmlpath)
-                print >> sys.stderr, exception.message
+                    print("Error in processing {0}".format(xmlpath), file=sys.stderr)
+                print(exception.message, file=sys.stderr)
                 print_usage(function)
                 sys.exit(3)
 
@@ -553,8 +555,8 @@ def pom_change_dep(old, new, pom=None, xml_string=''):
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
-        print >> sys.stderr, "Usage:\n\t{0} command {{arguments}}"\
-                              .format(sys.argv[0])
+        print("Usage:\n\t{0} command {{arguments}}".format(sys.argv[0]),
+              file=sys.stderr)
         sys.exit(1)
 
     macros[sys.argv[1]](*sys.argv[2:])

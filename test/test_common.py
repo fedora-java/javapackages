@@ -231,12 +231,12 @@ def exec_pom_macro(line, poms_tree, want_tree=None, filename='pom.xml'):
     DATADIR = path.join(DIRPATH, 'data', 'pom_editor')
     pack = Package('test')
     pack.append_to_prep(line)
-    for destpath, sourcepath in poms_tree.iteritems():
+    for destpath, sourcepath in poms_tree.items():
         pack.add_source(path.join(DATADIR, sourcepath), path.join(destpath, filename))
     _, stderr, return_value = pack.run_prep()
     reports = []
     if return_value == 0:
-        for filepath, pom in poms_tree.iteritems():
+        for filepath, pom in poms_tree.items():
             if want_tree and filepath in want_tree:
                 expected_pom = path.join('want', want_tree[filepath])
             else:

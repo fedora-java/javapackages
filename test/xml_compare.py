@@ -34,7 +34,7 @@ def compare_lxml_etree(doc1, doc2, unordered=None):
     _strip_comments(doc2)
 
     lines = []
-    for sgn, line in _compare_element(doc1, doc2, unordered_paths = paths):
+    for sgn, line in _compare_element(doc1, doc2, unordered_paths=paths):
         lines.append('{sgn}{line}'.format(sgn=sgn, line=line))
 
     return '\n'.join(lines)
@@ -241,8 +241,7 @@ def _compare_attrs(exp, act):
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
-        print ('Usage {name} filexp filact ' +
+        print('Usage {name} filexp filact ' +
             '[unordered_elements path specification]').format(name=sys.argv[0])
         sys.exit(1)
-    print compare_xml_files(sys.argv[1], sys.argv[2], sys.argv[3:])
-
+    print(compare_xml_files(sys.argv[1], sys.argv[2], sys.argv[3:]))
