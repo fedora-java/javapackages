@@ -37,7 +37,7 @@ class MetadataArtifact(object):
                                    self.extension, self.classifier,
                                    self.version)
 
-    def get_rpm_str(self, namespace="", compat=False, pkgver=None):
+    def get_rpm_str(self, namespace="", pkgver=None):
         result = []
 
         if not self.is_compat():
