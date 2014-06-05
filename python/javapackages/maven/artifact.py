@@ -138,6 +138,29 @@ class AbstractArtifact(object):
                 setattr(self, member, getattr(artifact, member))
         return True
 
+    def update_from(self, artifact):
+        if self.compare_to(artifact):
+            for member in self.__dict__:
+                if not member.startswith('_') and not getattr(self, member):
+                    setattr(self, member, getattr(artifact, member))
+            return True
+        return False
+
+    def compare_to(self, artifact):
+        if type(self) != type(artifact):
+            return False
+        this = self.__get_significant_members()
+        other = artifact.__get_significant_members()
+        try:
+            del this['version']
+            del other['version']
+        except KeyError:
+            pass
+
+        if this == other:
+            return True
+        return False
+
     def __unicode__(self):
         return unicode(self.get_mvn_str())
 
