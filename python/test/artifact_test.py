@@ -358,5 +358,42 @@ class TestArtifact(unittest.TestCase):
         self.assertEqual(a.classifier, "")
         self.assertEqual(a.version, "")
 
+    def test_interpolation1(self):
+        a = Artifact.from_mvn_str("${gid}:a1")
+        props = {"gid": "g1"}
+        res = a.interpolate(props)
+
+        self.assertEqual(len(res), 0)
+        self.assertEqual(a.groupId, "g1")
+        self.assertEqual(a.artifactId, "a1")
+        self.assertEqual(a.extension, "")
+        self.assertEqual(a.classifier, "")
+        self.assertEqual(a.version, "")
+
+    def test_interpolation2(self):
+        a = Artifact.from_mvn_str("${gid}:a1:${v.major}.${v.minor}")
+        props = {"gid": "g1", "v.major": "4", "v.minor": "11"}
+        res = a.interpolate(props)
+
+        self.assertEqual(len(res), 0)
+        self.assertEqual(a.groupId, "g1")
+        self.assertEqual(a.artifactId, "a1")
+        self.assertEqual(a.extension, "")
+        self.assertEqual(a.classifier, "")
+        self.assertEqual(a.version, "4.11")
+
+    def test_interpolation3(self):
+        a = Artifact.from_mvn_str("${gid}:a1")
+        props = {"v.minor": "11"}
+        res = a.interpolate(props)
+
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0], "gid")
+        self.assertEqual(a.groupId, "${gid}")
+        self.assertEqual(a.artifactId, "a1")
+        self.assertEqual(a.extension, "")
+        self.assertEqual(a.classifier, "")
+        self.assertEqual(a.version, "")
+
 if __name__ == '__main__':
     unittest.main()
