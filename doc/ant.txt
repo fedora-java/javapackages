@@ -22,7 +22,7 @@ Repository for it, ship it as another source and install it.
 [source,spec]
 -------------
 BuildRequires: ant
-BuildRequires: maven-local
+BuildRequires: javapackages-local
 ...
 %build
 ant test
