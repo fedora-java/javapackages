@@ -302,7 +302,30 @@ class TestArtifact(unittest.TestCase):
         self.assertEqual(a.classifier, "c")
         self.assertEqual(a.version, "v")
 
-    def test_merge(self):
+    def test_merge1(self):
+        a = Artifact.from_mvn_str("g1:a1:v1")
+        b = Artifact.from_mvn_str("g1:a1")
+        a.merge_with(b)
+
+        self.assertEqual(a.groupId, "g1")
+        self.assertEqual(a.artifactId, "a1")
+        self.assertEqual(a.extension, "")
+        self.assertEqual(a.classifier, "")
+        self.assertEqual(a.version, "v1")
+
+    def test_merge2(self):
+        a = Artifact.from_mvn_str("g1:a1:v1")
+        b = Artifact.from_mvn_str("g1:a1:v2")
+        a.merge_with(b)
+
+        self.assertEqual(a.groupId, "g1")
+        self.assertEqual(a.artifactId, "a1")
+        self.assertEqual(a.extension, "")
+        self.assertEqual(a.classifier, "")
+        self.assertEqual(a.version, "v1")
+
+    def test_merge3(self):
+        # different artifacts won't be merged
         a = Artifact.from_mvn_str("g1:a1:v1")
         b = Artifact.from_mvn_str("g2:a2:e2::")
         a.merge_with(b)
@@ -313,6 +336,27 @@ class TestArtifact(unittest.TestCase):
         self.assertEqual(a.classifier, "")
         self.assertEqual(a.version, "v1")
 
+    def test_merge4(self):
+        a = Artifact.from_mvn_str("g1:a1")
+        b = Artifact.from_mvn_str("g1:a1:v1")
+        a.merge_with(b)
+
+        self.assertEqual(a.groupId, "g1")
+        self.assertEqual(a.artifactId, "a1")
+        self.assertEqual(a.extension, "")
+        self.assertEqual(a.classifier, "")
+        self.assertEqual(a.version, "v1")
+
+    def test_merge5(self):
+        a = Artifact.from_mvn_str("g1:a1:war::")
+        b = Artifact.from_mvn_str("g1:a1:v1")
+        a.merge_with(b)
+
+        self.assertEqual(a.groupId, "g1")
+        self.assertEqual(a.artifactId, "a1")
+        self.assertEqual(a.extension, "war")
+        self.assertEqual(a.classifier, "")
+        self.assertEqual(a.version, "")
 
 if __name__ == '__main__':
     unittest.main()
