@@ -44,17 +44,6 @@ class TestMvnBuild(unittest.TestCase):
         self.assertEquals(get_actual_args(),
                 get_expected_args('mvn_build', 'xmvn_debug'))
 
-    @xmvnconfig('mvn_build',['-d', ])
-    def test_xmvn_debug1(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
-        filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 2)
-        for filename in filelist:
-            report = compare_xml_files(get_actual_config(filename),
-                 get_expected_config(filename, 'mvn_build', 'xmvn_debug1'),
-                 ['artifactGlob'])
-            self.assertFalse(report, '\n' + report)
-
     @xmvnconfig('mvn_build',['-f', ])
     def test_force(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
@@ -119,17 +108,6 @@ class TestMvnBuild(unittest.TestCase):
         self.assertEquals(get_actual_args(),
                 get_expected_args('mvn_build', 'debug'))
 
-    @xmvnconfig('mvn_build',['-X', ])
-    def test_debug1(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
-        filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 2)
-        for filename in filelist:
-            report = compare_xml_files(get_actual_config(filename),
-                 get_expected_config(filename, 'mvn_build', 'debug1'),
-                 ['artifactGlob'])
-            self.assertFalse(report, '\n' + report)
-
     @xmvnconfig('mvn_build',['-ji', ])
     def test_skip_both(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
@@ -146,7 +124,7 @@ class TestMvnBuild(unittest.TestCase):
     def test_all1(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 5)
+        self.assertEquals(len(filelist), 3)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_build', 'all1'),
