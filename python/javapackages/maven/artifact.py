@@ -33,6 +33,7 @@
 #           Michal Srb <msrb@redhat.com>
 
 import sys
+import re
 
 from pomreader import POMReader
 from printer import Printer
@@ -154,6 +155,24 @@ class AbstractArtifact(object):
         if this == other:
             return True
         return False
+
+    def interpolate(self, properties):
+        leftovers = []
+        for member in self.__dict__:
+            if (not member.startswith('_')
+                and getattr(self, member)
+                and type(member) == str):
+                    curr_value = getattr(self, member)
+                    prog = re.compile("\$\{([^}]+)\}")
+                    props = prog.findall(curr_value)
+                    for key in props:
+                        try:
+                            prop_value = properties[key]
+                            curr_value = curr_value.replace("${{{prop}}}".format(prop=key), prop_value)
+                            setattr(self, member, curr_value)
+                        except KeyError:
+                            leftovers.append(key)
+        return leftovers
 
     def __unicode__(self):
         return unicode(self.get_mvn_str())
