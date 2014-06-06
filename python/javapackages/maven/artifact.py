@@ -182,11 +182,13 @@ class AbstractArtifact(object):
             result += var.__hash__()
         return result
 
-    def __get_significant_members(self):
+    def __get_significant_members(self, ignore_version=False):
         m = {}
-        for mname in ["groupId", "artifactId", "extension", "classifier", "version"]:
+        for mname in ["groupId", "artifactId", "extension", "classifier"]:
             if hasattr(self, mname):
                 m[mname] = getattr(self, mname)
+            if not ignore_version and hasattr(self, "version"):
+                m["version"] = getattr(self, "version")
         return m
 
     def __get_members(self):
