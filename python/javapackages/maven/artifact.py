@@ -149,14 +149,8 @@ class AbstractArtifact(object):
     def compare_to(self, artifact):
         if type(self) != type(artifact):
             return False
-        this = self.__get_significant_members()
-        other = artifact.__get_significant_members()
-        try:
-            del this['version']
-            del other['version']
-        except KeyError:
-            pass
-
+        this = self.__get_significant_members(ignore_version=True)
+        other = artifact.__get_significant_members(ignore_version=True)
         if this == other:
             return True
         return False
