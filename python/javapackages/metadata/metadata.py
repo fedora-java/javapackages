@@ -84,14 +84,14 @@ class Metadata(object):
                                     fileobj=f)
                 data = gzf.read()
             except IOError:
-                # not a compressed fragment, just rewind and read the data
+                # not a compressed metadata, just rewind and read the data
                 f.seek(0)
                 data = f.read()
 
             self.__metadata.append(m.CreateFromDocument(data))
 
     def get_provided_artifacts(self):
-        """Returns list of Artifact provided by given depmap."""
+        """Returns list of Artifact provided by given metadata."""
 
         artifacts = []
         for metadata in self.__metadata:
@@ -104,7 +104,7 @@ class Metadata(object):
 
 
     def get_required_artifacts(self):
-        """Returns list of Artifact required by given depmap."""
+        """Returns list of Artifact required by given metadata."""
         artifacts = set()
         for metadata in self.__metadata:
             for a in metadata.artifacts.artifact:
@@ -146,7 +146,7 @@ class Metadata(object):
 
 
     def get_java_requires(self):
-        """Returns JVM version required by depmap or None"""
+        """Returns JVM version required by metadata or None"""
         for metadata in self.__metadata:
             if not metadata.properties:
                 return None
@@ -156,7 +156,7 @@ class Metadata(object):
         return None
 
     def get_java_devel_requires(self):
-        """Returns JVM development version required by depmap or None"""
+        """Returns JVM development version required by metadata or None"""
         for metadata in self.__metadata:
             if not metadata.properties:
                 return None
