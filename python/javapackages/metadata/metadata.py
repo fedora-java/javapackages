@@ -45,7 +45,7 @@ from exclusion import MetadataExclusion
 
 import pyxb
 
-import javapackages.metadata.pyxbmetadata as metadata
+import javapackages.metadata.pyxbmetadata as m
 from xml.dom.minidom import getDOMImplementation
 
 
@@ -88,14 +88,14 @@ class Metadata(object):
                 f.seek(0)
                 data = f.read()
 
-            self.__metadata.append(metadata.CreateFromDocument(data))
+            self.__metadata.append(m.CreateFromDocument(data))
 
     def get_provided_artifacts(self):
         """Returns list of Artifact provided by given depmap."""
 
         artifacts = []
-        for m in self.__metadata:
-            for a in m.artifacts.artifact:
+        for metadata in self.__metadata:
+            for a in metadata.artifacts.artifact:
                 artifact = MetadataArtifact.from_metadata(a)
                 if not artifact.version:
                     raise MetadataInvalidException("Artifact {a} does not have version in maven provides".format(a=artifact))
@@ -106,8 +106,8 @@ class Metadata(object):
     def get_required_artifacts(self):
         """Returns list of Artifact required by given depmap."""
         artifacts = set()
-        for m in self.__metadata:
-            for a in m.artifacts.artifact:
+        for metadata in self.__metadata:
+            for a in metadata.artifacts.artifact:
                 if not a.dependencies:
                     continue
 
@@ -119,10 +119,10 @@ class Metadata(object):
     def get_skipped_artifacts(self):
         """Returns list of Artifact that were build but not installed"""
         artifacts = set()
-        for m in self.__metadata:
-            if not m.skippedArtifacts:
+        for metadata in self.__metadata:
+            if not metadata.skippedArtifacts:
                 continue
-            for dep in m.skippedArtifacts.skippedArtifact:
+            for dep in metadata.skippedArtifacts.skippedArtifact:
                 artifact = MetadataSkippedArtifact.from_metadata(dep)
                 artifacts.add(artifact)
         return sorted(list(artifacts))
@@ -130,8 +130,8 @@ class Metadata(object):
     def get_excluded_artifacts(self):
         """Returns list of Artifacts that should be skipped for requires"""
         artifacts = set()
-        for m in self.__metadata:
-            for a in m.artifacts.artifact:
+        for metadata in self.__metadata:
+            for a in metadata.artifacts.artifact:
                 if not a.dependencies:
                     continue
 
@@ -147,20 +147,20 @@ class Metadata(object):
 
     def get_java_requires(self):
         """Returns JVM version required by depmap or None"""
-        for m in self.__metadata:
-            if not m.properties:
+        for metadata in self.__metadata:
+            if not metadata.properties:
                 return None
-            for prop in m.properties.wildcardElements():
+            for prop in metadata.properties.wildcardElements():
                 if prop.tagName == u'requiresJava':
                     return prop.firstChild.value
         return None
 
     def get_java_devel_requires(self):
         """Returns JVM development version required by depmap or None"""
-        for m in self.__metadata:
-            if not m.properties:
+        for metadata in self.__metadata:
+            if not metadata.properties:
                 return None
-            for prop in m.properties.wildcardElements():
+            for prop in metadata.properties.wildcardElements():
                 if prop.tagName == u'requiresJavaDevel':
                     return prop.firstChild.value
         return None
