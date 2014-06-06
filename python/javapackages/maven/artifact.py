@@ -133,9 +133,9 @@ class AbstractArtifact(object):
                             "{this} cannot be merged with {other}"
                             .format(this=type(self), other=type(artifact)))
 
-        for member in self.__dict__:
-            if not member.startswith('_') and not getattr(self, member):
-                if member not in self.__get_significant_members(ignore_version=True):
+        if self.compare_to(artifact):
+            for member in self.__dict__:
+                if not member.startswith('_') and not getattr(self, member):
                     setattr(self, member, getattr(artifact, member))
 
     def update_from(self, artifact):
