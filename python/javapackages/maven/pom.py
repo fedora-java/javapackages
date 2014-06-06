@@ -44,6 +44,7 @@ class POM(object):
     """
     def __init__(self, path):
         self.__doc = POMReader.load(path)
+        self._path = path
 
     def __str__(self):
         return ":".join([self.groupId, self.artifactId, self.version])
