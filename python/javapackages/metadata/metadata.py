@@ -45,7 +45,7 @@ from exclusion import MetadataExclusion
 
 import pyxb
 
-import javapackages.metadata.pyxbmetadata as m
+import pyxbmetadata as m
 from xml.dom.minidom import getDOMImplementation
 
 
