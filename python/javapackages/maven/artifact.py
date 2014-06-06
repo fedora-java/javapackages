@@ -135,8 +135,8 @@ class AbstractArtifact(object):
 
         for member in self.__dict__:
             if not member.startswith('_') and not getattr(self, member):
-                setattr(self, member, getattr(artifact, member))
-        return True
+                if member not in self.__get_significant_members(ignore_version=True):
+                    setattr(self, member, getattr(artifact, member))
 
     def update_from(self, artifact):
         if self.compare_to(artifact):
