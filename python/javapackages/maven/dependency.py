@@ -42,7 +42,7 @@ from lxml.etree import Element, SubElement, tostring
 class Dependency(AbstractArtifact):
 
     def __init__(self, groupId, artifactId, extension="", classifier="",
-                 version="", scope="", optional=False, exclusions=set()):
+                 version="", scope="", optional=None, exclusions=set()):
         self.groupId = groupId.strip()
         self.artifactId = artifactId.strip()
         self.extension = extension.strip()
@@ -62,7 +62,7 @@ class Dependency(AbstractArtifact):
             item = SubElement(root, "scope")
             item.text = self.scope
 
-        if self.optional:
+        if self.optional is not None:
             item = SubElement(root, "optional")
             item.text = str(self.optional).lower()
 
@@ -87,7 +87,7 @@ class Dependency(AbstractArtifact):
                  'classifier': '',
                  'version': '',
                  'scope': '',
-                 'optional': False}
+                 'optional': None}
 
         parts = POMReader.find_parts(xmlnode, parts)
 
@@ -96,7 +96,7 @@ class Dependency(AbstractArtifact):
                 "Empty groupId or artifactId encountered. "
                 "This is a bug, please report it!")
 
-        if parts['optional'] is not False:
+        if parts['optional'] is not None:
             if parts['optional'] == "false":
                 parts['optional'] = False
             elif parts['optional'] == "true":
