@@ -173,7 +173,8 @@ class ProvidedArtifact(object):
 
         compatVersions = set()
         if hasattr(metadata, 'compatVersions') and metadata.compatVersions:
-            compatVersions = {cv for cv in metadata.compatVersions.version}
+            for cv in metadata.compatVersions.version:
+                compatVersions.add(cv)
 
         aliases = set()
         if hasattr(metadata, 'aliases') and metadata.aliases:
