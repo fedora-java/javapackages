@@ -192,13 +192,13 @@ class ProvidedArtifact(object):
                                      alias_classifier))
         properties = {}
         if hasattr(metadata, 'properties') and metadata.properties:
-            properties = {prop.tagName:prop.firstChild.value
-                          for prop in metadata.properties.wildcardElements()}
+            for prop in metadata.properties.wildcardElements():
+                properties[prop.tagName] = prop.firstChild.value
 
         dependencies = set()
         if hasattr(metadata, 'dependencies') and metadata.dependencies:
-            dependencies = {Dependency.from_metadata(dep)
-                            for dep in metadata.dependencies.dependency}
+            for dep in metadata.dependencies.dependency:
+                dependencies.add(Dependency.from_metadata(dep))
 
         return cls(groupId, artifactId, extension, classifier, version,
                    namespace, path=path, aliases=aliases,
