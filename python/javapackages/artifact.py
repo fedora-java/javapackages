@@ -526,8 +526,9 @@ class Dependency(object):
         d.classifier = self.classifier or None
         d.extension = self.extension or None
         if self.exclusions:
-            excl = {m.DependencyExclusion(e.groupId, e.artifactId)
-                    for e in self.exclusions}
+            excl = set()
+            for e in self.exclusions:
+                excl.add(m.DependencyExclusion(e.groupId, e.artifactId))
             d.exclusions = pyxb.BIND(*excl)
         return d
 
