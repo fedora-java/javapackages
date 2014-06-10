@@ -66,7 +66,7 @@ If the project consists of multiple artifacts, it is recommended to install each
 artifact to the separate subpackage. The macro `%mvn_build -s` will generate
 separate `.mfiles` file for every artifact in the project. This file contains
 list of files related to specific artifact (typically JAR file, POM file and
-depmap). It can be later used in `%files` section of the spec file.
+metadata). It can be later used in `%files` section of the spec file.
 
 .Creating one subpackage for each generated artifact
 [source,spec]

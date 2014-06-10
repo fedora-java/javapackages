@@ -35,7 +35,7 @@ BuildRequires:  maven-local
 
 The macros `%mvn_build` and `%mvn_install` automatically handle building of the
 JAR files and their subsequent installation to the correct directory. The
-corresponding POM and <<Xdepmap,depmap>> files are also installed.
+corresponding POM and metadata files are also installed.
 
 [[packaging_maven_project]]
 === Packaging Maven project
