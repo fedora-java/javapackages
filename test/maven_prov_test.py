@@ -6,12 +6,6 @@ from test_common import *
 
 class TestMavenProv(unittest.TestCase):
 
-    def assertIn(self, item, iterable):
-        self.assertTrue(item in iterable,
-                        msg="{item} not found in {iterable}"
-                        .format(item=item,
-                                iterable=iterable))
-
     @mavenprov(["simple.xml"])
     def test_simple(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)

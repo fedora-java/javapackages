@@ -248,3 +248,8 @@ def exec_pom_macro(line, poms_tree, want_tree=None, filename='pom.xml'):
 
 def exec_pom_macro_simple(line, pom, want=None, filename='pom.xml'):
     return exec_pom_macro(line, {'': pom}, {'': want} if want else None, filename=filename)
+
+
+def assertIn(obj, item, iterable):
+    obj.assertTrue(item in iterable, msg="{item} not found in {iterable}"
+                   .format(item=item, iterable=iterable))
