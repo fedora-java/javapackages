@@ -550,8 +550,8 @@ class Dependency(object):
 
         exclusions = set()
         if hasattr(metadata, 'exclusions') and metadata.exclusions:
-            exclusions = {ExclusionArtifact.from_metadata(excl)
-                          for excl in metadata.exclusions.exclusion}
+            for excl in metadata.exclusions.exclusion:
+                exclusions.add(ExclusionArtifact.from_metadata(excl))
 
         return cls(groupId, artifactId, requestedVersion, resolvedVersion,
                    extension, classifier, namespace, exclusions)
