@@ -34,13 +34,6 @@ short description.
     Maven are installed.  Each POM must have name that strictly
     corresponds to JAR file in `%{_javadir}` or `%{_jnidir}`.
 
-*`%{_mavendepmapfragdir}`* -- `/usr/share/maven-fragments`::
-
-    Directory containing package metadata in XML format.  Typically
-    each binary package installs there a single XML file containing
-    various information (metadata) about artifacts associated with
-    that package.
-
 
 .Other directories
 [glossary]
