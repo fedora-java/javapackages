@@ -303,7 +303,10 @@ class XmlFile(object):
 
     def make_path(self, node, elements):
         if elements:
-            child = node.find(elements[0])
+            elem = elements[0]
+            if ':' in elem:
+                elem = elem.split(':')[1]
+            child = node.find('{*}' + elem)
             if child is None:
                 name = elements[0]
                 for ns, url in self.NSMAP.iteritems():
