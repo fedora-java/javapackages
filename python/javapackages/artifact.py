@@ -108,18 +108,20 @@ class ProvidedArtifact(object):
         strlist = []
         if not self.compatVersions:
             strlist.append(self.artifact.get_rpm_str())
+            for alias in self.aliases:
+                full_alias = Artifact.merge_artifacts(alias.artifact, self.artifact)
+                strlist.append(full_alias.get_rpm_str())
         else:
             for ver in self.compatVersions:
                 rpmstr = self.artifact.get_rpm_str(ver)
                 strlist.append(rpmstr)
+                for alias in self.aliases:
+                    full_alias = Artifact.merge_artifacts(alias.artifact, self.artifact)
+                    strlist.append(full_alias.get_rpm_str(ver))
 
         if not (self.version):
             raise ArtifactFormatException(
                 "Cannot create versioned string from artifact without version: {art}".format(art=str(self)))
-
-        for alias in self.aliases:
-            full_alias = Artifact.merge_artifacts(alias.artifact, self.artifact)
-            strlist.append(full_alias.get_rpm_str())
 
         result = ""
         for rpmstr in strlist:
