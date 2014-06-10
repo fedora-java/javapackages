@@ -63,22 +63,6 @@ References
   'DocBook - The Definitive Guide'. O'Reilly & Associates. 1999.
   ISBN 1-56592-580-7.
 
-
-[glossary]
-Glossary
---------
-Glossaries are optional. Glossaries entries are an example of a style
-of AsciiDoc labeled lists.
-
-[glossary]
-[[Xdepmap]]depmap::
-  Depmap is a special file telling Maven relationships between
-  groupId,artifactId and JAR file on the filesystem
-
-A second glossary term::
-  The corresponding (indented) definition.
-
-
 ifdef::backend-docbook[]
 [index]
 Example Index
