@@ -125,5 +125,15 @@ class TestMavenProv(unittest.TestCase):
         assertIn(self, "mvn(regexp:regexp:pom:) = 1.0", sout)
         assertIn(self, "mvn(regexp:regexp) = 1.0", sout)
 
+    @mavenprov(["compat_alias.xml"])
+    def test_compat_alias(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        self.assertEquals(len(sout), 4)
+        assertIn(self, "mvn(jakarta-regexp:jakarta-regexp:pom:1.1) = 1.0", sout)
+        assertIn(self, "mvn(jakarta-regexp:jakarta-regexp:pom:1.1.1) = 1.0", sout)
+        assertIn(self, "mvn(regexp:regexp:pom:1.1) = 1.0", sout)
+        assertIn(self, "mvn(regexp:regexp:pom:1.1.1) = 1.0", sout)
+
 if __name__ == '__main__':
     unittest.main()
