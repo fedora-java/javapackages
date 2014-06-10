@@ -1,4 +1,5 @@
-from test_common import exec_pom_macro, WorkdirTestCase
+from test_common import exec_pom_macro, WorkdirTestCase, assertIn
+import unittest
 
 class TestPomPath(WorkdirTestCase):
     def test_sanity(self):
@@ -9,12 +10,12 @@ class TestPomPath(WorkdirTestCase):
 
     def test_default_nonexistent(self):
         return_value, stderr, _ = exec_pom_macro('%pom_remove_parent', {})
-        self.assertIn("Couldn't locate ", stderr)
+        assertIn(self, "Couldn't locate ", stderr)
         self.assertNotEqual(0, return_value)
 
     def test_submodule_nonexistent(self):
         return_value, stderr, _ = exec_pom_macro('%pom_remove_parent submodule', {})
-        self.assertIn("Couldn't locate ", stderr)
+        assertIn(self, "Couldn't locate ", stderr)
         self.assertNotEqual(0, return_value)
 
     def test_default(self):
@@ -89,8 +90,8 @@ class TestMorePoms(WorkdirTestCase):
                 '%pom_remove_dep :commons-io submodule1 submodule2',
                 poms_tree={'submodule1': 'minimal_pom.xml',
                     'submodule2': 'simple_pom.xml'})
-        self.assertIn("Error", stderr)
-        self.assertIn("not found", stderr)
+        assertIn(self, "Error", stderr)
+        assertIn(self, "not found", stderr)
         self.assertNotEqual(0, return_value)
 
     def test_submodules_partial_match_force(self):
@@ -147,8 +148,8 @@ class TestRecursive(WorkdirTestCase):
     def test_recursive_no_match(self):
         return_value, stderr, _ = exec_pom_macro('%pom_remove_dep -r :not-there',
                 poms_tree=self.example_tree)
-        self.assertIn("Error", stderr)
-        self.assertIn("not found", stderr)
+        assertIn(self, "Error", stderr)
+        assertIn(self, "not found", stderr)
         self.assertNotEqual(0, return_value)
 
     def test_recursive_missing(self):
@@ -156,7 +157,7 @@ class TestRecursive(WorkdirTestCase):
         del poms_tree['intermediate/schemas']
         return_value, stderr, _ = exec_pom_macro('%pom_remove_dep -r :commons-io',
                 poms_tree=poms_tree)
-        self.assertIn("Cannot read", stderr)
+        assertIn(self, "Cannot read", stderr)
         self.assertNotEqual(0, return_value)
 
     def test_recursive_subpom(self):
@@ -178,8 +179,8 @@ class TestRecursive(WorkdirTestCase):
     def test_recursive_partial_match(self):
         return_value, stderr, _ = exec_pom_macro('%pom_remove_dep -r commons-ioX intermediate common',
                 poms_tree=self.example_tree)
-        self.assertIn("Error", stderr)
-        self.assertIn("not found", stderr)
+        assertIn(self, "Error", stderr)
+        assertIn(self, "not found", stderr)
         self.assertNotEqual(0, return_value)
 
     def test_recursive_partial_match_forced(self):
@@ -245,3 +246,6 @@ class TestAttributeRecognition(WorkdirTestCase):
                     'submodule2': 'minimal_add_plugin_resource.xml'})
         self.assertEqual(0, return_value, stderr)
         self.assertEqual('', report, report)
+
+if __name__ == '__main__':
+    unittest.main()

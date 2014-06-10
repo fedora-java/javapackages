@@ -303,7 +303,10 @@ class XmlFile(object):
 
     def make_path(self, node, elements):
         if elements:
-            child = node.find(elements[0], namespaces=self.NSMAP)
+            elem = elements[0]
+            if ':' in elem:
+                elem = elem.split(':')[1]
+            child = node.find('{*}' + elem)
             if child is None:
                 name = elements[0]
                 for ns, url in self.NSMAP.iteritems():
@@ -491,7 +494,7 @@ def pom_disable_module(module, pom=None):
 @macro(types=(Pom,))
 def pom_add_parent(parent, pom=None):
     """groupId:artifactId[:version] [POM location]"""
-    if pom.root.find('pom:parent', namespaces=Pom.NSMAP) is not None:
+    if pom.root.find('{*}parent') is not None:
         raise PomException("POM already has a parent.")
     artifact = pom.create_artifact().from_mvn_str(parent)
     pom.inject_artifact('', 'parent', artifact)

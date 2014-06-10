@@ -1,4 +1,5 @@
 from test_common import exec_pom_macro_simple, WorkdirTestCase
+import unittest
 
 class TestPomArtifact(WorkdirTestCase):
     def test_gid1(self):
@@ -79,3 +80,5 @@ class TestPomChange(WorkdirTestCase):
         self.assertEqual(0, return_value, stderr)
         self.assertEqual('', report, report)
 
+if __name__ == '__main__':
+    unittest.main()
