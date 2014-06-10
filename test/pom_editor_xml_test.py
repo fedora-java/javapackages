@@ -1,4 +1,5 @@
 from test_common import exec_pom_macro_simple, WorkdirTestCase
+import unittest
 
 class TestGeneric(WorkdirTestCase):
     def test_inject(self):
@@ -95,4 +96,5 @@ class TestIvy(WorkdirTestCase):
         self.assertEqual(0, return_value, stderr)
         self.assertEqual('', report, report)
 
-
+if __name__ == '__main__':
+    unittest.main()

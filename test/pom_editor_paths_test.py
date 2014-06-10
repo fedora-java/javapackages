@@ -1,4 +1,5 @@
 from test_common import exec_pom_macro, WorkdirTestCase
+import unittest
 
 class TestPomPath(WorkdirTestCase):
     def test_sanity(self):
@@ -245,3 +246,6 @@ class TestAttributeRecognition(WorkdirTestCase):
                     'submodule2': 'minimal_add_plugin_resource.xml'})
         self.assertEqual(0, return_value, stderr)
         self.assertEqual('', report, report)
+
+if __name__ == '__main__':
+    unittest.main()
