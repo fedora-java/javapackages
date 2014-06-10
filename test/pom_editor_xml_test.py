@@ -1,4 +1,4 @@
-from test_common import exec_pom_macro_simple, WorkdirTestCase
+from test_common import exec_pom_macro_simple, WorkdirTestCase, assertIn
 import unittest
 
 class TestGeneric(WorkdirTestCase):
@@ -62,7 +62,7 @@ class TestIvy(WorkdirTestCase):
         return_value, stderr, report = exec_pom_macro_simple(\
                 "%pom_remove_parent",
                 "simple_ivy.xml", filename='ivy.xml')
-        self.assertIn('Operation not supported', stderr)
+        assertIn(self, 'Operation not supported', stderr)
         self.assertNotEqual(0, return_value)
         self.assertEqual('', report)
 
