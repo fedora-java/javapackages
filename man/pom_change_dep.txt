@@ -1,5 +1,5 @@
 pom_change_dep(7)
-==============
+=================
 :doctype:	manpage
 :man source:	JAVAPACKAGES
 :man manual:	Java Packages Tools
