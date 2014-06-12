@@ -1,4 +1,4 @@
-pom_add_dep(7)
+pom_change_dep(7)
 ==============
 :doctype:	manpage
 :man source:	JAVAPACKAGES
