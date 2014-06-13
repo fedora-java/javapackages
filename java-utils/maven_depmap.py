@@ -213,9 +213,6 @@ if __name__ == "__main__":
                       help='Additional versions to add for each depmap')
     parser.add_option('-n', '--namespace', type="str",
                       help='Namespace to use for generated fragments', default="")
-    parser.add_option('-p', '--prefix', type="str",
-                      help='Prefix where artifacts are expected to be installed', default="/")
-
 
     parser.set_defaults(append=None)
 
@@ -223,7 +220,6 @@ if __name__ == "__main__":
     append_deps = options.append
     add_versions = options.versions
     namespace = options.namespace
-    prefix = options.prefix
 
     if len(args) < 2:
         parser.error("Incorrect number of arguments")
