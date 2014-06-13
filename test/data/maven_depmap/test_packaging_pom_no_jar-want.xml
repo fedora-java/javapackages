@@ -7,6 +7,9 @@
             <ns1:extension>pom</ns1:extension>
             <ns1:version>2</ns1:version>
             <ns1:path>%s/JPP-apache-commons-io.pom</ns1:path>
+            <ns1:properties>
+               <xmvn.resolver.disableEffectivePom>true</xmvn.resolver.disableEffectivePom>
+            </ns1:properties>
         </ns1:artifact>
     </ns1:artifacts>
 </ns1:metadata>
