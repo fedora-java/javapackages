@@ -2,6 +2,9 @@ from javapackages.maven.artifact import Artifact
 from javapackages.maven.pom import POM
 from javapackages.maven.printer import Printer
 
+from alias import MetadataAlias
+from dependency import MetadataDependency
+
 import pyxbmetadata as m
 import pyxb
 
@@ -14,7 +17,7 @@ class MetadataArtifact(object):
 
         self.groupId = groupId
         self.artifactId = artifactId
-        self.extension= extension
+        self.extension = extension
         self.classifier = classifier
         self.version = version
         self.namespace = namespace
@@ -116,10 +119,10 @@ class MetadataArtifact(object):
                 if hasattr(alias, 'classifier') and alias.classifier:
                     alias_classifier = alias.classifier
 
-                aliases.add(Alias(alias.groupId,
-                                     alias.artifactId,
-                                     alias_extension,
-                                     alias_classifier))
+                aliases.add(MetadataAlias(alias.groupId,
+                                          alias.artifactId,
+                                          alias_extension,
+                                          alias_classifier))
         properties = {}
         if hasattr(metadata, 'properties') and metadata.properties:
             properties = {prop.tagName:prop.firstChild.value
@@ -127,7 +130,7 @@ class MetadataArtifact(object):
 
         dependencies = set()
         if hasattr(metadata, 'dependencies') and metadata.dependencies:
-            dependencies = {Dependency.from_metadata(dep)
+            dependencies = {MetadataDependency.from_metadata(dep)
                             for dep in metadata.dependencies.dependency}
 
         return cls(groupId, artifactId, extension, classifier, version,
