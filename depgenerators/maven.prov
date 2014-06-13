@@ -37,7 +37,6 @@ import signal
 import sys
 import traceback
 from javapackages.metadata.metadata import Metadata
-from javapackages.metadata.metadata import MetadataArtifact
 
 class TagBuilder:
     def __init__ (self, filelist=None):
