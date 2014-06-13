@@ -8,7 +8,6 @@ from test_common import DIRPATH, mvn_depmap, call_script, prepare_metadata
 
 from lxml import etree
 from xml_compare import compare_lxml_etree
-import javapackages.metadata as m
 
 class TestMavenDepmap(unittest.TestCase):
 
