@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2012, Red Hat, Inc
+# Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,31 +30,30 @@
 #
 # Authors: Alexander Kurtakov <akurtako@redhat.com>
 #          Stanislav Ochotnicky <sochotnicky@redhat.com>
+#          Michal Srb <msrb@redhat.com>
 
 import os
 import signal
 import sys
 import traceback
-from javapackages import Depmap, Artifact
+from javapackages.metadata.metadata import Metadata
+from javapackages.metadata.metadata import MetadataArtifact
 
 class TagBuilder:
     def __init__ (self, filelist=None):
         if filelist == None:
             filelist = sys.stdin
-        paths = map (lambda x: x.rstrip (), filelist.readlines ())
+        paths = map(lambda x: x.rstrip(), filelist.readlines())
         for path in paths:
-            depmap = Depmap(path)
+            mdata = Metadata(path)
 
-            for artifact in depmap.get_provided_artifacts():
-                if artifact.extension == 'jar':
-                    artifact.extension = ''
-
+            for artifact in mdata.get_provided_artifacts():
                 print(artifact.get_rpm_str())
 
 
 if __name__ == "__main__":
     try:
-        builder = TagBuilder ()
+        builder = TagBuilder()
     except Exception, e:
         traceback.print_exc(file=sys.stderr)
         sys.stderr.write(str(e))
