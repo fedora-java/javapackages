@@ -48,7 +48,8 @@ class TagBuilder:
             mdata = Metadata(path)
 
             for artifact in mdata.get_provided_artifacts():
-                print(artifact.get_rpm_str())
+                print(artifact.get_rpm_str(namespace=artifact.namespace,
+                                           pkgver=artifact.version))
 
 
 if __name__ == "__main__":
