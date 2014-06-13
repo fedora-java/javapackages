@@ -12,7 +12,6 @@ class MetadataArtifact(object):
                  path="", aliases=None, compatVersions=None,
                  properties=None, dependencies=None):
 
-
         self.groupId = groupId
         self.artifactId = artifactId
         self.extension= extension
@@ -59,7 +58,7 @@ class MetadataArtifact(object):
                 for alias in self.aliases:
                     result.append(Printer.get_rpm_str(alias.groupId, alias.artifactId, alias.extension, alias.classifier,
                                                   compat=compat_ver, namespace=namespace, pkgver=pkgver))
-        return result
+        return "\n".join(result)
 
     def to_metadata(self):
         a = m.ArtifactMetadata()
