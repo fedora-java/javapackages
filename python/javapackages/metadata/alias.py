@@ -18,10 +18,10 @@ class MetadataAlias(object):
 
     def to_metadata(self):
         a = m.ArtifactAlias()
-        a.groupId = self.artifact.groupId
-        a.artifactId = self.artifact.artifactId
-        a.classifier = self.artifact.classifier or None
-        a.extension = self.artifact.extension or None
+        a.groupId = self.groupId
+        a.artifactId = self.artifactId
+        a.classifier = self.classifier or None
+        a.extension = self.extension or None
         return a
 
     @classmethod
