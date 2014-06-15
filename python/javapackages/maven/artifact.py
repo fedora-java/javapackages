@@ -48,6 +48,10 @@ class ArtifactFormatException(Exception):
     pass
 
 
+class ArtifactValidationException(ArtifactException):
+    pass
+
+
 class AbstractArtifact(object):
 
     def get_mvn_str(self):
