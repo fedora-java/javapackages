@@ -252,6 +252,35 @@ class Artifact(AbstractArtifact):
                 setattr(ret, key, getattr(recessive, key))
         return ret
 
+    def validate(self, allow_empty=True, allow_wildcards=True, allow_backref=True):
+        """
+        Function to validate current state of artifact with regards to
+        wildcards, empty parts and backreference usage
+        """
+        all_empty = True
+        wildcard_used = False
+        backref_used = False
+        backref_re = re.compile(r'@\d+')
+        for key in ("artifactId", "groupId", "extension", "version",
+                    "classifier"):
+            val = getattr(self, key)
+            if not val:
+                continue
+            if val:
+                all_empty = False
+            if val.find('*') != -1:
+                wildcard_used = True
+            if backref_re.match(val):
+                backref_used = True
+
+        if not allow_empty and all_empty:
+            raise ArtifactValidationException("All parts of artifact are empty")
+        if not allow_wildcards and wildcard_used:
+            raise ArtifactValidationException("Wildcard used in artifact")
+        if not allow_backref and backref_used:
+            raise ArtifactValidationException("Backreference used in artifact")
+        return True
+
     @classmethod
     def from_xml_element(cls, xmlnode):
         """
