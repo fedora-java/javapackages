@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014, Red Hat, Inc
+# Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,6 @@
 
 import subprocess
 import lxml.etree
-from artifact import Artifact
 
 
 class XMvnResolve(object):
