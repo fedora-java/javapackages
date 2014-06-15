@@ -31,6 +31,33 @@ class MetadataDependency(object):
                                    self.extension, self.classifier,
                                    self.version)
 
+    def get_rpm_str(self, namespace="", compat=False, pkgver=None):
+        return Printer.get_rpm_str(self.groupId, self.artifactId,
+                                   self.extension, self.classifier,
+                                   self.requestedVersion,
+                                   namespace=namespace or self.namespace,
+                                   compat=compat or self.resolvedVersion,
+                                   pkgver=pkgver)
+
+    def is_provided_by(self, artifacts):
+        for provided in artifacts:
+            if (provided.groupId == self.groupId and
+                provided.artifactId == self.artifactId and
+                provided.classifier == self.classifier and
+                provided.extension == self.extension and
+                provided.namespace == self.namespace):
+
+                if self.resolvedVersion and provided.is_compat():
+                    # does it match one of provided compat?
+                    for compatVer in provided.compatVersions:
+                        if self.resolvedVersion == compatVer:
+                            return True, provided.version
+                elif (not self.resolvedVersion and
+                      not provided.is_compat()):
+                    return True, provided.version
+                break
+        return False, None
+
     def to_metadata(self):
         d = m.Dependency()
         d.groupId = self.groupId
