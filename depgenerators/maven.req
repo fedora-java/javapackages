@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2012, Red Hat, Inc
+# Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 #
 # Authors:
 #   Stanislav Ochotnicky <sochotnicky@redhat.com>
-#
+#   Michal Srb <msrb@redhat.com>
 
 import json
 import os
@@ -42,10 +42,11 @@ import subprocess
 
 from lxml import etree
 
-from javapackages import POM
-from javapackages.depmap import Depmap, MetadataInvalidException
-from javapackages.artifact import Artifact, ProvidedArtifact, SkippedArtifact, Dependency
-from javapackages.xmvn_resolve import XMvnResolve, ResolutionRequest, ResolutionResult
+from javapackages.maven.pom import POM
+from javapackages.maven.artifact import Artifact
+from javapackages.metadata.metadata import Metadata, MetadataInvalidException
+from javapackages.metadata.artifact import MetadataArtifact
+from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionRequest, ResolutionResult
 
 
 XMVN_RESOLVE_PATH="/usr/bin/xmvn-resolve"
@@ -86,7 +87,7 @@ def get_config():
 
 def is_it_pom_only_pkg(metadata_path):
     """ Check if the package contains only POM file and no JARs """
-    metadata = Depmap(metadata_path)
+    metadata = Metadata(metadata_path)
     provided = metadata.get_provided_artifacts()
 
     for a in provided:
@@ -106,15 +107,21 @@ class TagBuilder(object):
         self.provided_artifacts = []
         self.skipped_artifacts = []
         if paths:
-            # let's first read all fragment files for provided artifacts
-            self.fragment_dir = os.path.dirname(paths[0])
-            fpaths = []
-            for dirname, _, filenames in os.walk(self.fragment_dir):
+            # let's first read all metadata files for provided artifacts
+            self.metadata_dir = os.path.dirname(paths[0])
+            metadata_paths = []
+            for dirname, _, filenames in os.walk(self.metadata_dir):
                 for filename in filenames:
                     if filename.endswith(".pom"):
                         continue
-                    fpaths.append(os.path.join(dirname, filename))
+                    metadata_paths.append(os.path.join(dirname, filename))
 
+            metadata = Metadata(metadata_paths)
+            self.provided_artifacts.extend(metadata.get_provided_artifacts())
+            self.skipped_artifacts.extend(metadata.get_skipped_artifacts())
+
+            # list of all installed POM files
+            # TODO: this should be probably removed
             self.pom_dir = paths[0].rsplit('/', 2)[0]
             self.pom_dir = os.path.join(self.pom_dir, "maven-poms")
             ppaths = []
@@ -122,10 +129,7 @@ class TagBuilder(object):
                 for filename in filenames:
                     ppaths.append(os.path.join(dirname, filename))
 
-            depmap = Depmap(fpaths)
-            self.provided_artifacts.extend(depmap.get_provided_artifacts())
-            self.skipped_artifacts.extend(depmap.get_skipped_artifacts())
-
+        # try to generate R from POM only (sub)packages
         if os.path.exists(XMVN_RESOLVE_PATH):
             if is_it_pom_only_pkg(paths[0]):
                 poms = self.__find_poms_for_metadata(ppaths, paths[0])
@@ -137,20 +141,10 @@ class TagBuilder(object):
                 continue
             self.print_mvn_requires(path)
 
-    def __is_provided_by_subpackage(self, dependency):
-        for provided in self.provided_artifacts:
-           if (provided.groupId == dependency.groupId and
-               provided.artifactId == dependency.artifactId and
-               provided.classifier == dependency.classifier and
-               provided.extension == dependency.extension):
-                return provided.version
-        return None
-
-
     # TODO: move functions like this to some POMUtils, or similar module
     def __find_poms_for_metadata(self, pom_paths, metadata_path):
         poms = []
-        depmap = Depmap([metadata_path])
+        depmap = Metadata([metadata_path])
         provided = depmap.get_provided_artifacts()
         for prov in provided:
             for p in pom_paths:
@@ -218,13 +212,13 @@ class TagBuilder(object):
                             .format(", ".join([x.get_mvn_str() for x in unresolvable])))
 
 
-    def __generate_java_requires(self, depmap):
+    def __generate_java_requires(self, metadata):
         requires = set()
-        for rule_name, fn in (('java_requires', Depmap.get_java_requires),
-                              ('java_devel_requires', Depmap.get_java_devel_requires)):
+        for rule_name, fn in (('java_requires', Metadata.get_java_requires),
+                              ('java_devel_requires', Metadata.get_java_devel_requires)):
             rules = self.config[rule_name]
             if not rules.get('skip', False):
-                required_version = fn(depmap)
+                required_version = fn(metadata)
                 if required_version:
                     version_string = process_java_version(required_version)
                     parts = {'pkg': rules['package_name'],
@@ -234,27 +228,6 @@ class TagBuilder(object):
                 elif rules['always_generate']:
                     requires.add(rules['package_name'])
         return requires
-
-    def __is_dep_on_same_package(self, dependency, depmap):
-        # TODO: what about requires on same compat and non-compat deps in same
-        # package?
-        # TODO: this duplicates code down below a bit, refactoring needed
-        for provided in depmap.get_provided_artifacts():
-            if (provided.groupId == dependency.groupId and
-                provided.artifactId == dependency.artifactId and
-                provided.classifier == dependency.classifier and
-                provided.extension == dependency.extension and
-                provided.namespace == dependency.namespace):
-                if dependency.resolvedVersion and provided.is_compat():
-                    # does it match one of provided compat?
-                    for compatVer in provided.compatVersions:
-                        if dependency.resolvedVersion == compatVer:
-                            return True
-                elif (not dependency.resolvedVersion and
-                    not provided.is_compat()):
-                    return True
-        return False
-
 
     def filter_requires(self, requires):
         filters = self.config.get('requires_filter', [])
@@ -270,11 +243,11 @@ class TagBuilder(object):
         return filtered
 
     def print_mvn_requires(self, path):
-        depmap = Depmap(path)
+        metadata = Metadata(path)
         skipped_but_required = []
         requires = set()
 
-        for provided in depmap.get_provided_artifacts():
+        for provided in metadata.get_provided_artifacts():
             # TODO: use javapackages-config.json
             if provided.namespace:
                 requires.add("{ns}-runtime".format(ns=provided.namespace))
@@ -282,8 +255,8 @@ class TagBuilder(object):
                 requires.add("jpackage-utils")
 
         unknown_deps = []
-        for dependency in depmap.get_required_artifacts():
-            if dependency.version == "UNKNOWN":
+        for dependency in metadata.get_required_artifacts():
+            if dependency.requestedVersion == "UNKNOWN":
                 unknown_deps.append(dependency)
                 continue
             for skipped in self.skipped_artifacts:
@@ -292,42 +265,19 @@ class TagBuilder(object):
                     skipped.classifier == dependency.classifier and
                     skipped.extension == dependency.extension):
                     skipped_but_required.append(dependency)
-            for provided in self.provided_artifacts:
-                if (provided.groupId == dependency.groupId and
-                    provided.artifactId == dependency.artifactId and
-                    provided.classifier == dependency.classifier and
-                    provided.extension == dependency.extension and
-                    provided.namespace == dependency.namespace):
 
-                    if dependency.resolvedVersion and provided.is_compat():
-                        # does it match one of provided compat?
-                        for compatVer in provided.compatVersions:
-                            if dependency.resolvedVersion == compatVer:
-                                break
-                        else:
-                            # none of versions matched so we depend on a
-                            # different package in fact
-                            continue
-                    elif (not dependency.resolvedVersion and
-                          not provided.is_compat()):
-                        pass
-                    else:
-                        # one is compatibility the other is not
-                        continue
-
-                    if not self.__is_dep_on_same_package(dependency, depmap):
-                        # requires on subpackages are always versioned
-                        requires.add("{rpmstr} = {version}".format(
-                            rpmstr=dependency.get_rpm_str(),
-                            version=provided.version))
-
-                    break
+            subpkg_dep, pkgver = dependency.is_provided_by(self.provided_artifacts)
+            if subpkg_dep:
+                if not dependency.is_provided_by(metadata.get_provided_artifacts())[0]:
+                    # requires on subpackages are always versioned
+                    rpmstr = dependency.get_rpm_str(namespace=dependency.namespace,
+                                                    compat=dependency.resolvedVersion,
+                                                    pkgver=pkgver)
+                    requires.add(rpmstr)
             else:
-                # TODO: remove when not needed
-                # do not generate requires like "a:b:pom:" yet
-                if dependency.extension == "pom":
-                    dependency.extension = ""
-                requires.add(dependency.get_rpm_str(dependency.version))
+                rpmstr = dependency.get_rpm_str(namespace=dependency.namespace,
+                                                compat=dependency.resolvedVersion)
+                requires.add(rpmstr)
 
         if unknown_deps:
             unknown_msg = "Following dependencies were not resolved and " \
@@ -359,10 +309,8 @@ class TagBuilder(object):
                            "in %prep.\n"
             raise Exception(skipped_msg)
 
-        requires.update(self.__generate_java_requires(depmap))
-
+        requires.update(self.__generate_java_requires(metadata))
         requires = self.filter_requires(requires)
-
         for req in requires:
             print(req)
 
@@ -375,7 +323,7 @@ class TagBuilder(object):
         anything, returns None.
         """
         try:
-            pom_dir = os.path.join(self.fragment_dir, '..', 'maven-poms')
+            pom_dir = os.path.join(self.metadata_dir, '..', 'maven-poms')
             for dirname, _, filenames in os.walk(pom_dir):
                 for filename in filenames:
                     if filename.endswith(".pom"):
