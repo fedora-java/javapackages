@@ -4,6 +4,7 @@ from exclusion import MetadataExclusion
 
 import pyxbmetadata as m
 import pyxb
+import sys
 
 
 class MetadataDependency(object):
@@ -70,6 +71,12 @@ class MetadataDependency(object):
                     for e in self.exclusions}
             d.exclusions = pyxb.BIND(*excl)
         return d
+
+    def __unicode__(self):
+        return unicode(self.get_mvn_str())
+
+    def __str__(self):
+        return unicode(self).encode(sys.getfilesystemencoding())
 
     @classmethod
     def from_metadata(cls, metadata):
