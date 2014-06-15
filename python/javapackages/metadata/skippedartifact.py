@@ -6,7 +6,7 @@ import pyxbmetadata as m
 
 # TODO: this is very similar to MetadataAlias
 class MetadataSkippedArtifact(object):
-    def __init__(self, groupId, artifactId, extension, classifier):
+    def __init__(self, groupId, artifactId, extension="", classifier=""):
 
         self.groupId = groupId
         self.artifactId = artifactId
@@ -29,8 +29,12 @@ class MetadataSkippedArtifact(object):
     def from_metadata(cls, metadata):
         groupId = metadata.groupId.strip()
         artifactId = metadata.artifactId.strip()
-        extension = metadata.extension
-        classifier = metadata.classifier
+
+        extension = classifier = ""
+        if hasattr(metadata, 'extension') and metadata.extension:
+            extension = metadata.extension.strip()
+        if hasattr(metadata, 'classifier') and metadata.classifier:
+            classifier = metadata.classifier.strip()
 
         return cls(groupId, artifactId, extension, classifier)
 
