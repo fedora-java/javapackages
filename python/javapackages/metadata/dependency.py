@@ -29,7 +29,7 @@ class MetadataDependency(object):
     def get_mvn_str(self):
         return Printer.get_mvn_str(self.groupId, self.artifactId,
                                    self.extension, self.classifier,
-                                   self.version)
+                                   self.requestedVersion)
 
     def get_rpm_str(self, namespace="", compat=False, pkgver=None):
         return Printer.get_rpm_str(self.groupId, self.artifactId,
@@ -62,7 +62,7 @@ class MetadataDependency(object):
         d = m.Dependency()
         d.groupId = self.groupId
         d.artifactId = self.artifactId
-        d.requestedVersion = self.version
+        d.requestedVersion = self.requestedVersion
         d.classifier = self.classifier or None
         d.extension = self.extension or None
         if self.exclusions:
@@ -100,5 +100,5 @@ class MetadataDependency(object):
     def from_mvn_str(cls, mvn_str):
         a = Artifact.from_mvn_str(mvn_str)
 
-        return cls(a.groupId, a.artifactId, version=a.version,
-                   extension=a.extension, classifier=a.classifier)
+        return cls(a.groupId, a.artifactId, extension=a.extension,
+                   classifier=a.classifier, requestedVersion=a.version)
