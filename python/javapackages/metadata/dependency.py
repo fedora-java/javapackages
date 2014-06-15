@@ -8,7 +8,7 @@ import pyxb
 
 class MetadataDependency(object):
     def __init__(self, groupId, artifactId, extension="",
-                 classifier="", version="", namespace="",
+                 classifier="", namespace="",
                  requestedVersion="", resolvedVersion=None,
                  exclusions=set()):
 
@@ -16,7 +16,6 @@ class MetadataDependency(object):
         self.artifactId = artifactId
         self.extension = extension
         self.classifier = classifier
-        self.version = version
         self.namespace = namespace
         self.requestedVersion = requestedVersion
         self.resolvedVersion = resolvedVersion
@@ -66,8 +65,9 @@ class MetadataDependency(object):
             exclusions = {MetadataExclusion.from_metadata(excl)
                           for excl in metadata.exclusions.exclusion}
 
-        return cls(groupId, artifactId, requestedVersion, resolvedVersion,
-                   extension, classifier, namespace, exclusions)
+        return cls(groupId, artifactId, extension, classifier,
+                   namespace, requestedVersion, resolvedVersion,
+                   exclusions)
 
     @classmethod
     def from_mvn_str(cls, mvn_str):
