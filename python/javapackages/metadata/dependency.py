@@ -1,5 +1,6 @@
 from javapackages.maven.artifact import Artifact
 from javapackages.maven.printer import Printer
+from exclusion import MetadataExclusion
 
 import pyxbmetadata as m
 import pyxb
