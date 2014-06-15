@@ -2,9 +2,10 @@ import os
 import unittest
 import lxml
 
-from javapackages.pom import POM, PomLoadingException
+from javapackages.maven.pom import POM, PomLoadingException
 
 from misc import exception_expected
+
 
 def pomfile(fname):
     def test_decorator(fn):
@@ -14,6 +15,7 @@ def pomfile(fname):
         return test_decorated
 
     return test_decorator
+
 
 class TestPOM(unittest.TestCase):
 

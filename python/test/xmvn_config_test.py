@@ -3,8 +3,8 @@ import unittest
 from shutil import rmtree
 import lxml.etree as ET
 
-from javapackages.artifact import Artifact
-from javapackages.xmvn_config import XMvnConfig
+from javapackages.maven.artifact import Artifact
+from javapackages.xmvn.xmvn_config import XMvnConfig
 
 
 class TestXMvnConfig(unittest.TestCase):
