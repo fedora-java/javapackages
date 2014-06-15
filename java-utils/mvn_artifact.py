@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2013, Red Hat, Inc
+# Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,19 +31,20 @@
 # Authors:  Michal Srb <msrb@redhat.com>
 
 from __future__ import print_function
-import javapackages.metadata as m
-from javapackages.depmap import Depmap, MetadataInvalidException
-from javapackages import Artifact
+
+import javapackages.metadata.pyxbmetadata as m
+from javapackages.metadata.metadata import Metadata, MetadataInvalidException
+from javapackages.metadata.artifact import MetadataArtifact
+
+from javapackages.maven.artifact import Artifact, ArtifactFormatException
+from javapackages.maven.pom import POM
 
 import sys
 import os
 import traceback
-from optparse import OptionParser
-
-from javapackages.artifact import *
-from javapackages.pom import *
-from lxml import etree
 import pyxb
+import lxml.etree
+from optparse import OptionParser
 
 
 usage="usage: %prog [options] <MVN spec | POM path> [artifact path]"
@@ -81,6 +82,7 @@ config = ".xmvn-reactor"
 class ExtensionsDontMatch(Exception):
     pass
 
+
 class UnknownVersion(Exception):
     pass
 
@@ -92,7 +94,7 @@ def load_metadata(metadatadir="/usr/share/maven-metadata"):
         # directory doesn't exist?
         print(traceback.format_exc(), file=sys.stderr)
         mfiles = []
-    return Depmap(mfiles)
+    return Metadata(mfiles)
 
 
 def load_poms(pomdir="/usr/share/maven-poms"):
@@ -104,7 +106,7 @@ def load_poms(pomdir="/usr/share/maven-poms"):
 
 def is_it_ivy_file(fpath):
     """Try to determine whether file in given path is Ivy file or not"""
-    et = ElementTree()
+    et = lxml.etree.ElementTree()
     doc = et.parse(fpath)
 
     return doc.tag == "ivy-module"
@@ -121,10 +123,10 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
                     a.extension = "pom"
                 else:
                     a.extension = os.path.splitext(pom_path)[1][1:]
-                    props.append(Depmap.build_property('type', 'ivy'))
+                    props.append(Metadata.build_property('type', 'ivy'))
 
             a.path = os.path.abspath(path)
-            props.append(Depmap.build_property('xmvn.resolver.disableEffectivePom', 'true'))
+            props.append(Metadata.build_property('xmvn.resolver.disableEffectivePom', 'true'))
             a.properties = pyxb.BIND(*props)
             artifacts.append(a)
 
@@ -212,7 +214,7 @@ if __name__ == "__main__":
 
     try:
         uart = Artifact.from_mvn_str(args[0])
-        uart.validate(allow_backref=False)
+        #uart.validate(allow_backref=False)
         if len(args) == 1:
             parser.error("When using artifact specification artifact path must be "
                          "provided")
@@ -225,11 +227,11 @@ if __name__ == "__main__":
     else:
         pom_path = None
 
-    art = ProvidedArtifact(uart.groupId, uart.artifactId, version=uart.version)
+    art = MetadataArtifact(uart.groupId, uart.artifactId, version=uart.version)
     if hasattr(uart, "extension") and uart.extension:
-        art.artifact.extension = uart.extension
+        art.extension = uart.extension
     if hasattr(uart, "classifier") and uart.classifier:
-        art.artifact.classifier= uart.classifier
+        art.classifier= uart.classifier
 
     jar_path = None
     if len(args) > 1:
