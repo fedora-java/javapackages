@@ -1,20 +1,24 @@
 import os
 import unittest
 
-from javapackages.depmap import Depmap, MetadataInvalidException
-from javapackages.artifact import (Artifact, Dependency, ProvidedArtifact,
-                                   SkippedArtifact, ExclusionArtifact)
+from javapackages.metadata.metadata import Metadata, MetadataInvalidException
+from javapackages.metadata.artifact import MetadataArtifact
+from javapackages.metadata.skippedartifact import MetadataSkippedArtifact
+from javapackages.metadata.exclusion import MetadataExclusion
+from javapackages.metadata.dependency import MetadataDependency
 
 from misc import exception_expected
+
 
 def depmapfile(fname):
     def test_decorator(fn):
         def test_decorated(self, *args, **kwargs):
             main_dir = os.path.dirname(os.path.realpath(__file__))
-            fn(self, Depmap(os.path.join(main_dir, "data", fname)))
+            fn(self, Metadata(os.path.join(main_dir, "data", fname)))
         return test_decorated
 
     return test_decorator
+
 
 class TestDepmap(unittest.TestCase):
 
@@ -47,58 +51,56 @@ class TestDepmap(unittest.TestCase):
     def test_provided_mappings(self, d):
         artifacts = d.get_provided_artifacts()
         self.assertEqual(len(artifacts), 2)
-        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+        self.assertTrue(MetadataArtifact("org.apache.maven.plugins",
                                          "maven-idea-plugin",
                                          version="2.2",
                                          path="/usr/share/java/maven-idea-plugin/maven-idea-plugin.jar",
-                                         properties={'requiresJava':'1.5'}
-                                     ) in artifacts)
-        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+                                         properties={'requiresJava': '1.5'}
+                                         ) in artifacts)
+        self.assertTrue(MetadataArtifact("org.apache.maven.plugins",
                                          "maven-idea-plugin",
                                          version="2.2",
                                          extension="pom",
                                          path="/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin.pom")
-
                         in artifacts)
 
     @depmapfile("depmap_new_versioned_compressed.xml.gz")
     def test_compressed_depmap(self, d):
         artifacts = d.get_provided_artifacts()
         self.assertEqual(len(artifacts), 2)
-        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+        self.assertTrue(MetadataArtifact("org.apache.maven.plugins",
                                          "maven-idea-plugin",
                                          version="2.2",
                                          path="/usr/share/java/maven-idea-plugin/maven-idea-plugin.jar",
-                                         properties={'requiresJava':'1.5'}
-                                     ) in artifacts)
-        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+                                         properties={'requiresJava': '1.5'}
+                                         ) in artifacts)
+        self.assertTrue(MetadataArtifact("org.apache.maven.plugins",
                                          "maven-idea-plugin",
                                          version="2.2",
                                          path="/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin.pom",
                                          extension="pom") in artifacts)
 
-
     @depmapfile("depmap_new_compat.xml")
     def test_provided_versioned(self, d):
         artifacts = d.get_provided_artifacts()
         self.assertEqual(len(artifacts), 4)
-        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+        self.assertTrue(MetadataArtifact("org.apache.maven.plugins",
                                          "maven-idea-plugin",
                                          version="1.4",
                                          path="/usr/share/java/maven-idea-plugin/maven-idea-plugin-1.4.jar",
                                          compatVersions=set(['1.4'])) in artifacts)
-        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+        self.assertTrue(MetadataArtifact("org.apache.maven.plugins",
                                          "maven-idea-plugin",
                                          version="1.4",
                                          extension="pom",
                                          path="/usr/share/maven-poms/JPP.maven-idea-plugin-maven-idea-plugin-1.4.pom",
                                          compatVersions=set(["1.4"])) in artifacts)
-        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+        self.assertTrue(MetadataArtifact("org.apache.maven.plugins",
                                          "maven-idea-plugin",
                                          version="1.4",
                                          path="/usr/share/java/maven-idea-plugin/maven-idea-plugin-1.4.jar",
                                          compatVersions=set(["1.5"])) in artifacts)
-        self.assertTrue(ProvidedArtifact("org.apache.maven.plugins",
+        self.assertTrue(MetadataArtifact("org.apache.maven.plugins",
                                          "maven-idea-plugin",
                                          version="1.4",
                                          extension="pom",
@@ -120,24 +122,23 @@ class TestDepmap(unittest.TestCase):
         reqs = d.get_required_artifacts()
         self.assertEqual(len(reqs), 4)
 
-        self.assertTrue(Dependency("org.apache.maven",
+        self.assertTrue(MetadataDependency("org.apache.maven",
                                    "maven-project",
                                    "12") in reqs)
 
-        self.assertTrue(Dependency("org.codehaus.plexus",
+        self.assertTrue(MetadataDependency("org.codehaus.plexus",
                                    "plexus-container-default",
                                    "12") in reqs)
 
-        self.assertTrue(Dependency("org.codehaus.plexus",
+        self.assertTrue(MetadataDependency("org.codehaus.plexus",
                                    "plexus-utils",
                                    "12",
                                    extension="war") in reqs)
 
-        self.assertTrue(Dependency("org.apache.maven.wagon",
+        self.assertTrue(MetadataDependency("org.apache.maven.wagon",
                                    "wagon-provider-api",
                                    "12",
                                    classifier="test-jar") in reqs)
-
 
     @depmapfile("depmap_namespace.xml")
     def test_namespace(self, d):
@@ -150,46 +151,46 @@ class TestDepmap(unittest.TestCase):
         prov = d.get_provided_artifacts()
 
         self.assertEqual(len(prov), 6)
-        self.assertTrue(ProvidedArtifact("org.codehaus.plexus",
+        self.assertTrue(MetadataArtifact("org.codehaus.plexus",
                                          "plexus-utils",
                                          version="3.0",
                                          namespace="codehaus-plexus",
                                          path="/usr/share/java/plexus-utils/plexus-utils.jar",
-                                         properties={'requiresJava':'1.5'}) in prov)
+                                         properties={'requiresJava': '1.5'}) in prov)
 
-        self.assertTrue(ProvidedArtifact("org.codehaus.plexus",
+        self.assertTrue(MetadataArtifact("org.codehaus.plexus",
                                          "plexus-utils",
                                          version="3.0",
                                          extension="pom",
                                          namespace="codehaus-plexus",
                                          path="/usr/share/maven-poms/JPP.plexus-utils-plexus-utils.pom",
-                                         properties={'requiresJava':'1.5'}) in prov)
-        self.assertTrue(ProvidedArtifact("plexus",
+                                         properties={'requiresJava': '1.5'}) in prov)
+        self.assertTrue(MetadataArtifact("plexus",
                                          "plexus-utils",
                                          version="1.2",
                                          namespace="plexus",
                                          path="/usr/share/java/plexus-utils/plexus-utils.jar",
-                                         properties={'requiresJava':'1.5'}) in prov)
-        self.assertTrue(ProvidedArtifact("plexus",
+                                         properties={'requiresJava': '1.5'}) in prov)
+        self.assertTrue(MetadataArtifact("plexus",
                                          "plexus-utils",
                                          version="1.2",
                                          namespace="plexus",
                                          extension="pom",
                                          path="/usr/share/maven-poms/JPP.plexus-utils-plexus-utils.pom",
-                                         properties={'requiresJava':'1.5'}) in prov)
-        self.assertTrue(ProvidedArtifact("codehaus",
+                                         properties={'requiresJava': '1.5'}) in prov)
+        self.assertTrue(MetadataArtifact("codehaus",
                                          "plexus-utils",
                                          version="1.2",
                                          namespace="codehaus",
                                          path="/usr/share/java/plexus-utils/plexus-utils.jar",
-                                         properties={'requiresJava':'1.5'}) in prov)
-        self.assertTrue(ProvidedArtifact("codehaus",
+                                         properties={'requiresJava': '1.5'}) in prov)
+        self.assertTrue(MetadataArtifact("codehaus",
                                          "plexus-utils",
                                          version="1.2",
                                          namespace="codehaus",
                                          extension="pom",
                                          path="/usr/share/maven-poms/JPP.plexus-utils-plexus-utils.pom",
-                                         properties={'requiresJava':'1.5'}) in prov)
+                                         properties={'requiresJava': '1.5'}) in prov)
 
     @depmapfile("depmap_namespace_requires.xml")
     def test_requires_namespace(self, d):
@@ -197,35 +198,35 @@ class TestDepmap(unittest.TestCase):
 
         self.assertEqual(len(reqs), 6)
 
-        self.assertTrue(Dependency("org.apache.maven",
-                                   "maven-project",
-                                   "12") in reqs)
+        self.assertTrue(MetadataDependency("org.apache.maven",
+                                           "maven-project",
+                                           "12") in reqs)
 
-        self.assertTrue(Dependency("org.codehaus.plexus",
-                                   "plexus-utils",
-                                   "12",
-                                   namespace="plexus") in reqs)
+        self.assertTrue(MetadataDependency("org.codehaus.plexus",
+                                           "plexus-utils",
+                                           "12",
+                                           namespace="plexus") in reqs)
 
-        self.assertTrue(Dependency("org.codehaus.plexus",
-                                   "plexus-utils",
-                                   "12",
-                                   extension="war",
-                                   namespace="codehaus") in reqs)
+        self.assertTrue(MetadataDependency("org.codehaus.plexus",
+                                           "plexus-utils",
+                                           "12",
+                                           extension="war",
+                                           namespace="codehaus") in reqs)
 
-        self.assertTrue(Dependency("org.codehaus.plexus",
-                                   "plexus-utils",
-                                   "12",
-                                   resolvedVersion="0.9",
-                                   namespace="test") in reqs)
+        self.assertTrue(MetadataDependency("org.codehaus.plexus",
+                                           "plexus-utils",
+                                           "12",
+                                           resolvedVersion="0.9",
+                                           namespace="test") in reqs)
 
-        self.assertTrue(Dependency("org.apache.maven.wagon",
-                                   "wagon-provider-api",
-                                   "12",
-                                   classifier="test-jar") in reqs)
+        self.assertTrue(MetadataDependency("org.apache.maven.wagon",
+                                           "wagon-provider-api",
+                                           "12",
+                                           classifier="test-jar") in reqs)
 
-        self.assertTrue(Dependency("org.codehaus.plexus",
-                                   "plexus-container-default",
-                                   "12") in reqs)
+        self.assertTrue(MetadataDependency("org.codehaus.plexus",
+                                           "plexus-container-default",
+                                           "12") in reqs)
 
     @depmapfile("depmap_skipped.xml")
     def test_skipped(self, d):
@@ -233,16 +234,16 @@ class TestDepmap(unittest.TestCase):
 
         self.assertEqual(len(skipped), 3)
 
-        self.assertTrue(SkippedArtifact("org.apache.maven.plugins",
-                                        "maven-idea-plugin") in skipped)
+        self.assertTrue(MetadataSkippedArtifact("org.apache.maven.plugins",
+                                                "maven-idea-plugin") in skipped)
 
-        self.assertTrue(SkippedArtifact("org.apache.maven.plugins",
-                                        "maven-idea-plugin",
-                                        extension="war") in skipped)
+        self.assertTrue(MetadataSkippedArtifact("org.apache.maven.plugins",
+                                                "maven-idea-plugin",
+                                                extension="war") in skipped)
 
-        self.assertTrue(SkippedArtifact("org.apache.maven.plugins",
-                                        "maven-idea-plugin",
-                                        classifier="test-jar") in skipped)
+        self.assertTrue(MetadataSkippedArtifact("org.apache.maven.plugins",
+                                                "maven-idea-plugin",
+                                                classifier="test-jar") in skipped)
 
     @depmapfile("depmap_exclusions.xml")
     def test_exlusions(self, d):
@@ -250,12 +251,11 @@ class TestDepmap(unittest.TestCase):
 
         self.assertEqual(len(skipped), 2)
 
-        self.assertTrue(ExclusionArtifact("junit",
+        self.assertTrue(MetadataExclusion("junit",
                                           "junit") in skipped)
 
-        self.assertTrue(ExclusionArtifact("org.codehaus.plexus",
+        self.assertTrue(MetadataExclusion("org.codehaus.plexus",
                                           "plexus-utils") in skipped)
-
 
     @exception_expected(MetadataInvalidException)
     @depmapfile("depmap_incorrect_provides.xml")
