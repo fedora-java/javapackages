@@ -109,6 +109,10 @@ _load_java_conf()
     if [ -n "${java_opts_save}" ]; then
 	JAVACMD_OPTS="${java_opts_save}"
     fi
+
+    if [ "_${JAVA_ABRT}" != "_off" ] && [ -f %{libdir}/libabrt-java-connector.so ] && [ -f %{rundir}/abrt/abrtd.pid ]; then
+	JAVACMD_OPTS="${JAVACMD_OPTS} -agentpath:%{libdir}/libabrt-java-connector.so=abrt=on"
+    fi
 }
 
 

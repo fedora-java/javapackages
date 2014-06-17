@@ -35,8 +35,11 @@ set -e
 vars="
 bindir
 datadir
+libdir
+localstatedir
 mandir
 prefix
+rundir
 sysconfdir
 rpmconfigdir
 
@@ -68,7 +71,10 @@ eval $(for _; do echo "$_"; done |
 test -z "${prefix}" && prefix="/usr/local"
 test -z "${bindir}" && bindir="${prefix}/bin"
 test -z "${datadir}" && datadir="${prefix}/share"
+test -z "${libdir}" && libdir="${prefix}/lib"
+test -z "${localstatedir}" && localstatedir="${prefix}/var"
 test -z "${mandir}" && mandir="${datadir}/man"
+test -z "${rundir}" && rundir="${localstatedir}/run"
 test -z "${sysconfdir}" && sysconfdir="${prefix}/etc"
 test -z "${rpmconfigdir}" && rpmconfigdir="${prefix}/lib/rpm"
 
