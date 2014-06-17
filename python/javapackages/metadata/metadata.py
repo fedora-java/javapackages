@@ -164,12 +164,3 @@ class Metadata(object):
                 if prop.tagName == u'requiresJavaDevel':
                     return prop.firstChild.value
         return None
-
-    @staticmethod
-    def build_property(name, value):
-        domimpl = getDOMImplementation()
-        doc = domimpl.createDocument(None, None, None)
-        elem = doc.createElement(name)
-        tnode = doc.createTextNode(value)
-        elem.appendChild(tnode)
-        return elem
