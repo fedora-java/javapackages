@@ -37,6 +37,8 @@ from dependency import Dependency
 from plugin import Plugin
 from extension import Extension
 
+import os
+
 
 class POM(object):
     """
@@ -44,7 +46,7 @@ class POM(object):
     """
     def __init__(self, path):
         self.__doc = POMReader.load(path)
-        self._path = path
+        self._path = os.path.join(path)
 
     def __str__(self):
         return ":".join([self.groupId, self.artifactId, self.version])
