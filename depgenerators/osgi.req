@@ -84,8 +84,18 @@ class TagBuilder:
             bundleline = ""
         return bundlenames
 
+    def print_requires (self, manifest):
+        headers = self.parse_manifest(manifest)
+        if headers.get("Require-Bundle"):
+            for bundle in self.split_bundle_name(headers.get("Require-Bundle")):
+                if bundle != "system.bundle":
+                    print "osgi(%s)" %(bundle)
+
     def get_osgi_require (self, path):
         if not os.path.islink(path):
+            if path.endswith("META-INF/MANIFEST.MF"):
+                manifest = open(path)
+                self.print_requires(manifest)
             if zipfile.is_zipfile(path):
                 # looks like "zipfile.is_zipfile()" is not reliable
                 # see rhbz#889131 for more details
@@ -93,11 +103,7 @@ class TagBuilder:
                     jarfile = ZipFile(path)
                     if "META-INF/MANIFEST.MF" in jarfile.namelist():
                         manifest = jarfile.open("META-INF/MANIFEST.MF")
-                        headers = self.parse_manifest(manifest)
-                        if headers.get("Require-Bundle"):
-                            for bundle in self.split_bundle_name(headers.get("Require-Bundle")):
-                                if bundle != "system.bundle":
-                                    print "osgi(%s)" %(bundle)
+                        self.print_requires(manifest)
                 except IOError:
                     pass
 
