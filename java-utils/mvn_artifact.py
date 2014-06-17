@@ -38,7 +38,7 @@ from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.dependency import MetadataDependency
 
 from javapackages.maven.artifact import Artifact, ArtifactFormatException
-from javapackages.maven.pom import POM
+from javapackages.maven.pom import POM, PomLoadingException
 
 from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionResult, ResolutionRequest
 
@@ -87,8 +87,8 @@ class UnknownVersion(Exception):
 
 
 def get_parent_pom(pom):
-    req = ResolutionRequest(pom.parentGroupId, pom.parentArtifactId,
-                            extension="pom", version=pom.parentVersion)
+    req = ResolutionRequest(pom.groupId, pom.artifactId,
+                            extension="pom", version=pom.version)
     result = XMvnResolve.process_raw_request([req])[0]
     if not result:
         raise Exception("Unable to resolve parent POM")
@@ -169,8 +169,11 @@ def gather_dependencies(pom_path):
     while parent:
         ppom = None
         if parent.relativePath:
-            ppom_path = os.path.join(os.path.dirname(pom._path), parent.relativePath)
-            ppom = POM(ppom_path)
+            try:
+                ppom_path = os.path.join(os.path.dirname(pom._path), parent.relativePath)
+                ppom = POM(ppom_path)
+            except PomLoadingException:
+                pass
         if not ppom:
             ppom = get_parent_pom(parent)
 
