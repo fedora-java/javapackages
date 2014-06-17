@@ -123,7 +123,10 @@ def resolve_deps(deps):
     reqs = []
     unresolvable = []
     for d in deps:
-        reqs.append(ResolutionRequest(d.groupId, d.artifactId, version=d.requestedVersion))
+        reqs.append(ResolutionRequest(d.groupId, d.artifactId,
+                                      extension=d.extension,
+                                      classifier=d.classifier,
+                                      version=d.requestedVersion))
     results = XMvnResolve.process_raw_request(reqs)
     for i, r in enumerate(results):
         if r:
