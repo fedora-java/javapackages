@@ -68,11 +68,18 @@ class XMvnResolve(object):
         for node in nodes:
             if len(node) > 0:
                 ns = node.find('./namespace')
+                if ns is not None:
+                    ns = ns.text
                 compat_ver = node.find('./compatVersion')
+                if compat_ver is not None:
+                    compat_ver = compat_ver.text
                 path = node.find('./artifactPath')
-                results.append(ResolutionResult(namespace=ns.text or "",
-                                                compatVersion=compat_ver.text or "",
-                                                path=path.text or ""))
+                if path is not None:
+                    path = path.text
+                res = ResolutionResult(namespace=ns or "",
+                                       compatVersion=compat_ver or "",
+                                       path=path or "")
+                results.append(res)
             else:
                 results.append(None)
         return results
