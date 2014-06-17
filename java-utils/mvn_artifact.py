@@ -86,6 +86,16 @@ class UnknownVersion(Exception):
     pass
 
 
+def get_parent_pom(pom):
+    req = ResolutionRequest(pom.parentGroupId, pom.parentArtifactId,
+                            extension="pom", version=pom.parentVersion)
+    result = XMvnResolve.process_raw_request([req])[0]
+    if not result:
+        raise Exception("Unable to resolve parent POM")
+
+    return POM(result.artifactPath)
+
+
 def is_it_ivy_file(fpath):
     """Try to determine whether file in given path is Ivy file or not"""
     et = lxml.etree.ElementTree()
