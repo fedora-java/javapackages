@@ -174,15 +174,6 @@ def get_dependencies(pom_path):
     for d in deps:
         d.interpolate(props)
 
-    #try:
-    #    mets = load_metadata()
-    #    for provided in mets.get_provided_artifacts():
-    #        if provided.groupId == p.parentGroupId and provided.artifactId == p.parentArtifactId:
-    #            for dep in provided.dependencies:
-    #                deps.append(Dependency.from_metadata(dep))
-    #except MetadataInvalidException:
-    #    pass
-
     return deps
 
 
