@@ -149,19 +149,45 @@ def resolve_deps(deps):
     return unresolvable
 
 
-def get_dependencies(pom_path):
-    deps = []
-    depm = []
-    props = {}
+def merge_sections(main, update):
+    for upd in update:
+        for curr in main:
+            if curr.compare_to(upd):
+                curr.merge_with(upd)
+                break
+        else:
+            main.append(upd)
 
+
+def gather_dependencies(pom_path):
     if not pom_path:
-        return deps
+        return []
+    pom = POM(pom_path)
+    deps, depm, props = _get_dependencies(pom)
 
-    p = POM(pom_path)
-    deps.extend([x for x in p.dependencies])
-    depm.extend([x for x in p.dependencyManagement])
-    props = p.properties
+    parent = pom.parent
+    while parent:
+        ppom = None
+        if parent.relativePath:
+            ppom_path = os.path.join(os.path.dirname(pom._path), parent.relativePath)
+            ppom = POM(ppom_path)
+        if not ppom:
+            ppom = get_parent_pom(parent)
 
+        parent = ppom.parent
+        pdeps, pdepm, pprops = _get_dependencies(ppom)
+
+        # merge "dependencies" sections
+        merge_sections(deps, pdeps)
+        # merge "dependencyManagement" sections
+        merge_sections(depm, pdepm)
+
+        # merge "properties" sections
+        for pkey in pprops:
+            if pkey not in props:
+                props[pkey] = pprops[pkey]
+
+    # apply dependencyManagement on deps
     for d in deps:
         for dm in depm:
             if d.compare_to(dm):
@@ -175,6 +201,18 @@ def get_dependencies(pom_path):
         d.interpolate(props)
 
     return deps
+
+
+def _get_dependencies(pom):
+    deps = []
+    depm = []
+    props = {}
+
+    deps.extend([x for x in pom.dependencies])
+    depm.extend([x for x in pom.dependencyManagement])
+    props = pom.properties
+
+    return deps, depm, props
 
 
 if __name__ == "__main__":
@@ -230,7 +268,7 @@ if __name__ == "__main__":
 
     if not options.skip_dependencies:
         deps = []
-        mvn_deps = get_dependencies(pom_path)
+        mvn_deps = gather_dependencies(pom_path)
         for d in mvn_deps:
             deps.append(MetadataDependency.from_mvn_dependency(d))
             unavail = resolve_deps(deps)
