@@ -103,7 +103,7 @@ class Dependency(AbstractArtifact):
                 parts['optional'] = True
 
         # exclusions
-        excnodes = POMReader.xpath(xmlnode, "./exclusions/exclusion")
+        excnodes = xmlnode.findall("{*}exclusions/{*}exclusion")
 
         exclusions = set()
         for e in [Exclusion.from_xml_element(x) for x in excnodes]:
