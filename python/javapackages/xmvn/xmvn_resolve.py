@@ -69,17 +69,20 @@ class XMvnResolve(object):
             if len(node) > 0:
                 ns = node.find('./namespace')
                 compat_ver = node.find('./compatVersion')
-                results.append(ResolutionResult(ns.text or "",
-                                                compat_ver.text or ""))
+                path = node.find('./artifactPath')
+                results.append(ResolutionResult(namespace=ns.text or "",
+                                                compatVersion=compat_ver.text or "",
+                                                path=path.text or ""))
             else:
                 results.append(None)
         return results
 
 
 class ResolutionResult(object):
-    def __init__(self, namespace="", compatVersion=""):
+    def __init__(self, namespace="", compatVersion="", path=""):
         self.namespace = namespace
         self.compatVersion = compatVersion
+        self.artifactPath = path
 
     def __str__(self):
         return "version:" + self.compatVersion + "namespace: " + self.namespace
