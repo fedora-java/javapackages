@@ -274,8 +274,8 @@ if __name__ == "__main__":
             deps.append(MetadataDependency.from_mvn_dependency(d))
             unavail = resolve_deps(deps)
             if unavail:
-                # TODO: be more specific
-                raise Exception("There are unresolvable dependencies")
+                unavail_str = ';'.join([x.get_mvn_str() for x in unavail])
+                art.properties['maven.req.check.deps'] = unavail_str
         art.dependencies = set(deps)
 
     add_artifact_elements(metadata, art, pom_path, jar_path)
