@@ -183,6 +183,10 @@ class POM(object):
             return properties
         propnodes = xmlnodes.getchildren()
         for node in propnodes:
-            properties[node.tag] = node.text
+            if node.tag.startswith('{'):
+                tag = node.tag[node.tag.find('}') + 1:]
+            else:
+                tag = node.tag
+            properties[tag] = node.text
 
         return properties
