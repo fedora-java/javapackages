@@ -35,6 +35,7 @@ from __future__ import print_function
 import javapackages.metadata.pyxbmetadata as m
 from javapackages.metadata.metadata import Metadata, MetadataInvalidException
 from javapackages.metadata.artifact import MetadataArtifact
+from javapackages.metadata.dependency import MetadataDependency
 
 from javapackages.maven.artifact import Artifact, ArtifactFormatException
 from javapackages.maven.pom import POM
@@ -71,10 +72,6 @@ Artifact path:
 Path where Artifact file (usually JAR) is located.
 """
 
-# TODO:
-# add basic support for properties
-# refactoring needed
-
 
 config = ".xmvn-reactor"
 
@@ -85,23 +82,6 @@ class ExtensionsDontMatch(Exception):
 
 class UnknownVersion(Exception):
     pass
-
-
-def load_metadata(metadatadir="/usr/share/maven-metadata"):
-    try:
-        mfiles = [os.path.join(metadatadir, f) for f in os.listdir(metadatadir)]
-    except OSError:
-        # directory doesn't exist?
-        print(traceback.format_exc(), file=sys.stderr)
-        mfiles = []
-    return Metadata(mfiles)
-
-
-def load_poms(pomdir="/usr/share/maven-poms"):
-    pfiles = [os.path.join(pomdir, f) for f in os.listdir(pomdir)]
-    poms = []
-    poms.extend([POM(p) for p in pfiles])
-    return poms
 
 
 def is_it_ivy_file(fpath):
@@ -137,64 +117,39 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
             root.artifacts.append(a)
 
 
-def get_dependency_management(pom_path):
-
-    curr_pom = POM(pom_path)
-    dm = []
-
-    if not curr_pom.parentGroupId:
-        dm.extend([x for x in curr_pom.get_dependency_management()])
-        return dm
-
-    all_poms = load_poms()
-    poms = []
-    poms.append(curr_pom)
-
-    while poms[-1].parentGroupId:
-        for p in all_poms:
-            if poms[-1].parentGroupId == p.groupId and poms[-1].parentArtifactId == p.artifactId:
-                poms.append(p)
-
-    for p in reversed(poms):
-        # FIXME: not entirely correct
-        dm.extend([x for x in p.get_dependency_management()])
-
-    return dm
-
-
 def get_dependencies(pom_path):
     deps = []
+    depm = []
+    props = {}
 
-    if pom_path:
-        p = POM(pom_path)
-        deps.extend([x for x in p.get_dependencies()])
+    if not pom_path:
+        return deps
 
-        for d in deps:
-            if not d.requestedVersion:
-                raise UnknownVersion("Unknown version of dependency {d}".format(d=d))
-        #dep_management = get_dependency_management(pom_path)
-        #
-        #final_deps = []
-        #for d in deps[:]:
-        #    merged = False
-        #    for dm in dep_management[:]:
-        #        if d.artifactId == dm.artifactId and d.groupId == dm.groupId:
-        #            final_deps.append(Dependency.merge_dependencies(d, dm))
-        #            merged = True
-        #            break
-        #    if not merged:
-        #        final_deps.append(d)
-        #
-        #deps = final_deps
+    p = POM(pom_path)
+    deps.extend([x for x in p.dependencies])
+    depm.extend([x for x in p.dependencyManagement])
+    props = p.properties
 
-        try:
-            mets = load_metadata()
-            for provided in mets.get_provided_artifacts():
-                if provided.groupId == p.parentGroupId and provided.artifactId == p.parentArtifactId:
-                    for dep in provided.dependencies:
-                        deps.append(Dependency.from_metadata(dep))
-        except MetadataInvalidException:
-            pass
+    for d in deps:
+        for dm in depm:
+            if d.compare_to(dm):
+                d.merge_with(dm)
+                break
+
+    # only deps with scope "compile" or "runtime" are interesting
+    deps = [x for x in deps if x.scope in ["", "compile", "runtime"]]
+
+    for d in deps:
+        d.interpolate(props)
+
+    #try:
+    #    mets = load_metadata()
+    #    for provided in mets.get_provided_artifacts():
+    #        if provided.groupId == p.parentGroupId and provided.artifactId == p.parentArtifactId:
+    #            for dep in provided.dependencies:
+    #                deps.append(Dependency.from_metadata(dep))
+    #except MetadataInvalidException:
+    #    pass
 
     return deps
 
@@ -214,7 +169,7 @@ if __name__ == "__main__":
 
     try:
         uart = Artifact.from_mvn_str(args[0])
-        #uart.validate(allow_backref=False)
+        uart.validate(allow_backref=False)
         if len(args) == 1:
             parser.error("When using artifact specification artifact path must be "
                          "provided")
@@ -250,8 +205,12 @@ if __name__ == "__main__":
     else:
         metadata = m.metadata()
 
-    #if not options.skip_dependencies:
-    #    art.dependencies = get_dependencies(pom_path)
+    if not options.skip_dependencies:
+        deps = set()
+        mvn_deps = get_dependencies(pom_path)
+        for d in mvn_deps:
+            deps.add(MetadataDependency.from_mvn_dependency(d))
+        art.dependencies = deps
 
     add_artifact_elements(metadata, art, pom_path, jar_path)
 
