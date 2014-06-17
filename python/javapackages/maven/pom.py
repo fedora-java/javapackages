@@ -50,6 +50,27 @@ class POM(object):
         return ":".join([self.groupId, self.artifactId, self.version])
 
     @property
+    def parent(self):
+        aId = POMReader.find(self.__doc, './pom:parent/pom:artifactId')
+        if aId is None:
+            return None
+        aId = aId.text
+
+        gId = POMReader.find(self.__doc, './pom:parent/pom:groupId')
+        if gId is not None:
+            gId = gId.text
+
+        ver = POMReader.find(self.__doc, './pom:parent/pom:version')
+        if ver is not None:
+            ver = ver.text
+
+        relativePath = POMReader.find(self.__doc, './pom:parent/pom:relativePath')
+        if relativePath is not None:
+            relativePath = relativePath.text
+
+        return ParentPOM(gId, aId, ver, relativePath)
+
+    @property
     def parentGroupId(self):
         """
         groupId of the parent artifact or None
@@ -190,3 +211,11 @@ class POM(object):
             properties[tag] = node.text
 
         return properties
+
+
+class ParentPOM(object):
+    def __init__(self, groupId, artifactId, version="", relativePath=""):
+        self.groupId = groupId.strip()
+        self.artifactId = artifactId.strip()
+        self.version = version
+        self.relativePath = relativePath
