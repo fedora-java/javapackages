@@ -40,6 +40,8 @@ from javapackages.metadata.dependency import MetadataDependency
 from javapackages.maven.artifact import Artifact, ArtifactFormatException
 from javapackages.maven.pom import POM
 
+from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionResult, ResolutionRequest
+
 import sys
 import os
 import traceback
@@ -115,6 +117,23 @@ def add_artifact_elements(root, uart, ppath=None, jpath=None):
     else:
         for a in artifacts:
             root.artifacts.append(a)
+
+
+def resolve_deps(deps):
+    reqs = []
+    unresolvable = []
+    for d in deps:
+        reqs.append(ResolutionRequest(d.groupId, d.artifactId, version=d.requestedVersion))
+    results = XMvnResolve.process_raw_request(reqs)
+    for i, r in enumerate(results):
+        if r:
+            if r.compatVersion and r.compatVersion != "SYSTEM":
+                deps[i].resolvedVersion = r.compatVersion
+            if r.namespace:
+                deps[i].namespace = r.namespace
+        else:
+            unresolvable.append(deps[i])
+    return unresolvable
 
 
 def get_dependencies(pom_path):
@@ -206,11 +225,15 @@ if __name__ == "__main__":
         metadata = m.metadata()
 
     if not options.skip_dependencies:
-        deps = set()
+        deps = []
         mvn_deps = get_dependencies(pom_path)
         for d in mvn_deps:
-            deps.add(MetadataDependency.from_mvn_dependency(d))
-        art.dependencies = deps
+            deps.append(MetadataDependency.from_mvn_dependency(d))
+            unavail = resolve_deps(deps)
+            if unavail:
+                # TODO: be more specific
+                raise Exception("There are unresolvable dependencies")
+        art.dependencies = set(deps)
 
     add_artifact_elements(metadata, art, pom_path, jar_path)
 
