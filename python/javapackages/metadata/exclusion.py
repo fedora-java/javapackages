@@ -14,7 +14,7 @@ class MetadataExclusion(object):
         return Printer.get_mvn_str(self.groupId, self.artifactId)
 
     def to_metadata(self):
-        return m.ExclusionArtifact(self.groupId, self.artifactId)
+        return m.DependencyExclusion(self.groupId, self.artifactId)
 
     @classmethod
     def from_metadata(cls, metadata):
