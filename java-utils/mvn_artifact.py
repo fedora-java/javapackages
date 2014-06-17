@@ -104,22 +104,20 @@ def is_it_ivy_file(fpath):
     return doc.tag == "ivy-module"
 
 
-def add_artifact_elements(root, uart, ppath=None, jpath=None):
+def add_artifact_elements(root, art, ppath=None, jpath=None):
     artifacts = []
     for path in [ppath, jpath]:
         if path:
-            a = uart.to_metadata()
-            props = []
             if path is ppath:
                 if not is_it_ivy_file(ppath):
-                    a.extension = "pom"
+                    art.extension = "pom"
                 else:
-                    a.extension = os.path.splitext(pom_path)[1][1:]
-                    props.append(Metadata.build_property('type', 'ivy'))
+                    art.extension = os.path.splitext(pom_path)[1][1:]
+                    art.properties['type'] = 'ivy'
 
-            a.path = os.path.abspath(path)
-            props.append(Metadata.build_property('xmvn.resolver.disableEffectivePom', 'true'))
-            a.properties = pyxb.BIND(*props)
+            art.path = os.path.abspath(path)
+            art.properties['xmvn.resolver.disableEffectivePom'] = 'true'
+            a = art.to_metadata()
             artifacts.append(a)
 
     if root.artifacts is None:
