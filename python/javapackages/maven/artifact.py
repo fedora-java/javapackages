@@ -165,7 +165,7 @@ class AbstractArtifact(object):
         for member in self.__dict__:
             if (not member.startswith('_')
                 and getattr(self, member)
-                and type(member) == str):
+                and isinstance(getattr(self, member), basestring)):
                     curr_value = getattr(self, member)
                     prog = re.compile("\$\{([^}]+)\}")
                     props = prog.findall(curr_value)
