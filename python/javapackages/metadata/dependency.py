@@ -109,3 +109,15 @@ class MetadataDependency(object):
 
         return cls(a.groupId, a.artifactId, extension=a.extension,
                    classifier=a.classifier, requestedVersion=a.version)
+
+    @classmethod
+    def from_mvn_dependency(cls, mvn_dep):
+        exclusions = set()
+        for e in mvn_dep.exclusions:
+            exclusions.add(MetadataExclusion.from_mvn_exclusion(e))
+
+        return cls(mvn_dep.groupId, mvn_dep.artifactId,
+                   extension=mvn_dep.extension,
+                   classifier=mvn_dep.classifier,
+                   requestedVersion=mvn_dep.version,
+                   exclusions=exclusions)

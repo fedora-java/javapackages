@@ -29,3 +29,7 @@ class MetadataExclusion(object):
 
         return cls(a.groupId, a.artifactId, version=a.version,
                    extension=a.extension, classifier=a.classifier)
+
+    @classmethod
+    def from_mvn_exclusion(cls, mvn_exc):
+        return cls(mvn_exc.groupId, mvn_exc.artifactId)
