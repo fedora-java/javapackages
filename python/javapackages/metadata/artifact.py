@@ -7,6 +7,7 @@ from dependency import MetadataDependency
 
 import pyxbmetadata as m
 import pyxb
+from xml.dom.minidom import getDOMImplementation
 
 
 class MetadataArtifact(object):
@@ -84,11 +85,17 @@ class MetadataArtifact(object):
             a.aliases = pyxb.BIND(*als)
 
         if self.properties:
-            import javapackages.depmap
-            prop = [javapackages.depmap.Depmap.build_property(k, v) for k, v in self.properties.iteritems()]
-            a.properties = pyxb.BIND(*prop)
-
+            props = [self._create_property(k, v) for k, v in self.properties.iteritems()]
+            a.properties = pyxb.BIND(*props)
         return a
+
+    def _create_property(self, name, value):
+        domimpl = getDOMImplementation()
+        doc = domimpl.createDocument(None, None, None)
+        elem = doc.createElement(name)
+        tnode = doc.createTextNode(value)
+        elem.appendChild(tnode)
+        return elem
 
     @classmethod
     def from_metadata(cls, metadata):
