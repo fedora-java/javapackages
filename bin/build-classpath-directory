@@ -4,7 +4,6 @@
 #
 # JPackage Project <http://www.jpackage.org/>
 #
-# $Id: build-classpath-directory,v 1.1 2004/12/15 16:23:45 robert Exp $
 
 for i in "$@"; do
     _JARS=$(find "$i" -name "*.jar" -xtype f -printf %p: 2>/dev/null)

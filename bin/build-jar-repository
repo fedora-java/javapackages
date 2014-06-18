@@ -4,7 +4,6 @@
 #
 # JPackage Project <http://www.jpackage.org/>
 #
-# $Id: build-jar-repository,v 1.2 2005/09/17 07:06:19 david Exp $
 
 # Import java functions
 [ -r "%{javadir}-utils/java-functions" ] \

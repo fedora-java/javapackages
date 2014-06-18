@@ -4,7 +4,6 @@
 #
 # JPackage Project <http://www.jpackage.org/>
 #
-# $Id: rebuild-jar-repository,v 1.3 2006/03/29 19:45:09 jasonc Exp $
 
 # Import java functions
 [ -r "%{javadir}-utils/java-functions" ] \

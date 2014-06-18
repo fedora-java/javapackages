@@ -4,7 +4,6 @@
 #
 # JPackage project
 #
-# $Id: jvmjar,v 1.1 2004/12/15 16:23:45 robert Exp $
 
 # System-wide java configuration
 JAVA_CONF="%{sysconfdir}/java/java.conf"

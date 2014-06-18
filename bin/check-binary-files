@@ -4,7 +4,6 @@
 #
 # JPackage Project <http://www.jpackage.org/>
 #
-# $Id: check-binary-files,v 1.1 2006/09/19 19:39:37 fnasser Exp $
 
 # Import java functions
 [ -r "%{javadir}-utils/java-functions" ] \

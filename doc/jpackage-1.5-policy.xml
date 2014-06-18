@@ -26,7 +26,6 @@
 This document describes the packaging policy followed by the <ulink url="http://www.jpackage.org/">JPackage</ulink> cross-distribution RPM <trademark>Java</trademark> packaging project.
       </para>
     </abstract>
-    <releaseinfo>$Id: jpackage-1.5-policy.xml,v 1.1 2004/12/15 16:23:45 robert Exp $</releaseinfo>
   </bookinfo>
   <preface>
     <title>Why ?</title>
