@@ -33,17 +33,38 @@
 
 import subprocess
 import lxml.etree
+import os
+import json
 
 
 class XMvnResolve(object):
     # TODO:
-    # - do not hardcode path to xmvn-resolve
     # - documentation
 
     @staticmethod
+    def _load_path_from_config():
+        if 'JAVACONFDIRS' in os.environ:
+            config_paths = os.environ['JAVACONFDIRS'].split(os.pathsep)
+        else:
+            config_paths = ['%{javaconfdir}']
+
+        for config_path in config_paths:
+            try:
+                file_path = os.path.join(config_path, 'javapackages-config.json')
+                with open(file_path) as config_file:
+                    config = json.load(config_file)['xmvn-resolve']
+                    path = config.get('path', ())
+                    if os.path.exists(path):
+                        break
+            except (OSError, IOError):
+                raise Exception('Cannot load config file {0}.'.format(config_path))
+        return path
+
+    @staticmethod
     def process_raw_request(raw_request_list):
+        binpath = XMvnResolve._load_path_from_config()
         request = XMvnResolve.__join_raw_requests(raw_request_list)
-        procargs = ['/usr/bin/xmvn-resolve', '--raw-request']
+        procargs = [binpath, '--raw-request']
         proc = subprocess.Popen(procargs, shell=False, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
         stdout = proc.communicate(input=request)[0]
         proc.wait()
