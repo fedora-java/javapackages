@@ -30,11 +30,11 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
+from javapackages.common.config import get_configs
 
 import subprocess
 import lxml.etree
 import os
-import json
 
 
 class XMvnResolve(object):
@@ -43,21 +43,14 @@ class XMvnResolve(object):
 
     @staticmethod
     def _load_path_from_config():
-        if 'JAVACONFDIRS' in os.environ:
-            config_paths = os.environ['JAVACONFDIRS'].split(os.pathsep)
-        else:
-            config_paths = ['%{javaconfdir}']
-
-        for config_path in config_paths:
-            try:
-                file_path = os.path.join(config_path, 'javapackages-config.json')
-                with open(file_path) as config_file:
-                    config = json.load(config_file)['xmvn-resolve']
-                    path = config.get('path', ())
-                    if os.path.exists(path):
-                        break
-            except (OSError, IOError):
-                raise Exception('Cannot load config file {0}.'.format(config_path))
+        configs = get_configs()
+        for config in configs:
+            path = config.get('path', "")
+            if os.path.exists(path):
+                break
+        if not path:
+            # default path
+            path = "/usr/bin/xmvn-resolve"
         return path
 
     @staticmethod
