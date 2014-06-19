@@ -65,7 +65,7 @@ def process_java_version(version_string):
 
 def get_config():
     new_config = {}
-    configs = get_configs()
+    configs = get_configs(['%{javaconfdir}'])
     for config_file in configs:
         config = config_file['maven.req']
         filters = set(new_config.get('filter_requires', ()))
