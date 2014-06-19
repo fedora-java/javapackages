@@ -42,6 +42,7 @@ import subprocess
 
 from lxml import etree
 
+from javapackages.common.config import get_configs
 from javapackages.maven.pom import POM
 from javapackages.maven.artifact import Artifact
 from javapackages.metadata.metadata import Metadata, MetadataInvalidException
@@ -65,23 +66,14 @@ def process_java_version(version_string):
 
 
 def get_config():
-    if 'JAVACONFDIRS' in os.environ:
-        config_paths = os.environ['JAVACONFDIRS'].split(os.pathsep)
-    else:
-        config_paths = ['%{javaconfdir}']
-
     new_config = {}
-    for config_path in config_paths:
-        try:
-            file_path = os.path.join(config_path, 'javapackages-config.json')
-            with open(file_path) as config_file:
-                config = json.load(config_file)['maven.req']
-                filters = set(new_config.get('filter_requires', ()))
-                filters = filters.union(config.get('filter_requires', ()))
-                new_config.update(config)
-                new_config['filter_requires'] = filters
-        except (OSError, IOError):
-            raise Exception('Cannot load config file {0}.'.format(config_path))
+    configs = get_configs()
+    for config_file in configs:
+        config = config_file['maven.req']
+        filters = set(new_config.get('filter_requires', ()))
+        filters = filters.union(config.get('filter_requires', ()))
+        new_config.update(config)
+        new_config['filter_requires'] = filters
     return new_config
 
 
