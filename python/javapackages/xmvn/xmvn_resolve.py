@@ -44,6 +44,7 @@ class XMvnResolve(object):
     @staticmethod
     def _load_path_from_config():
         configs = get_configs()
+        path = None
         for config in configs:
             path = config.get('path', "")
             if os.path.exists(path):
