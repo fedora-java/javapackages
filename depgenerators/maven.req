@@ -50,8 +50,6 @@ from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionRequest, ResolutionResult
 
 
-XMVN_RESOLVE_PATH="/usr/bin/xmvn-resolve"
-
 def process_java_version(version_string):
     version = version_string.split('.')
     if len(version) != 2:
@@ -122,7 +120,7 @@ class TagBuilder(object):
                     ppaths.append(os.path.join(dirname, filename))
 
         # try to generate R from POM only (sub)packages
-        if os.path.exists(XMVN_RESOLVE_PATH):
+        if os.path.exists(XMvnResolve._load_path_from_config()):
             if is_it_pom_only_pkg(paths[0]):
                 poms = self.__find_poms_for_metadata(ppaths, paths[0])
                 for p in poms:
