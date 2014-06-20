@@ -75,7 +75,7 @@ class TestMvnArtifact(unittest.TestCase):
         got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
         self.assertEqual(res, True)
 
-    @mvn_artifact('a:b:12', 'test.war')
+    @mvn_artifact('a:b:war:12', 'test.war')
     def test_mvn_spec_war(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
@@ -119,7 +119,7 @@ class TestMvnArtifact(unittest.TestCase):
         # jar != war
         self.assertNotEqual(return_value, 0, stderr)
 
-    @mvn_artifact('a:b::javadoc:12', 'test-javadoc.war')
+    @mvn_artifact('a:b::javadoc:12', 'test-javadoc.jar')
     def test_extension_not_specified(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
 

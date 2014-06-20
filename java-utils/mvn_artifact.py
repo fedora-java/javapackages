@@ -256,7 +256,7 @@ if __name__ == "__main__":
     if len(args) > 1:
         jar_path = args[1]
         extension = (os.path.splitext(jar_path)[1])[1:]
-        if hasattr(art, "extension") and art.extension and art.extension != extension:
+        if hasattr(art, "extension") and art.extension and art.extension != extension and not pom_path:
             raise ExtensionsDontMatch("Extensions don't match: '%s' != '%s'" % (art.extension, extension))
         else:
             art.extension = extension
