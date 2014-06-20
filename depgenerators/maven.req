@@ -126,6 +126,7 @@ class TagBuilder(object):
                 for p in poms:
                     self.__generate_requires_from_pom(p)
 
+
         for path in paths:
             if path.endswith(".pom"):
                 continue
@@ -232,9 +233,24 @@ class TagBuilder(object):
                 filtered.add(req)
         return filtered
 
+    def check_deps(self, metadata):
+        unresolvable = []
+        for provided in metadata.get_provided_artifacts():
+            try:
+                checklist = provided.properties["maven.req.check.deps"]
+            except KeyError:
+                # nothing to check, all good
+                return []
+            for mvn_str in checklist.split(";"):
+                dep = MetadataArtifact.from_mvn_str(mvn_str)
+                dep.namespace = metadata.namespace
+                if not dep.is_provided_by(self.provided_artifacts)[0]:
+                    unresolvable.append(dep)
+        return unresolvable
+
     def print_mvn_requires(self, path):
         metadata = Metadata(path)
-        skipped_but_required = []
+        skipped_but_required = self.check_deps(metadata)
         requires = set()
 
         for provided in metadata.get_provided_artifacts():
