@@ -120,7 +120,8 @@ class MetadataArtifact(object):
         aliases = set()
         if hasattr(metadata, 'aliases') and metadata.aliases:
             for alias in metadata.aliases.alias:
-                alias_extension = alias_classifier = ""
+                alias_extension = metadata.extension
+                alias_classifier = ""
                 if hasattr(alias, 'extension') and alias.extension:
                     alias_extension = alias.extension
 
