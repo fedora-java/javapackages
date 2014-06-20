@@ -47,6 +47,7 @@ from javapackages.maven.pom import POM
 from javapackages.maven.artifact import Artifact
 from javapackages.metadata.metadata import Metadata, MetadataInvalidException
 from javapackages.metadata.artifact import MetadataArtifact
+from javapackages.metadata.dependency import MetadataDependency
 from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionRequest, ResolutionResult
 
 
@@ -242,8 +243,8 @@ class TagBuilder(object):
                 # nothing to check, all good
                 return []
             for mvn_str in checklist.split(";"):
-                dep = MetadataArtifact.from_mvn_str(mvn_str)
-                dep.namespace = metadata.namespace
+                dep = MetadataDependency.from_mvn_str(mvn_str)
+                dep.namespace = provided.namespace
                 if not dep.is_provided_by(self.provided_artifacts)[0]:
                     unresolvable.append(dep)
         return unresolvable
