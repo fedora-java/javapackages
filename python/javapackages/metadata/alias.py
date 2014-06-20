@@ -21,7 +21,8 @@ class MetadataAlias(object):
         a.groupId = self.groupId
         a.artifactId = self.artifactId
         a.classifier = self.classifier or None
-        a.extension = self.extension or None
+        if self.extension != "jar":
+            a.extension = self.extension or None
         return a
 
     @classmethod
