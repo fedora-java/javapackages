@@ -87,6 +87,18 @@ class UnknownVersion(Exception):
 
 
 def get_parent_pom(pom):
+    try:
+        metadata = Metadata(config)
+        known_artifacts = metadata.get_provided_artifacts()
+        # TODO: implement __hash__() and __cmp__() in MetadataArtifact
+        for artifact in known_artifacts:
+            if (artifact.extension == "pom" and
+               artifact.groupId == pom.groupId and
+               artifact.artifactId == pom.artifactId):
+                return POM(artifact.path)
+    except IOError:
+        pass
+
     req = ResolutionRequest(pom.groupId, pom.artifactId,
                             extension="pom", version=pom.version)
     result = XMvnResolve.process_raw_request([req])[0]
