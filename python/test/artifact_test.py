@@ -32,7 +32,7 @@ class TestArtifact(unittest.TestCase):
         self.assertEqual(a.groupId, 'g')
         self.assertEqual(a.artifactId, 'a')
         self.assertEqual(a.classifier, '')
-        self.assertEqual(a.extension, '')
+        self.assertEqual(a.extension, 'jar')
         self.assertEqual(a.version, '')
 
         a = self.fullArtifact
@@ -207,7 +207,7 @@ class TestArtifact(unittest.TestCase):
         a = Artifact.from_xml_element(doc)
         self.assertEqual(a.groupId, "g")
         self.assertEqual(a.artifactId, "a")
-        self.assertEqual(a.extension, "")
+        self.assertEqual(a.extension, "jar")
         self.assertEqual(a.classifier, "")
         self.assertEqual(a.version, "")
 
@@ -216,7 +216,7 @@ class TestArtifact(unittest.TestCase):
         a = Artifact.from_xml_element(doc)
         self.assertEqual(a.groupId, "g")
         self.assertEqual(a.artifactId, "a")
-        self.assertEqual(a.extension, "")
+        self.assertEqual(a.extension, "jar")
         self.assertEqual(a.classifier, "")
         self.assertEqual(a.version, "v")
 
@@ -242,7 +242,7 @@ class TestArtifact(unittest.TestCase):
         a = Artifact.from_mvn_str("g:a")
         self.assertEqual(a.groupId, "g")
         self.assertEqual(a.artifactId, "a")
-        self.assertEqual(a.extension, "")
+        self.assertEqual(a.extension, "jar")
         self.assertEqual(a.classifier, "")
         self.assertEqual(a.version, "")
 
@@ -250,7 +250,7 @@ class TestArtifact(unittest.TestCase):
         a = Artifact.from_mvn_str("g:a:v")
         self.assertEqual(a.groupId, "g")
         self.assertEqual(a.artifactId, "a")
-        self.assertEqual(a.extension, "")
+        self.assertEqual(a.extension, "jar")
         self.assertEqual(a.classifier, "")
         self.assertEqual(a.version, "v")
 
@@ -274,7 +274,7 @@ class TestArtifact(unittest.TestCase):
         a = Artifact.from_mvn_str("g:a::c:")
         self.assertEqual(a.groupId, "g")
         self.assertEqual(a.artifactId, "a")
-        self.assertEqual(a.extension, "")
+        self.assertEqual(a.extension, "jar")
         self.assertEqual(a.classifier, "c")
         self.assertEqual(a.version, "")
 
@@ -282,7 +282,7 @@ class TestArtifact(unittest.TestCase):
         a = Artifact.from_mvn_str("g:a::c:v")
         self.assertEqual(a.groupId, "g")
         self.assertEqual(a.artifactId, "a")
-        self.assertEqual(a.extension, "")
+        self.assertEqual(a.extension, "jar")
         self.assertEqual(a.classifier, "c")
         self.assertEqual(a.version, "v")
 
@@ -309,7 +309,7 @@ class TestArtifact(unittest.TestCase):
 
         self.assertEqual(a.groupId, "g1")
         self.assertEqual(a.artifactId, "a1")
-        self.assertEqual(a.extension, "")
+        self.assertEqual(a.extension, "jar")
         self.assertEqual(a.classifier, "")
         self.assertEqual(a.version, "v1")
 
@@ -320,7 +320,7 @@ class TestArtifact(unittest.TestCase):
 
         self.assertEqual(a.groupId, "g1")
         self.assertEqual(a.artifactId, "a1")
-        self.assertEqual(a.extension, "")
+        self.assertEqual(a.extension, "jar")
         self.assertEqual(a.classifier, "")
         self.assertEqual(a.version, "v1")
 
@@ -332,7 +332,7 @@ class TestArtifact(unittest.TestCase):
 
         self.assertEqual(a.groupId, "g1")
         self.assertEqual(a.artifactId, "a1")
-        self.assertEqual(a.extension, "")
+        self.assertEqual(a.extension, "jar")
         self.assertEqual(a.classifier, "")
         self.assertEqual(a.version, "v1")
 
@@ -343,7 +343,7 @@ class TestArtifact(unittest.TestCase):
 
         self.assertEqual(a.groupId, "g1")
         self.assertEqual(a.artifactId, "a1")
-        self.assertEqual(a.extension, "")
+        self.assertEqual(a.extension, "jar")
         self.assertEqual(a.classifier, "")
         self.assertEqual(a.version, "v1")
 
@@ -366,7 +366,7 @@ class TestArtifact(unittest.TestCase):
         self.assertEqual(len(res), 0)
         self.assertEqual(a.groupId, "g1")
         self.assertEqual(a.artifactId, "a1")
-        self.assertEqual(a.extension, "")
+        self.assertEqual(a.extension, "jar")
         self.assertEqual(a.classifier, "")
         self.assertEqual(a.version, "")
 
@@ -378,7 +378,7 @@ class TestArtifact(unittest.TestCase):
         self.assertEqual(len(res), 0)
         self.assertEqual(a.groupId, "g1")
         self.assertEqual(a.artifactId, "a1")
-        self.assertEqual(a.extension, "")
+        self.assertEqual(a.extension, "jar")
         self.assertEqual(a.classifier, "")
         self.assertEqual(a.version, "4.11")
 
@@ -391,7 +391,7 @@ class TestArtifact(unittest.TestCase):
         self.assertEqual(res[0], "gid")
         self.assertEqual(a.groupId, "${gid}")
         self.assertEqual(a.artifactId, "a1")
-        self.assertEqual(a.extension, "")
+        self.assertEqual(a.extension, "jar")
         self.assertEqual(a.classifier, "")
         self.assertEqual(a.version, "")
 
