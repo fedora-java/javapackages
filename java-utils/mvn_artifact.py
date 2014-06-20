@@ -106,6 +106,7 @@ def is_it_ivy_file(fpath):
 
 def add_artifact_elements(root, art, ppath=None, jpath=None):
     artifacts = []
+    ext_backup = art.extension
     for path in [ppath, jpath]:
         if path:
             if path is ppath:
@@ -114,6 +115,8 @@ def add_artifact_elements(root, art, ppath=None, jpath=None):
                 else:
                     art.extension = os.path.splitext(pom_path)[1][1:]
                     art.properties['type'] = 'ivy'
+            else:
+                art.extension = ext_backup
 
             art.path = os.path.abspath(path)
             art.properties['xmvn.resolver.disableEffectivePom'] = 'true'
