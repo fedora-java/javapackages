@@ -36,6 +36,9 @@ class Printer(object):
     def get_mvn_str(gid, aid, ext="", cla="", ver=""):
         mvnstr = "{gid}:{aid}".format(gid=gid, aid=aid)
 
+        if ext == "jar":
+            ext = ""
+
         if ext:
             mvnstr = mvnstr + ":{ext}".format(ext=ext)
 
