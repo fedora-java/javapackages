@@ -175,9 +175,6 @@ def add_aliases(artifact, additions):
     result = set()
     for a in aliases:
         alias = MetadataAlias.from_mvn_str(a)
-        a_ext = artifact.extension or "jar"
-        if alias.extension and alias.extension != a_ext:
-            raise ExtensionsDontMatch(alias.artifact.extension, a_ext)
         alias.extension = artifact.extension
         result.add(alias)
 
