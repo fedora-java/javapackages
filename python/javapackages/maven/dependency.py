@@ -45,7 +45,7 @@ class Dependency(AbstractArtifact):
                  version="", scope="", optional=None, exclusions=set()):
         self.groupId = groupId.strip()
         self.artifactId = artifactId.strip()
-        self.extension = extension.strip()
+        self.extension = extension.strip() or "jar"
         self.classifier = classifier.strip()
         self.version = version.strip()
         self.scope = scope.strip()

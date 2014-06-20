@@ -9,7 +9,7 @@ class MetadataAlias(object):
 
         self.groupId = groupId
         self.artifactId = artifactId
-        self.extension = extension
+        self.extension = extension or "jar"
         self.classifier = classifier
 
     def get_mvn_str(self):

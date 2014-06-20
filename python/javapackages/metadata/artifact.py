@@ -18,7 +18,7 @@ class MetadataArtifact(object):
 
         self.groupId = groupId
         self.artifactId = artifactId
-        self.extension = extension
+        self.extension = extension or "jar"
         self.classifier = classifier
         self.version = version
         self.namespace = namespace
