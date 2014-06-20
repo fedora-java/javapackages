@@ -285,6 +285,8 @@ if __name__ == "__main__":
         metadata_jar_path = os.path.abspath(jar_path)
         artifact.path = metadata_jar_path.replace(buildroot, "") if buildroot else metadata_jar_path
         artifact = add_aliases(artifact, append_deps)
+        if artifact.extension == "jar":
+            artifact.extension = ""
         am.append(artifact.to_metadata())
         # output file path for file list (if it's not versioned)
         if not add_versions:
