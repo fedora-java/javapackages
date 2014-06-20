@@ -108,6 +108,8 @@ class AbstractArtifact(object):
         members = self.__get_members()
 
         for key in members:
+            if key == "extension" and members[key] == "jar":
+                continue
             if members[key]:
                 item = SubElement(root, key)
                 item.text = members[key]
