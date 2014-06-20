@@ -119,7 +119,6 @@ def add_artifact_elements(root, art, ppath=None, jpath=None):
                 art.extension = ext_backup
 
             art.path = os.path.abspath(path)
-            art.properties['xmvn.resolver.disableEffectivePom'] = 'true'
             a = art.to_metadata()
             artifacts.append(a)
 
@@ -270,7 +269,7 @@ if __name__ == "__main__":
     else:
         metadata = m.metadata()
 
-    if not options.skip_dependencies:
+    if not options.skip_dependencies and pom_path:
         deps = []
         mvn_deps = gather_dependencies(pom_path)
         for d in mvn_deps:
@@ -280,6 +279,8 @@ if __name__ == "__main__":
                 unavail_str = ';'.join([x.get_mvn_str() for x in unavail])
                 art.properties['maven.req.check.deps'] = unavail_str
         art.dependencies = set(deps)
+    else:
+        art.properties['xmvn.resolver.disableEffectivePom'] = 'true'
 
     add_artifact_elements(metadata, art, pom_path, jar_path)
 
