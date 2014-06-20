@@ -83,7 +83,7 @@ class Dependency(AbstractArtifact):
 
         parts = {'groupId': '',
                  'artifactId': '',
-                 'extension': '',
+                 'type': '',
                  'classifier': '',
                  'version': '',
                  'scope': '',
@@ -109,7 +109,7 @@ class Dependency(AbstractArtifact):
         for e in [Exclusion.from_xml_element(x) for x in excnodes]:
             exclusions.add(e)
 
-        return cls(parts['groupId'], parts['artifactId'], parts['extension'],
+        return cls(parts['groupId'], parts['artifactId'], parts['type'],
                    parts['classifier'], parts['version'], parts['scope'],
                    parts['optional'], exclusions)
 
