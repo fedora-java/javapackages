@@ -6,7 +6,7 @@ if [[ ${nose_version} -ge 1 ]]; then
     xunit_param="--with-xunit"
 fi
 
-PYTHONPATH="../python" nosetests ${xunit_param} --exclude="(maven_prov)|(maven_depmap)|(mvn_artifact)_test.py"
+PYTHONPATH="../python" nosetests ${xunit_param}
 
 exit $?
 
