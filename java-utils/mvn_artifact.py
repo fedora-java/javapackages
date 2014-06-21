@@ -171,11 +171,31 @@ def merge_sections(main, update):
             main.append(upd)
 
 
+def get_model_variables(pom):
+    props = {}
+    if pom.groupId:
+        props['project.groupId'] = pom.groupId
+    if pom.artifactId:
+        props['project.artifactId'] = pom.artifactId
+    if pom.version:
+        props['project.version'] = pom.version
+    return props
+
+
+def expand_props(deps, props):
+    for d in deps:
+        d.interpolate(props)
+
+
 def gather_dependencies(pom_path):
     if not pom_path:
         return []
     pom = POM(pom_path)
+    pom_props = get_model_variables(pom)
     deps, depm, props = _get_dependencies(pom)
+    # expand project model variables
+    expand_props(deps, pom_props)
+    expand_props(depm, pom_props)
 
     parent = pom.parent
     while parent:
@@ -190,7 +210,10 @@ def gather_dependencies(pom_path):
             ppom = get_parent_pom(parent)
 
         parent = ppom.parent
+        pom_props = get_model_variables(ppom)
         pdeps, pdepm, pprops = _get_dependencies(ppom)
+        expand_props(pdeps, pom_props)
+        expand_props(pdepm, pom_props)
 
         # merge "dependencies" sections
         merge_sections(deps, pdeps)
@@ -202,6 +225,12 @@ def gather_dependencies(pom_path):
             if pkey not in props:
                 props[pkey] = pprops[pkey]
 
+    for d in deps:
+        d.interpolate(props)
+
+    for dm in depm:
+        dm.interpolate(props)
+
     # apply dependencyManagement on deps
     for d in deps:
         for dm in depm:
@@ -211,9 +240,6 @@ def gather_dependencies(pom_path):
 
     # only deps with scope "compile" or "runtime" are interesting
     deps = [x for x in deps if x.scope in ["", "compile", "runtime"]]
-
-    for d in deps:
-        d.interpolate(props)
 
     return deps
 
