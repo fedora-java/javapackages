@@ -255,7 +255,7 @@ class TagBuilder(object):
 
     def print_mvn_requires(self, path):
         metadata = Metadata(path)
-        skipped_but_required = self.check_deps(metadata)
+        skipped_but_required = []
         requires = set()
 
         for provided in metadata.get_provided_artifacts():
@@ -265,7 +265,7 @@ class TagBuilder(object):
             else:
                 requires.add("jpackage-utils")
 
-        unknown_deps = []
+        unknown_deps = self.check_deps(metadata)
         for dependency in metadata.get_required_artifacts():
             if dependency.requestedVersion == "UNKNOWN":
                 unknown_deps.append(dependency)
