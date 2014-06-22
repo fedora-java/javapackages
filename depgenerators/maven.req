@@ -123,10 +123,9 @@ class TagBuilder(object):
         # try to generate R from POM only (sub)packages
         if os.path.exists(XMvnResolve._load_path_from_config()):
             if is_it_pom_only_pkg(paths[0]):
-                poms = self.__find_poms_for_metadata(ppaths, paths[0])
-                for p in poms:
-                    self.__generate_requires_from_pom(p)
-
+                poms, pom_arts = self.__find_poms_for_metadata(ppaths, paths[0])
+                for i, p in enumerate(poms):
+                    self.__generate_requires_from_pom(p, pom_arts[i])
 
         for path in paths:
             if path.endswith(".pom"):
@@ -136,6 +135,7 @@ class TagBuilder(object):
     # TODO: move functions like this to some POMUtils, or similar module
     def __find_poms_for_metadata(self, pom_paths, metadata_path):
         poms = []
+        artifacts = []
         depmap = Metadata([metadata_path])
         provided = depmap.get_provided_artifacts()
         for prov in provided:
@@ -146,10 +146,11 @@ class TagBuilder(object):
                     pom.version == prov.version):
 
                     poms.append(pom)
+                    artifacts.append(prov)
                     break
-        return poms
+        return poms, artifacts
 
-    def __generate_requires_from_pom(self, pom):
+    def __generate_requires_from_pom(self, pom, pom_artifact):
         plugins = pom.plugins
         extensions = pom.extensions
         pgid = pom.parentGroupId
@@ -164,19 +165,23 @@ class TagBuilder(object):
             reqs.append(ResolutionRequest(d.groupId, d.artifactId, version=d.version))
         results = XMvnResolve.process_raw_request(reqs)
         for i, r in enumerate(results):
-            dep = MetadataDependency(deps[i].groupId, deps[i].artifactId, requestedVersion=deps[i].version)
-            if not r:
-                unresolvable.append(dep)
-                continue
-            if r.compatVersion != "SYSTEM":
-                dep.resolvedVersion = r.compatVersion
-            if r.namespace:
-                dep.namespace = r.namespace
+            dep = MetadataDependency(deps[i].groupId, deps[i].artifactId,
+                                     requestedVersion=deps[i].version)
             dver = dep.is_provided_by(self.provided_artifacts)[1]
             if dver is not None:
-                print(dep.get_rpm_str(pkgver=dver))
+                print(dep.get_rpm_str(pkgver=dver, namespace=pom_artifact.namespace))
+            elif r:
+                if r.compatVersion != "SYSTEM":
+                    dep.resolvedVersion = r.compatVersion
+                if r.namespace:
+                    dep.namespace = r.namespace
+                if dver is not None:
+                    print(dep.get_rpm_str(pkgver=dver))
+                    continue
+                print(dep.get_rpm_str())
+            else:
+                unresolvable.append(dep)
                 continue
-            print(dep.get_rpm_str())
 
         if paid:
             if not pver:
@@ -188,17 +193,16 @@ class TagBuilder(object):
             dep = MetadataDependency(pgid, paid, requestedVersion=pver, extension="pom")
 
             dver = dep.is_provided_by(self.provided_artifacts)[1]
-            if not r:
-                unresolvable.append(dep)
-            else:
+            if dver is not None:
+                print(dep.get_rpm_str(pkgver=dver, namespace=pom_artifact.namespace))
+            elif r:
                 if r.compatVersion != "SYSTEM":
                     dep.resolvedVersion = r.compatVersion
                 if r.namespace:
                     dep.namespace = r.namespace
-                if dver is not None:
-                    print(dep.get_rpm_str(pkgver=dver))
-                else:
-                    print(dep.get_rpm_str())
+                print(dep.get_rpm_str())
+            else:
+                unresolvable.append(dep)
 
         if unresolvable:
             raise Exception("Unable to generate requires on unresolvable artifacts: {}"
