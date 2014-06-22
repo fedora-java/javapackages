@@ -150,8 +150,8 @@ class TagBuilder(object):
         return poms
 
     def __generate_requires_from_pom(self, pom):
-        plugins = list(pom.get_plugins())
-        extensions = list(pom.get_extensions())
+        plugins = pom.plugins
+        extensions = pom.extensions
         pgid = pom.parentGroupId
         paid = pom.parentArtifactId
         pver = pom.parentVersion
@@ -164,11 +164,7 @@ class TagBuilder(object):
             reqs.append(ResolutionRequest(d.groupId, d.artifactId, version=d.version))
         results = XMvnResolve.process_raw_request(reqs)
         for i, r in enumerate(results):
-            dep = Dependency(deps[i].groupId, deps[i].artifactId, requestedVersion=deps[i].version)
-            dver = self.__is_provided_by_subpackage(dep)
-            if dver is not None:
-                print("{rpmstr} = {version}".format(rpmstr=dep.get_rpm_str(), version=dver))
-                continue
+            dep = MetadataDependency(deps[i].groupId, deps[i].artifactId, requestedVersion=deps[i].version)
             if not r:
                 unresolvable.append(dep)
                 continue
@@ -176,6 +172,10 @@ class TagBuilder(object):
                 dep.resolvedVersion = r.compatVersion
             if r.namespace:
                 dep.namespace = r.namespace
+            dver = dep.is_provided_by(self.provided_artifacts)[1]
+            if dver is not None:
+                print(dep.get_rpm_str(pkgver=dver))
+                continue
             print(dep.get_rpm_str())
 
         if paid:
@@ -185,24 +185,24 @@ class TagBuilder(object):
 
             req = ResolutionRequest(pgid, paid, extension="pom")
             r = XMvnResolve.process_raw_request([req])[0]
-            dep = Dependency(pgid, paid, pver, extension="pom")
+            dep = MetadataDependency(pgid, paid, requestedVersion=pver, extension="pom")
 
-            dver = self.__is_provided_by_subpackage(dep)
-            if dver is not None:
-                print("{rpmstr} = {version}".format(rpmstr=dep.get_rpm_str(), version=dver))
-            elif not r:
+            dver = dep.is_provided_by(self.provided_artifacts)[1]
+            if not r:
                 unresolvable.append(dep)
             else:
                 if r.compatVersion != "SYSTEM":
                     dep.resolvedVersion = r.compatVersion
                 if r.namespace:
                     dep.namespace = r.namespace
-                print(dep.get_rpm_str())
+                if dver is not None:
+                    print(dep.get_rpm_str(pkgver=dver))
+                else:
+                    print(dep.get_rpm_str())
 
         if unresolvable:
             raise Exception("Unable to generate requires on unresolvable artifacts: {}"
                             .format(", ".join([x.get_mvn_str() for x in unresolvable])))
-
 
     def __generate_java_requires(self, metadata):
         requires = set()
