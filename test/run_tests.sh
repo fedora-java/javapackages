@@ -6,7 +6,7 @@ if [[ ${nose_version} -ge 1 ]]; then
     xunit_param="--with-xunit"
 fi
 
-PYTHONPATH="../python" nosetests ${xunit_param}
+PYTHONPATH="../python" nosetests ${xunit_param} --exclude="mvn_alias_test.py"
 
 exit $?
 
