@@ -152,12 +152,7 @@ def resolve_deps(deps):
                                       version=d.requestedVersion))
     results = XMvnResolve.process_raw_request(reqs)
     for i, r in enumerate(results):
-        if r:
-            if r.compatVersion and r.compatVersion != "SYSTEM":
-                deps[i].resolvedVersion = r.compatVersion
-            if r.namespace:
-                deps[i].namespace = r.namespace
-        else:
+        if not r:
             unresolvable.append(deps[i])
     return unresolvable
 
