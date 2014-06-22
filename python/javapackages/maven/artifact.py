@@ -108,7 +108,9 @@ class AbstractArtifact(object):
         members = self.__get_members()
 
         for key in members:
-            if key == "extension" and members[key] == "jar":
+            if (key == "extension" and members[key] == "jar"
+               and hasattr(self, "_default_extension")
+               and getattr(self, "_default_extension") is True):
                 continue
             if members[key]:
                 item = SubElement(root, key)
@@ -239,6 +241,10 @@ class Artifact(AbstractArtifact):
         self.extension = extension.strip() or "jar"
         self.classifier = classifier.strip()
         self.version = version.strip()
+
+        self._default_extension = True
+        if extension:
+            self._default_extension = False
 
     @classmethod
     def merge_artifacts(cls, dominant, recessive):
