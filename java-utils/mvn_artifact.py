@@ -39,6 +39,7 @@ from javapackages.metadata.dependency import MetadataDependency
 
 from javapackages.maven.artifact import Artifact, ArtifactFormatException
 from javapackages.maven.pom import POM, PomLoadingException
+from javapackages.ivy.ivyfile import IvyFile
 
 from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionResult, ResolutionRequest
 
@@ -279,7 +280,11 @@ if __name__ == "__main__":
             parser.error("Defined artifact has to include at least groupId, "
                          "artifactId and version")
     except (ArtifactFormatException):
-        uart = POM(args[0])
+        if is_it_ivy_file(args[0]):
+            uart = IvyFile(args[0])
+        else:
+            # it should be good old POM file
+            uart = POM(args[0])
         pom_path = args[0]
     else:
         pom_path = None
@@ -307,7 +312,8 @@ if __name__ == "__main__":
     else:
         metadata = m.metadata()
 
-    if not options.skip_dependencies and pom_path:
+    if (not options.skip_dependencies and pom_path
+       and not is_it_ivy_file(pom_path)):
         deps = []
         mvn_deps = gather_dependencies(pom_path)
         for d in mvn_deps:
