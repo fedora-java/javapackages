@@ -195,9 +195,8 @@ class TestMavenReq(unittest.TestCase):
     def test_deps_from_pom(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        want = ("mvn(org.apache.maven.plugins:maven-compiler-plugin)", "java-headless",
-                "mvn(org.apache.maven.plugins:maven-release-plugin)", "jpackage-utils",
-                "mvn(org.apache.maven.scm:maven-scm-provider-gitexe)",
+        want = ("mvn(org.apache.maven.plugins:maven-compiler-plugin)",
+                "java-headless", "jpackage-utils",
                 "mvn(org.apache.maven.scm:maven-scm-manager-plexus)")
         self.assertEquals(set(want), set(sout))
 
