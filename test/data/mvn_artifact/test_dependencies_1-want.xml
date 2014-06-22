@@ -11,13 +11,13 @@
             <ns1:dependency>
                <ns1:groupId>org.fedoraproject.xmvn</ns1:groupId>
                <ns1:artifactId>xmvn-resolve</ns1:artifactId>
-               <ns1:extension>jar</ns1:extension>
+               <ns1:extension>pom</ns1:extension>
                <ns1:requestedVersion>2.0.1</ns1:requestedVersion>
             </ns1:dependency>
             <ns1:dependency>
                <ns1:groupId>org.fedoraproject.xmvn</ns1:groupId>
                <ns1:artifactId>xmvn-resolve</ns1:artifactId>
-               <ns1:extension>pom</ns1:extension>
+               <ns1:extension>jar</ns1:extension>
                <ns1:requestedVersion>2.0.1</ns1:requestedVersion>
             </ns1:dependency>
          </ns1:dependencies>
