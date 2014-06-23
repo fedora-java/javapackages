@@ -52,8 +52,8 @@ cp -pr api/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 The same specfile migrated to `%mvn_artifact` and `%mvn_install`
 [source,spec]
 --------
-# mvn_* macros are located in maven-local package
-BuildRequires:  maven-local
+# mvn_* macros are located in javapackages-local package
+BuildRequires:  javapackages-local
 
 # Since XMvn generates requires automatically, it is no longer needed
 # nor recommended to specify manual Requires tags, unless the dependency
