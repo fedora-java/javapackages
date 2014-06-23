@@ -5,7 +5,7 @@ import subprocess
 import sys
 import unittest
 
-import javapackages.metadata as m
+import javapackages.metadata.pyxbmetadata as m
 from os import path
 from test_rpmbuild import Package
 from xml_compare import compare_xml_files

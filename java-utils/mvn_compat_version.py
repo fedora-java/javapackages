@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2013, Red Hat, Inc
+# Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -33,16 +33,17 @@
 import optparse
 import sys
 
-from javapackages.artifact import (Artifact, ArtifactFormatException,
-                                   ArtifactValidationException)
-from javapackages.xmvn_config import XMvnConfig
+from javapackages.maven.artifact import (Artifact, ArtifactFormatException,
+                                         ArtifactValidationException)
+from javapackages.xmvn.xmvn_config import XMvnConfig
+
 
 class SaneParser(optparse.OptionParser):
     def format_epilog(self, formatter):
         return self.epilog
 
-usage="usage: %prog [options] <MVN spec> version1 [version2 ...]"
-epilog="""
+usage = "usage: %prog [options] <MVN spec> version1 [version2 ...]"
+epilog = """
 MVN spec:
 Specification of Maven artifact in following format:
 

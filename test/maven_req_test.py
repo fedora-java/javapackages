@@ -145,8 +145,7 @@ class TestMavenReq(unittest.TestCase):
         self.assertNotEqual(stderr, '')
         lines = stderr.split('\n')
         self.assertEquals(True, len(lines) > 1)
-        print stderr
-        self.assertEquals(lines[-5], 'org.codehaus.plexus:plexus-ant-factory:::1.0 ' \
+        self.assertEquals(lines[-5], 'org.codehaus.plexus:plexus-ant-factory:1.0 ' \
                                      'required by org.apache.commons-lang:commons-lang')
 
     # rhbz#1017701 comment 2
@@ -192,31 +191,30 @@ class TestMavenReq(unittest.TestCase):
                 "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)")
         self.assertEquals(set(want), set(sout))
 
-    #@mavenreq(["require2/maven-metadata/require.xml"])
-    #def test_deps_from_pom(self, stdout, stderr, return_value):
-    #    self.assertEquals(return_value, 0, stderr)
-    #    sout = [x for x in stdout.split('\n') if x]
-    #    want = ("mvn(org.apache.maven.plugins:maven-compiler-plugin)", "java-headless",
-    #            "mvn(org.apache.maven.plugins:maven-release-plugin)", "jpackage-utils",
-    #            "mvn(org.apache.maven.scm:maven-scm-provider-gitexe)",
-    #            "mvn(org.apache.maven.scm:maven-scm-manager-plexus)")
-    #    self.assertEquals(set(want), set(sout))
+    @mavenreq(["require2/maven-metadata/require.xml"])
+    def test_deps_from_pom(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("mvn(org.apache.maven.plugins:maven-compiler-plugin)",
+                "java-headless", "jpackage-utils",
+                "mvn(org.apache.maven.scm:maven-scm-manager-plexus)")
+        self.assertEquals(set(want), set(sout))
 
-    #@mavenreq(["require3/maven-metadata/require.xml"])
-    #def test_deps_from_pom_with_parent(self, stdout, stderr, return_value):
-    #    self.assertEquals(return_value, 0, stderr)
-    #    sout = [x for x in stdout.split('\n') if x]
-    #    want = ("mvn(org.apache.maven.plugins:maven-plugin-plugin)", "jpackage-utils",
-    #            "mvn(org.apache.maven:maven-parent:pom:)", "java-headless")
-    #    self.assertEquals(set(want), set(sout))
+    @mavenreq(["require3/maven-metadata/require.xml"])
+    def test_deps_from_pom_with_parent(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("mvn(org.apache.maven.plugins:maven-plugin-plugin)", "jpackage-utils",
+                "mvn(org.apache.maven:maven-parent:pom:)", "java-headless")
+        self.assertEquals(set(want), set(sout))
 
-    #@mavenreq(["require4/maven-metadata/require.xml"])
-    #def test_deps_from_pom_on_subpkg(self, stdout, stderr, return_value):
-    #    self.assertEquals(return_value, 0, stderr)
-    #    sout = [x for x in stdout.split('\n') if x]
-    #    want = ("mvn(org.apache.maven.plugins:maven-plugin-plugin)", "jpackage-utils",
-    #            "mvn(org.fedoraproject.xmvn:xmvn-api:pom:) = 1.0", "java-headless")
-    #    self.assertEquals(set(want), set(sout))
+    @mavenreq(["require4/maven-metadata/require.xml"])
+    def test_deps_from_pom_on_subpkg(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("mvn(org.apache.maven.plugins:maven-plugin-plugin)", "jpackage-utils",
+                "mvn(org.fedoraproject.xmvn:xmvn-api:pom:) = 1.0", "java-headless")
+        self.assertEquals(set(want), set(sout))
 
 if __name__ == '__main__':
     unittest.main()

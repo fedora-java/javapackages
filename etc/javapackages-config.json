@@ -18,5 +18,8 @@
         "always_generate": [
             "jpackage-utils"
         ]
+    },
+    "xmvn-resolve": {
+        "path": "/usr/bin/xmvn-resolve"
     }
 }

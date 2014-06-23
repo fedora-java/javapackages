@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2013, Red Hat, Inc
+# Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -33,14 +33,15 @@
 import sys
 import optparse
 
-from javapackages.xmvn_config import XMvnConfig
+from javapackages.xmvn.xmvn_config import XMvnConfig
+
 
 class SaneParser(optparse.OptionParser):
     def format_epilog(self, formatter):
         return self.epilog
 
-usage="usage: %prog [options] <optionstr> <content>"
-epilog="""
+usage = "usage: %prog [options] <optionstr> <content>"
+epilog = """
 Add custom configuration option
 
 optionstr -- XPath-like expression for specifying XMvn configuration

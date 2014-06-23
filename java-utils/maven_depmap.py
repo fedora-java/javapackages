@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2012-2013, Red Hat, Inc
+# Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -36,10 +36,6 @@
 # rpm macro expects to find this file as %{_javadir}-utils/maven_depmap.py
 
 
-# TODO:
-# add back support for:
-# - prefixes
-
 from optparse import OptionParser
 import os
 import shutil
@@ -50,8 +46,11 @@ from os.path import basename
 import zipfile
 from time import gmtime, strftime
 
-from javapackages.artifact import ProvidedArtifact, Alias, POM
-import javapackages.metadata as m
+from javapackages.maven.pom import POM
+from javapackages.metadata.artifact import MetadataArtifact
+from javapackages.metadata.alias import MetadataAlias
+
+import javapackages.metadata.pyxbmetadata as m
 import pyxb
 
 
@@ -136,6 +135,7 @@ def append_if_missing(archive_name, file_name, file_contents):
     finally:
         archive.close()
 
+
 # Inject pom.properties if JAR doesn't have one.  This is necessary to
 # identify the origin of JAR files that are present in the repository.
 def inject_pom_properties(jar_path, artifact):
@@ -158,12 +158,14 @@ artifactId={a.artifactId}
 
     append_if_missing(jar_path, props_path, properties)
 
+
 def add_compat_versions(artifact, versions):
     if not versions:
         return artifact
 
     artifact.compatVersions = versions.split(',')
     return artifact
+
 
 def add_aliases(artifact, additions):
     if not additions:
@@ -172,15 +174,13 @@ def add_aliases(artifact, additions):
     aliases = additions.split(',')
     result = set()
     for a in aliases:
-        alias = Alias.from_mvn_str(a)
-        a_ext = artifact.extension or "jar"
-        if alias.artifact.extension and alias.artifact.extension != a_ext:
-            raise ExtensionsDontMatch(alias.artifact.extension, a_ext)
-        alias.artifact.extension = artifact.extension
+        alias = MetadataAlias.from_mvn_str(a)
+        alias.extension = artifact.extension
         result.add(alias)
 
     artifact.aliases = result
     return artifact
+
 
 def write_metadata(metadata_file, artifacts):
     if os.path.exists(metadata_file):
@@ -210,9 +210,6 @@ if __name__ == "__main__":
                       help='Additional versions to add for each depmap')
     parser.add_option('-n', '--namespace', type="str",
                       help='Namespace to use for generated fragments', default="")
-    parser.add_option('-p', '--prefix', type="str",
-                      help='Prefix where artifacts are expected to be installed', default="/")
-
 
     parser.set_defaults(append=None)
 
@@ -220,7 +217,6 @@ if __name__ == "__main__":
     append_deps = options.append
     add_versions = options.versions
     namespace = options.namespace
-    prefix = options.prefix
 
     if len(args) < 2:
         parser.error("Incorrect number of arguments")
@@ -238,7 +234,7 @@ if __name__ == "__main__":
         fragment = None
         if ':' in pom_path:
             pom_str = pom_path.rsplit('/')[-1]
-            artifact = ProvidedArtifact.from_mvn_str(pom_str)
+            artifact = MetadataArtifact.from_mvn_str(pom_str)
             artifact_ext = artifact.extension or "jar"
             file_ext = os.path.splitext(jar_path)[1][1:]
             if artifact_ext != file_ext:
@@ -250,7 +246,7 @@ if __name__ == "__main__":
             if not artifact.version:
                 parser.error("Artifact definition has to include version")
         else:
-            artifact = ProvidedArtifact.from_pom(pom_path)
+            artifact = MetadataArtifact.from_pom(pom_path)
             ext = os.path.splitext(jar_path)[1][1:]
             if ext != "jar":
                 artifact.extension = ext
@@ -260,7 +256,7 @@ if __name__ == "__main__":
     else:
         # looks like POM only artifact
         if ':' not in pom_path:
-            artifact = ProvidedArtifact.from_pom(pom_path)
+            artifact = MetadataArtifact.from_pom(pom_path)
             have_pom = True
 
             if POM(pom_path).packaging != "pom":
@@ -289,6 +285,8 @@ if __name__ == "__main__":
         metadata_jar_path = os.path.abspath(jar_path)
         artifact.path = metadata_jar_path.replace(buildroot, "") if buildroot else metadata_jar_path
         artifact = add_aliases(artifact, append_deps)
+        if artifact.extension == "jar":
+            artifact.extension = ""
         am.append(artifact.to_metadata())
         # output file path for file list (if it's not versioned)
         if not add_versions:

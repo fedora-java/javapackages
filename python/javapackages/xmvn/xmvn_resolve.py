@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2014, Red Hat, Inc
+# Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,21 +30,35 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
+from javapackages.common.config import get_configs
 
 import subprocess
 import lxml.etree
-from artifact import Artifact
+import os
 
 
 class XMvnResolve(object):
     # TODO:
-    # - do not hardcode path to xmvn-resolve
     # - documentation
 
     @staticmethod
+    def _load_path_from_config():
+        configs = get_configs()
+        path = None
+        for config in configs:
+            path = config.get('path', "")
+            if os.path.exists(path):
+                break
+        if not path:
+            # default path
+            path = "/usr/bin/xmvn-resolve"
+        return path
+
+    @staticmethod
     def process_raw_request(raw_request_list):
+        binpath = XMvnResolve._load_path_from_config()
         request = XMvnResolve.__join_raw_requests(raw_request_list)
-        procargs = ['/usr/bin/xmvn-resolve', '--raw-request']
+        procargs = [binpath, '--raw-request']
         proc = subprocess.Popen(procargs, shell=False, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
         stdout = proc.communicate(input=request)[0]
         proc.wait()
@@ -69,18 +83,28 @@ class XMvnResolve(object):
         for node in nodes:
             if len(node) > 0:
                 ns = node.find('./namespace')
+                if ns is not None:
+                    ns = ns.text
                 compat_ver = node.find('./compatVersion')
-                results.append(ResolutionResult(ns.text or "",
-                                                compat_ver.text or ""))
+                if compat_ver is not None:
+                    compat_ver = compat_ver.text
+                path = node.find('./artifactPath')
+                if path is not None:
+                    path = path.text
+                res = ResolutionResult(namespace=ns or "",
+                                       compatVersion=compat_ver or "",
+                                       path=path or "")
+                results.append(res)
             else:
                 results.append(None)
         return results
 
 
 class ResolutionResult(object):
-    def __init__(self, namespace="", compatVersion=""):
+    def __init__(self, namespace="", compatVersion="", path=""):
         self.namespace = namespace
         self.compatVersion = compatVersion
+        self.artifactPath = path
 
     def __str__(self):
         return "version:" + self.compatVersion + "namespace: " + self.namespace

@@ -8,3 +8,6 @@ class TestJavadocReq(unittest.TestCase):
     def test_javadoc(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         self.assertEqual('jpackage-utils\n', stdout)
+
+if __name__ == '__main__':
+    unittest.main()

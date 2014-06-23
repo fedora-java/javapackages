@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2013, Red Hat, Inc
+# Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
 #    notice, this list of conditions and the following disclaimer in the
 #    documentation and/or other materials provided with the
 #    distribution.
-# 3. Neither the name of Red Hat nor the names of its
+# 3. Neither the name of the Red Hat nor the names of its
 #    contributors may be used to endorse or promote products derived
 #    from this software without specific prior written permission.
 #
@@ -29,6 +29,8 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
+#           Michal Srb <msrb@redhat.com>
+
 from __future__ import print_function
 
 import gzip
@@ -36,11 +38,14 @@ import logging
 import os.path
 import xml
 
-from javapackages.artifact import (Artifact, Dependency, ProvidedArtifact,
-                                   SkippedArtifact, ExclusionArtifact)
+from artifact import MetadataArtifact
+from dependency import MetadataDependency
+from skippedartifact import MetadataSkippedArtifact
+from exclusion import MetadataExclusion
+
 import pyxb
 
-import javapackages.metadata as metadata
+import pyxbmetadata as m
 from xml.dom.minidom import getDOMImplementation
 
 
@@ -50,19 +55,7 @@ class MetadataLoadingException(Exception):
 class MetadataInvalidException(Exception):
     pass
 
-class Depmap(object):
-    """
-    Class for working with depmap files (dependency maps). These are files used
-    by XMvn to provide mapping between Maven artifacts and file on the
-    filesystem.
-
-    Example usage:
-    >>> d = Depmap('maven-idea-plugin.xml')
-    >>> print d.get_java_requires()
-    1.5
-    >>> print d.get_provided_artifacts()[0]
-    org.apache.maven.plugins:maven-idea-plugin:None:None:2.2
-    """
+class Metadata(object):
 
     def __init__(self, path):
         if type(path) == list:
@@ -91,19 +84,19 @@ class Depmap(object):
                                     fileobj=f)
                 data = gzf.read()
             except IOError:
-                # not a compressed fragment, just rewind and read the data
+                # not a compressed metadata, just rewind and read the data
                 f.seek(0)
                 data = f.read()
 
-            self.__metadata.append(metadata.CreateFromDocument(data))
+            self.__metadata.append(m.CreateFromDocument(data))
 
     def get_provided_artifacts(self):
-        """Returns list of Artifact provided by given depmap."""
+        """Returns list of Artifact provided by given metadata."""
 
         artifacts = []
-        for m in self.__metadata:
-            for a in m.artifacts.artifact:
-                artifact = ProvidedArtifact.from_metadata(a)
+        for metadata in self.__metadata:
+            for a in metadata.artifacts.artifact:
+                artifact = MetadataArtifact.from_metadata(a)
                 if not artifact.version:
                     raise MetadataInvalidException("Artifact {a} does not have version in maven provides".format(a=artifact))
                 artifacts.append(artifact)
@@ -111,34 +104,34 @@ class Depmap(object):
 
 
     def get_required_artifacts(self):
-        """Returns list of Artifact required by given depmap."""
+        """Returns list of Artifact required by given metadata."""
         artifacts = set()
-        for m in self.__metadata:
-            for a in m.artifacts.artifact:
+        for metadata in self.__metadata:
+            for a in metadata.artifacts.artifact:
                 if not a.dependencies:
                     continue
 
                 for dep in a.dependencies.dependency:
-                    artifacts.add(Dependency.from_metadata(dep))
+                    artifacts.add(MetadataDependency.from_metadata(dep))
 
         return sorted(list(artifacts))
 
     def get_skipped_artifacts(self):
         """Returns list of Artifact that were build but not installed"""
         artifacts = set()
-        for m in self.__metadata:
-            if not m.skippedArtifacts:
+        for metadata in self.__metadata:
+            if not metadata.skippedArtifacts:
                 continue
-            for dep in m.skippedArtifacts.skippedArtifact:
-                artifact = SkippedArtifact.from_metadata(dep)
+            for dep in metadata.skippedArtifacts.skippedArtifact:
+                artifact = MetadataSkippedArtifact.from_metadata(dep)
                 artifacts.add(artifact)
         return sorted(list(artifacts))
 
     def get_excluded_artifacts(self):
         """Returns list of Artifacts that should be skipped for requires"""
         artifacts = set()
-        for m in self.__metadata:
-            for a in m.artifacts.artifact:
+        for metadata in self.__metadata:
+            for a in metadata.artifacts.artifact:
                 if not a.dependencies:
                     continue
 
@@ -147,36 +140,27 @@ class Depmap(object):
                         continue
 
                     for exclusion in dep.exclusions.exclusion:
-                        artifact = ExclusionArtifact.from_metadata(exclusion)
+                        artifact = MetadataExclusion.from_metadata(exclusion)
                 artifacts.add(artifact)
         return sorted(list(artifacts))
 
 
     def get_java_requires(self):
-        """Returns JVM version required by depmap or None"""
-        for m in self.__metadata:
-            if not m.properties:
+        """Returns JVM version required by metadata or None"""
+        for metadata in self.__metadata:
+            if not metadata.properties:
                 return None
-            for prop in m.properties.wildcardElements():
+            for prop in metadata.properties.wildcardElements():
                 if prop.tagName == u'requiresJava':
                     return prop.firstChild.value
         return None
 
     def get_java_devel_requires(self):
-        """Returns JVM development version required by depmap or None"""
-        for m in self.__metadata:
-            if not m.properties:
+        """Returns JVM development version required by metadata or None"""
+        for metadata in self.__metadata:
+            if not metadata.properties:
                 return None
-            for prop in m.properties.wildcardElements():
+            for prop in metadata.properties.wildcardElements():
                 if prop.tagName == u'requiresJavaDevel':
                     return prop.firstChild.value
         return None
-
-    @staticmethod
-    def build_property(name, value):
-        domimpl = getDOMImplementation()
-        doc = domimpl.createDocument(None, None, None)
-        elem = doc.createElement(name)
-        tnode = doc.createTextNode(value)
-        elem.appendChild(tnode)
-        return elem

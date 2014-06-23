@@ -135,5 +135,13 @@ class TestMavenProv(unittest.TestCase):
         assertIn(self, "mvn(regexp:regexp:pom:1.1) = 1.0", sout)
         assertIn(self, "mvn(regexp:regexp:pom:1.1.1) = 1.0", sout)
 
+    @mavenprov(["jar_extension.xml"])
+    def test_jar_extension(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        self.assertEquals(len(sout), 2)
+        assertIn(self, "mvn(args4j:args4j:pom:) = 2.0.16", sout)
+        assertIn(self, "mvn(args4j:args4j) = 2.0.16", sout)
+
 if __name__ == '__main__':
     unittest.main()

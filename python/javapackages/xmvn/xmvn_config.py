@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2013, Red Hat, Inc
+# Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ import errno
 import os
 import re
 
-from javapackages.artifact import ArtifactValidationException
+from javapackages.maven.artifact import ArtifactValidationException
 from lxml.etree import ElementTree, Element, SubElement
 import lxml
 
@@ -45,6 +45,7 @@ import lxml.etree as ET
 
 class XMvnConfigException(Exception):
     pass
+
 
 class XMvnConfig(object):
     """
@@ -108,14 +109,12 @@ class XMvnConfig(object):
                  encoding='utf-8',
                  method="xml",
                  pretty_print=True)
-        return  xmlbuf.getvalue()
-
+        return xmlbuf.getvalue()
 
     def __write_xml(self, path, root):
         xmlstr = self.__prettify_element(root)
         with codecs.open(path, 'w+', "utf-8") as fout:
             fout.write(xmlstr)
-
 
     def __add_config(self, level1, level2, level3=None, content=None):
         if not content:
@@ -172,7 +171,7 @@ class XMvnConfig(object):
         """
         artifact.validate(allow_backref=False)
         wild_groups = self.__count_wildcard_groups(artifact.get_rpm_str())
-        main = artifact.get_xml_element(root="artifactGlob")
+        main = artifact.get_xml_element(root_element_name="artifactGlob")
         elems = [main]
         aelem = Element("aliases")
         for alias in aliases:
@@ -182,7 +181,7 @@ class XMvnConfig(object):
                 raise ArtifactValidationException("Number of backrefenreces "
                                                   "is higher than wildcard "
                                                   "groups.")
-            aelem.append(alias.get_xml_element(root="alias"))
+            aelem.append(alias.get_xml_element(root_element_name="alias"))
         elems.append(aelem)
         self.__add_config("artifactManagement", "rule", content=elems)
 
@@ -195,7 +194,7 @@ class XMvnConfig(object):
         """
         artifact.validate(allow_backref=False)
         wild_groups = self.__count_wildcard_groups(artifact.get_rpm_str(artifact.version))
-        main = artifact.get_xml_element(root="artifactGlob")
+        main = artifact.get_xml_element(root_element_name="artifactGlob")
         elems = [main]
         velem = Element("versions")
         for version in versions:
@@ -218,7 +217,7 @@ class XMvnConfig(object):
         """
         artifact.validate(allow_backref=False)
         wild_groups = self.__count_wildcard_groups(artifact.get_rpm_str())
-        main = artifact.get_xml_element(root="artifactGlob")
+        main = artifact.get_xml_element(root_element_name="artifactGlob")
         elems = [main]
         felem = Element("files")
         if not [path for path in paths if not os.path.isabs(path)]:
@@ -243,7 +242,7 @@ class XMvnConfig(object):
         """
         artifact.validate(allow_backref=False)
         wild_groups = self.__count_wildcard_groups(artifact.get_rpm_str())
-        main = artifact.get_xml_element(root="artifactGlob")
+        main = artifact.get_xml_element(root_element_name="artifactGlob")
         backrefs = self.__count_backreferences(package)
         if backrefs > wild_groups:
             raise ArtifactValidationException("Number of backrefenreces "

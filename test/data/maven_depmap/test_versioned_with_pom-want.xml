@@ -9,6 +9,9 @@
             <ns1:version>2013.10</ns1:version>
          </ns1:compatVersions>
          <ns1:path>%s/usr/share/java/testversioned-2013.10.jar</ns1:path>
+         <ns1:properties>
+            <xmvn.resolver.disableEffectivePom>true</xmvn.resolver.disableEffectivePom>
+         </ns1:properties>
       </ns1:artifact>
       <ns1:artifact>
          <ns1:groupId>alias</ns1:groupId>
@@ -19,6 +22,9 @@
             <ns1:version>2013.10</ns1:version>
          </ns1:compatVersions>
          <ns1:path>%s/JPP-testversioned-2013.10.pom</ns1:path>
+         <ns1:properties>
+            <xmvn.resolver.disableEffectivePom>true</xmvn.resolver.disableEffectivePom>
+         </ns1:properties>
       </ns1:artifact>
    </ns1:artifacts>
 </ns1:metadata>

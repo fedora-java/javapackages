@@ -45,29 +45,14 @@
           <target>1.5</target>
          </configuration>
       </plugin>
-      <plugin>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <releaseProfiles>release</releaseProfiles>
-        </configuration>
-      </plugin>
-      <!-- plugin disabled by maintainer: org.apache.maven.plugins:maven-site-plugin -->
-      <!-- plugin disabled by maintainer: org.sonatype.plugins:nexus-staging-maven-plugin -->
-      <!-- plugin disabled by maintainer: org.codehaus.gmaven:gmaven-plugin -->
     </plugins>
 
     <extensions>
       <extension>
         <groupId>org.apache.maven.scm</groupId>
-        <artifactId>maven-scm-provider-gitexe</artifactId>
-        <version>1.3</version>
-      </extension>
-      <extension>
-        <groupId>org.apache.maven.scm</groupId>
         <artifactId>maven-scm-manager-plexus</artifactId>
         <version>1.3</version>
       </extension>
-      <!-- element removed by maintainer: pom:extension[pom:artifactId[text()='wagon-gitsite']] -->
     </extensions>
   </build>
     

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2013, Red Hat, Inc
+# Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
+
 from __future__ import print_function
 
 import os
@@ -36,27 +37,25 @@ import optparse
 import subprocess
 import sys
 
-from javapackages import Artifact
+from javapackages.maven.artifact import Artifact
+from javapackages.xmvn.xmvn_config import XMvnConfig
+
 
 def goal_callback(option, opt_str, value, parser):
-     assert value is None
-     value = []
+    assert value is None
+    value = []
 
-     for arg in parser.rargs:
-         if arg[:2] == "--" and len(arg) > 2:
-             break
-         if arg[:1] == "-" and len(arg) > 1:
-             break
-         value.append(arg)
+    for arg in parser.rargs:
+        if arg[:2] == "--" and len(arg) > 2:
+            break
+        if arg[:1] == "-" and len(arg) > 1:
+            break
+        value.append(arg)
 
-     del parser.rargs[:len(value)]
-     setattr(parser.values, option.dest, value)
+    del parser.rargs[:len(value)]
+    setattr(parser.values, option.dest, value)
 
-
-from javapackages.xmvn_config import XMvnConfig
-
-
-usage="usage: %prog [options] [-- maven-arguments]"
+usage = "usage: %prog [options] [-- maven-arguments]"
 
 if __name__ == "__main__":
     parser = optparse.OptionParser(usage=usage)
@@ -93,18 +92,17 @@ if __name__ == "__main__":
                       action="store_true",
                       help="Enable Maven debugging output (implies -d).")
 
-
     for index, arg in enumerate(sys.argv):
         sys.argv[index] = arg.decode(sys.getfilesystemencoding())
 
     (options, args) = parser.parse_args()
     xc = XMvnConfig()
 
-    base_goal="verify"
+    base_goal = "verify"
     mvn_args = ["xmvn", "--batch-mode"]
 
     if not options.bootstrap:
-         mvn_args.append("--offline")
+        mvn_args.append("--offline")
 
     if options.disable_effective_poms:
         mvn_args.append("-Dxmvn.compat=20-rpmbuild-raw")
@@ -118,7 +116,7 @@ if __name__ == "__main__":
     if options.force:
         mvn_args.append("-Dmaven.test.skip=true")
         xc.add_custom_option("buildSettings/skipTests", "true")
-        base_goal="package"
+        base_goal = "package"
 
     mvn_args.extend(args)
 
@@ -141,7 +139,7 @@ if __name__ == "__main__":
     if options.singleton:
         # make sure we don't install artifacts with non-empty classifiers
         xc.add_package_mapping(Artifact.from_mvn_str(":::*?:"), "__noinstall",
-                optional=True)
+                               optional=True)
         xc.add_package_mapping(Artifact.from_mvn_str(":{*}"), "@1")
 
     print("Executing:", " ".join(mvn_args), file=sys.stderr)

@@ -3,5 +3,5 @@ to upstream documentation where it makes sense
 
 TODO - write content
 
-.XMvn package relationships
-image:images/xmvn.svg["XMvn related packages",width=600]
+//.XMvn package relationships
+//image:images/xmvn.svg["XMvn related packages",width=600]
