@@ -15,8 +15,8 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
+        <groupId>org.fedoraproject.xmvn</groupId>
+        <artifactId>xmvn-core</artifactId>
         <executions>
           <execution>
             <id>generated-helpmojo</id>

@@ -195,24 +195,24 @@ class TestMavenReq(unittest.TestCase):
     def test_deps_from_pom(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        want = ("mvn(org.apache.maven.plugins:maven-compiler-plugin)",
+        want = ("mvn(org.fedoraproject.xmvn:xmvn-core)",
                 "java-headless", "jpackage-utils",
-                "mvn(org.apache.maven.scm:maven-scm-manager-plexus)")
+                "mvn(org.fedoraproject.xmvn:xmvn-api)")
         self.assertEquals(set(want), set(sout))
 
     @mavenreq(["require3/maven-metadata/require.xml"])
     def test_deps_from_pom_with_parent(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        want = ("mvn(org.apache.maven.plugins:maven-plugin-plugin)", "jpackage-utils",
-                "mvn(org.apache.maven:maven-parent:pom:)", "java-headless")
+        want = ("mvn(org.fedoraproject.xmvn:xmvn-core)", "jpackage-utils",
+                "mvn(org.fedoraproject.xmvn:xmvn-api:pom:)", "java-headless")
         self.assertEquals(set(want), set(sout))
 
     @mavenreq(["require4/maven-metadata/require.xml"])
     def test_deps_from_pom_on_subpkg(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        want = ("mvn(org.apache.maven.plugins:maven-plugin-plugin)", "jpackage-utils",
+        want = ("mvn(org.fedoraproject.xmvn:xmvn-core)", "jpackage-utils",
                 "mvn(org.fedoraproject.xmvn:xmvn-api:pom:) = 1.0", "java-headless")
         self.assertEquals(set(want), set(sout))
 
