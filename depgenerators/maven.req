@@ -125,7 +125,8 @@ class TagBuilder(object):
             if is_it_pom_only_pkg(paths[0]):
                 poms, pom_arts = self.__find_poms_for_metadata(ppaths, paths[0])
                 for i, p in enumerate(poms):
-                    self.__generate_requires_from_pom(p, pom_arts[i])
+                    mdata = Metadata(paths[0])
+                    self.__generate_requires_from_pom(p, pom_arts[i], mdata.get_provided_artifacts())
 
         for path in paths:
             if path.endswith(".pom"):
@@ -150,7 +151,7 @@ class TagBuilder(object):
                     break
         return poms, artifacts
 
-    def __generate_requires_from_pom(self, pom, pom_artifact):
+    def __generate_requires_from_pom(self, pom, pom_artifact, pkg_arts):
         plugins = pom.plugins
         extensions = pom.extensions
         pgid = pom.parentGroupId
@@ -169,7 +170,8 @@ class TagBuilder(object):
                                      requestedVersion=deps[i].version)
             dver = dep.is_provided_by(self.provided_artifacts)[1]
             if dver is not None:
-                print(dep.get_rpm_str(pkgver=dver, namespace=pom_artifact.namespace))
+                if not dep.is_provided_by(pkg_arts)[0]:
+                    print(dep.get_rpm_str(pkgver=dver, namespace=pom_artifact.namespace))
             elif r:
                 if r.compatVersion != "SYSTEM":
                     dep.resolvedVersion = r.compatVersion
@@ -194,7 +196,8 @@ class TagBuilder(object):
 
             dver = dep.is_provided_by(self.provided_artifacts)[1]
             if dver is not None:
-                print(dep.get_rpm_str(pkgver=dver, namespace=pom_artifact.namespace))
+                if not dep.is_provided_by(pkg_arts)[0]:
+                    print(dep.get_rpm_str(pkgver=dver, namespace=pom_artifact.namespace))
             elif r:
                 if r.compatVersion != "SYSTEM":
                     dep.resolvedVersion = r.compatVersion
