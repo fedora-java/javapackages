@@ -94,3 +94,7 @@ achieve the same things with `%mvn_*` macros, see <<mvn_alias,
 Additional Mappings>> and <<mvn_package,Assignment of the Maven
 Artifacts to the Subpackages>>.
 
+[TIP]
+======
+If project consists of multiple artifacts and parent POMs are among them, call `%mvn_artifact` on these parent POMs first.
+======
