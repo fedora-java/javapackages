@@ -95,11 +95,12 @@ class Metadata(object):
 
         artifacts = []
         for metadata in self.__metadata:
-            for a in metadata.artifacts.artifact:
-                artifact = MetadataArtifact.from_metadata(a)
-                if not artifact.version:
-                    raise MetadataInvalidException("Artifact {a} does not have version in maven provides".format(a=artifact))
-                artifacts.append(artifact)
+            if metadata.artifacts and metadata.artifacts.artifact:
+                for a in metadata.artifacts.artifact:
+                    artifact = MetadataArtifact.from_metadata(a)
+                    if not artifact.version:
+                        raise MetadataInvalidException("Artifact {a} does not have version in maven provides".format(a=artifact))
+                    artifacts.append(artifact)
         return artifacts
 
 
