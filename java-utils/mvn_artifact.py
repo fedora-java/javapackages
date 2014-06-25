@@ -258,6 +258,8 @@ if __name__ == "__main__":
                         epilog=epilog)
     parser.add_option("--skip-dependencies", action="store_true", default=False,
                       help="skip dependencies section in resulting metadata")
+    parser.add_option("-D", action="append", type="str",
+                      help="add artifact property", metavar="property=value")
     for index, arg in enumerate(sys.argv):
         sys.argv[index] = arg.decode(sys.getfilesystemencoding())
 
@@ -320,6 +322,11 @@ if __name__ == "__main__":
         art.dependencies = set(deps)
     else:
         art.properties['xmvn.resolver.disableEffectivePom'] = 'true'
+
+    if options.D:
+        for d_opt in options.D:
+            key, value = d_opt.split('=')
+            art.properties[key] = value
 
     add_artifact_elements(metadata, art, pom_path, jar_path)
 

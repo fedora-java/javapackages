@@ -26,6 +26,9 @@ OPTIONS
 *--skip-dependencies*::
     Do not try to gather list of dependencies for given Maven artifact.
 
+*-Dproperty=value*::
+    Add artifact property
+
 OPERANDS
 --------
 *model*::
