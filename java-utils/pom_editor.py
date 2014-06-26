@@ -462,6 +462,21 @@ def pom_xpath_set(where, content, pom=None):
     for element in pom.xpath_query(where):
         pom.replace_xml_content(element, pom.subtree_from_string(content))
 
+@macro(types=(Pom,))
+def pom_xpath_disable(when, pom=None):
+    """<XPath> [POM location]"""
+    def disable_recursive(xml, xmlpath):
+        if xml.xpath(when):
+            return True
+        for submodule, submod_path in zip(*submodule_info(xml, xmlpath)):
+            realpath = find_xml(submod_path)
+            subxml = etree.parse(realpath)
+            if disable_recursive(subxml, realpath):
+                pom_disable_module(submodule, pom=realpath)
+
+    if disable_recursive(pom.root, pom.xmlpath):
+        raise PomException("Main POM satisfies the condition")
+
 @macro(types=(Pom, Ivy))
 def pom_remove_dep(dep, pom=None):
     """[groupId]:[artifactId] [POM location]"""
