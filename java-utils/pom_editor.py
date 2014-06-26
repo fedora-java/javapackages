@@ -137,23 +137,29 @@ def find_xml(xmlpath):
     raise PomException("Couldn't locate XML file using pattern '{0}'"\
                         .format(xmlpath))
 
-def find_xml_recursive(xmlspec):
-    modules = [find_xml(xmlspec)]
-    found = set(modules)
+def submodule_info(module_xml, module_path):
     module_xpath = '/pom:project/pom:modules/pom:module |'\
                    '/pom:project/pom:profile/pom:modules/pom:module'
-    try:
-        while modules:
-            pompath = find_xml(modules.pop())
-            found.add(pompath)
-            pom_xml = etree.parse(pompath)
-            modules += [path.join(path.dirname(pompath), node.text.strip())
-                        for node in pom_xml.xpath(module_xpath,
-                        namespaces=Pom.NSMAP)]
-        return found
+    submodules = module_xml.xpath(module_xpath, namespaces=Pom.NSMAP)
+    submodules = [node.text.strip() for node in submodules]
+    if module_path:
+        submod_paths = [path.join(path.dirname(module_path), submod)
+                        for submod in submodules]
+    else:
+        submod_paths = list(submodules)
+    return submodules, submod_paths
 
-    except (PomException, IOError):
-        raise PomException("Cannot read POM file '{0}'".format(pompath))
+def find_xml_recursive(module_path):
+    try:
+        module_path = find_xml(module_path)
+        module_xml = etree.parse(module_path)
+        submodules, submod_paths = submodule_info(module_xml, module_path)
+        found = [module_path]
+        for submod_path in submod_paths:
+            found += find_xml_recursive(submod_path)
+        return found
+    except IOError:
+        raise PomException("Cannot read POM file '{0}'".format(module_path))
 
 def get_indent(node):
     if node is None or not node.text:
