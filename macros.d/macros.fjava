@@ -178,6 +178,8 @@ sort -u -o ${_filelist} ${_filelist} \
 %pom_xpath_remove(rf)   %{expand: %{__pom_call}xpath_remove   %**
 }
 
+%pom_xpath_disable(rf)   %{expand: %{__pom_call}xpath_disable   %**
+}
 
 # %pom_xpath_inject - inject XML code into POM file
 #

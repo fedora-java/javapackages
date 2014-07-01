@@ -137,23 +137,29 @@ def find_xml(xmlpath):
     raise PomException("Couldn't locate XML file using pattern '{0}'"\
                         .format(xmlpath))
 
-def find_xml_recursive(xmlspec):
-    modules = [find_xml(xmlspec)]
-    found = set(modules)
+def submodule_info(module_xml, module_path):
     module_xpath = '/pom:project/pom:modules/pom:module |'\
                    '/pom:project/pom:profile/pom:modules/pom:module'
-    try:
-        while modules:
-            pompath = find_xml(modules.pop())
-            found.add(pompath)
-            pom_xml = etree.parse(pompath)
-            modules += [path.join(path.dirname(pompath), node.text.strip())
-                        for node in pom_xml.xpath(module_xpath,
-                        namespaces=Pom.NSMAP)]
-        return found
+    submodules = module_xml.xpath(module_xpath, namespaces=Pom.NSMAP)
+    submodules = [node.text.strip() for node in submodules]
+    if module_path:
+        submod_paths = [path.join(path.dirname(module_path), submod)
+                        for submod in submodules]
+    else:
+        submod_paths = list(submodules)
+    return submodules, submod_paths
 
-    except (PomException, IOError):
-        raise PomException("Cannot read POM file '{0}'".format(pompath))
+def find_xml_recursive(module_path):
+    try:
+        module_path = find_xml(module_path)
+        module_xml = etree.parse(module_path)
+        submodules, submod_paths = submodule_info(module_xml, module_path)
+        found = [module_path]
+        for submod_path in submod_paths:
+            found += find_xml_recursive(submod_path)
+        return found
+    except IOError:
+        raise PomException("Cannot read POM file '{0}'".format(module_path))
 
 def get_indent(node):
     if node is None or not node.text:
@@ -274,7 +280,7 @@ class XmlFile(object):
                                   .format(query))
         return query_result[0]
 
-    def xpath_query(self, query):
+    def xpath_query(self, query, check_result=True):
         if not query.startswith('/'):
             query = '//' + query
         try:
@@ -287,7 +293,7 @@ class XmlFile(object):
         except etree.XPathEvalError as error:
             raise PomQueryInvalid("XPath query '{0}': {1}.".format(query,
                                                                error.message))
-        if len(query_result) == 0:
+        if check_result and len(query_result) == 0:
             raise PomQueryNoMatch(dedent("""\
                     XPath query '{0}' didn't match any node.
                     (Did you forget to specify 'pom:' namespace?)""").format(query))
@@ -455,6 +461,24 @@ def pom_xpath_set(where, content, pom=None):
     """<XPath> <new contents> [POM location]"""
     for element in pom.xpath_query(where):
         pom.replace_xml_content(element, pom.subtree_from_string(content))
+
+@macro(types=(Pom,))
+def pom_xpath_disable(when, pom=None):
+    """<XPath> [POM location]"""
+    to_disable = []
+    def disable_recursive(pom):
+        if pom.xpath_query(when, check_result=False):
+            return True
+        for submodule, submod_path in zip(*submodule_info(pom.root, pom.xmlpath)):
+            realpath = find_xml(submod_path)
+            subpom = Pom(realpath)
+            if disable_recursive(subpom):
+                to_disable.append((pom.xmlpath, submodule))
+
+    if disable_recursive(pom):
+        raise PomException("Main POM satisfies the condition")
+    for pompath, module in to_disable:
+        pom_disable_module(module, pompath)
 
 @macro(types=(Pom, Ivy))
 def pom_remove_dep(dep, pom=None):

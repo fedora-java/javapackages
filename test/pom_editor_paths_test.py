@@ -157,7 +157,7 @@ class TestRecursive(WorkdirTestCase):
         del poms_tree['intermediate/schemas']
         return_value, stderr, _ = exec_pom_macro('%pom_remove_dep -r :commons-io',
                 poms_tree=poms_tree)
-        assertIn(self, "Cannot read", stderr)
+        assertIn(self, "Couldn't locate", stderr)
         self.assertNotEqual(0, return_value)
 
     def test_recursive_subpom(self):
