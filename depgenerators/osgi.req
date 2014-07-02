@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2011, Red Hat, Inc
+# Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,82 +30,28 @@
 #
 # Authors: Alexander Kurtakov <akurtako@redhat.com>
 
+import javapackages.common.osgi as osgi
 import sys
-import os.path
-import zipfile
-from zipfile import ZipFile
+import os
 
-class TagBuilder:
+class TagBuilder(object):
 
-    def __init__ (self, filelist=None):
+    def __init__(self, filelist=None):
         if filelist == None:
             filelist = sys.stdin
-        paths = map (lambda x: x.rstrip (), filelist.readlines ())
+        paths = [x.rstrip() for x in filelist.readlines()]
         for path in paths:
-            self.get_osgi_require (path)
+            if not os.path.islink(path):
+                manifest = osgi.open_manifest(path)
+                print_requires(manifest)
 
-    def normalize_manifest(self, manifest):
-        lines = []
-        for line in manifest.readlines():
-            if line.startswith(' '):
-                lines[-1] += line.strip()
-            else:
-                lines.append(line.strip())
-        return lines
+def print_requires(manifest):
+    headers = osgi.parse_manifest(manifest)
+    if headers.get("Require-Bundle"):
+        for bundle in osgi.split_bundle_name(headers.get("Require-Bundle")):
+            if bundle != "system.bundle":
+                print "osgi(%s)" % (bundle)
 
-    def parse_manifest (self, manifest):
-        headers = {}
-        DELIM = ": "
-        for line in self.normalize_manifest(manifest):
-            split = line.split(DELIM)
-            if len(split) > 1:
-                name = split[0].strip()
-                headers[name]= split[1].strip()
-        return headers
-
-    def split_bundle_name (self, bundles):
-        bundlenames = []
-        bundleline = ""
-        for bundle in bundles.split(','):
-            if not bundle:
-                continue
-            if "(" in bundle or "[" in bundle:
-                bundleline = bundle
-                continue
-            if bundleline:
-                bundle = bundleline + bundle
-            if ":=optional" in bundle:
-                bundleline = ""
-                continue
-            if ";" in bundle:
-                bundlenames.append(bundle.split(";")[0].strip())
-            else:
-                bundlenames.append(bundle.strip())
-            bundleline = ""
-        return bundlenames
-
-    def print_requires (self, manifest):
-        headers = self.parse_manifest(manifest)
-        if headers.get("Require-Bundle"):
-            for bundle in self.split_bundle_name(headers.get("Require-Bundle")):
-                if bundle != "system.bundle":
-                    print "osgi(%s)" %(bundle)
-
-    def get_osgi_require (self, path):
-        if not os.path.islink(path):
-            if path.endswith("META-INF/MANIFEST.MF"):
-                manifest = open(path)
-                self.print_requires(manifest)
-            if zipfile.is_zipfile(path):
-                # looks like "zipfile.is_zipfile()" is not reliable
-                # see rhbz#889131 for more details
-                try:
-                    jarfile = ZipFile(path)
-                    if "META-INF/MANIFEST.MF" in jarfile.namelist():
-                        manifest = jarfile.open("META-INF/MANIFEST.MF")
-                        self.print_requires(manifest)
-                except IOError:
-                    pass
 
 if __name__ == "__main__":
-    builder = TagBuilder ()
+    builder = TagBuilder()
