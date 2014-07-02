@@ -31,7 +31,6 @@
 #
 # Authors:  Alexander Kurtakov <akurtako@redhat.com>
 
-import os.path
 import zipfile
 from zipfile import ZipFile
 
@@ -125,3 +124,13 @@ def open_manifest(path):
         except IOError:
             pass
     return None
+
+
+def get_requires_from_manifest(manifest):
+    reqs = []
+    headers = parse_manifest(manifest)
+    if headers.get("Require-Bundle"):
+        for bundle in split_bundle_name(headers.get("Require-Bundle")):
+            if bundle != "system.bundle":
+                reqs.append(bundle)
+    return reqs

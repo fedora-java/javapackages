@@ -40,17 +40,45 @@ class TagBuilder(object):
         if filelist == None:
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
+        try:
+            buildroot = os.environ['RPM_BUILD_ROOT']
+        except KeyError:
+            raise Exception("RPM_BUILD_ROOT environment is not set")
+
+        # get all provided bundles
+        provided = []
+        for dirpath, _, filenames in os.walk(buildroot):
+            for filename in filenames:
+                fpath = os.path.abspath(os.path.join(dirpath, filename))
+                if _check_path(fpath):
+                    manifest = osgi.open_manifest(fpath)
+                    provided.append(osgi.OsgiProvideInfo.from_manifest(manifest))
+
+        # print requires
         for path in paths:
             if not os.path.islink(path):
                 manifest = osgi.open_manifest(path)
-                print_requires(manifest)
+                reqs = osgi.get_requires_from_manifest(manifest)
+                for bundle in reqs:
+                    pinfo = osgi.OsgiProvideInfo(symbolicName=bundle)
+                    if pinfo in provided:
+                        index = provided.index(pinfo)
+                        print("osgi(%s) = %s" % (bundle, provided[index].version))
+                    else:
+                        print("osgi(%s)" % (bundle))
 
-def print_requires(manifest):
-    headers = osgi.parse_manifest(manifest)
-    if headers.get("Require-Bundle"):
-        for bundle in osgi.split_bundle_name(headers.get("Require-Bundle")):
-            if bundle != "system.bundle":
-                print "osgi(%s)" % (bundle)
+
+def _check_path(path):
+    if path.endswith(".jar"):
+        return True
+    if path.endswith("/MANIFEST.MF"):
+        # who knows where the manifest can be in buildroot
+        # TODO: improve this check somehow(?)
+        # this is an attempt to identify only MANIFEST.MF files
+        # which are in %{_datadir} or %{_libdir}
+        if "/usr/share/" in path or "/usr/lib" in path:
+            return True
+    return False
 
 
 if __name__ == "__main__":
