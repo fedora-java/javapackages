@@ -73,6 +73,8 @@ class TagBuilder(object):
 
 
 def _check_path(path):
+    if os.path.islink(path):
+        return False
     if path.endswith(".jar"):
         return True
     if path.endswith("/MANIFEST.MF"):
