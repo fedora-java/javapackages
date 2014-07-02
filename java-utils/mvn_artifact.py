@@ -318,10 +318,10 @@ if __name__ == "__main__":
             if deps[-1].requestedVersion == "":
                 deps[-1].requestedVersion = "SYSTEM"
 
-            unavail = resolve_deps(deps)
-            if unavail:
-                unavail_str = ';'.join([x.get_mvn_str() for x in unavail])
-                art.properties['maven.req.check.deps'] = unavail_str
+        unavail = resolve_deps(deps)
+        if unavail:
+            unavail_str = ';'.join([x.get_mvn_str() for x in unavail])
+            art.properties['maven.req.check.deps'] = unavail_str
         art.dependencies = set(deps)
     else:
         art.properties['xmvn.resolver.disableEffectivePom'] = 'true'
