@@ -52,12 +52,16 @@ class TagBuilder(object):
                 fpath = os.path.abspath(os.path.join(dirpath, filename))
                 if _check_path(fpath):
                     manifest = osgi.open_manifest(fpath)
+                    if not manifest:
+                        continue
                     provided.append(osgi.OsgiProvideInfo.from_manifest(manifest))
 
         # print requires
         for path in paths:
             if not os.path.islink(path):
                 manifest = osgi.open_manifest(path)
+                if not manifest:
+                    continue
                 reqs = osgi.get_requires_from_manifest(manifest)
                 for bundle in reqs:
                     pinfo = osgi.OsgiProvideInfo(symbolicName=bundle)

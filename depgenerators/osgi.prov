@@ -42,6 +42,8 @@ class TagBuilder(object):
         for path in paths:
             if not os.path.islink(path):
                 manifest = osgi.open_manifest(path)
+                if not manifest:
+                    continue
                 pinfo = osgi.OsgiProvideInfo.from_manifest(manifest)
                 pinfo.printProvide()
 
