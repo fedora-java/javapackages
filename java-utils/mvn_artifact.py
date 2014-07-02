@@ -315,6 +315,9 @@ if __name__ == "__main__":
         mvn_deps = gather_dependencies(pom_path)
         for d in mvn_deps:
             deps.append(MetadataDependency.from_mvn_dependency(d))
+            if deps[-1].requestedVersion == "":
+                deps[-1].requestedVersion = "SYSTEM"
+
             unavail = resolve_deps(deps)
             if unavail:
                 unavail_str = ';'.join([x.get_mvn_str() for x in unavail])
