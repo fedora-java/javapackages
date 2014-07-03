@@ -280,9 +280,11 @@ class XmlFile(object):
                                   .format(query))
         return query_result[0]
 
-    def xpath_query(self, query, check_result=True):
+    def xpath_query(self, query, boolean=False):
         if not query.startswith('/'):
             query = '//' + query
+        if boolean:
+            query = 'boolean({0})'.format(query)
         try:
             nsmap = dict(self.NSMAP)
             nsmap.update(self.root.nsmap)
@@ -293,7 +295,7 @@ class XmlFile(object):
         except etree.XPathEvalError as error:
             raise PomQueryInvalid("XPath query '{0}': {1}.".format(query,
                                                                error.message))
-        if check_result and len(query_result) == 0:
+        if not boolean and len(query_result) == 0:
             raise PomQueryNoMatch(dedent("""\
                     XPath query '{0}' didn't match any node.
                     (Did you forget to specify 'pom:' namespace?)""").format(query))
@@ -472,7 +474,7 @@ def pom_xpath_disable(when, pom=None):
     """<XPath> [POM location]"""
     to_disable = []
     def disable_recursive(pom):
-        if pom.xpath_query(when, check_result=False):
+        if pom.xpath_query(when, boolean=True):
             return True
         for submodule, submod_path in zip(*submodule_info(pom.root, pom.xmlpath)):
             realpath = find_xml(submod_path)
