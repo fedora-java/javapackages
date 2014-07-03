@@ -34,7 +34,7 @@ file locations which will be processed.
 
 EXAMPLES
 --------
-*%pom_xpath_disable "/pom:project/pom:classifier = 'test'"* - this call
+*%pom_xpath_disable "/pom:project/pom:classifier = \'test'"* - this call
 disables all modules with classifier *test*
 
 *%pom_xpath_disable /pom:project/pom:packaging* - this call disables all
