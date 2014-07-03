@@ -104,6 +104,7 @@ manpage pom_add_dep
 manpage pom_add_parent
 manpage pom_add_plugin
 manpage pom_disable_module
+manpage pom_xpath_disable
 manpage pom_remove_dep
 manpage pom_remove_parent
 manpage pom_remove_plugin
