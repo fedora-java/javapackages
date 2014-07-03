@@ -63,7 +63,7 @@ class MetadataDependency(object):
         d = m.Dependency()
         d.groupId = self.groupId
         d.artifactId = self.artifactId
-        d.requestedVersion = self.requestedVersion
+        d.requestedVersion = self.requestedVersion or None
         d.resolvedVersion = self.resolvedVersion
         d.classifier = self.classifier or None
         d.extension = self.extension or None
