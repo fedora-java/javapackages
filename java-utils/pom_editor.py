@@ -434,6 +434,11 @@ def macro(types=(XmlFile,)):
         return decorated
     return decorator
 
+def disable_module(pom, module):
+    xpath = "//pom:module[normalize-space(text())='{0}']".format(module)
+    elements = pom.xpath_query(xpath)
+    for element in elements:
+        pom.replace_xml(element, etree.Comment(" module removed by maintainer: {0} ".format(module)))
 
 @macro()
 def pom_xpath_inject(where, xml_string, pom=None):
@@ -473,12 +478,12 @@ def pom_xpath_disable(when, pom=None):
             realpath = find_xml(submod_path)
             subpom = Pom(realpath)
             if disable_recursive(subpom):
-                to_disable.append((pom.xmlpath, submodule))
+                to_disable.append((pom, submodule))
 
     if disable_recursive(pom):
         raise PomException("Main POM satisfies the condition")
-    for pompath, module in to_disable:
-        pom_disable_module(module, pompath)
+    for pom, module in to_disable:
+        pom.patch(disable_module, {'pom': pom, 'module': module})
 
 @macro(types=(Pom, Ivy))
 def pom_remove_dep(dep, pom=None):
@@ -508,10 +513,7 @@ def pom_remove_plugin(plugin, pom=None):
 def pom_disable_module(module, pom=None):
     """<module name> [POM location]"""
     try:
-        xpath = "//pom:module[normalize-space(text())='{0}']".format(module)
-        elements = pom.xpath_query(xpath)
-        for element in elements:
-            pom.replace_xml(element, etree.Comment(" module removed by maintainer: {0} ".format(module)))
+        disable_module(pom, module)
     except PomQueryNoMatch:
         raise PomQueryNoMatch("Module '{0}' not found.".format(module))
 
