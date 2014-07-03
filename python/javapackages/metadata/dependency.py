@@ -22,11 +22,6 @@ class MetadataDependency(object):
         self.resolvedVersion = resolvedVersion
         self.exclusions = exclusions or set()
 
-    def is_compat(self):
-        """Return true if this is a dependency on compat package"""
-
-        return self.compatVersions
-
     def get_mvn_str(self):
         return Printer.get_mvn_str(self.groupId, self.artifactId,
                                    self.extension, self.classifier,
