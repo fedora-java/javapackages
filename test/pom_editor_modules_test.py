@@ -4,10 +4,12 @@ import unittest
 
 class TestPomXpathDisable(WorkdirTestCase):
     def test_no_match(self):
-        return_value, stderr, report = exec_pom_macro('%pom_xpath_disable nothing submodule', {
+        return_value, stderr, _ = exec_pom_macro(
+            '''%pom_xpath_disable "/pom:project/pom:groupId='not-there'" submodule''', {
             'submodule': 'minimal_pom.xml'})
-        self.assertEqual(0, return_value, stderr)
-        self.assertEqual('', report, report)
+        assertIn(self, "Error", stderr)
+        assertIn(self, "didn't match", stderr)
+        self.assertNotEqual(0, return_value)
 
     def test_nonexistent(self):
         return_value, stderr, _ = exec_pom_macro('%pom_xpath_disable nothing', {})

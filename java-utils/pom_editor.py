@@ -482,6 +482,8 @@ def pom_xpath_disable(when, pom=None):
 
     if disable_recursive(pom):
         raise PomException("Main POM satisfies the condition")
+    if not to_disable:
+        raise PomQueryNoMatch("Condition didn't match any module")
     for pom, module in to_disable:
         pom.patch(disable_module, {'pom': pom, 'module': module})
 
