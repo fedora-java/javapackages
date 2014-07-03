@@ -1,0 +1,66 @@
+pom_xpath_disable(7)
+=====================
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+pom_xpath_disable - Disable all modules whose POM files satisfy given
+XPath condition
+
+SYNOPSIS
+--------
+*%pom_xpath_disable* XPath-expression [POM-location]...
+
+DESCRIPTION
+-----------
+This macro recursively walks all enabled submodules of given POM and
+evaluates given XPath expression on them. If the expression returns
+a true value, matching submodule is disabled. Values considered true are
+defined by XPath specification as either true boolean value (i.e.
+returned by comparisons), non-empty node set, non-empty string or
+non-zero number.
+
+If the main module (specified by POM-location or `pom.xml` by default)
+also satisfies the condition, processing is aborted prior to making any
+changes and an error is raised. When none of the modules satisfy it, an
+error is also raised.
+
+POM location can be either a full path to the POM file, or a path to
+the directory containing *pom.xml*.  If POM location is not given then
+*pom.xml* from current working directory is used. You can specify more
+file locations which will be processed.
+
+EXAMPLES
+--------
+*%pom_xpath_disable "/pom:project/pom:classifier = 'test'"* - this call
+disables all modules with classifier *test*
+
+*%pom_xpath_disable /pom:project/pom:packaging* - this call disables all
+sumbodules that explicitly specify packaging
+
+AUTHOR
+------
+Written by Michael Simacek.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*pom_add_dep*(7),
+*pom_add_parent*(7),
+*pom_add_plugin*(7),
+*pom_remove_dep*(7),
+*pom_remove_parent*(7),
+*pom_remove_plugin*(7),
+*pom_change_dep*(7),
+*pom_set_parent*(7),
+*pom_xpath_inject*(7),
+*pom_xpath_remove*(7),
+*pom_xpath_replace*(7),
+*pom_xpath_set*(7).
+*pom_disable_module*(7).
