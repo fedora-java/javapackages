@@ -82,9 +82,10 @@ class MetadataDependency(object):
     def from_metadata(cls, metadata):
         groupId = metadata.groupId.strip()
         artifactId = metadata.artifactId.strip()
-        requestedVersion = metadata.requestedVersion.strip()
 
-        resolvedVersion = extension = classifier = namespace = ""
+        requestedVersion = resolvedVersion = extension = classifier = namespace = ""
+        if hasattr(metadata, 'requestedVersion') and metadata.requestedVersion:
+            requestedVersion = metadata.requestedVersion.strip()
         if hasattr(metadata, 'resolvedVersion') and metadata.resolvedVersion:
             resolvedVersion = metadata.resolvedVersion.strip()
         if hasattr(metadata, 'extension') and metadata.extension:
