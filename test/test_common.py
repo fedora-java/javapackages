@@ -123,10 +123,9 @@ def osgiprov(filelist):
     def test_decorator(fun):
         def test_decorated(self):
             scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'osgi.prov')
-            #stdin = build_depmap_paths(filelist)
             stdin = "\n".join(filelist)
             (stdout, stderr, return_value) = call_script(scriptpath,
-                    [], stdin=stdin, wrapped=True)
+                    [], stdin=stdin, wrapped=True, extra_env={"RPM_BUILD_ROOT":"/dev/null"})
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
