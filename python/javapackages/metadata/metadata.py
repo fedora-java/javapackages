@@ -145,7 +145,6 @@ class Metadata(object):
                 artifacts.add(artifact)
         return sorted(list(artifacts))
 
-
     def get_java_requires(self):
         """Returns JVM version required by metadata or None"""
         for metadata in self.__metadata:
@@ -165,3 +164,32 @@ class Metadata(object):
                 if prop.tagName == u'requiresJavaDevel':
                     return prop.firstChild.value
         return None
+
+    def get_osgi_provides(self):
+        provs = {}
+        for metadata in self.__metadata:
+            if metadata.artifacts and metadata.artifacts.artifact:
+                for a in metadata.artifacts.artifact:
+                    artifact = MetadataArtifact.from_metadata(a)
+                    if artifact.properties:
+                        try:
+                            osgi_id = artifact.properties["osgi.id"]
+                            version = artifact.properties["osgi.version"]
+                            provs[osgi_id] = version
+                        except KeyError:
+                            pass
+        return provs
+
+    def get_osgi_requires(self):
+        reqs = set()
+        for metadata in self.__metadata:
+            if metadata.artifacts and metadata.artifacts.artifact:
+                for a in metadata.artifacts.artifact:
+                    artifact = MetadataArtifact.from_metadata(a)
+                    if artifact.properties:
+                        try:
+                            content = artifact.properties["osgi.requires"]
+                            reqs |= set(content.split(','))
+                        except KeyError:
+                            pass
+        return reqs

@@ -58,6 +58,8 @@ class TagBuilder(object):
 
         # print requires
         for path in paths:
+            if osgi.look_for_path_in_metadata(path):
+                continue
             if not os.path.islink(path):
                 manifest = osgi.open_manifest(path)
                 if not manifest:

@@ -31,8 +31,11 @@
 #
 # Authors:  Alexander Kurtakov <akurtako@redhat.com>
 
+import os
 import zipfile
 from zipfile import ZipFile
+
+from javapackages.metadata.metadata import Metadata, MetadataInvalidException
 
 
 class OsgiProvideInfo:
@@ -134,3 +137,32 @@ def get_requires_from_manifest(manifest):
             if bundle != "system.bundle":
                 reqs.append(bundle)
     return reqs
+
+
+def look_for_path_in_metadata(path):
+    try:
+        buildroot = os.environ['RPM_BUILD_ROOT']
+    except KeyError:
+        raise Exception("RPM_BUILD_ROOT environment is not set")
+
+    for dirpath, dirnames, filenames in os.walk(buildroot):
+        for filename in filenames:
+            fpath = os.path.abspath(os.path.join(dirpath, filename))
+            # FIXME: add path to metadata directory to config file?
+            if "/maven-metadata/" in fpath:
+                try:
+                    mdata = Metadata(fpath)
+                    artifacts = mdata.get_provided_artifacts()
+                    for a in artifacts:
+                        path = os.path.abspath(path)
+                        if path.startswith(buildroot):
+                            path = path[len(buildroot):]
+                            path = os.path.join('/', path)
+                        if a.path:
+                            if (os.path.abspath(a.path) == path or
+                               (path.startswith(os.path.abspath(a.path)) and
+                               os.path.realpath(buildroot + path))):
+                                return True
+                except MetadataInvalidException:
+                    pass
+    return False

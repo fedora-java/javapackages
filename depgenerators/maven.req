@@ -328,6 +328,16 @@ class TagBuilder(object):
         for req in requires:
             print(req)
 
+        # print OSGi requires, if they are present in metadata
+        osgi_reqs = metadata.get_osgi_requires()
+        osgi_provs = metadata.get_osgi_provides()
+        for req in osgi_reqs:
+            if req in osgi_provs:
+                print("osgi({osgi_id}) = {version}".format(osgi_id=req, version=osgi_provs[req]))
+            else:
+                print("osgi({osgi_id})".format(osgi_id=req))
+
+
     def find_what_requires(self, artifact):
         """
         Determine which artifact requires given artifact. This is an attempt to
