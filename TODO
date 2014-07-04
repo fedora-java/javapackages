@@ -20,6 +20,8 @@
 
 ** How to set PYTHONPATH for tests correctly?
 
+** changes around OSGi prov/req generators need some tests
+
 * BUGS
 
 ** Add testcase for pom properties with whitespace
