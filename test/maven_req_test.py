@@ -7,9 +7,9 @@ class TestMavenReq(unittest.TestCase):
 
     def tearDown(self):
         try:
-            os.remove(".provided_artifacts.cache")
-            os.remove(".provided_osgi.cache")
-            os.remove(".skipped_artifacts.cache")
+            os.remove("/tmp/.provided_artifacts.cache")
+            os.remove("/tmp/.provided_osgi.cache")
+            os.remove("/tmp/.skipped_artifacts.cache")
         except OSError:
             pass
 

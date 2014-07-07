@@ -36,6 +36,7 @@ import pickle
 import zipfile
 from zipfile import ZipFile
 
+import config
 from javapackages.metadata.metadata import Metadata, MetadataInvalidException
 
 
@@ -141,14 +142,11 @@ def get_requires_from_manifest(manifest):
 
 
 def look_for_path_in_metadata(path):
-    try:
-        buildroot = os.environ['RPM_BUILD_ROOT']
-    except KeyError:
-        raise Exception("RPM_BUILD_ROOT environment is not set")
+    buildroot = config.get_buildroot()
 
     artifacts = []
     try:
-        cachefile = open('/tmp/.provided_artifacts.cache', 'r')
+        cachefile = open(os.path.join(buildroot, '.provided_artifacts.cache'), 'r')
         artifacts = pickle.load(cachefile)
         cachefile.close()
     except IOError:
@@ -162,7 +160,7 @@ def look_for_path_in_metadata(path):
         try:
             mdata = Metadata(metadata_paths)
             artifacts = mdata.get_provided_artifacts()
-            cachefile = open('/tmp/.provided_artifacts.cache', 'w')
+            cachefile = open(os.path.join(buildroot, '.provided_artifacts.cache'), 'w')
             pickle.dump(artifacts, cachefile)
             cachefile.close()
         except MetadataInvalidException:

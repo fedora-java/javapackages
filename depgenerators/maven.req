@@ -43,7 +43,7 @@ import pickle
 
 from lxml import etree
 
-from javapackages.common.config import get_configs
+from javapackages.common.config import get_configs, get_buildroot
 from javapackages.maven.pom import POM
 from javapackages.maven.artifact import Artifact
 from javapackages.metadata.metadata import Metadata, MetadataInvalidException
@@ -103,9 +103,10 @@ class TagBuilder(object):
             self.metadata_dir = os.path.dirname(paths[0])
             metadata_paths = None
             metadata = None
+            buildroot = get_buildroot()
 
             try:
-                cachefile = open('/tmp/.provided_artifacts.cache', 'r')
+                cachefile = open(os.path.join(buildroot, '.provided_artifacts.cache'), 'r')
                 self.provided_artifacts = pickle.load(cachefile)
                 cachefile.close()
             except IOError:
@@ -114,11 +115,11 @@ class TagBuilder(object):
                 if not metadata:
                     metadata = Metadata(metadata_paths)
                 self.provided_artifacts.extend(metadata.get_provided_artifacts())
-                cachefile = open('/tmp/.provided_artifacts.cache', 'w')
+                cachefile = open(os.path.join(buildroot,'.provided_artifacts.cache'), 'w')
                 pickle.dump(self.provided_artifacts, cachefile)
                 cachefile.close()
             try:
-                cachefile = open('/tmp/.provided_osgi.cache', 'r')
+                cachefile = open(os.path.join(buildroot, '.provided_osgi.cache'), 'r')
                 self.provided_osgi = pickle.load(cachefile)
                 cachefile.close()
             except IOError:
@@ -127,11 +128,11 @@ class TagBuilder(object):
                 if not metadata:
                     metadata = Metadata(metadata_paths)
                 self.provided_osgi.extend(metadata.get_osgi_provides())
-                cachefile = open('/tmp/.provided_osgi.cache', 'w')
+                cachefile = open(os.path.join(buildroot, '.provided_osgi.cache'), 'w')
                 pickle.dump(self.provided_osgi, cachefile)
                 cachefile.close()
             try:
-                cachefile = open('/tmp/.skipped_artifacts.cache', 'r')
+                cachefile = open(os.path.join(buildroot, '.skipped_artifacts.cache'), 'r')
                 self.skipped_artifacts = pickle.load(cachefile)
                 cachefile.close()
             except IOError:
@@ -140,7 +141,7 @@ class TagBuilder(object):
                 if not metadata:
                     metadata = Metadata(metadata_paths)
                 self.skipped_artifacts.extend(metadata.get_skipped_artifacts())
-                cachefile = open('/tmp/.skipped_artifacts.cache', 'w')
+                cachefile = open(os.path.join(buildroot, '.skipped_artifacts.cache'), 'w')
                 pickle.dump(self.skipped_artifacts, cachefile)
                 cachefile.close()
 

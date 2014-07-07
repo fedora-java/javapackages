@@ -31,6 +31,7 @@
 # Authors: Alexander Kurtakov <akurtako@redhat.com>
 
 import javapackages.common.osgi as osgi
+import javapackages.common.config
 import sys
 import pickle
 import os
@@ -41,15 +42,12 @@ class TagBuilder(object):
         if filelist == None:
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
-        try:
-            buildroot = os.environ['RPM_BUILD_ROOT']
-        except KeyError:
-            raise Exception("RPM_BUILD_ROOT environment is not set")
+        buildroot = config.get_buildroot()
 
         # get all provided bundles
         provided = []
         try:
-            cachefile = open('/tmp/.provided_bundles.cache', 'r')
+            cachefile = open(os.path.join(buildroot, '.provided_bundles.cache'), 'r')
             provided = pickle.load(cachefile)
             cachefile.close()
         except IOError:
@@ -61,7 +59,7 @@ class TagBuilder(object):
                         if not manifest:
                             continue
                         provided.append(osgi.OsgiProvideInfo.from_manifest(manifest))
-            cachefile = open('/tmp/.provided_bundles.cache', 'w')
+            cachefile = open(os.path.join(buildroot, '.provided_bundles.cache'), 'w')
             pickle.dump(provided, cachefile)
             cachefile.close()
 

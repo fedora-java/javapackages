@@ -24,3 +24,11 @@ def get_configs(cfg_paths=None):
             print >> sys.stderr, "Unable to open config file {path}".format(path=file_path)
             pass
     return configs
+
+
+def get_buildroot():
+    try:
+        buildroot = os.environ['RPM_BUILD_ROOT']
+    except KeyError:
+        raise Exception("RPM_BUILD_ROOT environment is not set")
+    return os.path.abspath(buildroot)
