@@ -96,6 +96,7 @@ class TagBuilder(object):
 
         paths = [line.rstrip() for line in filelist.readlines()]
         self.provided_artifacts = []
+        self.provided_osgi = []
         self.skipped_artifacts = []
         if paths:
             # let's first read all metadata files for provided artifacts
@@ -109,6 +110,7 @@ class TagBuilder(object):
 
             metadata = Metadata(metadata_paths)
             self.provided_artifacts.extend(metadata.get_provided_artifacts())
+            self.provided_osgi.extend(metadata.get_osgi_provides())
             self.skipped_artifacts.extend(metadata.get_skipped_artifacts())
 
             # list of all installed POM files
@@ -332,10 +334,10 @@ class TagBuilder(object):
         osgi_reqs = metadata.get_osgi_requires()
         osgi_provs = metadata.get_osgi_provides()
         for req in osgi_reqs:
-            if req in osgi_provs:
-                print("osgi({osgi_id}) = {version}".format(osgi_id=req, version=osgi_provs[req]))
-            else:
+            if req not in self.provided_osgi:
                 print("osgi({osgi_id})".format(osgi_id=req))
+            elif req not in osgi_provs:
+                print("osgi({osgi_id} = {version})".format(osgi_id=req, version=self.provided_osgi[req]))
 
 
     def find_what_requires(self, artifact):
