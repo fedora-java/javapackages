@@ -49,7 +49,7 @@ class TagBuilder(object):
         # get all provided bundles
         provided = []
         try:
-            cachefile = open('.provided_bundles.cache', 'r')
+            cachefile = open('/tmp/.provided_bundles.cache', 'r')
             provided = pickle.load(cachefile)
             cachefile.close()
         except IOError:
@@ -61,7 +61,7 @@ class TagBuilder(object):
                         if not manifest:
                             continue
                         provided.append(osgi.OsgiProvideInfo.from_manifest(manifest))
-            cachefile = open('.provided_bundles.cache', 'w')
+            cachefile = open('/tmp/.provided_bundles.cache', 'w')
             pickle.dump(provided, cachefile)
             cachefile.close()
 

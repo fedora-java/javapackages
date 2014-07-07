@@ -148,7 +148,7 @@ def look_for_path_in_metadata(path):
 
     artifacts = []
     try:
-        cachefile = open('.provided_artifacts.cache', 'r')
+        cachefile = open('/tmp/.provided_artifacts.cache', 'r')
         artifacts = pickle.load(cachefile)
         cachefile.close()
     except IOError:
@@ -162,7 +162,7 @@ def look_for_path_in_metadata(path):
         try:
             mdata = Metadata(metadata_paths)
             artifacts = mdata.get_provided_artifacts()
-            cachefile = open('.provided_artifacts.cache', 'w')
+            cachefile = open('/tmp/.provided_artifacts.cache', 'w')
             pickle.dump(artifacts, cachefile)
             cachefile.close()
         except MetadataInvalidException:
