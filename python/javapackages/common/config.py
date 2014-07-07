@@ -32,3 +32,11 @@ def get_buildroot():
     except KeyError:
         raise Exception("RPM_BUILD_ROOT environment is not set")
     return os.path.abspath(buildroot)
+
+
+def get_builddir():
+    try:
+        builddir = os.environ['RPM_BUILD_DIR']
+    except KeyError:
+        raise Exception("RPM_BUILD_DIR environment is not set")
+    return os.path.abspath(builddir)
