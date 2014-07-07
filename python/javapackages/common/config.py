@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 
 
@@ -20,5 +21,6 @@ def get_configs(cfg_paths=None):
             with open(file_path) as config_file:
                 configs.append(json.load(config_file))
         except (OSError, IOError):
+            print("Unable to open config file {path}", file_path, file=sys.stderr)
             pass
     return configs
