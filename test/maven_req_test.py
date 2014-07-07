@@ -1,8 +1,17 @@
 import unittest
+import os
 
 from test_common import mavenreq
 
 class TestMavenReq(unittest.TestCase):
+
+    def tearDown(self):
+        try:
+            os.remove(".provided_artifacts.cache")
+            os.remove(".provided_osgi.cache")
+            os.remove(".skipped_artifacts.cache")
+        except OSError:
+            pass
 
     @mavenreq(["invalid.xml"])
     def test_invalid(self, stdout, stderr, return_value):
