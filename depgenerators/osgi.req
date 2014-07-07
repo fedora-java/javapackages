@@ -31,7 +31,7 @@
 # Authors: Alexander Kurtakov <akurtako@redhat.com>
 
 import javapackages.common.osgi as osgi
-import javapackages.common.config
+import javapackages.common.config as config
 import sys
 import pickle
 import os
