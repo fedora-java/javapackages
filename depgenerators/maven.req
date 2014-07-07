@@ -109,8 +109,10 @@ class TagBuilder(object):
                 self.provided_artifacts = pickle.load(cachefile)
                 cachefile.close()
             except IOError:
-                metadata_paths = self.gather_metadata_files()
-                metadata = Metadata(metadata_paths)
+                if not metadata_paths:
+                    metadata_paths = self.gather_metadata_files()
+                if not metadata:
+                    metadata = Metadata(metadata_paths)
                 self.provided_artifacts.extend(metadata.get_provided_artifacts())
                 cachefile = open('.provided_artifacts.cache', 'w')
                 pickle.dump(self.provided_artifacts, cachefile)
@@ -120,15 +122,23 @@ class TagBuilder(object):
                 self.provided_osgi = pickle.load(cachefile)
                 cachefile.close()
             except IOError:
+                if not metadata_paths:
+                    metadata_paths = self.gather_metadata_files()
+                if not metadata:
+                    metadata = Metadata(metadata_paths)
                 self.provided_osgi.extend(metadata.get_osgi_provides())
                 cachefile = open('.provided_osgi.cache', 'w')
-                pickle.dump(self.provided_artifacts, cachefile)
+                pickle.dump(self.provided_osgi, cachefile)
                 cachefile.close()
             try:
                 cachefile = open('.skipped_artifacts.cache', 'r')
                 self.skipped_artifacts = pickle.load(cachefile)
                 cachefile.close()
             except IOError:
+                if not metadata_paths:
+                    metadata_paths = self.gather_metadata_files()
+                if not metadata:
+                    metadata = Metadata(metadata_paths)
                 self.skipped_artifacts.extend(metadata.get_skipped_artifacts())
                 cachefile = open('.skipped_artifacts.cache', 'w')
                 pickle.dump(self.skipped_artifacts, cachefile)

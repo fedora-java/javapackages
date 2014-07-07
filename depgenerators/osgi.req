@@ -32,6 +32,7 @@
 
 import javapackages.common.osgi as osgi
 import sys
+import pickle
 import os
 
 class TagBuilder(object):
@@ -47,14 +48,22 @@ class TagBuilder(object):
 
         # get all provided bundles
         provided = []
-        for dirpath, _, filenames in os.walk(buildroot):
-            for filename in filenames:
-                fpath = os.path.abspath(os.path.join(dirpath, filename))
-                if _check_path(fpath):
-                    manifest = osgi.open_manifest(fpath)
-                    if not manifest:
-                        continue
-                    provided.append(osgi.OsgiProvideInfo.from_manifest(manifest))
+        try:
+            cachefile = open('.provided_bundles.cache', 'r')
+            provided = pickle.load(cachefile)
+            cachefile.close()
+        except IOError:
+            for dirpath, _, filenames in os.walk(buildroot):
+                for filename in filenames:
+                    fpath = os.path.abspath(os.path.join(dirpath, filename))
+                    if _check_path(fpath):
+                        manifest = osgi.open_manifest(fpath)
+                        if not manifest:
+                            continue
+                        provided.append(osgi.OsgiProvideInfo.from_manifest(manifest))
+            cachefile = open('.provided_bundles.cache', 'w')
+            pickle.dump(provided, cachefile)
+            cachefile.close()
 
         # print requires
         for path in paths:

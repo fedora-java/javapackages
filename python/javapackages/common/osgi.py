@@ -32,6 +32,7 @@
 # Authors:  Alexander Kurtakov <akurtako@redhat.com>
 
 import os
+import pickle
 import zipfile
 from zipfile import ZipFile
 
@@ -145,24 +146,36 @@ def look_for_path_in_metadata(path):
     except KeyError:
         raise Exception("RPM_BUILD_ROOT environment is not set")
 
-    for dirpath, dirnames, filenames in os.walk(buildroot):
-        for filename in filenames:
-            fpath = os.path.abspath(os.path.join(dirpath, filename))
-            # FIXME: add path to metadata directory to config file?
-            if "/maven-metadata/" in fpath:
-                try:
-                    mdata = Metadata(fpath)
-                    artifacts = mdata.get_provided_artifacts()
-                    for a in artifacts:
-                        path = os.path.abspath(path)
-                        if path.startswith(buildroot):
-                            path = path[len(buildroot):]
-                            path = os.path.join('/', path)
-                        if a.path:
-                            if (os.path.abspath(a.path) == path or
-                               (path.startswith(os.path.abspath(a.path)) and
-                               os.path.realpath(buildroot + path))):
-                                return True
-                except MetadataInvalidException:
-                    pass
+    artifacts = []
+    try:
+        cachefile = open('.provided_artifacts.cache', 'r')
+        artifacts = pickle.load(cachefile)
+        cachefile.close()
+    except IOError:
+        metadata_paths = []
+        for dirpath, dirnames, filenames in os.walk(buildroot):
+            for filename in filenames:
+                fpath = os.path.abspath(os.path.join(dirpath, filename))
+                # FIXME: add path to metadata directory to config file?
+                if "/maven-metadata/" in fpath:
+                    metadata_paths.append(fpath)
+        try:
+            mdata = Metadata(metadata_paths)
+            artifacts = mdata.get_provided_artifacts()
+            cachefile = open('.provided_artifacts.cache', 'w')
+            pickle.dump(artifacts, cachefile)
+            cachefile.close()
+        except MetadataInvalidException:
+            pass
+
+    for a in artifacts:
+        path = os.path.abspath(path)
+        if path.startswith(buildroot):
+            path = path[len(buildroot):]
+            path = os.path.join('/', path)
+        if a.path:
+            if (os.path.abspath(a.path) == path or
+               (path.startswith(os.path.abspath(a.path)) and
+               os.path.realpath(buildroot + path))):
+                return True
     return False
