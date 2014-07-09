@@ -1,5 +1,6 @@
 #!/usr/bin/python
-# Copyright (c) 2011, Red Hat, Inc
+# Copyright (c) 2014, Red Hat, Inc.
+#
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -12,7 +13,7 @@
 #    notice, this list of conditions and the following disclaimer in the
 #    documentation and/or other materials provided with the
 #    distribution.
-# 3. Neither the name of Red Hat nor the names of its
+# 3. Neither the name of the Red Hat nor the names of its
 #    contributors may be used to endorse or promote products derived
 #    from this software without specific prior written permission.
 #
@@ -28,34 +29,11 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Authors: Alexander Kurtakov <akurtako@redhat.com>
+# Authors:  Michal Srb <msrb@redhat.com>
 
-import javapackages.common.osgi as osgi
-from javapackages.common.util import kill_parent
-import sys
 import os
-
-class TagBuilder(object):
-    def __init__(self, filelist=None):
-        if filelist == None:
-            filelist = sys.stdin
-        paths = [x.rstrip() for x in filelist.readlines()]
-        for path in paths:
-            if osgi.look_for_path_in_metadata(path):
-                continue
-            if not os.path.islink(path):
-                manifest = osgi.open_manifest(path)
-                if not manifest:
-                    continue
-                pinfo = osgi.OsgiProvideInfo.from_manifest(manifest)
-                pinfo.printProvide()
+import signal
 
 
-if __name__ == "__main__":
-    try:
-        builder = TagBuilder ()
-    except Exception:
-        traceback.print_exc(file=sys.stderr)
-        # rpmbuild ignores non-zero exit codes but this that is bad. Make sure
-        # the build fails and doesn't silently ignore problems
-        kill_parent()
+def kill_parent():
+    os.kill(os.getppid(), signal.SIGTERM)

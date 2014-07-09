@@ -37,6 +37,7 @@ import signal
 import sys
 import traceback
 from javapackages.metadata.metadata import Metadata
+from javapackages.common.util import kill_parent
 
 class TagBuilder:
     def __init__ (self, filelist=None):
@@ -58,10 +59,9 @@ class TagBuilder:
 
 if __name__ == "__main__":
     try:
-        builder = TagBuilder()
-    except Exception, e:
+        builder = TagBuilder ()
+    except Exception:
         traceback.print_exc(file=sys.stderr)
-        sys.stderr.write(str(e))
         # rpmbuild ignores non-zero exit codes but this that is bad. Make sure
         # the build fails and doesn't silently ignore problems
-        os.kill(os.getppid(), signal.SIGKILL)
+        kill_parent()
