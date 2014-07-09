@@ -10,7 +10,7 @@ import sys
 class MetadataDependency(object):
     def __init__(self, groupId, artifactId, extension="",
                  classifier="", namespace="",
-                 requestedVersion="", resolvedVersion=None,
+                 requestedVersion="", resolvedVersion="",
                  exclusions=set()):
 
         self.groupId = groupId
@@ -18,7 +18,7 @@ class MetadataDependency(object):
         self.extension = extension or "jar"
         self.classifier = classifier
         self.namespace = namespace
-        self.requestedVersion = requestedVersion
+        self.requestedVersion = requestedVersion or "SYSTEM"
         self.resolvedVersion = resolvedVersion
         self.exclusions = exclusions or set()
 
@@ -38,10 +38,10 @@ class MetadataDependency(object):
     def is_provided_by(self, artifacts):
         for provided in artifacts:
             if (provided.groupId == self.groupId and
-                provided.artifactId == self.artifactId and
-                provided.classifier == self.classifier and
-                provided.extension == self.extension and
-                provided.namespace == self.namespace):
+               provided.artifactId == self.artifactId and
+               provided.classifier == self.classifier and
+               provided.extension == self.extension and
+               provided.namespace == self.namespace):
 
                 if self.resolvedVersion and provided.is_compat():
                     # does it match one of provided compat?
@@ -59,7 +59,7 @@ class MetadataDependency(object):
         d.groupId = self.groupId
         d.artifactId = self.artifactId
         d.requestedVersion = self.requestedVersion or None
-        d.resolvedVersion = self.resolvedVersion
+        d.resolvedVersion = self.resolvedVersion or None
         d.classifier = self.classifier or None
         d.extension = self.extension or None
         if self.exclusions:
