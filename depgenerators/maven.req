@@ -98,7 +98,7 @@ class TagBuilder(object):
 
         paths = [line.rstrip() for line in filelist.readlines()]
         self.provided_artifacts = []
-        self.provided_osgi = []
+        self.provided_osgi = {}
         self.skipped_artifacts = []
         if paths:
             self.metadata_dir = os.path.dirname(paths[0])
@@ -128,7 +128,7 @@ class TagBuilder(object):
                     metadata_paths = self.gather_metadata_files()
                 if not metadata:
                     metadata = Metadata(metadata_paths)
-                self.provided_osgi.extend(metadata.get_osgi_provides())
+                self.provided_osgi.update(metadata.get_osgi_provides())
                 cachefile = open(os.path.join(builddir, '.provided_osgi.cache'), 'w')
                 pickle.dump(self.provided_osgi, cachefile)
                 cachefile.close()
