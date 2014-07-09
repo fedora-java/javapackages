@@ -1,15 +1,14 @@
 import unittest
-import os
+import shutil
 
 from test_common import mavenreq
+
 
 class TestMavenReq(unittest.TestCase):
 
     def tearDown(self):
         try:
-            os.remove("/tmp/.provided_artifacts.cache")
-            os.remove("/tmp/.provided_osgi.cache")
-            os.remove("/tmp/.skipped_artifacts.cache")
+            shutil.rmtree("/tmp/.javapackages_cache/")
         except OSError:
             pass
 

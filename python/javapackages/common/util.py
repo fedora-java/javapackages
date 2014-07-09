@@ -37,3 +37,10 @@ import signal
 
 def kill_parent():
     os.kill(os.getppid(), signal.SIGTERM)
+
+
+def get_cachedir(path, create_if_not_exists=True):
+    cachedir_path = os.path.join(path, ".javapackages_cache")
+    if not os.path.exists(cachedir_path) and create_if_not_exists:
+        os.mkdir(cachedir_path)
+    return cachedir_path

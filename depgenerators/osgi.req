@@ -44,12 +44,11 @@ class TagBuilder(object):
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
         buildroot = config.get_buildroot()
-        builddir = config.get_builddir()
 
         # get all provided bundles
         provided = []
         try:
-            cachefile = open(os.path.join(builddir, '.provided_bundles.cache'), 'r')
+            cachefile = open(os.path.join(cachedir, 'provided_bundles.cache'), 'r')
             provided = pickle.load(cachefile)
             cachefile.close()
         except IOError:
@@ -61,13 +60,13 @@ class TagBuilder(object):
                         if not manifest:
                             continue
                         provided.append(osgi.OsgiProvideInfo.from_manifest(manifest))
-            cachefile = open(os.path.join(builddir, '.provided_bundles.cache'), 'w')
+            cachefile = open(os.path.join(cachedir, 'provided_bundles.cache'), 'w')
             pickle.dump(provided, cachefile)
             cachefile.close()
 
         # print requires
         for path in paths:
-            if osgi.look_for_path_in_metadata(path):
+            if osgi.look_for_path_in_metadata(path, cachedir):
                 continue
             if not os.path.islink(path):
                 manifest = osgi.open_manifest(path)
@@ -98,7 +97,11 @@ def _check_path(path):
     return False
 
 
+cachedir = None
 if __name__ == "__main__":
+    global cachedir
+    if len(sys.argv) > 1:
+        cachedir = get_cachedir(sys.argv[1])
     try:
         builder = TagBuilder ()
     except Exception:

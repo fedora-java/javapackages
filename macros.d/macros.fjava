@@ -50,7 +50,6 @@
 
 %add_maven_depmap(f:a:v:) \
 set -e \
-%{lua: posix.setenv("JAVAPACKAGES_CACHE_DIR",rpm.expand("%{_builddir}") ) } \
 # default values \
 %if %# == 0 \
    _pompart="JPP-%{?scl:%{pkg_name}}%{!?scl:%{name}}.pom" \

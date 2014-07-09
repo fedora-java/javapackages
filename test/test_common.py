@@ -114,7 +114,7 @@ def mavenprov(filelist):
             scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'maven.prov')
             stdin = build_depmap_paths(filelist)
             (stdout, stderr, return_value) = call_script(scriptpath,
-                    [], stdin=stdin, wrapped=True)
+                    ["/tmp"], stdin=stdin, wrapped=True)
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
@@ -125,7 +125,7 @@ def osgiprov(filelist):
             scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'osgi.prov')
             stdin = "\n".join(filelist)
             (stdout, stderr, return_value) = call_script(scriptpath,
-                    [], stdin=stdin, wrapped=True, extra_env={"RPM_BUILD_ROOT":"/dev/null",
+                    ["/tmp"], stdin=stdin, wrapped=True, extra_env={"RPM_BUILD_ROOT":"/dev/null",
                                                               "JAVAPACKAGES_CACHE_DIR":"/tmp"})
             fun(self, stdout, stderr, return_value)
         return test_decorated
@@ -136,7 +136,7 @@ def requires_generator(name, filelist, config=None, javaconfdirs=None):
         def test_decorated(self):
             scriptpath = path.join(DIRPATH, '..', 'depgenerators', name)
             stdin = build_depmap_paths(filelist)
-            env = {"JAVAPACKAGES_CACHE_DIR":"/tmp"}
+            env = {}
             if javaconfdirs:
                 confdirs = [os.path.join(DIRPATH, conf) for conf in javaconfdirs]
                 env['JAVACONFDIRS'] = os.pathsep.join(confdirs)
@@ -145,7 +145,7 @@ def requires_generator(name, filelist, config=None, javaconfdirs=None):
             else:
                 config_path = os.path.join(DIRPATH, '..', 'etc')
             (stdout, stderr, return_value) = call_script(scriptpath,
-                    [], stdin=stdin, wrapped=True, extra_env=env,
+                    ["/tmp"], stdin=stdin, wrapped=True, extra_env=env,
                     config_path=config_path)
             fun(self, stdout, stderr, return_value)
         return test_decorated

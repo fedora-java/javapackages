@@ -31,7 +31,7 @@
 # Authors: Alexander Kurtakov <akurtako@redhat.com>
 
 import javapackages.common.osgi as osgi
-from javapackages.common.util import kill_parent
+from javapackages.common.util import kill_parent, get_cachedir
 import sys
 import os
 
@@ -41,7 +41,7 @@ class TagBuilder(object):
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
         for path in paths:
-            if osgi.look_for_path_in_metadata(path):
+            if osgi.look_for_path_in_metadata(path, cachedir):
                 continue
             if not os.path.islink(path):
                 manifest = osgi.open_manifest(path)
@@ -51,7 +51,11 @@ class TagBuilder(object):
                 pinfo.printProvide()
 
 
+cachedir = None
 if __name__ == "__main__":
+    global cachedir
+    if len(sys.argv) > 1:
+        cachedir = get_cachedir(sys.argv[1])
     try:
         builder = TagBuilder ()
     except Exception:

@@ -43,8 +43,8 @@ import pickle
 
 from lxml import etree
 
-from javapackages.common.config import get_configs, get_builddir
-from javapackages.common.util import kill_parent
+from javapackages.common.config import get_configs
+from javapackages.common.util import kill_parent, get_cachedir
 from javapackages.maven.pom import POM
 from javapackages.maven.artifact import Artifact
 from javapackages.metadata.metadata import Metadata, MetadataInvalidException
@@ -104,10 +104,9 @@ class TagBuilder(object):
             self.metadata_dir = os.path.dirname(paths[0])
             metadata_paths = None
             metadata = None
-            builddir = get_builddir()
 
             try:
-                cachefile = open(os.path.join(builddir, '.provided_artifacts.cache'), 'r')
+                cachefile = open(os.path.join(cachedir, 'provided_artifacts.cache'), 'r')
                 self.provided_artifacts = pickle.load(cachefile)
                 cachefile.close()
             except IOError:
@@ -116,11 +115,11 @@ class TagBuilder(object):
                 if not metadata:
                     metadata = Metadata(metadata_paths)
                 self.provided_artifacts.extend(metadata.get_provided_artifacts())
-                cachefile = open(os.path.join(builddir,'.provided_artifacts.cache'), 'w')
+                cachefile = open(os.path.join(cachedir,'provided_artifacts.cache'), 'w')
                 pickle.dump(self.provided_artifacts, cachefile)
                 cachefile.close()
             try:
-                cachefile = open(os.path.join(builddir, '.provided_osgi.cache'), 'r')
+                cachefile = open(os.path.join(cachedir, 'provided_osgi.cache'), 'r')
                 self.provided_osgi = pickle.load(cachefile)
                 cachefile.close()
             except IOError:
@@ -129,11 +128,11 @@ class TagBuilder(object):
                 if not metadata:
                     metadata = Metadata(metadata_paths)
                 self.provided_osgi.update(metadata.get_osgi_provides())
-                cachefile = open(os.path.join(builddir, '.provided_osgi.cache'), 'w')
+                cachefile = open(os.path.join(cachedir, 'provided_osgi.cache'), 'w')
                 pickle.dump(self.provided_osgi, cachefile)
                 cachefile.close()
             try:
-                cachefile = open(os.path.join(builddir, '.skipped_artifacts.cache'), 'r')
+                cachefile = open(os.path.join(cachedir, 'skipped_artifacts.cache'), 'r')
                 self.skipped_artifacts = pickle.load(cachefile)
                 cachefile.close()
             except IOError:
@@ -142,7 +141,7 @@ class TagBuilder(object):
                 if not metadata:
                     metadata = Metadata(metadata_paths)
                 self.skipped_artifacts.extend(metadata.get_skipped_artifacts())
-                cachefile = open(os.path.join(builddir, '.skipped_artifacts.cache'), 'w')
+                cachefile = open(os.path.join(cachedir, 'skipped_artifacts.cache'), 'w')
                 pickle.dump(self.skipped_artifacts, cachefile)
                 cachefile.close()
 
@@ -420,8 +419,11 @@ def compare_artifacts(art1, art2):
     return (art1.artifactId == art2.artifactId and
             art1.groupId == art2.groupId)
 
-
+cachedir = None
 if __name__ == "__main__":
+    global cachedir
+    if len(sys.argv) > 1:
+        cachedir = get_cachedir(sys.argv[1])
     try:
         builder = TagBuilder ()
     except Exception:
