@@ -126,7 +126,7 @@ def osgiprov(filelist):
             stdin = "\n".join(filelist)
             (stdout, stderr, return_value) = call_script(scriptpath,
                     [], stdin=stdin, wrapped=True, extra_env={"RPM_BUILD_ROOT":"/dev/null",
-                                                              "RPM_BUILD_DIR":"/tmp"})
+                                                              "JAVAPACKAGES_CACHE_DIR":"/tmp"})
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
@@ -136,7 +136,7 @@ def requires_generator(name, filelist, config=None, javaconfdirs=None):
         def test_decorated(self):
             scriptpath = path.join(DIRPATH, '..', 'depgenerators', name)
             stdin = build_depmap_paths(filelist)
-            env = {"RPM_BUILD_DIR":"/tmp"}
+            env = {"JAVAPACKAGES_CACHE_DIR":"/tmp"}
             if javaconfdirs:
                 confdirs = [os.path.join(DIRPATH, conf) for conf in javaconfdirs]
                 env['JAVACONFDIRS'] = os.pathsep.join(confdirs)
