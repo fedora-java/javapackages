@@ -379,7 +379,7 @@ class TagBuilder(object):
             if req not in self.provided_osgi:
                 print("osgi({osgi_id})".format(osgi_id=req))
             elif req not in osgi_provs:
-                print("osgi({osgi_id} = {version})".format(osgi_id=req, version=self.provided_osgi[req]))
+                print("osgi({osgi_id}) = {version}".format(osgi_id=req, version=self.provided_osgi[req]))
 
 
     def find_what_requires(self, artifact):
