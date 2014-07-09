@@ -36,7 +36,7 @@ def get_buildroot():
 
 def get_builddir():
     try:
-        builddir = os.environ['RPM_BUILD_DIR']
+        builddir = os.environ['JAVAPACKAGES_CACHE_DIR']
     except KeyError:
-        raise Exception("RPM_BUILD_DIR environment is not set")
+        raise Exception("JAVAPACKAGES_CACHE_DIR environment is not set")
     return os.path.abspath(builddir)
