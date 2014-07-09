@@ -21,7 +21,6 @@ def get_configs(cfg_paths=None):
             with open(file_path) as config_file:
                 configs.append(json.load(config_file))
         except (OSError, IOError):
-            print >> sys.stderr, "Unable to open config file {path}".format(path=file_path)
             pass
     return configs
 
