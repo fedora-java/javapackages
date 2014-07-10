@@ -31,26 +31,29 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
-import sys
-
 from artifact import AbstractArtifact, ArtifactFormatException
 from exclusion import Exclusion
 from pomreader import POMReader
-from lxml.etree import Element, SubElement, tostring
+from lxml.etree import Element, SubElement
 
 
 class Dependency(AbstractArtifact):
 
     def __init__(self, groupId, artifactId, extension="", classifier="",
-                 version="", scope="", optional=None, exclusions=set()):
+                 version="", scope="", optional="", exclusions=set()):
         self.groupId = groupId.strip()
         self.artifactId = artifactId.strip()
         self.extension = extension.strip() or "jar"
         self.classifier = classifier.strip()
         self.version = version.strip()
         self.scope = scope.strip()
-        self.optional = optional
+        self.optional = optional.strip()
         self.exclusions = exclusions
+
+    def is_optional(self):
+        if self.optional and self.optional.lower() == "true":
+            return True
+        return False
 
     def get_xml_element(self, root="dependency"):
         """
@@ -62,9 +65,9 @@ class Dependency(AbstractArtifact):
             item = SubElement(root, "scope")
             item.text = self.scope
 
-        if self.optional is not None:
+        if self.optional:
             item = SubElement(root, "optional")
-            item.text = str(self.optional).lower()
+            item.text = self.optional
 
         if self.exclusions:
             exc_root = Element("exclusions")
@@ -87,7 +90,7 @@ class Dependency(AbstractArtifact):
                  'classifier': '',
                  'version': '',
                  'scope': '',
-                 'optional': None}
+                 'optional': ''}
 
         parts = POMReader.find_parts(xmlnode, parts)
 
@@ -96,12 +99,6 @@ class Dependency(AbstractArtifact):
                 "Empty groupId or artifactId encountered. "
                 "This is a bug, please report it!")
 
-        if parts['optional'] is not None:
-            if parts['optional'] == "false":
-                parts['optional'] = False
-            elif parts['optional'] == "true":
-                parts['optional'] = True
-
         # exclusions
         excnodes = xmlnode.findall("{*}exclusions/{*}exclusion")
 
@@ -109,9 +106,14 @@ class Dependency(AbstractArtifact):
         for e in [Exclusion.from_xml_element(x) for x in excnodes]:
             exclusions.add(e)
 
-        return cls(parts['groupId'], parts['artifactId'], parts['type'],
-                   parts['classifier'], parts['version'], parts['scope'],
-                   parts['optional'], exclusions)
+        return cls(parts['groupId'],
+                   parts['artifactId'],
+                   extension=parts['type'],
+                   classifier=parts['classifier'],
+                   version=parts['version'],
+                   scope=parts['scope'],
+                   optional=parts['optional'],
+                   exclusions=exclusions)
 
     @classmethod
     def from_mvn_str(cls, mvnstr):
@@ -124,5 +126,8 @@ class Dependency(AbstractArtifact):
         Where last part is always considered to be version unless empty
         """
         p = cls.get_parts_from_mvn_str(mvnstr)
-        return cls(p['groupId'], p['artifactId'], p['extension'],
-                   p['classifier'], p['version'])
+        return cls(p['groupId'],
+                   p['artifactId'],
+                   extension=p['extension'],
+                   classifier=p['classifier'],
+                   version=p['version'])
