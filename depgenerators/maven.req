@@ -310,7 +310,7 @@ class TagBuilder(object):
 
         unknown_deps = self.check_deps(metadata)
         for dependency in metadata.get_required_artifacts():
-            if dependency.requestedVersion == "UNKNOWN":
+            if dependency.resolvedVersion == "UNKNOWN":
                 unknown_deps.append(dependency)
                 continue
             for skipped in self.skipped_artifacts:
