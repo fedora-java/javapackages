@@ -60,7 +60,7 @@ class TestMavenReq(unittest.TestCase):
     def test_require_parent(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        want = ("ns-runtime", "java-headless",
+        want = ("jpackage-utils", "java-headless",
                 "ns-mvn(org.codehaus.plexus:plexus-ant-factory)")
         self.assertEquals(set(want), set(sout))
 
@@ -68,7 +68,7 @@ class TestMavenReq(unittest.TestCase):
     def test_require_multi(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        want = ("ns-runtime", "ns-mvn(org.codehaus.plexus:plexus-ant-factory)",
+        want = ("jpackage-utils", "ns-mvn(org.codehaus.plexus:plexus-ant-factory)",
                 "ns-mvn(codehaus:plexus-utils) = 1.2", "java-headless",
                 "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)")
         self.assertEquals(set(want), set(sout))
@@ -77,7 +77,7 @@ class TestMavenReq(unittest.TestCase):
     def test_require_multi_namespace(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        want = ("jpackage-utils", "java-headless", "ns-runtime", "ns2-runtime",
+        want = ("jpackage-utils", "java-headless",
                 "ns2-mvn(codehaus:plexus-cipher)", "ns-mvn(codehaus:plexus-utils)",
                 "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)")
         self.assertEquals(set(want), set(sout))
@@ -86,12 +86,12 @@ class TestMavenReq(unittest.TestCase):
     def test_require_multi_versioned(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        want = ("java-headless", 'ns-runtime',
-                'ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0',
-                'ns-mvn(codehaus:plexus-utils:1.2)',
-                'ns-mvn(codehaus:plexus-cipher:1.0) = 1.1',
-                'mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)',
-                'mvn(org.apache.maven.plugins:maven-idea-plugin:1.5) = 1.4')
+        want = ("java-headless", "jpackage-utils",
+                "ns-mvn(org.codehaus.plexus:plexus-ant-factory:1.0) = 1.0",
+                "ns-mvn(codehaus:plexus-utils:1.2)",
+                "ns-mvn(codehaus:plexus-cipher:1.0) = 1.1",
+                "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)",
+                "mvn(org.apache.maven.plugins:maven-idea-plugin:1.5) = 1.4")
         self.assertEquals(set(want), set(sout))
 
 
@@ -99,7 +99,7 @@ class TestMavenReq(unittest.TestCase):
     def test_mixed(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        want = ("ns-runtime", "java-headless",
+        want = ("jpackage-utils", "java-headless",
                 "ns-mvn(org.codehaus.plexus:plexus-ant-factory)",
                 "ns-mvn(codehaus:plexus-utils) = 1.2",
                 "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)",
@@ -161,7 +161,7 @@ class TestMavenReq(unittest.TestCase):
     def test_rhbz1017701_c2(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        want = ("maven31-runtime", "java-headless",
+        want = ("jpackage-utils", "java-headless",
                 "maven31-mvn(org.eclipse.aether:aether-api) = 0.9.0.M3")
         self.assertEquals(set(want), set(sout))
 
@@ -179,7 +179,8 @@ class TestMavenReq(unittest.TestCase):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
         want = ("ns-mvn(org.codehaus.plexus:plexus-ant-factory)", "java-headless",
-                "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)")
+                "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)",
+                "jpackage-utils")
         self.assertEquals(set(want), set(sout))
 
     @mavenreq(["require_multi/require.xml"], javaconfdirs=['data/config/filtered'])
@@ -187,7 +188,8 @@ class TestMavenReq(unittest.TestCase):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
         want = ("ns-mvn(org.codehaus.plexus:plexus-ant-factory)", "java-headless",
-                "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)")
+                "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)",
+                "jpackage-utils")
         self.assertEquals(set(want), set(sout))
 
     @mavenreq(["require_multi/require.xml"],
@@ -196,7 +198,8 @@ class TestMavenReq(unittest.TestCase):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
         want = ("ns-mvn(org.codehaus.plexus:plexus-ant-factory)", "java-spineless",
-                "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)")
+                "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)",
+                "jpackage-utils")
         self.assertEquals(set(want), set(sout))
 
     @mavenreq(["require2/maven-metadata/require.xml"])
