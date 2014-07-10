@@ -35,7 +35,7 @@ import os
 import signal
 
 
-def kill_parent():
+def kill_parent_process():
     os.kill(os.getppid(), signal.SIGTERM)
 
 
