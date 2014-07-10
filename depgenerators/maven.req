@@ -304,12 +304,9 @@ class TagBuilder(object):
         skipped_but_required = []
         requires = set()
 
-        for provided in metadata.get_provided_artifacts():
-            # TODO: use javapackages-config.json
-            if provided.namespace:
-                requires.add("{ns}-runtime".format(ns=provided.namespace))
-            else:
-                requires.add("jpackage-utils")
+        always_req = self.config['always_generate']
+        for req in always_req:
+            requires.add(req)
 
         unknown_deps = self.check_deps(metadata)
         for dependency in metadata.get_required_artifacts():
