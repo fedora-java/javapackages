@@ -46,9 +46,16 @@ class Dependency(AbstractArtifact):
         self.extension = extension.strip() or "jar"
         self.classifier = classifier.strip()
         self.version = version.strip()
-        self.scope = scope.strip()
-        self.optional = optional.strip()
+        self.scope = scope.strip() or "compile"
+        self.optional = optional.strip() or "false"
         self.exclusions = exclusions
+
+        self._default_scope = True
+        if scope:
+            self._default_scope = False
+        self._default_optional = True
+        if optional:
+            self._default_optional = False
 
     def is_optional(self):
         if self.optional and self.optional.lower() == "true":

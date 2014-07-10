@@ -144,8 +144,13 @@ class AbstractArtifact(object):
 
         if self.compare_to(artifact):
             for member in self.__dict__:
-                if not member.startswith('_') and not getattr(self, member):
-                    setattr(self, member, getattr(artifact, member))
+                if not member.startswith('_'):
+                    # copy value from given artifact only if the field is empty,
+                    # or if it contains default value (not explicitly specified)
+                    if (not getattr(self, member) or (
+                       hasattr(self, "_default_" + member) and
+                       getattr(self, "_default_" + member))):
+                        setattr(self, member, getattr(artifact, member))
 
     def update_from(self, artifact):
         if self.compare_to(artifact):
