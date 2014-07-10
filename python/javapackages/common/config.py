@@ -32,7 +32,6 @@
 # Authors:  Michal Srb <msrb@redhat.com>
 
 import os
-import sys
 import json
 
 
@@ -45,7 +44,7 @@ def get_configs(cfg_paths=None):
     elif cfg_paths:
         config_paths = cfg_paths
     else:
-        config_paths = ['%{javaconfdir}']
+        config_paths = ['/etc/java/']
 
     configs = []
     for config_path in config_paths:
