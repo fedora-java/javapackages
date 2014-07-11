@@ -1,7 +1,8 @@
 import unittest
 import shutil
+import sys
 
-from test_common import mavenreq
+from test_common import mavenreq, assertIn
 
 
 class TestMavenReq(unittest.TestCase):
@@ -226,6 +227,13 @@ class TestMavenReq(unittest.TestCase):
         want = ("mvn(org.fedoraproject.xmvn:xmvn-core)", "jpackage-utils",
                 "mvn(org.fedoraproject.xmvn:xmvn-api:pom:) = 1.0", "java-headless")
         self.assertEquals(set(want), set(sout))
+
+    @mavenreq(["require5/require.xml"])
+    def test_unknown_dep(self, stdout, stderr, return_value):
+        self.assertNotEquals(return_value, 0)
+        serr = [x for x in stderr.split('\n') if x]
+        want = ("org.apache.maven:maven-project:2.2.1")
+        assertIn(self, want, serr)
 
 if __name__ == '__main__':
     unittest.main()
