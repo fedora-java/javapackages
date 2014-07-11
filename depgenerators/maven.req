@@ -167,6 +167,33 @@ class TagBuilder(object):
                 continue
             self.print_mvn_requires(path)
 
+    def check_pom_deps(self):
+        """
+        Check if dependencies on POM files are satisfiable
+        """
+        unresolvable = []
+        requests = []
+        deps = []
+        for provided in self.provided_artifacts:
+            for dep in provided.dependencies:
+                if dep.extension != "pom":
+                    continue
+                if dep.is_provided_by(self.provided_artifacts)[0]:
+                    continue
+                else:
+                    deps.append(dep)
+                    request = ResolutionRequest(dep.groupId, dep.artifactId,
+                                                extension=dep.extension,
+                                                classifier=dep.classifier,
+                                                version=dep.requestedVersion)
+                    requests.append(request)
+            if requests:
+                results = XMvnResolve.process_raw_request(requests)
+                for i, r in enumerate(results):
+                    if not r:
+                        unresolvable.append(deps[i])
+        return unresolvable
+
     def gather_metadata_files(self):
         metadata_paths = []
         for dirname, _, filenames in os.walk(self.metadata_dir):
@@ -293,7 +320,9 @@ class TagBuilder(object):
         for req in always_req:
             requires.add(req)
 
-        unknown_deps = []
+        # check if dependencies on POM files are satisfiable
+        unknown_deps = self.check_pom_deps()
+
         for dependency in metadata.get_required_artifacts():
             if dependency.resolvedVersion == "UNKNOWN":
                 unknown_deps.append(dependency)
