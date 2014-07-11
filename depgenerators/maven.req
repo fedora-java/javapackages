@@ -284,21 +284,6 @@ class TagBuilder(object):
                 filtered.add(req)
         return filtered
 
-    def check_deps(self, metadata):
-        unresolvable = []
-        for provided in metadata.get_provided_artifacts():
-            try:
-                checklist = provided.properties["maven.req.check.deps"]
-            except KeyError:
-                # nothing to check, all good
-                return []
-            for mvn_str in checklist.split(";"):
-                dep = MetadataDependency.from_mvn_str(mvn_str)
-                dep.namespace = provided.namespace
-                if not dep.is_provided_by(self.provided_artifacts)[0]:
-                    unresolvable.append(dep)
-        return unresolvable
-
     def print_mvn_requires(self, path):
         metadata = Metadata(path)
         skipped_but_required = []
@@ -308,7 +293,7 @@ class TagBuilder(object):
         for req in always_req:
             requires.add(req)
 
-        unknown_deps = self.check_deps(metadata)
+        unknown_deps = []
         for dependency in metadata.get_required_artifacts():
             if dependency.resolvedVersion == "UNKNOWN":
                 unknown_deps.append(dependency)

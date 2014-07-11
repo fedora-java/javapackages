@@ -142,21 +142,6 @@ def add_artifact_elements(root, art, ppath=None, jpath=None):
             root.artifacts.append(a)
 
 
-def resolve_deps(deps):
-    reqs = []
-    unresolvable = []
-    for d in deps:
-        reqs.append(ResolutionRequest(d.groupId, d.artifactId,
-                                      extension=d.extension,
-                                      classifier=d.classifier,
-                                      version=d.requestedVersion))
-    results = XMvnResolve.process_raw_request(reqs)
-    for i, r in enumerate(results):
-        if not r:
-            unresolvable.append(deps[i])
-    return unresolvable
-
-
 def merge_sections(main, update):
     for upd in update:
         for curr in main:
@@ -317,12 +302,6 @@ if __name__ == "__main__":
             deps.append(MetadataDependency.from_mvn_dependency(d))
             if deps[-1].requestedVersion == "":
                 deps[-1].requestedVersion = "SYSTEM"
-
-        unavail = resolve_deps(deps)
-        if unavail:
-            unavail_str = ';'.join([x.get_mvn_str() for x in unavail])
-            art.properties['maven.req.check.deps'] = unavail_str
-        art.dependencies = set(deps)
     else:
         art.properties['xmvn.resolver.disableEffectivePom'] = 'true'
 
