@@ -32,7 +32,7 @@
 
 import javapackages.common.osgi as osgi
 import javapackages.common.config as config
-from javapackages.common.util import kill_parent_process
+from javapackages.common.util import kill_parent_process, get_cachedir
 import sys
 import pickle
 import os
