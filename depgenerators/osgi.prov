@@ -54,7 +54,6 @@ class TagBuilder(object):
 cachedir = None
 if __name__ == "__main__":
     try:
-        global cachedir
         if len(sys.argv) > 1:
             cachedir = get_cachedir(sys.argv[1])
         builder = TagBuilder ()
