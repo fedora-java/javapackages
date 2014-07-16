@@ -432,10 +432,10 @@ def compare_artifacts(art1, art2):
 
 cachedir = None
 if __name__ == "__main__":
-    global cachedir
-    if len(sys.argv) > 1:
-        cachedir = get_cachedir(sys.argv[1])
     try:
+        global cachedir
+        if len(sys.argv) > 1:
+            cachedir = get_cachedir(sys.argv[1])
         builder = TagBuilder ()
     except Exception:
         traceback.print_exc(file=sys.stderr)
