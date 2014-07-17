@@ -176,16 +176,32 @@ def _check_path(path):
     return False
 
 
+def read_provided_bundles_cache(cachedir):
+    try:
+        cachefile = open(os.path.join(cachedir, config.prov_bundles_cache_f), 'r')
+        provided = pickle.load(cachefile)
+        cachefile.close()
+    except IOError:
+        return None
+    return provided
+
+
+def write_provided_bundles_cache(cachedir, provided):
+    try:
+        cachefile = open(os.path.join(cachedir, config.prov_bundles_cache_f), 'w')
+        pickle.dump(provided, cachefile)
+        cachefile.close()
+    except IOError:
+        return None
+    return provided
+
 
 def check_path_in_metadata(path, cachedir_path):
     buildroot = config.get_buildroot()
 
-    artifacts = []
-    try:
-        cachefile = open(os.path.join(cachedir_path, 'provided_artifacts.cache'), 'r')
-        artifacts = pickle.load(cachefile)
-        cachefile.close()
-    except IOError:
+    artifacts = Metadata.read_provided_artifacts_from_cache(cachedir_path)
+    if artifacts is None:
+        artifacts = []
         metadata_paths = []
         for dirpath, dirnames, filenames in os.walk(buildroot):
             for filename in filenames:
@@ -195,10 +211,7 @@ def check_path_in_metadata(path, cachedir_path):
                     metadata_paths.append(fpath)
         try:
             mdata = Metadata(metadata_paths)
-            artifacts = mdata.get_provided_artifacts()
-            cachefile = open(os.path.join(cachedir_path, 'provided_artifacts.cache'), 'w')
-            pickle.dump(artifacts, cachefile)
-            cachefile.close()
+            artifacts = mdata.write_provided_artifacts_to_cache(cachedir_path)
         except MetadataInvalidException:
             pass
 

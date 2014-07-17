@@ -84,7 +84,6 @@ def is_it_pom_only_pkg(metadata_path):
     """ Check if the package contains only POM file and no JARs """
     metadata = Metadata(metadata_path)
     provided = metadata.get_provided_artifacts()
-
     for a in provided:
         if a.extension != "pom":
             return False
@@ -96,57 +95,37 @@ class TagBuilder(object):
         if filelist == None:
             filelist = sys.stdin
 
-        self.config = get_config()
-
         paths = [line.rstrip() for line in filelist.readlines()]
+
+        self.config = get_config()
+        self.metadata_paths = None
         self.provided_artifacts = []
-        self.provided_osgi = {}
         self.skipped_artifacts = []
+        self.provided_osgi = {}
+
         if paths:
             self.metadata_dir = os.path.dirname(paths[0])
             metadata_paths = None
             metadata = None
 
-            try:
-                cachefile = open(os.path.join(cachedir, 'provided_artifacts.cache'), 'r')
-                self.provided_artifacts = pickle.load(cachefile)
-                cachefile.close()
-            except IOError:
-                if not metadata_paths:
-                    metadata_paths = self.gather_metadata_files()
-                if not metadata:
-                    metadata = Metadata(metadata_paths)
-                self.provided_artifacts.extend(metadata.get_provided_artifacts())
-                cachefile = open(os.path.join(cachedir,'provided_artifacts.cache'), 'w')
-                pickle.dump(self.provided_artifacts, cachefile)
-                cachefile.close()
-            try:
-                cachefile = open(os.path.join(cachedir, 'provided_osgi.cache'), 'r')
-                self.provided_osgi = pickle.load(cachefile)
-                cachefile.close()
-            except IOError:
-                if not metadata_paths:
-                    metadata_paths = self.gather_metadata_files()
-                if not metadata:
-                    metadata = Metadata(metadata_paths)
-                self.provided_osgi.update(metadata.get_osgi_provides())
+            # all provided artifacts
+            self.provided_artifacts = Metadata.read_provided_artifacts_from_cache(cachedir)
+            if self.provided_artifacts is None:
+                metadata = Metadata(self.metadata_paths or self.gather_metadata_files())
+                self.provided_artifacts = metadata.write_provided_artifacts_to_cache(cachedir) or []
 
-                cachefile = open(os.path.join(cachedir, 'provided_osgi.cache'), 'w')
-                pickle.dump(self.provided_osgi, cachefile)
-                cachefile.close()
-            try:
-                cachefile = open(os.path.join(cachedir, 'skipped_artifacts.cache'), 'r')
-                self.skipped_artifacts = pickle.load(cachefile)
-                cachefile.close()
-            except IOError:
-                if not metadata_paths:
-                    metadata_paths = self.gather_metadata_files()
-                if not metadata:
-                    metadata = Metadata(metadata_paths)
-                self.skipped_artifacts.extend(metadata.get_skipped_artifacts())
-                cachefile = open(os.path.join(cachedir, 'skipped_artifacts.cache'), 'w')
-                pickle.dump(self.skipped_artifacts, cachefile)
-                cachefile.close()
+            # all skipped artifacts
+            self.skipped_artifacts = Metadata.read_skipped_artifacts_from_cache(cachedir)
+            if self.skipped_artifacts is None:
+                metadata = Metadata(self.metadata_paths or self.gather_metadata_files())
+                self.skipped_artifacts = metadata.write_skipped_artifacts_to_cache(cachedir) or []
+
+            # all provided OSGi bundles
+            self.provided_osgi = Metadata.read_provided_osgi_from_cache(cachedir)
+            if self.provided_osgi is None:
+                metadata = Metadata(self.metadata_paths or self.gather_metadata_files())
+                self.provided_osgi = metadata.write_provided_osgi_to_cache(cachedir) or {}
+
 
             # list of all installed POM files
             # TODO: this should be probably removed
@@ -204,6 +183,7 @@ class TagBuilder(object):
                 if filename.endswith(".pom"):
                     continue
                 metadata_paths.append(os.path.join(dirname, filename))
+        self.metadata_paths = metadata_paths
         return metadata_paths
 
     # TODO: move functions like this to some POMUtils, or similar module
@@ -438,7 +418,7 @@ if __name__ == "__main__":
     try:
         if len(sys.argv) > 1:
             cachedir = get_cachedir(sys.argv[1])
-        builder = TagBuilder ()
+        builder = TagBuilder()
     except Exception:
         traceback.print_exc(file=sys.stderr)
         # rpmbuild ignores non-zero exit codes but this that is bad. Make sure

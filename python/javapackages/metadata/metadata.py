@@ -37,11 +37,13 @@ import gzip
 import logging
 import os.path
 import xml
+import pickle
 
 from artifact import MetadataArtifact
 from dependency import MetadataDependency
 from skippedartifact import MetadataSkippedArtifact
 from exclusion import MetadataExclusion
+import javapackages.common.config as config
 
 import pyxb
 
@@ -200,3 +202,49 @@ class Metadata(object):
                         import javapackages.common.osgi
                         reqs.update(javapackages.common.osgi.get_requires(artifact.path))
         return reqs
+
+    def write_provided_artifacts_to_cache(self, cachedir):
+        cachefile = os.path.join(cachedir, config.prov_artifacts_cache_f)
+        return self._write_cache_file(cachefile, self.get_provided_artifacts())
+
+    @staticmethod
+    def read_provided_artifacts_from_cache(cachedir):
+        cachefile = os.path.join(cachedir, config.prov_artifacts_cache_f)
+        return Metadata._read_cache_file(cachefile)
+
+    def write_skipped_artifacts_to_cache(self, cachedir):
+        cachefile = os.path.join(cachedir, config.skip_artifacts_cache_f)
+        return self._write_cache_file(cachefile, self.get_skipped_artifacts())
+
+    @staticmethod
+    def read_skipped_artifacts_from_cache(cachedir):
+        cachefile = os.path.join(cachedir, config.skip_artifacts_cache_f)
+        return Metadata._read_cache_file(cachefile)
+
+    def write_provided_osgi_to_cache(self, cachedir):
+        cachefile = os.path.join(cachedir, config.prov_osgi_cache_f)
+        return self._write_cache_file(cachefile, self.get_osgi_provides())
+
+    @staticmethod
+    def read_provided_osgi_from_cache(cachedir):
+        cachefile = os.path.join(cachedir, config.prov_osgi_cache_f)
+        return Metadata._read_cache_file(cachefile)
+
+    def _write_cache_file(self, cachefile, content):
+        try:
+            cachefile = open(cachefile, 'w')
+            pickle.dump(content, cachefile)
+            cachefile.close()
+        except IOError:
+            return None
+        return content
+
+    @staticmethod
+    def _read_cache_file(cachefile):
+        try:
+            cachefile = open(cachefile, 'r')
+            content = pickle.load(cachefile)
+            cachefile.close()
+        except IOError:
+            return None
+        return content

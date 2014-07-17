@@ -44,34 +44,35 @@ class TagBuilder(object):
         if filelist == None:
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
-        buildroot = config.get_buildroot()
 
-        # get all provided bundles
-        provided = {}
-        try:
-            cachefile = open(os.path.join(cachedir, 'provided_bundles.cache'), 'r')
-            provided = pickle.load(cachefile)
-            cachefile.close()
-        except IOError:
-            bpaths = osgi.find_possible_bundles(buildroot)
-            for path in bpaths:
-                provided.update(osgi.get_provides(path))
-            cachefile = open(os.path.join(cachedir, 'provided_bundles.cache'), 'w')
-            pickle.dump(provided, cachefile)
-            cachefile.close()
-
-        # print requires
+        provided = None
         for path in paths:
+            # check if OSGi requires for this path were handled by metadata
             if osgi.check_path_in_metadata(path, cachedir):
                 continue
             if not os.path.islink(path):
                 reqs = osgi.get_requires(path)
+                if provided is None:
+                    provided = get_provided_bundles(cachedir)
                 for r in reqs:
                     if r in provided:
                         index = provided.index(r)
                         print("osgi(%s) = %s" % (bundle, provided[index].version))
                     else:
                         print("osgi(%s)" % (bundle))
+
+
+        def get_provided_bundles(self, cachedir):
+            # get all provided bundles, try cache first
+            provided = osgi.get_provided_bundles_cache(cachedir)
+            if not provided:
+                # no cache, create one
+                buildroot = config.get_buildroot()
+                bpaths = osgi.find_possible_bundles(buildroot)
+                for path in bpaths:
+                    provided.update(osgi.get_provides(path))
+                osgi.write_provided_bundles_cache(cachedir, provided)
+            return provided
 
 
 cachedir = None
