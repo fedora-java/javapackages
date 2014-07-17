@@ -34,6 +34,7 @@ import javapackages.common.osgi as osgi
 from javapackages.common.util import kill_parent_process, get_cachedir
 import sys
 import os
+import traceback
 
 class TagBuilder(object):
     def __init__(self, filelist=None):

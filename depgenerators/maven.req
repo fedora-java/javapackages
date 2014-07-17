@@ -40,6 +40,7 @@ import sys
 import traceback
 import subprocess
 import pickle
+import traceback
 
 from lxml import etree
 
