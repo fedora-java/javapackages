@@ -46,14 +46,15 @@ from exclusion import MetadataExclusion
 import pyxb
 
 import pyxbmetadata as m
-from xml.dom.minidom import getDOMImplementation
 
 
 class MetadataLoadingException(Exception):
     pass
 
+
 class MetadataInvalidException(Exception):
     pass
+
 
 class Metadata(object):
 
@@ -178,6 +179,9 @@ class Metadata(object):
                             provs[osgi_id] = version
                         except KeyError:
                             pass
+                    elif artifact.path:
+                        import javapackages.common.osgi
+                        provs.update(javapackages.common.osgi.get_provides(artifact.path))
         return provs
 
     def get_osgi_requires(self):
@@ -192,4 +196,7 @@ class Metadata(object):
                             reqs |= set(content.split(','))
                         except KeyError:
                             pass
+                    elif artifact.path:
+                        import javapackages.common.osgi
+                        reqs.update(javapackages.common.osgi.get_requires(artifact.path))
         return reqs

@@ -40,37 +40,10 @@ import config
 from javapackages.metadata.metadata import Metadata, MetadataInvalidException
 
 
-class OsgiProvideInfo:
-    def __init__(self, symbolicName=None, version=None):
-        self.symbolicName = symbolicName
-        self.version = version
-
-    def printProvide(self):
-        if self.version and self.symbolicName:
-            print("osgi(%s) = %s" % (self.symbolicName, self.version))
-
-    def __cmp__(self, other):
-        if isinstance(other, OsgiProvideInfo):
-            if self.symbolicName == other.symbolicName:
-                return 0
-        return -1
-
-    def __str__(self):
-        return "osgi(%s) = %s" % (self.symbolicName, self.version)
-
-    @classmethod
-    def from_manifest(cls, manifest):
-        symbolicName = None
-        version = None
-        for line in normalize_manifest(manifest):
-            if line.startswith("Bundle-SymbolicName:"):
-                symbolicName = line.split(':')[1].strip()
-                symbolicName = symbolicName.split(";")[0].strip()
-            if line.startswith("Bundle-Version:"):
-                versions = line.split(':')[1].strip()
-                versions = versions.split('.')[0:3]
-                version = ".".join(versions)
-        return cls(symbolicName=symbolicName, version=version)
+def print_provides(provides):
+    for key in provides.keys():
+        print("osgi({name}) = {ver}".format(name=key,
+                                            ver=provides[key]))
 
 
 def normalize_manifest(manifest):
@@ -141,7 +114,70 @@ def get_requires_from_manifest(manifest):
     return reqs
 
 
-def look_for_path_in_metadata(path, cachedir_path):
+def get_requires(path):
+    reqs = []
+    manifest = open_manifest(path)
+    if manifest is None:
+        return reqs
+    reqs = get_requires_from_manifest(manifest)
+    manifest.close()
+    return reqs
+
+
+def get_provides_from_manifest(manifest):
+    symbolicName = None
+    version = None
+    for line in normalize_manifest(manifest):
+        if line.startswith("Bundle-SymbolicName:"):
+            symbolicName = line.split(':')[1].strip()
+            symbolicName = symbolicName.split(";")[0].strip()
+        if line.startswith("Bundle-Version:"):
+            versions = line.split(':')[1].strip()
+            versions = versions.split('.')[0:3]
+            version = ".".join(versions)
+    return {symbolicName: version}
+
+
+def get_provides(path):
+    provs = {}
+    manifest = open_manifest(path)
+    if manifest is None:
+        return provs
+    provs = get_provides_from_manifest(manifest)
+    manifest.close()
+    return provs
+
+
+def find_possible_bundles(buildroot):
+    """
+    Search given path (typically buildroot) for JAR and MANIFEST files.
+    """
+    paths = []
+    for dirpath, _, filenames in os.walk(buildroot):
+        for filename in filenames:
+            fpath = os.path.abspath(os.path.join(dirpath, filename))
+            if _check_path(fpath):
+                paths.append(fpath)
+    return paths
+
+
+def _check_path(path):
+    if os.path.islink(path):
+        return False
+    if path.endswith(".jar"):
+        return True
+    if path.endswith("/MANIFEST.MF"):
+        # who knows where the manifest can be in buildroot
+        # TODO: improve this check somehow(?)
+        # this is an attempt to identify only MANIFEST.MF files
+        # which are in %{_datadir} or %{_libdir}
+        if "/usr/share/" in path or "/usr/lib" in path:
+            return True
+    return False
+
+
+
+def check_path_in_metadata(path, cachedir_path):
     buildroot = config.get_buildroot()
 
     artifacts = []
@@ -175,5 +211,8 @@ def look_for_path_in_metadata(path, cachedir_path):
             if (os.path.abspath(a.path) == path or
                (path.startswith(os.path.abspath(a.path)) and
                os.path.realpath(buildroot + path))):
-                return True
+                if a.properties:
+                    if ('osgi.id' in a.properties or
+                       'osgi.requires' in a.properties):
+                        return True
     return False

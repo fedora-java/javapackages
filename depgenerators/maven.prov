@@ -50,7 +50,7 @@ class TagBuilder:
             for artifact in mdata.get_provided_artifacts():
                 print(artifact.get_rpm_str(namespace=artifact.namespace,
                                            pkgver=artifact.version))
-            # print OSGi provides, if they are present in metadata
+            # print OSGi provides from metadata
             osgi_provides = mdata.get_osgi_provides()
             for p in osgi_provides:
                 print("osgi({osgi_id}) = {version}".format(osgi_id=p,

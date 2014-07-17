@@ -41,14 +41,11 @@ class TagBuilder(object):
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
         for path in paths:
-            if osgi.look_for_path_in_metadata(path, cachedir):
+            if osgi.check_path_in_metadata(path, cachedir):
                 continue
             if not os.path.islink(path):
-                manifest = osgi.open_manifest(path)
-                if not manifest:
-                    continue
-                pinfo = osgi.OsgiProvideInfo.from_manifest(manifest)
-                pinfo.printProvide()
+                provides = osgi.get_provides(path)
+                osgi.print_provides(provides)
 
 
 cachedir = None

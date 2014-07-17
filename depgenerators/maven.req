@@ -43,6 +43,7 @@ import pickle
 
 from lxml import etree
 
+import javapackages.common.osgi
 from javapackages.common.config import get_configs
 from javapackages.common.util import kill_parent_process, get_cachedir
 from javapackages.maven.pom import POM
@@ -128,6 +129,7 @@ class TagBuilder(object):
                 if not metadata:
                     metadata = Metadata(metadata_paths)
                 self.provided_osgi.update(metadata.get_osgi_provides())
+
                 cachefile = open(os.path.join(cachedir, 'provided_osgi.cache'), 'w')
                 pickle.dump(self.provided_osgi, cachefile)
                 cachefile.close()
@@ -382,7 +384,7 @@ class TagBuilder(object):
         for req in requires:
             print(req)
 
-        # print OSGi requires, if they are present in metadata
+        # print OSGi requires from metadata
         osgi_reqs = metadata.get_osgi_requires()
         osgi_provs = metadata.get_osgi_provides()
         for req in osgi_reqs:

@@ -46,55 +46,31 @@ class TagBuilder(object):
         buildroot = config.get_buildroot()
 
         # get all provided bundles
-        provided = []
+        provided = {}
         try:
             cachefile = open(os.path.join(cachedir, 'provided_bundles.cache'), 'r')
             provided = pickle.load(cachefile)
             cachefile.close()
         except IOError:
-            for dirpath, _, filenames in os.walk(buildroot):
-                for filename in filenames:
-                    fpath = os.path.abspath(os.path.join(dirpath, filename))
-                    if _check_path(fpath):
-                        manifest = osgi.open_manifest(fpath)
-                        if not manifest:
-                            continue
-                        provided.append(osgi.OsgiProvideInfo.from_manifest(manifest))
+            bpaths = osgi.find_possible_bundles(buildroot)
+            for path in bpaths:
+                provided.update(osgi.get_provides(path))
             cachefile = open(os.path.join(cachedir, 'provided_bundles.cache'), 'w')
             pickle.dump(provided, cachefile)
             cachefile.close()
 
         # print requires
         for path in paths:
-            if osgi.look_for_path_in_metadata(path, cachedir):
+            if osgi.check_path_in_metadata(path, cachedir):
                 continue
             if not os.path.islink(path):
-                manifest = osgi.open_manifest(path)
-                if not manifest:
-                    continue
-                reqs = osgi.get_requires_from_manifest(manifest)
-                for bundle in reqs:
-                    pinfo = osgi.OsgiProvideInfo(symbolicName=bundle)
-                    if pinfo in provided:
-                        index = provided.index(pinfo)
+                reqs = osgi.get_requires(path)
+                for r in reqs:
+                    if r in provided:
+                        index = provided.index(r)
                         print("osgi(%s) = %s" % (bundle, provided[index].version))
                     else:
                         print("osgi(%s)" % (bundle))
-
-
-def _check_path(path):
-    if os.path.islink(path):
-        return False
-    if path.endswith(".jar"):
-        return True
-    if path.endswith("/MANIFEST.MF"):
-        # who knows where the manifest can be in buildroot
-        # TODO: improve this check somehow(?)
-        # this is an attempt to identify only MANIFEST.MF files
-        # which are in %{_datadir} or %{_libdir}
-        if "/usr/share/" in path or "/usr/lib" in path:
-            return True
-    return False
 
 
 cachedir = None
