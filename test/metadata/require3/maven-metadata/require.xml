@@ -9,7 +9,7 @@
             <compatVersions>
               <version>1.0</version>
             </compatVersions>
-            <path>/usr/share/maven-poms/plexus-plexus-ant-factory.pom</path>
+            <path>/metadata/require3/maven-poms/pom.xml</path>
         </artifact>
     </artifacts>
 </metadata>

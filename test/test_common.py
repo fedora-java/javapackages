@@ -136,7 +136,7 @@ def requires_generator(name, filelist, config=None, javaconfdirs=None):
         def test_decorated(self):
             scriptpath = path.join(DIRPATH, '..', 'depgenerators', name)
             stdin = build_depmap_paths(filelist)
-            env = {}
+            env = {'RPM_BUILD_ROOT': os.getcwd()}
             if javaconfdirs:
                 confdirs = [os.path.join(DIRPATH, conf) for conf in javaconfdirs]
                 env['JAVACONFDIRS'] = os.pathsep.join(confdirs)
