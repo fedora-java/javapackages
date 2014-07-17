@@ -224,8 +224,5 @@ def check_path_in_metadata(path, cachedir_path):
             if (os.path.abspath(a.path) == path or
                (path.startswith(os.path.abspath(a.path)) and
                os.path.realpath(buildroot + path))):
-                if a.properties:
-                    if ('osgi.id' in a.properties or
-                       'osgi.requires' in a.properties):
-                        return True
+                return True
     return False
