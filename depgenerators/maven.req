@@ -32,27 +32,20 @@
 #   Stanislav Ochotnicky <sochotnicky@redhat.com>
 #   Michal Srb <msrb@redhat.com>
 
-import json
 import os
 import re
-import signal
 import sys
-import traceback
-import subprocess
-import pickle
 import traceback
 
 from lxml import etree
 
-import javapackages.common.osgi
 from javapackages.common.config import get_configs
 from javapackages.common.util import kill_parent_process, get_cachedir
 from javapackages.maven.pom import POM
 from javapackages.maven.artifact import Artifact
-from javapackages.metadata.metadata import Metadata, MetadataInvalidException
-from javapackages.metadata.artifact import MetadataArtifact
+from javapackages.metadata.metadata import Metadata
 from javapackages.metadata.dependency import MetadataDependency
-from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionRequest, ResolutionResult
+from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionRequest
 
 
 def process_java_version(version_string):
