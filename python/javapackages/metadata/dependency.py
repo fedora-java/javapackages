@@ -63,7 +63,7 @@ class MetadataDependency(object):
         d.classifier = self.classifier or None
         d.extension = self.extension or None
         if self.exclusions:
-            excl = {e.to_metadata() for e in self.exclusions}
+            excl = set(e.to_metadata() for e in self.exclusions)
             d.exclusions = pyxb.BIND(*excl)
         return d
 
@@ -92,8 +92,8 @@ class MetadataDependency(object):
 
         exclusions = set()
         if hasattr(metadata, 'exclusions') and metadata.exclusions:
-            exclusions = {MetadataExclusion.from_metadata(excl)
-                          for excl in metadata.exclusions.exclusion}
+            exclusions = set(MetadataExclusion.from_metadata(excl)
+                          for excl in metadata.exclusions.exclusion)
 
         return cls(groupId, artifactId, extension, classifier,
                    namespace, requestedVersion, resolvedVersion,

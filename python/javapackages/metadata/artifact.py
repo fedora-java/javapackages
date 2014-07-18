@@ -11,7 +11,6 @@ import pyxb
 import os
 from xml.dom.minidom import getDOMImplementation
 
-
 class MetadataArtifact(object):
     def __init__(self, groupId, artifactId, extension="",
                  classifier="", version="", namespace="",
@@ -123,7 +122,7 @@ class MetadataArtifact(object):
 
         compatVersions = set()
         if hasattr(metadata, 'compatVersions') and metadata.compatVersions:
-            compatVersions = {cv for cv in metadata.compatVersions.version}
+            compatVersions = set(cv for cv in metadata.compatVersions.version)
 
         aliases = set()
         if hasattr(metadata, 'aliases') and metadata.aliases:
@@ -142,13 +141,13 @@ class MetadataArtifact(object):
                                           alias_classifier))
         properties = {}
         if hasattr(metadata, 'properties') and metadata.properties:
-            properties = {prop.tagName:prop.firstChild.value
-                          for prop in metadata.properties.wildcardElements()}
+            properties = dict((prop.tagName, prop.firstChild.value)
+                          for prop in metadata.properties.wildcardElements())
 
         dependencies = set()
         if hasattr(metadata, 'dependencies') and metadata.dependencies:
-            dependencies = {MetadataDependency.from_metadata(dep)
-                            for dep in metadata.dependencies.dependency}
+            dependencies = set(MetadataDependency.from_metadata(dep)
+                            for dep in metadata.dependencies.dependency)
 
         return cls(groupId, artifactId, extension, classifier, version,
                    namespace, path=path, aliases=aliases,
