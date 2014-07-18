@@ -179,9 +179,10 @@ class Metadata(object):
                             osgi_id = artifact.properties["osgi.id"]
                             version = artifact.properties["osgi.version"]
                             provs[osgi_id] = version
+                            continue
                         except KeyError:
                             pass
-                    elif artifact.path:
+                    if artifact.path:
                         import javapackages.common.osgi as osgi
                         p = osgi.get_provides(artifact.get_real_path())
                         provs.update(p)
@@ -197,9 +198,10 @@ class Metadata(object):
                         try:
                             content = artifact.properties["osgi.requires"]
                             reqs |= set(content.split(','))
+                            continue
                         except KeyError:
                             pass
-                    elif artifact.path:
+                    if artifact.path:
                         import javapackages.common.osgi as osgi
                         r = osgi.get_requires(artifact.get_real_path())
                         reqs.update(r)
