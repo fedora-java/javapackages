@@ -124,8 +124,10 @@ class TagBuilder(object):
         always_req = self.config['always_generate']
         requires.update([x for x in always_req])
 
+        unknown_deps = []
         # check if dependencies on POM files are satisfiable
-        unknown_deps = self._check_pom_deps()
+        if os.path.exists(XMvnResolve._load_path_from_config()):
+            unknown_deps = self._check_pom_deps()
 
         for dependency in metadata.get_required_artifacts():
             if dependency.resolvedVersion == "UNKNOWN":
