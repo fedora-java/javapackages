@@ -111,10 +111,11 @@ def build_depmap_paths(filelist):
 def mavenprov(filelist):
     def test_decorator(fun):
         def test_decorated(self):
+            env = {"RPM_BUILD_ROOT": "/dev/null"}
             scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'maven.prov')
             stdin = build_depmap_paths(filelist)
             (stdout, stderr, return_value) = call_script(scriptpath,
-                    ["/tmp"], stdin=stdin, wrapped=True)
+                    ["/tmp"], stdin=stdin, wrapped=True, extra_env=env)
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
