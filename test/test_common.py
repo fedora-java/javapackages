@@ -21,7 +21,8 @@ def call_script(name, args, stdin=None, wrapped=False, extra_env={}, config_path
     outfile = open("tmpout", 'w')
     errfile = open("tmperr", 'w')
     procargs = [sys.executable, path.join(DIRPATH, 'wrapper.py'), name, config_path]
-    env = dict(SCRIPT_ENV.items() + extra_env.items())
+    env = SCRIPT_ENV.copy()
+    env.update(extra_env)
     proc = subprocess.Popen(procargs + args, shell=False,
         stdout=outfile, stderr=errfile, env=env,
         stdin=subprocess.PIPE)
