@@ -34,7 +34,7 @@ class MetadataArtifact(object):
     def is_compat(self):
         """Return true if artifact has compat verions specified.
         This means package should have versioned provides for this artifact"""
-        return self.compatVersions
+        return True if self.compatVersions else False
 
     def get_real_path(self, prefix=None):
         if not self.path:
