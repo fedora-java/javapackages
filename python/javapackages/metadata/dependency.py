@@ -1,8 +1,8 @@
 from javapackages.maven.artifact import Artifact
 from javapackages.maven.printer import Printer
-from exclusion import MetadataExclusion
+from javapackages.metadata.exclusion import MetadataExclusion
+import javapackages.metadata.pyxbmetadata as m
 
-import pyxbmetadata as m
 import pyxb
 import sys
 

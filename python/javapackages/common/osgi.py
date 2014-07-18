@@ -36,7 +36,7 @@ import pickle
 import zipfile
 from zipfile import ZipFile
 
-import config
+import javapackages.common.config as config
 from javapackages.metadata.metadata import Metadata, MetadataInvalidException
 
 

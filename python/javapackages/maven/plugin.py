@@ -33,9 +33,9 @@
 
 import sys
 
-from dependency import Dependency
-from artifact import AbstractArtifact, ArtifactFormatException
-from pomreader import POMReader
+from javapackages.maven.dependency import Dependency
+from javapackages.maven.artifact import AbstractArtifact, ArtifactFormatException
+from javapackages.maven.pomreader import POMReader
 
 from lxml.etree import Element
 

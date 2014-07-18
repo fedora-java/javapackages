@@ -39,15 +39,15 @@ import os.path
 import xml
 import pickle
 
-from artifact import MetadataArtifact
-from dependency import MetadataDependency
-from skippedartifact import MetadataSkippedArtifact
-from exclusion import MetadataExclusion
+from javapackages.metadata.artifact import MetadataArtifact
+from javapackages.metadata.dependency import MetadataDependency
+from javapackages.metadata.skippedartifact import MetadataSkippedArtifact
+from javapackages.metadata.exclusion import MetadataExclusion
 import javapackages.common.config as config
+import javapackages.metadata.pyxbmetadata as m
 
 import pyxb
 
-import pyxbmetadata as m
 
 
 class MetadataLoadingException(Exception):

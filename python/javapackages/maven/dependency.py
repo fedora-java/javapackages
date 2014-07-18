@@ -31,9 +31,9 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
-from artifact import AbstractArtifact, ArtifactFormatException
-from exclusion import Exclusion
-from pomreader import POMReader
+from javapackages.maven.artifact import AbstractArtifact, ArtifactFormatException
+from javapackages.maven.exclusion import Exclusion
+from javapackages.maven.pomreader import POMReader
 from lxml.etree import Element, SubElement
 
 

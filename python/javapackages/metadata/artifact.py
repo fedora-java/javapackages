@@ -3,10 +3,10 @@ from javapackages.maven.artifact import Artifact
 from javapackages.maven.pom import POM
 from javapackages.maven.printer import Printer
 
-from alias import MetadataAlias
-from dependency import MetadataDependency
+from javapackages.metadata.alias import MetadataAlias
+from javapackages.metadata.dependency import MetadataDependency
+import javapackages.metadata.pyxbmetadata as m
 
-import pyxbmetadata as m
 import pyxb
 import os
 from xml.dom.minidom import getDOMImplementation

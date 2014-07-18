@@ -32,10 +32,10 @@
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 #           Michal Srb <msrb@redhat.com>
 
-from pomreader import POMReader, PomLoadingException
-from dependency import Dependency
-from plugin import Plugin
-from extension import Extension
+from javapackages.maven.pomreader import POMReader, PomLoadingException
+from javapackages.maven.dependency import Dependency
+from javapackages.maven.plugin import Plugin
+from javapackages.maven.extension import Extension
 
 import os
 

@@ -35,8 +35,8 @@
 import sys
 import re
 
-from pomreader import POMReader
-from printer import Printer
+from javapackages.maven.pomreader import POMReader
+from javapackages.maven.printer import Printer
 from lxml.etree import Element, SubElement, tostring
 
 

@@ -1,7 +1,7 @@
 from javapackages.maven.artifact import Artifact
 from javapackages.maven.printer import Printer
 
-import pyxbmetadata as m
+import javapackages.metadata.pyxbmetadata as m
 
 
 # TODO: this is very similar to MetadataAlias
