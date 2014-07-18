@@ -182,8 +182,9 @@ class Metadata(object):
                         except KeyError:
                             pass
                     elif artifact.path:
-                        import javapackages.common.osgi
-                        provs.update(javapackages.common.osgi.get_provides(artifact.path))
+                        import javapackages.common.osgi as osgi
+                        p = osgi.get_provides(artifact.get_real_path())
+                        provs.update(p)
         return provs
 
     def get_osgi_requires(self):
@@ -199,8 +200,9 @@ class Metadata(object):
                         except KeyError:
                             pass
                     elif artifact.path:
-                        import javapackages.common.osgi
-                        reqs.update(javapackages.common.osgi.get_requires(artifact.path))
+                        import javapackages.common.osgi as osgi
+                        r = osgi.get_requires(artifact.get_real_path())
+                        reqs.update(r)
         return reqs
 
     def write_provided_artifacts_to_cache(self, cachedir):

@@ -1,3 +1,4 @@
+import javapackages.common.config as config
 from javapackages.maven.artifact import Artifact
 from javapackages.maven.pom import POM
 from javapackages.maven.printer import Printer
@@ -7,6 +8,7 @@ from dependency import MetadataDependency
 
 import pyxbmetadata as m
 import pyxb
+import os
 from xml.dom.minidom import getDOMImplementation
 
 
@@ -32,8 +34,14 @@ class MetadataArtifact(object):
     def is_compat(self):
         """Return true if artifact has compat verions specified.
         This means package should have versioned provides for this artifact"""
-
         return self.compatVersions
+
+    def get_real_path(self, prefix=None):
+        if not self.path:
+            return None
+        if prefix is None:
+            prefix = config.get_buildroot()
+        return os.path.join(prefix, self.path[1:])
 
     def get_mvn_str(self):
         return Printer.get_mvn_str(self.groupId, self.artifactId,
