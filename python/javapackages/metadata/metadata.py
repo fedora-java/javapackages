@@ -80,12 +80,12 @@ class Metadata(object):
 
 
     def __load_metadata(self, metadata_path):
-        with open(metadata_path) as f:
+        with open(metadata_path, 'rb') as f:
             try:
                 gzf = gzip.GzipFile(os.path.basename(metadata_path),
                                     'rb',
                                     fileobj=f)
-                data = gzf.read()
+                data = gzf.read().decode('UTF-8')
             except IOError:
                 # not a compressed metadata, just rewind and read the data
                 f.seek(0)
