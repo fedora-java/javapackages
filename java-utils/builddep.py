@@ -63,7 +63,7 @@ if __name__ == "__main__":
         deps = et.findall('./dependency')
         for dep in deps:
             art = Artifact.from_xml_element(dep)
-            print art.get_rpm_str(art.version)
+            print(art.get_rpm_str(art.version))
     except (ArtifactValidationException, ArtifactFormatException), e:
         parser.error("{e}: Provided artifact strings were invalid. "
                      "Please see help  and check your arguments".format(e=e))

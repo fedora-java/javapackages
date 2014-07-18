@@ -7,4 +7,4 @@ with open(CONFIG_PATH) as config_file:
     config = json.load(config_file)['javadoc.req']
 
 for pkg in config['always_generate']:
-    print pkg
+    print(pkg)

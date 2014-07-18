@@ -99,7 +99,7 @@ def _make_files_versioned(versions, pom_path, jar_path):
             else:
                 os.symlink(basename(vpom_path), dest)
             # output file path for file lists
-            print dest
+            print(dest)
         # remove unversioned pom
         os.remove(pom_path)
 
@@ -117,7 +117,7 @@ def _make_files_versioned(versions, pom_path, jar_path):
             else:
                 os.symlink(basename(vjar_path), dest)
             # output file path for file lists
-            print dest
+            print(dest)
         # remove unversioned jar
         os.remove(jar_path)
 
@@ -267,7 +267,7 @@ if __name__ == "__main__":
 
 
     # output file path for file lists
-    print metadata_path
+    print(metadata_path)
 
     artifact = add_compat_versions(artifact, add_versions)
     if add_versions:
@@ -290,7 +290,7 @@ if __name__ == "__main__":
         am.append(artifact.to_metadata())
         # output file path for file list (if it's not versioned)
         if not add_versions:
-            print jar_path
+            print(jar_path)
     if have_pom:
         metadata_pom_path = os.path.abspath(pom_path)
         artifact.path = metadata_pom_path.replace(buildroot, "") if buildroot else metadata_pom_path
@@ -300,6 +300,6 @@ if __name__ == "__main__":
         am.append(artifact.to_metadata())
         # output file path for file list (if it's not versioned)
         if not add_versions:
-            print pom_path
+            print(pom_path)
 
     write_metadata(metadata_path, am)

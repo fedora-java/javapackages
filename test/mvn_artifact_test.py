@@ -41,7 +41,7 @@ class TestMvnArtifact(unittest.TestCase):
             pass
 
     def xml_compare_reporter(self, report):
-        print report
+        print(report)
 
     def check_result(self, test_name):
         dirpath = os.path.dirname(os.path.realpath(__file__))
