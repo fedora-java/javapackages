@@ -73,7 +73,7 @@ if __name__ == "__main__":
         orig = Artifact.from_mvn_str(args[0])
         orig.validate(allow_backref=False)
         XMvnConfig().add_compat_versions(orig, args[1:])
-    except (ArtifactValidationException, ArtifactFormatException), e:
+    except (ArtifactValidationException, ArtifactFormatException) as e:
         parser.error("{e}: Provided artifact strings were invalid. "
                      "Please see help  and check your arguments".format(e=e))
         sys.exit(1)

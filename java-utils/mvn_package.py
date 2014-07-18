@@ -77,7 +77,7 @@ if __name__ == "__main__":
     try:
         orig = Artifact.from_mvn_str(args[0])
         XMvnConfig().add_package_mapping(orig, args[1])
-    except (ArtifactValidationException, ArtifactFormatException), e:
+    except (ArtifactValidationException, ArtifactFormatException) as e:
         parser.error("{e}: Provided artifact strings were invalid. "
                      "Please see help  and check your arguments".format(e=e))
         sys.exit(1)

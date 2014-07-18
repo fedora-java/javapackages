@@ -64,7 +64,7 @@ if __name__ == "__main__":
         for dep in deps:
             art = Artifact.from_xml_element(dep)
             print(art.get_rpm_str(art.version))
-    except (ArtifactValidationException, ArtifactFormatException), e:
+    except (ArtifactValidationException, ArtifactFormatException) as e:
         parser.error("{e}: Provided artifact strings were invalid. "
                      "Please see help  and check your arguments".format(e=e))
         sys.exit(1)
