@@ -25,8 +25,8 @@ def call_script(name, args, stdin=None, wrapped=False, extra_env={}, config_path
     env.update(extra_env)
     proc = subprocess.Popen(procargs + args, shell=False,
         stdout=outfile, stderr=errfile, env=env,
-        stdin=subprocess.PIPE)
-    proc.communicate(bytes(stdin, 'UTF-8'))
+        stdin=subprocess.PIPE, universal_newlines=True)
+    proc.communicate(stdin)
     ret = proc.wait()
     outfile = open("tmpout", 'r+')
     errfile = open("tmperr", 'r+')
