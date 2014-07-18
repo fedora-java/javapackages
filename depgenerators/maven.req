@@ -221,7 +221,7 @@ class TagBuilder(object):
         regexes = []
         for filt in filters:
             artifact_glob = re.sub(r'\\\*', '.*', re.escape(filt))
-            regexes.append(re.compile(r'^{}(\s*[<>=].*)?$'.format(artifact_glob)))
+            regexes.append(re.compile(r'^{0}(\s*[<>=].*)?$'.format(artifact_glob)))
             regexes.append(re.compile(r'mvn\({0}\)'.format(artifact_glob)))
         for req in requires:
             if not any([regex.search(req) for regex in regexes]):
