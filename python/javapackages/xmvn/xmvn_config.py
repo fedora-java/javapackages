@@ -63,7 +63,7 @@ class XMvnConfig(object):
 </configuration>
 """
         try:
-            os.makedirs(XMvnConfig.CONFIG_DIR, 0755)
+            os.makedirs(XMvnConfig.CONFIG_DIR, 0o755)
         except OSError:
             # If directory already exists then it's OK.  If it doesn't
             # then creating the index file below will fail anyways.
