@@ -30,7 +30,7 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 
-from StringIO import StringIO
+from io import StringIO
 import codecs
 import errno
 import os
