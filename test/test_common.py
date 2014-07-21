@@ -132,6 +132,20 @@ def osgiprov(filelist):
         return test_decorated
     return test_decorator
 
+
+def osgireq(filelist):
+    def test_decorator(fun):
+        def test_decorated(self):
+            scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'osgi.req')
+            stdin = "\n".join(filelist)
+            (stdout, stderr, return_value) = call_script(scriptpath,
+                    ["/tmp"], stdin=stdin, wrapped=True,
+                    extra_env={"RPM_BUILD_ROOT": "/dev/null"})
+            fun(self, stdout, stderr, return_value)
+        return test_decorated
+    return test_decorator
+
+
 def requires_generator(name, filelist, config=None, javaconfdirs=None):
     def test_decorator(fun):
         def test_decorated(self):

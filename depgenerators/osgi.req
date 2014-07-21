@@ -53,26 +53,27 @@ class TagBuilder(object):
             if not os.path.islink(path):
                 reqs = osgi.get_requires(path)
                 if provided is None:
-                    provided = get_provided_bundles(cachedir)
-                for r in reqs:
-                    if r in provided:
-                        index = provided.index(r)
-                        print("osgi(%s) = %s" % (bundle, provided[index].version))
+                    provided = self.get_provided_bundles(cachedir)
+                for req in reqs:
+                    if req in provided:
+                        index = provided.index(req)
+                        print("osgi(%s) = %s" % (req, provided[index].version))
                     else:
-                        print("osgi(%s)" % (bundle))
+                        print("osgi(%s)" % (req))
 
 
-        def get_provided_bundles(self, cachedir):
-            # get all provided bundles, try cache first
-            provided = osgi.get_provided_bundles_cache(cachedir)
-            if not provided:
-                # no cache, create one
-                buildroot = config.get_buildroot()
-                bpaths = osgi.find_possible_bundles(buildroot)
-                for path in bpaths:
-                    provided.update(osgi.get_provides(path))
-                osgi.write_provided_bundles_cache(cachedir, provided)
-            return provided
+    def get_provided_bundles(self, cachedir):
+        # get all provided bundles, try cache first
+        provided = osgi.read_provided_bundles_cache(cachedir)
+        if not provided:
+            provided = []
+            # no cache, create one
+            buildroot = config.get_buildroot()
+            bpaths = osgi.find_possible_bundles(buildroot)
+            for path in bpaths:
+                provided.update(osgi.get_provides(path))
+            osgi.write_provided_bundles_cache(cachedir, provided)
+        return provided
 
 
 cachedir = None
