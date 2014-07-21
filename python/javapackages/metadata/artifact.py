@@ -7,6 +7,7 @@ from javapackages.metadata.alias import MetadataAlias
 from javapackages.metadata.dependency import MetadataDependency
 import javapackages.metadata.pyxbmetadata as m
 
+import six
 import pyxb
 import os
 from xml.dom.minidom import getDOMImplementation
@@ -92,7 +93,7 @@ class MetadataArtifact(object):
             a.aliases = pyxb.BIND(*als)
 
         if self.properties:
-            props = [self._create_property(k, v) for k, v in self.properties.iteritems()]
+            props = [self._create_property(k, v) for k, v in six.iteritems(self.properties)]
             a.properties = pyxb.BIND(*props)
         return a
 
