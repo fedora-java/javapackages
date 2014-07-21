@@ -11,7 +11,7 @@ class TestOSGiReq(unittest.TestCase):
         except OSError:
             pass
 
-    @osgireq({"data/osgi/basic/META-INF/MANIFEST.MF"})
+    @osgireq(["data/osgi/basic/META-INF/MANIFEST.MF"])
     def test_basic(self, stdout, stderr, return_value):
         self.assertEquals(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
