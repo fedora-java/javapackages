@@ -178,7 +178,7 @@ def _check_path(path):
 
 def read_provided_bundles_cache(cachedir):
     try:
-        cachefile = open(os.path.join(cachedir, config.prov_bundles_cache_f), 'r')
+        cachefile = open(os.path.join(cachedir, config.prov_bundles_cache_f), 'rb')
         provided = pickle.load(cachefile)
         cachefile.close()
     except IOError:
@@ -188,7 +188,7 @@ def read_provided_bundles_cache(cachedir):
 
 def write_provided_bundles_cache(cachedir, provided):
     try:
-        cachefile = open(os.path.join(cachedir, config.prov_bundles_cache_f), 'w')
+        cachefile = open(os.path.join(cachedir, config.prov_bundles_cache_f), 'wb')
         pickle.dump(provided, cachefile)
         cachefile.close()
     except IOError:

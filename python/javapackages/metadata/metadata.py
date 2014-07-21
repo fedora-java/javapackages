@@ -236,7 +236,7 @@ class Metadata(object):
 
     def _write_cache_file(self, cachefile, content):
         try:
-            cachefile = open(cachefile, 'w')
+            cachefile = open(cachefile, 'wb')
             pickle.dump(content, cachefile)
             cachefile.close()
         except IOError:
@@ -246,7 +246,7 @@ class Metadata(object):
     @staticmethod
     def _read_cache_file(cachefile):
         try:
-            cachefile = open(cachefile, 'r')
+            cachefile = open(cachefile, 'rb')
             content = pickle.load(cachefile)
             cachefile.close()
         except IOError:
