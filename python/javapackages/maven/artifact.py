@@ -189,10 +189,10 @@ class AbstractArtifact(object):
         return leftovers
 
     def __unicode__(self):
-        return unicode(self.get_mvn_str())
+        return six.text_type(self.get_mvn_str())
 
     def __str__(self):
-        return unicode(self).encode(sys.getfilesystemencoding())
+        return self.__unicode__()
 
     def __eq__(self, other):
         if type(other) is type(self):
