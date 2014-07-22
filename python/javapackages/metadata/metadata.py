@@ -118,7 +118,7 @@ class Metadata(object):
                 for dep in a.dependencies.dependency:
                     artifacts.add(MetadataDependency.from_metadata(dep))
 
-        return sorted(list(artifacts))
+        return list(artifacts)
 
     def get_skipped_artifacts(self):
         """Returns list of Artifact that were build but not installed"""
@@ -129,7 +129,7 @@ class Metadata(object):
             for dep in metadata.skippedArtifacts.skippedArtifact:
                 artifact = MetadataSkippedArtifact.from_metadata(dep)
                 artifacts.add(artifact)
-        return sorted(list(artifacts))
+        return list(artifacts)
 
     def get_excluded_artifacts(self):
         """Returns list of Artifacts that should be skipped for requires"""
@@ -146,7 +146,7 @@ class Metadata(object):
                     for exclusion in dep.exclusions.exclusion:
                         artifact = MetadataExclusion.from_metadata(exclusion)
                 artifacts.add(artifact)
-        return sorted(list(artifacts))
+        return list(artifacts)
 
     def get_java_requires(self):
         """Returns JVM version required by metadata or None"""
