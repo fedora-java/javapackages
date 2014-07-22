@@ -59,7 +59,7 @@ class XMvnResolve(object):
         binpath = XMvnResolve._load_path_from_config()
         request = XMvnResolve.__join_raw_requests(raw_request_list)
         procargs = [binpath, '--raw-request']
-        proc = subprocess.Popen(procargs, shell=False, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+        proc = subprocess.Popen(procargs, shell=False, stdout=subprocess.PIPE, stdin=subprocess.PIPE, universal_newlines=True)
         stdout = proc.communicate(input=request)[0]
         proc.wait()
         result = XMvnResolve.__process_results(stdout)
