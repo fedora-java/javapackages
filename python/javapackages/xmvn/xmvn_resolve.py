@@ -78,7 +78,7 @@ class XMvnResolve(object):
     def __process_results(result_xml):
         results = []
 
-        doc = lxml.etree.fromstring(result_xml)
+        doc = lxml.etree.fromstring(bytes(result_xml, "UTF-8"))
         nodes = doc.xpath('/results/result')
         for node in nodes:
             if len(node) > 0:
