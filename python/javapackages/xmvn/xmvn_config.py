@@ -30,12 +30,12 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 
-from io import BytesIO
 import codecs
 import errno
 import os
 import re
 import six
+from six import BytesIO
 
 from javapackages.maven.artifact import ArtifactValidationException
 from lxml.etree import ElementTree, Element, SubElement
