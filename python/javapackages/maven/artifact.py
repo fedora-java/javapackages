@@ -34,6 +34,7 @@
 
 import sys
 import re
+import six
 
 from javapackages.maven.pomreader import POMReader
 from javapackages.maven.printer import Printer
@@ -174,7 +175,7 @@ class AbstractArtifact(object):
         for member in self.__dict__:
             if (not member.startswith('_')
                 and getattr(self, member)
-                and isinstance(getattr(self, member), basestring)):
+                and isinstance(getattr(self, member), six.string_types)):
                     curr_value = getattr(self, member)
                     prog = re.compile("\$\{([^}]+)\}")
                     props = prog.findall(curr_value)
