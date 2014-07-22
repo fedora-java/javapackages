@@ -148,12 +148,14 @@ class POM(object):
         """
         Packaging type of artifact or None if unspecified
         """
-        p = POMReader.find(self.__doc, './pom:packaging')
-        if p is None:
-            raise PomLoadingException("Unable to determine packaging type")
-        if len(p) != 0:
+        packaging = POMReader.find(self.__doc, './pom:packaging')
+        if packaging is None:
+            # default packaging type
+            packaging = "jar"
+            return packaging
+        if len(packaging) != 0:
             raise PomLoadingException("Unexpected child nodes under packaging")
-        return p.text.strip()
+        return packaging.text.strip()
 
     @property
     def dependencies(self):
