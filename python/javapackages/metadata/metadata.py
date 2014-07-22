@@ -85,7 +85,7 @@ class Metadata(object):
                 gzf = gzip.GzipFile(os.path.basename(metadata_path),
                                     'rb',
                                     fileobj=f)
-                data = gzf.read().decode('UTF-8')
+                data = gzf.read()
             except IOError:
                 # not a compressed metadata, just rewind and read the data
                 f.seek(0)
