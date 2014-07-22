@@ -1,4 +1,4 @@
-#!/usr/bin/bash -e
+#!/usr/bin/python
 
 # Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
@@ -32,31 +32,23 @@
 # Authors:  Michal Srb <msrb@redhat.com>
 
 
-usage() {
-    echo "$0 [2|3]"
-    echo "2  - run tests with python 2 (default)"
-    echo "3  - run tests with python 3"
-}
+import sys
+import nose
 
-# default is still python 2
-python="/usr/bin/python"
+# run nose
+if __name__ == "__main__":
 
-if [ "$1" != "" ]; then
-    case $1 in
-        2)
-            python=${python}
-            ;;
-        3)
-            python="/usr/bin/python3"
-            ;;
-        *)
-            echo "Invalid argument: $1"
-            usage
-            exit 1
-    esac
-fi
+    exclude = ["--exclude"]
+    # skip these tests (TODO: fix them):
+    exclude.append("mvn_alias_test.py")  # XML comparison problems
 
-echo "running tests with ${python}"
-PYTHONPATH="../python" ${python} run_tests.py
+    args = []
+    # generate xunit report, if nose version is at least 1.x.x
+    if nose.__versioninfo__[0] > 0:
+        args.append("--with-xunit")
 
-exit $?
+    args += exclude
+
+    success = nose.run(argv=args)
+    if not success:
+        sys.exit(1)
