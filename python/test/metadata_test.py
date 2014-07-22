@@ -7,7 +7,7 @@ from javapackages.metadata.skippedartifact import MetadataSkippedArtifact
 from javapackages.metadata.exclusion import MetadataExclusion
 from javapackages.metadata.dependency import MetadataDependency
 
-from misc import exception_expected
+from test.misc import exception_expected
 
 
 def depmapfile(fname):

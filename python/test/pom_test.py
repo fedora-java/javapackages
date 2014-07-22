@@ -4,7 +4,7 @@ import lxml
 
 from javapackages.maven.pom import POM, PomLoadingException
 
-from misc import exception_expected
+from test.misc import exception_expected
 
 
 def pomfile(fname):

@@ -4,7 +4,7 @@ from lxml.etree import fromstring, parse
 
 from javapackages.maven.artifact import Artifact, ArtifactFormatException
 
-from misc import exception_expected
+from test.misc import exception_expected
 
 def artifactfile(fname):
     def test_decorator(fn):
