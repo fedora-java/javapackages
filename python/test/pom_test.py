@@ -36,7 +36,7 @@ class TestPOM(unittest.TestCase):
         self.assertNotEqual(p.artifactId, "commons-parent")
         self.assertNotEqual(p.groupId, "org.apache.commons")
         self.assertNotEqual(p.version, "17")
-        self.assertEqual(p.packaging, None)
+        self.assertEqual(p.packaging, "jar")
 
     @pomfile("xmlrpc.pom")
     def test_parent_pom(self, p):
@@ -54,7 +54,7 @@ class TestPOM(unittest.TestCase):
 
     @pomfile("parent-version.pom")
     def test_parent_version(self, p):
-        self.assertEqual(p.packaging, None)
+        self.assertEqual(p.packaging, "jar")
         self.assertEqual(p.groupId, "commons-lang")
         self.assertEqual(p.artifactId, "commons-lang")
         self.assertEqual(p.version, "17")
@@ -72,17 +72,15 @@ class TestPOM(unittest.TestCase):
 
     @pomfile("junit-comments.pom")
     def test_pom_comments(self, p):
-        self.assertEqual(p.packaging, None)
+        self.assertEqual(p.packaging, "jar")
         self.assertEqual(p.groupId, "junit")
         self.assertEqual(p.artifactId, "junit")
         self.assertEqual(p.version, "4.11")
 
+    @exception_expected(PomLoadingException)
     @pomfile("ivy-simple.xml")
     def test_ivy_module(self, p):
-        self.assertEqual(p.packaging, "ivy")
         self.assertEqual(p.groupId, "org.apache")
-        self.assertEqual(p.artifactId, "hello-ivy")
-        self.assertEqual(p.version, "1.2.3")
 
 
 if __name__ == '__main__':
