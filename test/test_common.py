@@ -61,12 +61,19 @@ def get_expected_config(filename, scriptname, testname):
         expfname = filename
     return path.join(DIRPATH, 'data', scriptname, expfname)
 
+
 def get_actual_args():
-    return open('.xmvn/out').read()
+    with open('.xmvn/out', 'r') as f:
+        args = f.read()
+    return args
+
 
 def get_expected_args(scriptname, testname):
-    return open(path.join(DIRPATH, 'data', scriptname,
-       "{name}_out".format(name=testname))).read()
+    fpath = path.join(DIRPATH, 'data', scriptname, "{name}_out".format(name=testname))
+    with open(fpath, 'r') as f:
+        args = f.read()
+    return args
+
 
 def preload_xmvn_config(name, filename, dstname=None, update_index=False):
     def test_decorator(fun):
