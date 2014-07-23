@@ -150,9 +150,8 @@ class POM(object):
         """
         packaging = POMReader.find(self.__doc, './pom:packaging')
         if packaging is None:
-            # default packaging type
-            packaging = "jar"
-            return packaging
+            # use default packaging type
+            return "jar"
         if len(packaging) != 0:
             raise PomLoadingException("Unexpected child nodes under packaging")
         return packaging.text.strip()
