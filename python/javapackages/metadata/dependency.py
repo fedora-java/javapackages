@@ -54,6 +54,15 @@ class MetadataDependency(object):
                 break
         return False, None
 
+    def is_skipped(self, skipped_artifacts):
+        for skipped in skipped_artifacts:
+            if (self.groupId == skipped.groupId and
+               self.artifactId == skipped.artifactId and
+               self.classifier == skipped.classifier and
+               self.extension == skipped.extension):
+                return True
+        return False
+
     def to_metadata(self):
         d = m.Dependency()
         d.groupId = self.groupId
