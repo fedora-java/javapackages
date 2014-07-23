@@ -49,7 +49,7 @@ def print_provides(provides):
 def normalize_manifest(manifest):
     lines = []
     for line in manifest.readlines():
-        if line.startswith(' '):
+        if line.startswith(b' '):
             lines[-1] += line.strip()
         else:
             lines.append(line.strip())
@@ -58,7 +58,7 @@ def normalize_manifest(manifest):
 
 def parse_manifest(manifest):
     headers = {}
-    DELIM = ": "
+    DELIM = b": "
     for line in normalize_manifest(manifest):
         split = line.split(DELIM)
         if len(split) > 1:
@@ -128,10 +128,10 @@ def get_provides_from_manifest(manifest):
     symbolicName = None
     version = None
     for line in normalize_manifest(manifest):
-        if line.startswith("Bundle-SymbolicName:"):
+        if line.startswith(b"Bundle-SymbolicName:"):
             symbolicName = line.split(':')[1].strip()
             symbolicName = symbolicName.split(";")[0].strip()
-        if line.startswith("Bundle-Version:"):
+        if line.startswith(b"Bundle-Version:"):
             versions = line.split(':')[1].strip()
             versions = versions.split('.')[0:3]
             version = ".".join(versions)
