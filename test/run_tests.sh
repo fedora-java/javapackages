@@ -31,30 +31,8 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
-
-usage() {
-    echo "$0 [2|3]"
-    echo "2  - run tests with python 2 (default)"
-    echo "3  - run tests with python 3"
-}
-
-# default is still python 2
-python="/usr/bin/python"
-
-if [ "$1" != "" ]; then
-    case $1 in
-        2)
-            python=${python}
-            ;;
-        3)
-            python="/usr/bin/python3"
-            ;;
-        *)
-            echo "Invalid argument: $1"
-            usage
-            exit 1
-    esac
-fi
+. test_common.sh
+f_set_python $1
 
 echo "running tests with ${python}"
 PYTHONPATH="../python" ${python} run_tests.py
