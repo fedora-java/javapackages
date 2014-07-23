@@ -80,6 +80,31 @@ class MetadataArtifact(object):
     def __str__(self):
         return self.__unicode__()
 
+    def __hash__(self):
+        h = 26
+        h += 11 + hash(self.groupId)
+        h += 21 + hash(self.artifactId)
+        h += 31 + hash(self.extension)
+        h += 41 + hash(self.classifier)
+        h += 61 + hash(self.namespace)
+        h += 71 + hash(self.is_compat())
+        return h
+
+    def __eq__(self, other):
+        if type(other) is not type(self):
+            return False
+        if (self.groupId == other.groupId and
+           self.artifactId == other.artifactId and
+           self.extension == other.extension and
+           self.classifier == other.classifier and
+           self.namespace == other.namespace and
+           self.is_compat() == other.is_compat()):
+            return True
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def to_metadata(self):
         a = m.ArtifactMetadata()
         a.groupId = self.groupId

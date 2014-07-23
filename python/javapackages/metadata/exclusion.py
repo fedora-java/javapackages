@@ -15,6 +15,23 @@ class MetadataExclusion(object):
     def to_metadata(self):
         return m.DependencyExclusion(self.groupId, self.artifactId)
 
+    def __hash__(self):
+        h = 67
+        h += 13 + hash(self.groupId)
+        h += 23 + hash(self.artifactId)
+        return h
+
+    def __eq__(self, other):
+        if type(other) is not type(self):
+            return False
+        if (self.groupId == other.groupId and
+           self.artifactId == other.artifactId):
+            return True
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     @classmethod
     def from_metadata(cls, metadata):
         groupId = metadata.groupId.strip()

@@ -73,6 +73,31 @@ class MetadataDependency(object):
     def __str__(self):
         return self.__unicode__()
 
+    def __hash__(self):
+        h = 47
+        h += 12 + hash(self.groupId)
+        h += 22 + hash(self.artifactId)
+        h += 32 + hash(self.extension)
+        h += 42 + hash(self.classifier)
+        h += 62 + hash(self.namespace)
+        h += 72 + hash(self.resolvedVersion)
+        return h
+
+    def __eq__(self, other):
+        if type(other) is not type(self):
+            return False
+        if (self.groupId == other.groupId and
+           self.artifactId == other.artifactId and
+           self.extension == other.extension and
+           self.classifier == other.classifier and
+           self.namespace == other.namespace and
+           self.resolvedVersion == other.resolvedVersion):
+            return True
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     @classmethod
     def from_metadata(cls, metadata):
         groupId = metadata.groupId.strip()
