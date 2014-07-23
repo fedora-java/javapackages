@@ -12,6 +12,7 @@ import pyxb
 import os
 from xml.dom.minidom import getDOMImplementation
 
+
 class MetadataArtifact(object):
     def __init__(self, groupId, artifactId, extension="",
                  classifier="", version="", namespace="",
@@ -72,6 +73,12 @@ class MetadataArtifact(object):
                                                       alias.classifier or self.classifier, compat=compat_ver,
                                                       namespace=namespace, pkgver=pkgver))
         return "\n".join(result)
+
+    def __unicode__(self):
+        return six.text_type(self.get_mvn_str())
+
+    def __str__(self):
+        return self.__unicode__()
 
     def to_metadata(self):
         a = m.ArtifactMetadata()
