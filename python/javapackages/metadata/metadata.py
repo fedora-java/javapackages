@@ -184,7 +184,7 @@ class Metadata(object):
                             pass
                     if artifact.path:
                         import javapackages.common.osgi as osgi
-                        p = osgi.get_provides(artifact.get_real_path())
+                        p = osgi.get_provides(artifact.get_buildroot_path())
                         provs.update(p)
         return provs
 
@@ -203,7 +203,7 @@ class Metadata(object):
                             pass
                     if artifact.path:
                         import javapackages.common.osgi as osgi
-                        r = osgi.get_requires(artifact.get_real_path())
+                        r = osgi.get_requires(artifact.get_buildroot_path())
                         reqs.update(r)
         return reqs
 

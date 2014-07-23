@@ -37,7 +37,7 @@ class MetadataArtifact(object):
         This means package should have versioned provides for this artifact"""
         return True if self.compatVersions else False
 
-    def get_real_path(self, prefix=None):
+    def get_buildroot_path(self, prefix=None):
         if not self.path:
             return None
         if prefix is None:
