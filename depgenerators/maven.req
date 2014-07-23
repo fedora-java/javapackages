@@ -136,10 +136,10 @@ class TagBuilder(object):
             if dependency.is_skipped(self.skipped_artifacts):
                 skipped_but_required.append(dependency)
 
-            # check if dependency is provided by any metadata in buildroot
+            # check if dependency is provided by any metadata file in buildroot
             subpkg_dep, pkgver = dependency.is_provided_by(self.provided_artifacts)
             if subpkg_dep:
-                # check if dependency isn't provided by same metadata
+                # check if dependency isn't provided by same metadata file
                 if not dependency.is_provided_by(metadata.get_provided_artifacts())[0]:
                     # requires on subpackages are always versioned
                     rpmstr = dependency.get_rpm_str(namespace=dependency.namespace,
