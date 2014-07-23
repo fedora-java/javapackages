@@ -47,7 +47,8 @@ if __name__ == "__main__":
     if nose.__versioninfo__[0] > 0:
         args.append("--with-xunit")
 
-    args += exclude
+    if len(exclude) > 1:
+        args += exclude
 
     success = nose.run(argv=args)
     if not success:
