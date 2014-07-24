@@ -32,6 +32,7 @@
 # Authors:  Alexander Kurtakov <akurtako@redhat.com>
 
 import os
+import io
 import pickle
 import zipfile
 from zipfile import ZipFile
@@ -49,7 +50,7 @@ def print_provides(provides):
 def normalize_manifest(manifest):
     lines = []
     for line in manifest.readlines():
-        if line.startswith(b' '):
+        if line.startswith(' '):
             lines[-1] += line.strip()
         else:
             lines.append(line.strip())
@@ -58,7 +59,7 @@ def normalize_manifest(manifest):
 
 def parse_manifest(manifest):
     headers = {}
-    DELIM = b": "
+    DELIM = ": "
     for line in normalize_manifest(manifest):
         split = line.split(DELIM)
         if len(split) > 1:
@@ -98,7 +99,11 @@ def open_manifest(path):
         try:
             jarfile = ZipFile(path)
             if "META-INF/MANIFEST.MF" in jarfile.namelist():
-                return jarfile.open("META-INF/MANIFEST.MF")
+                b_manifest = jarfile.open("META-INF/MANIFEST.MF", "rU")
+                t_manifest = io.TextIOWrapper(b_manifest,
+                                              encoding='utf-8',
+                                              newline='')
+                return t_manifest
         except IOError:
             pass
     return None
@@ -128,10 +133,10 @@ def get_provides_from_manifest(manifest):
     symbolicName = None
     version = None
     for line in normalize_manifest(manifest):
-        if line.startswith(b"Bundle-SymbolicName:"):
+        if line.startswith("Bundle-SymbolicName:"):
             symbolicName = line.split(':')[1].strip()
             symbolicName = symbolicName.split(";")[0].strip()
-        if line.startswith(b"Bundle-Version:"):
+        if line.startswith("Bundle-Version:"):
             versions = line.split(':')[1].strip()
             versions = versions.split('.')[0:3]
             version = ".".join(versions)

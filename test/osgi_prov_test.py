@@ -17,5 +17,11 @@ class TestOSGiProv(unittest.TestCase):
         sout = [x for x in stdout.split('\n') if x]
         assertIn(self, "osgi(org.junit) = 4.10.0", sout)
 
+    @osgiprov(["data/osgi/basic_jar/basic.jar"])
+    def test_basic_jar(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        assertIn(self, "osgi(org.junit) = 4.10.0", sout)
+
 if __name__ == '__main__':
     unittest.main()

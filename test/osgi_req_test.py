@@ -17,5 +17,11 @@ class TestOSGiReq(unittest.TestCase):
         sout = [x for x in stdout.split('\n') if x]
         assertIn(self, "osgi(org.hamcrest.core)", sout)
 
+    @osgireq(["data/osgi/basic_jar/basic.jar"])
+    def test_basic_jar(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        assertIn(self, "osgi(org.hamcrest.core)", sout)
+
 if __name__ == '__main__':
     unittest.main()
