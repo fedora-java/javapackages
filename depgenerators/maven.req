@@ -49,7 +49,8 @@ from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionRequest
 
 
 class TagBuilder(object):
-    def __init__(self, filelist=None):
+    def __init__(self, filelist=None, cachedir=None):
+        self.cachedir = cachedir
         if filelist == None:
             filelist = sys.stdin
 
@@ -67,22 +68,22 @@ class TagBuilder(object):
             metadata = None
 
             # get all provided artifacts
-            self.provided_artifacts = Metadata.read_provided_artifacts_from_cache(cachedir)
+            self.provided_artifacts = Metadata.read_provided_artifacts_from_cache(self.cachedir)
             if self.provided_artifacts is None:
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.provided_artifacts = metadata.write_provided_artifacts_to_cache(cachedir) or []
+                self.provided_artifacts = metadata.write_provided_artifacts_to_cache(self.cachedir) or []
 
             # get all skipped artifacts
-            self.skipped_artifacts = Metadata.read_skipped_artifacts_from_cache(cachedir)
+            self.skipped_artifacts = Metadata.read_skipped_artifacts_from_cache(self.cachedir)
             if self.skipped_artifacts is None:
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.skipped_artifacts = metadata.write_skipped_artifacts_to_cache(cachedir) or []
+                self.skipped_artifacts = metadata.write_skipped_artifacts_to_cache(self.cachedir) or []
 
             # get all provided OSGi bundles
-            self.provided_osgi = Metadata.read_provided_osgi_from_cache(cachedir)
+            self.provided_osgi = Metadata.read_provided_osgi_from_cache(self.cachedir)
             if self.provided_osgi is None:
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.provided_osgi = metadata.write_provided_osgi_to_cache(cachedir) or {}
+                self.provided_osgi = metadata.write_provided_osgi_to_cache(self.cachedir) or {}
 
         self.print_requires(paths[0])
 
@@ -389,12 +390,13 @@ class TagBuilder(object):
             pass
 
 
-cachedir = None
 if __name__ == "__main__":
     try:
         if len(sys.argv) > 1:
             cachedir = get_cachedir(sys.argv[1])
-        builder = TagBuilder()
+        else:
+            raise Exception("Missing param: cachedir")
+        builder = TagBuilder(cachedir=cachedir)
     except Exception:
         traceback.print_exc(file=sys.stderr)
         # rpmbuild ignores non-zero exit codes but this that is bad. Make sure

@@ -40,7 +40,8 @@ import traceback
 
 class TagBuilder(object):
 
-    def __init__(self, filelist=None):
+    def __init__(self, filelist=None, cachedir=None):
+        self.cachedir = cachedir
         if filelist == None:
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
@@ -48,12 +49,12 @@ class TagBuilder(object):
         provided = None
         for path in paths:
             # check if OSGi requires for this path were handled by metadata
-            if osgi.check_path_in_metadata(path, cachedir):
+            if osgi.check_path_in_metadata(path, self.cachedir):
                 continue
             if not os.path.islink(path):
                 reqs = osgi.get_requires(path)
                 if provided is None:
-                    provided = self.get_provided_bundles(cachedir)
+                    provided = self.get_provided_bundles()
                 for req in reqs:
                     if req in provided:
                         index = provided.index(req)
@@ -62,9 +63,9 @@ class TagBuilder(object):
                         print("osgi(%s)" % (req))
 
 
-    def get_provided_bundles(self, cachedir):
+    def get_provided_bundles(self):
         # get all provided bundles, try cache first
-        provided = osgi.read_provided_bundles_cache(cachedir)
+        provided = osgi.read_provided_bundles_cache(self.cachedir)
         if not provided:
             provided = []
             # no cache, create one
@@ -72,16 +73,17 @@ class TagBuilder(object):
             bpaths = osgi.find_possible_bundles(buildroot)
             for path in bpaths:
                 provided.update(osgi.get_provides(path))
-            osgi.write_provided_bundles_cache(cachedir, provided)
+            osgi.write_provided_bundles_cache(self.cachedir, provided)
         return provided
 
 
-cachedir = None
 if __name__ == "__main__":
     try:
         if len(sys.argv) > 1:
             cachedir = get_cachedir(sys.argv[1])
-        builder = TagBuilder ()
+        else:
+            raise Exception("Missing param: cachedir")
+        builder = TagBuilder(cachedir=cachedir)
     except Exception:
         traceback.print_exc(file=sys.stderr)
         # rpmbuild ignores non-zero exit codes but this that is bad. Make sure

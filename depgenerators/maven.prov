@@ -60,7 +60,7 @@ class TagBuilder:
 
 if __name__ == "__main__":
     try:
-        builder = TagBuilder ()
+        builder = TagBuilder()
     except Exception:
         traceback.print_exc(file=sys.stderr)
         # rpmbuild ignores non-zero exit codes but this that is bad. Make sure
