@@ -207,6 +207,13 @@ class Metadata(object):
                         reqs.update(r)
         return reqs
 
+    def contains_only_poms(self):
+        """Check if metadata file contains only POM file(s)"""
+        for artifact in self.get_provided_artifacts():
+            if artifact.extension != "pom":
+                return False
+        return True
+
     def write_provided_artifacts_to_cache(self, cachedir):
         cachefile = os.path.join(cachedir, config.prov_artifacts_cache_f)
         return self._write_cache_file(cachefile, self.get_provided_artifacts())

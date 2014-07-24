@@ -85,21 +85,21 @@ class TagBuilder(object):
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
                 self.provided_osgi = metadata.write_provided_osgi_to_cache(self.cachedir) or {}
 
-        self.print_requires(paths[0])
+        curr_metadata = Metadata(paths[0])
+        self.print_requires(curr_metadata)
 
         # generate also R on plugins and extensions from POM file, but only
         # if this is POM-only package and xmvn-resolve is installed
         if os.path.exists(XMvnResolve._load_path_from_config()):
-            if self._is_it_pom_only_pkg(paths[0]):
-                self.print_pom_requires(paths[0])
+            if curr_metadata.contains_only_poms():
+                self.print_pom_requires(curr_metadata)
 
 
-    def print_pom_requires(self, metadata_path):
+    def print_pom_requires(self, metadata):
         """
         Print Requires on plugins and extensions in POM files
         """
         pom_paths = []
-        metadata = Metadata(metadata_path)
         for artifact in metadata.get_provided_artifacts():
             if artifact.path:
                 pom_path = os.path.join(get_buildroot(), artifact.path[1:])
@@ -113,11 +113,10 @@ class TagBuilder(object):
                                              metadata.get_provided_artifacts()[i],
                                              metadata.get_provided_artifacts())
 
-    def print_requires(self, path):
+    def print_requires(self, metadata):
         """
         Print Requires from given metadata file
         """
-        metadata = Metadata(path)
         skipped_but_required = []
         requires = set()
 
@@ -344,15 +343,6 @@ class TagBuilder(object):
         if unresolvable:
             raise Exception("Unable to generate requires on unresolvable artifacts: {}"
                             .format(", ".join([x.get_mvn_str() for x in unresolvable])))
-
-    def _is_it_pom_only_pkg(self, metadata_path):
-        """ Check if the package contains only POM file and no JARs """
-        metadata = Metadata(metadata_path)
-        provided = metadata.get_provided_artifacts()
-        for a in provided:
-            if a.extension != "pom":
-                return False
-        return True
 
     def _find_what_requires(self, artifact):
         """
