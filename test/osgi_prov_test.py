@@ -23,5 +23,12 @@ class TestOSGiProv(unittest.TestCase):
         sout = [x for x in stdout.split('\n') if x]
         assertIn(self, "osgi(org.junit) = 4.10.0", sout)
 
+    @osgiprov(["data/osgi/empty/META-INF/MANIFEST.MF"])
+    def test_empty(self, stdout, stderr, return_value):
+        self.assertEquals(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        self.assertEquals(len(sout), 0)
+
+
 if __name__ == '__main__':
     unittest.main()
