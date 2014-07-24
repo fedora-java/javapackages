@@ -140,7 +140,9 @@ def get_provides_from_manifest(manifest):
             versions = line.split(':')[1].strip()
             versions = versions.split('.')[0:3]
             version = ".".join(versions)
-    return {symbolicName: version}
+    if symbolicName and version:
+        return {symbolicName: version}
+    return {}
 
 
 def get_provides(path):
