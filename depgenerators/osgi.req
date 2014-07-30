@@ -66,7 +66,7 @@ class TagBuilder(object):
         # get all provided bundles, try cache first
         provided = osgi.read_provided_bundles_cache(cachedir)
         if not provided:
-            provided = []
+            provided = {}
             # no cache, create one
             buildroot = config.get_buildroot()
             bpaths = osgi.find_possible_bundles(buildroot)
