@@ -57,8 +57,8 @@ class MetadataArtifact(object):
 
             # non-compat rpm string(s) for aliases
             for alias in self.aliases:
-                result.append(Printer.get_rpm_str(alias.groupId, alias.artifactId, alias.extension or self.extension,
-                                                  alias.classifier or self.classifier, namespace=namespace, pkgver=pkgver))
+                result.append(Printer.get_rpm_str(alias.groupId, alias.artifactId, alias.extension,
+                                                  alias.classifier, namespace=namespace, pkgver=pkgver))
         else:
             # compat rpm string(s) for main artifact
             for compat_ver in self.compatVersions:
@@ -67,8 +67,8 @@ class MetadataArtifact(object):
 
                 # compat rpm string(s) for aliases
                 for alias in self.aliases:
-                    result.append(Printer.get_rpm_str(alias.groupId, alias.artifactId, alias.extension or self.extension,
-                                                      alias.classifier or self.classifier, compat=compat_ver,
+                    result.append(Printer.get_rpm_str(alias.groupId, alias.artifactId, alias.extension,
+                                                      alias.classifier, compat=compat_ver,
                                                       namespace=namespace, pkgver=pkgver))
         return "\n".join(result)
 
