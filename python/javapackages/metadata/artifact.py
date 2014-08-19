@@ -3,13 +3,15 @@ from javapackages.maven.artifact import Artifact
 from javapackages.maven.pom import POM
 from javapackages.maven.printer import Printer
 
-from alias import MetadataAlias
-from dependency import MetadataDependency
+from javapackages.metadata.alias import MetadataAlias
+from javapackages.metadata.dependency import MetadataDependency
+import javapackages.metadata.pyxbmetadata as m
 
-import pyxbmetadata as m
+import six
 import pyxb
 import os
 from xml.dom.minidom import getDOMImplementation
+
 
 class MetadataArtifact(object):
     def __init__(self, groupId, artifactId, extension="",
@@ -35,7 +37,7 @@ class MetadataArtifact(object):
         This means package should have versioned provides for this artifact"""
         return True if self.compatVersions else False
 
-    def get_real_path(self, prefix=None):
+    def get_buildroot_path(self, prefix=None):
         if not self.path:
             return None
         if prefix is None:
@@ -72,6 +74,37 @@ class MetadataArtifact(object):
                                                       namespace=namespace, pkgver=pkgver))
         return "\n".join(result)
 
+    def __unicode__(self):
+        return six.text_type(self.get_mvn_str())
+
+    def __str__(self):
+        return self.__unicode__()
+
+    def __hash__(self):
+        h = 26
+        h += 11 + hash(self.groupId)
+        h += 21 + hash(self.artifactId)
+        h += 31 + hash(self.extension)
+        h += 41 + hash(self.classifier)
+        h += 61 + hash(self.namespace)
+        h += 71 + hash(self.is_compat())
+        return h
+
+    def __eq__(self, other):
+        if type(other) is not type(self):
+            return False
+        if (self.groupId == other.groupId and
+           self.artifactId == other.artifactId and
+           self.extension == other.extension and
+           self.classifier == other.classifier and
+           self.namespace == other.namespace and
+           self.is_compat() == other.is_compat()):
+            return True
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def to_metadata(self):
         a = m.ArtifactMetadata()
         a.groupId = self.groupId
@@ -92,7 +125,7 @@ class MetadataArtifact(object):
             a.aliases = pyxb.BIND(*als)
 
         if self.properties:
-            props = [self._create_property(k, v) for k, v in self.properties.iteritems()]
+            props = [self._create_property(k, v) for k, v in six.iteritems(self.properties)]
             a.properties = pyxb.BIND(*props)
         return a
 

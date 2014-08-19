@@ -1,7 +1,7 @@
 from javapackages.maven.artifact import Artifact
 from javapackages.maven.printer import Printer
 
-import pyxbmetadata as m
+import javapackages.metadata.pyxbmetadata as m
 
 
 class MetadataAlias(object):
@@ -24,6 +24,27 @@ class MetadataAlias(object):
         if self.extension != "jar":
             a.extension = self.extension or None
         return a
+
+    def __hash__(self):
+        h = 87
+        h += 15 + hash(self.groupId)
+        h += 25 + hash(self.artifactId)
+        h += 35 + hash(self.extension)
+        h += 45 + hash(self.classifier)
+        return h
+
+    def __eq__(self, other):
+        if type(other) is not type(self):
+            return False
+        if (self.groupId == other.groupId and
+           self.artifactId == other.artifactId and
+           self.extension == other.extension and
+           self.classifier == other.classifier):
+            return True
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     @classmethod
     def from_metadata(cls, metadata):

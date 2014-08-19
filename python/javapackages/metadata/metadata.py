@@ -39,15 +39,15 @@ import os.path
 import xml
 import pickle
 
-from artifact import MetadataArtifact
-from dependency import MetadataDependency
-from skippedartifact import MetadataSkippedArtifact
-from exclusion import MetadataExclusion
+from javapackages.metadata.artifact import MetadataArtifact
+from javapackages.metadata.dependency import MetadataDependency
+from javapackages.metadata.skippedartifact import MetadataSkippedArtifact
+from javapackages.metadata.exclusion import MetadataExclusion
 import javapackages.common.config as config
+import javapackages.metadata.pyxbmetadata as m
 
 import pyxb
 
-import pyxbmetadata as m
 
 
 class MetadataLoadingException(Exception):
@@ -80,7 +80,7 @@ class Metadata(object):
 
 
     def __load_metadata(self, metadata_path):
-        with open(metadata_path) as f:
+        with open(metadata_path, 'rb') as f:
             try:
                 gzf = gzip.GzipFile(os.path.basename(metadata_path),
                                     'rb',
@@ -118,7 +118,7 @@ class Metadata(object):
                 for dep in a.dependencies.dependency:
                     artifacts.add(MetadataDependency.from_metadata(dep))
 
-        return sorted(list(artifacts))
+        return list(artifacts)
 
     def get_skipped_artifacts(self):
         """Returns list of Artifact that were build but not installed"""
@@ -129,7 +129,7 @@ class Metadata(object):
             for dep in metadata.skippedArtifacts.skippedArtifact:
                 artifact = MetadataSkippedArtifact.from_metadata(dep)
                 artifacts.add(artifact)
-        return sorted(list(artifacts))
+        return list(artifacts)
 
     def get_excluded_artifacts(self):
         """Returns list of Artifacts that should be skipped for requires"""
@@ -146,7 +146,7 @@ class Metadata(object):
                     for exclusion in dep.exclusions.exclusion:
                         artifact = MetadataExclusion.from_metadata(exclusion)
                 artifacts.add(artifact)
-        return sorted(list(artifacts))
+        return list(artifacts)
 
     def get_java_requires(self):
         """Returns JVM version required by metadata or None"""
@@ -184,7 +184,7 @@ class Metadata(object):
                             pass
                     if artifact.path:
                         import javapackages.common.osgi as osgi
-                        p = osgi.get_provides(artifact.get_real_path())
+                        p = osgi.get_provides(artifact.get_buildroot_path())
                         provs.update(p)
         return provs
 
@@ -203,9 +203,16 @@ class Metadata(object):
                             pass
                     if artifact.path:
                         import javapackages.common.osgi as osgi
-                        r = osgi.get_requires(artifact.get_real_path())
+                        r = osgi.get_requires(artifact.get_buildroot_path())
                         reqs.update(r)
         return reqs
+
+    def contains_only_poms(self):
+        """Check if metadata file contains only POM file(s)"""
+        for artifact in self.get_provided_artifacts():
+            if artifact.extension != "pom":
+                return False
+        return True
 
     def write_provided_artifacts_to_cache(self, cachedir):
         cachefile = os.path.join(cachedir, config.prov_artifacts_cache_f)
@@ -236,7 +243,7 @@ class Metadata(object):
 
     def _write_cache_file(self, cachefile, content):
         try:
-            cachefile = open(cachefile, 'w')
+            cachefile = open(cachefile, 'wb')
             pickle.dump(content, cachefile)
             cachefile.close()
         except IOError:
@@ -246,7 +253,7 @@ class Metadata(object):
     @staticmethod
     def _read_cache_file(cachefile):
         try:
-            cachefile = open(cachefile, 'r')
+            cachefile = open(cachefile, 'rb')
             content = pickle.load(cachefile)
             cachefile.close()
         except IOError:

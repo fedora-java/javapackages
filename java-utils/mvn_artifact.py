@@ -246,7 +246,11 @@ if __name__ == "__main__":
     parser.add_option("-D", action="append", type="str",
                       help="add artifact property", metavar="property=value")
     for index, arg in enumerate(sys.argv):
-        sys.argv[index] = arg.decode(sys.getfilesystemencoding())
+        try:
+            if callable(getattr(arg, "decode")):
+                sys.argv[index] = arg.decode(sys.getfilesystemencoding())
+        except AttributeError:
+            pass
 
     (options, args) = parser.parse_args()
     if len(args) < 1:

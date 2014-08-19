@@ -20,7 +20,7 @@ setup(
     version = __version__,
     license = 'BSD',
     download_url = 'https://fedorahosted.org/released/javapackages/',
-    url = 'https://fedorahosted.org/javapackages/',
+    url = 'https://git.fedorahosted.org/git/javapackages.git',
     packages = ['javapackages', 'javapackages.maven', 'javapackages.metadata', 'javapackages.xmvn', 'javapackages.common', 'javapackages.ivy'],
     test_suite = "test",
     maintainer  = 'javapackages maintainers',

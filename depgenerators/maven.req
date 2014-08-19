@@ -49,7 +49,8 @@ from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionRequest
 
 
 class TagBuilder(object):
-    def __init__(self, filelist=None):
+    def __init__(self, filelist=None, cachedir=None):
+        self.cachedir = cachedir
         if filelist == None:
             filelist = sys.stdin
 
@@ -67,38 +68,38 @@ class TagBuilder(object):
             metadata = None
 
             # get all provided artifacts
-            self.provided_artifacts = Metadata.read_provided_artifacts_from_cache(cachedir)
+            self.provided_artifacts = Metadata.read_provided_artifacts_from_cache(self.cachedir)
             if self.provided_artifacts is None:
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.provided_artifacts = metadata.write_provided_artifacts_to_cache(cachedir) or []
+                self.provided_artifacts = metadata.write_provided_artifacts_to_cache(self.cachedir) or []
 
             # get all skipped artifacts
-            self.skipped_artifacts = Metadata.read_skipped_artifacts_from_cache(cachedir)
+            self.skipped_artifacts = Metadata.read_skipped_artifacts_from_cache(self.cachedir)
             if self.skipped_artifacts is None:
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.skipped_artifacts = metadata.write_skipped_artifacts_to_cache(cachedir) or []
+                self.skipped_artifacts = metadata.write_skipped_artifacts_to_cache(self.cachedir) or []
 
             # get all provided OSGi bundles
-            self.provided_osgi = Metadata.read_provided_osgi_from_cache(cachedir)
+            self.provided_osgi = Metadata.read_provided_osgi_from_cache(self.cachedir)
             if self.provided_osgi is None:
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.provided_osgi = metadata.write_provided_osgi_to_cache(cachedir) or {}
+                self.provided_osgi = metadata.write_provided_osgi_to_cache(self.cachedir) or {}
 
-        self.print_requires(paths[0])
+        curr_metadata = Metadata(paths[0])
+        self.print_requires(curr_metadata)
 
         # generate also R on plugins and extensions from POM file, but only
         # if this is POM-only package and xmvn-resolve is installed
         if os.path.exists(XMvnResolve._load_path_from_config()):
-            if self._is_it_pom_only_pkg(paths[0]):
-                self.print_pom_requires(paths[0])
+            if curr_metadata.contains_only_poms():
+                self.print_pom_requires(curr_metadata)
 
 
-    def print_pom_requires(self, metadata_path):
+    def print_pom_requires(self, metadata):
         """
         Print Requires on plugins and extensions in POM files
         """
         pom_paths = []
-        metadata = Metadata(metadata_path)
         for artifact in metadata.get_provided_artifacts():
             if artifact.path:
                 pom_path = os.path.join(get_buildroot(), artifact.path[1:])
@@ -112,11 +113,10 @@ class TagBuilder(object):
                                              metadata.get_provided_artifacts()[i],
                                              metadata.get_provided_artifacts())
 
-    def print_requires(self, path):
+    def print_requires(self, metadata):
         """
         Print Requires from given metadata file
         """
-        metadata = Metadata(path)
         skipped_but_required = []
         requires = set()
 
@@ -133,17 +133,13 @@ class TagBuilder(object):
             if dependency.resolvedVersion == "UNKNOWN":
                 unknown_deps.append(dependency)
                 continue
-            for skipped in self.skipped_artifacts:
-                if (skipped.groupId == dependency.groupId and
-                    skipped.artifactId == dependency.artifactId and
-                    skipped.classifier == dependency.classifier and
-                    skipped.extension == dependency.extension):
-                    skipped_but_required.append(dependency)
+            if dependency.is_skipped(self.skipped_artifacts):
+                skipped_but_required.append(dependency)
 
-            # check if dependency is provided by any metadata in buildroot
+            # check if dependency is provided by any metadata file in buildroot
             subpkg_dep, pkgver = dependency.is_provided_by(self.provided_artifacts)
             if subpkg_dep:
-                # check if dependency isn't provided by same metadata
+                # check if dependency isn't provided by same metadata file
                 if not dependency.is_provided_by(metadata.get_provided_artifacts())[0]:
                     # requires on subpackages are always versioned
                     rpmstr = dependency.get_rpm_str(namespace=dependency.namespace,
@@ -348,15 +344,6 @@ class TagBuilder(object):
             raise Exception("Unable to generate requires on unresolvable artifacts: {}"
                             .format(", ".join([x.get_mvn_str() for x in unresolvable])))
 
-    def _is_it_pom_only_pkg(self, metadata_path):
-        """ Check if the package contains only POM file and no JARs """
-        metadata = Metadata(metadata_path)
-        provided = metadata.get_provided_artifacts()
-        for a in provided:
-            if a.extension != "pom":
-                return False
-        return True
-
     def _find_what_requires(self, artifact):
         """
         Determine which artifact requires given artifact. This is an attempt to
@@ -393,12 +380,13 @@ class TagBuilder(object):
             pass
 
 
-cachedir = None
 if __name__ == "__main__":
     try:
         if len(sys.argv) > 1:
             cachedir = get_cachedir(sys.argv[1])
-        builder = TagBuilder()
+        else:
+            raise Exception("Missing param: cachedir")
+        builder = TagBuilder(cachedir=cachedir)
     except Exception:
         traceback.print_exc(file=sys.stderr)
         # rpmbuild ignores non-zero exit codes but this that is bad. Make sure

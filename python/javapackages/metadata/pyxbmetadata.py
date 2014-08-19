@@ -1,33 +1,31 @@
 # ./pyxbmetadata.py
 # -*- coding: utf-8 -*-
 # PyXB bindings for NM:cc7c37311c49f3aaf8d407a5a18021140495bbc9
-# Generated 2014-05-23 07:14:31.868577 by PyXB version 1.2.3
+# Generated 2014-07-22 15:28:22.293369 by PyXB version 1.2.4 using Python 3.3.2.final.0
 # Namespace http://fedorahosted.org/xmvn/METADATA/2.0.0
-
-import io
-import sys
 
 import pyxb
 import pyxb.binding
-import pyxb.binding.datatypes
 import pyxb.binding.saxer
-import pyxb.utils.domutils
+import io
 import pyxb.utils.utility
-
+import pyxb.utils.domutils
+import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:1f497b0c-e239-11e3-a9dc-3c970e1833ad')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:0d2f5d8e-11a4-11e4-9a8c-3c970e1833ad')
 
 # Version of PyXB used to generate the bindings
-_PyXBVersion = '1.2.3'
+_PyXBVersion = '1.2.4'
 # Generated bindings are not compatible across PyXB versions
 if pyxb.__version__ != _PyXBVersion:
     raise pyxb.PyXBVersionError(_PyXBVersion)
 
 # Import bindings for namespaces imported into schema
+import pyxb.binding.datatypes
 
 # NOTE: All namespace declarations are reserved within the binding
-Namespace = pyxb.namespace.NamespaceForURI(u'http://fedorahosted.org/xmvn/METADATA/2.0.0', create_if_missing=True)
+Namespace = pyxb.namespace.NamespaceForURI('http://fedorahosted.org/xmvn/METADATA/2.0.0', create_if_missing=True)
 Namespace.configureCategories(['typeBinding', 'elementBinding'])
 
 def CreateFromDocument (xml_text, default_namespace=None, location_base=None):
@@ -51,13 +49,13 @@ def CreateFromDocument (xml_text, default_namespace=None, location_base=None):
 
     if pyxb.XMLStyle_saxer != pyxb._XMLStyle:
         dom = pyxb.utils.domutils.StringToDOM(xml_text)
-        return CreateFromDOM(dom.documentElement)
+        return CreateFromDOM(dom.documentElement, default_namespace=default_namespace)
     if default_namespace is None:
         default_namespace = Namespace.fallbackNamespace()
     saxer = pyxb.binding.saxer.make_parser(fallback_namespace=default_namespace, location_base=location_base)
     handler = saxer.getContentHandler()
     xmld = xml_text
-    if isinstance(xmld, unicode):
+    if isinstance(xmld, str):
         xmld = xmld.encode(pyxb._InputEncoding)
     saxer.parse(io.BytesIO(xmld))
     instance = handler.rootObject()
@@ -81,38 +79,38 @@ class PackageMetadata (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'PackageMetadata')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'PackageMetadata')
     _XSDLocation = pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 15, 2)
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}uuid uses Python identifier uuid
-    __uuid = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'uuid'), 'uuid', '__httpfedorahosted_orgxmvnMETADATA2_0_0_PackageMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0uuid', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 23, 6),)
+    __uuid = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'uuid'), 'uuid', '__httpfedorahosted_orgxmvnMETADATA2_0_0_PackageMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0uuid', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 23, 6), )
 
+    
+    uuid = property(__uuid.value, __uuid.set, None, '2.0.0+\n            Universally unique identifier of this piece of metadata.\n          ')
 
-    uuid = property(__uuid.value, __uuid.set, None, u'2.0.0+\n            Universally unique identifier of this piece of metadata.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}properties uses Python identifier properties
-    __properties = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'properties'), 'properties', '__httpfedorahosted_orgxmvnMETADATA2_0_0_PackageMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0properties', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 31, 6),)
+    __properties = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'properties'), 'properties', '__httpfedorahosted_orgxmvnMETADATA2_0_0_PackageMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0properties', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 31, 6), )
 
+    
+    properties = property(__properties.value, __properties.set, None, '2.0.0+\n            Properties of this piece of metadata.\n          ')
 
-    properties = property(__properties.value, __properties.set, None, u'2.0.0+\n            Properties of this piece of metadata.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifacts uses Python identifier artifacts
-    __artifacts = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifacts'), 'artifacts', '__httpfedorahosted_orgxmvnMETADATA2_0_0_PackageMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0artifacts', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 44, 6),)
+    __artifacts = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'artifacts'), 'artifacts', '__httpfedorahosted_orgxmvnMETADATA2_0_0_PackageMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0artifacts', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 44, 6), )
 
+    
+    artifacts = property(__artifacts.value, __artifacts.set, None, '2.0.0+\n            List of installed artifacts described by this piece of\n            metadata.\n          ')
 
-    artifacts = property(__artifacts.value, __artifacts.set, None, u'2.0.0+\n            List of installed artifacts described by this piece of\n            metadata.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}skippedArtifacts uses Python identifier skippedArtifacts
-    __skippedArtifacts = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'skippedArtifacts'), 'skippedArtifacts', '__httpfedorahosted_orgxmvnMETADATA2_0_0_PackageMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0skippedArtifacts', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 58, 6),)
+    __skippedArtifacts = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'skippedArtifacts'), 'skippedArtifacts', '__httpfedorahosted_orgxmvnMETADATA2_0_0_PackageMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0skippedArtifacts', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 58, 6), )
 
-
-    skippedArtifacts = property(__skippedArtifacts.value, __skippedArtifacts.set, None, u'2.0.0+\n            List of artifacts built but not installed in any package.\n            Useful for detecting broken package dependencies.\n          ')
+    
+    skippedArtifacts = property(__skippedArtifacts.value, __skippedArtifacts.set, None, '2.0.0+\n            List of artifacts built but not installed in any package.\n            Useful for detecting broken package dependencies.\n          ')
 
     _ElementMap.update({
         __uuid.name() : __uuid,
@@ -121,9 +119,9 @@ class PackageMetadata (pyxb.binding.basis.complexTypeDefinition):
         __skippedArtifacts.name() : __skippedArtifacts
     })
     _AttributeMap.update({
-
+        
     })
-Namespace.addCategoryObject('typeBinding', u'PackageMetadata', PackageMetadata)
+Namespace.addCategoryObject('typeBinding', 'PackageMetadata', PackageMetadata)
 
 
 # Complex type [anonymous] with content type ELEMENT_ONLY
@@ -141,10 +139,10 @@ class CTD_ANON (pyxb.binding.basis.complexTypeDefinition):
     # Base type is pyxb.binding.datatypes.anyType
     _HasWildcardElement = True
     _ElementMap.update({
-
+        
     })
     _AttributeMap.update({
-
+        
     })
 
 
@@ -163,18 +161,18 @@ class CTD_ANON_ (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifact uses Python identifier artifact
-    __artifact = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifact'), 'artifact', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON__httpfedorahosted_orgxmvnMETADATA2_0_0artifact', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 54, 12),)
+    __artifact = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'artifact'), 'artifact', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON__httpfedorahosted_orgxmvnMETADATA2_0_0artifact', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 54, 12), )
 
-
+    
     artifact = property(__artifact.value, __artifact.set, None, None)
 
     _ElementMap.update({
         __artifact.name() : __artifact
     })
     _AttributeMap.update({
-
+        
     })
 
 
@@ -193,18 +191,18 @@ class CTD_ANON_2 (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}skippedArtifact uses Python identifier skippedArtifact
-    __skippedArtifact = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'skippedArtifact'), 'skippedArtifact', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_2_httpfedorahosted_orgxmvnMETADATA2_0_0skippedArtifact', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 68, 12),)
+    __skippedArtifact = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'skippedArtifact'), 'skippedArtifact', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_2_httpfedorahosted_orgxmvnMETADATA2_0_0skippedArtifact', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 68, 12), )
 
-
+    
     skippedArtifact = property(__skippedArtifact.value, __skippedArtifact.set, None, None)
 
     _ElementMap.update({
         __skippedArtifact.name() : __skippedArtifact
     })
     _AttributeMap.update({
-
+        
     })
 
 
@@ -218,38 +216,38 @@ class SkippedArtifactMetadata (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'SkippedArtifactMetadata')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'SkippedArtifactMetadata')
     _XSDLocation = pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 74, 2)
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}groupId uses Python identifier groupId
-    __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_SkippedArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 83, 6),)
+    __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_SkippedArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 83, 6), )
 
+    
+    groupId = property(__groupId.value, __groupId.set, None, '2.0.0+\n            Group ID of skipped artifact.\n          ')
 
-    groupId = property(__groupId.value, __groupId.set, None, u'2.0.0+\n            Group ID of skipped artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifactId uses Python identifier artifactId
-    __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_SkippedArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 91, 6),)
+    __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_SkippedArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 91, 6), )
 
+    
+    artifactId = property(__artifactId.value, __artifactId.set, None, '2.0.0+\n            Artifact ID of skipped artifact.\n          ')
 
-    artifactId = property(__artifactId.value, __artifactId.set, None, u'2.0.0+\n            Artifact ID of skipped artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}extension uses Python identifier extension
-    __extension = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'extension'), 'extension', '__httpfedorahosted_orgxmvnMETADATA2_0_0_SkippedArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0extension', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 99, 6),)
+    __extension = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'extension'), 'extension', '__httpfedorahosted_orgxmvnMETADATA2_0_0_SkippedArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0extension', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 99, 6), )
 
+    
+    extension = property(__extension.value, __extension.set, None, '2.0.0+\n            Extension of skipped artifact.\n          ')
 
-    extension = property(__extension.value, __extension.set, None, u'2.0.0+\n            Extension of skipped artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}classifier uses Python identifier classifier
-    __classifier = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'classifier'), 'classifier', '__httpfedorahosted_orgxmvnMETADATA2_0_0_SkippedArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0classifier', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 107, 6),)
+    __classifier = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'classifier'), 'classifier', '__httpfedorahosted_orgxmvnMETADATA2_0_0_SkippedArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0classifier', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 107, 6), )
 
-
-    classifier = property(__classifier.value, __classifier.set, None, u'2.0.0+\n            Classifier of skipped artifact.\n          ')
+    
+    classifier = property(__classifier.value, __classifier.set, None, '2.0.0+\n            Classifier of skipped artifact.\n          ')
 
     _ElementMap.update({
         __groupId.name() : __groupId,
@@ -258,9 +256,9 @@ class SkippedArtifactMetadata (pyxb.binding.basis.complexTypeDefinition):
         __classifier.name() : __classifier
     })
     _AttributeMap.update({
-
+        
     })
-Namespace.addCategoryObject('typeBinding', u'SkippedArtifactMetadata', SkippedArtifactMetadata)
+Namespace.addCategoryObject('typeBinding', 'SkippedArtifactMetadata', SkippedArtifactMetadata)
 
 
 # Complex type {http://fedorahosted.org/xmvn/METADATA/2.0.0}ArtifactMetadata with content type ELEMENT_ONLY
@@ -271,94 +269,94 @@ class ArtifactMetadata (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'ArtifactMetadata')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'ArtifactMetadata')
     _XSDLocation = pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 117, 2)
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}groupId uses Python identifier groupId
-    __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 125, 6),)
+    __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 125, 6), )
 
+    
+    groupId = property(__groupId.value, __groupId.set, None, '2.0.0+\n            Group identifier of the artifact.\n          ')
 
-    groupId = property(__groupId.value, __groupId.set, None, u'2.0.0+\n            Group identifier of the artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifactId uses Python identifier artifactId
-    __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 133, 6),)
+    __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 133, 6), )
 
+    
+    artifactId = property(__artifactId.value, __artifactId.set, None, '2.0.0+\n            Identifier of the artifact.\n          ')
 
-    artifactId = property(__artifactId.value, __artifactId.set, None, u'2.0.0+\n            Identifier of the artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}extension uses Python identifier extension
-    __extension = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'extension'), 'extension', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0extension', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 141, 6),)
+    __extension = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'extension'), 'extension', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0extension', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 141, 6), )
 
+    
+    extension = property(__extension.value, __extension.set, None, '2.0.0+\n            Extension of artifact file.\n          ')
 
-    extension = property(__extension.value, __extension.set, None, u'2.0.0+\n            Extension of artifact file.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}classifier uses Python identifier classifier
-    __classifier = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'classifier'), 'classifier', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0classifier', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 149, 6),)
+    __classifier = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'classifier'), 'classifier', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0classifier', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 149, 6), )
 
+    
+    classifier = property(__classifier.value, __classifier.set, None, '2.0.0+\n            Classifier of the artifact.\n          ')
 
-    classifier = property(__classifier.value, __classifier.set, None, u'2.0.0+\n            Classifier of the artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}version uses Python identifier version
-    __version = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'version'), 'version', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0version', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 157, 6),)
+    __version = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'version'), 'version', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0version', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 157, 6), )
 
+    
+    version = property(__version.value, __version.set, None, '2.0.0+\n            Artifact version.  This is always upstream version, never\n            compat version nor SYSTEM.\n          ')
 
-    version = property(__version.value, __version.set, None, u'2.0.0+\n            Artifact version.  This is always upstream version, never\n            compat version nor SYSTEM.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}path uses Python identifier path
-    __path = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'path'), 'path', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0path', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 166, 6),)
+    __path = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'path'), 'path', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0path', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 166, 6), )
 
+    
+    path = property(__path.value, __path.set, None, '2.0.0+\n            Absolute path to artifact file stored in the local file\n            system.\n          ')
 
-    path = property(__path.value, __path.set, None, u'2.0.0+\n            Absolute path to artifact file stored in the local file\n            system.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}namespace uses Python identifier namespace
-    __namespace = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'namespace'), 'namespace', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0namespace', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 175, 6),)
+    __namespace = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'namespace'), 'namespace', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0namespace', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 175, 6), )
 
+    
+    namespace = property(__namespace.value, __namespace.set, None, '2.0.0+\n            A namespace within which this artifact is stored.  This\n            usually is an identifier of software collection.\n          ')
 
-    namespace = property(__namespace.value, __namespace.set, None, u'2.0.0+\n            A namespace within which this artifact is stored.  This\n            usually is an identifier of software collection.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}uuid uses Python identifier uuid
-    __uuid = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'uuid'), 'uuid', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0uuid', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 184, 6),)
+    __uuid = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'uuid'), 'uuid', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0uuid', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 184, 6), )
 
+    
+    uuid = property(__uuid.value, __uuid.set, None, '2.0.0+\n            Universally unique identifier of this artifact.\n          ')
 
-    uuid = property(__uuid.value, __uuid.set, None, u'2.0.0+\n            Universally unique identifier of this artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}properties uses Python identifier properties
-    __properties = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'properties'), 'properties', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0properties', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 192, 6),)
+    __properties = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'properties'), 'properties', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0properties', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 192, 6), )
 
+    
+    properties = property(__properties.value, __properties.set, None, '2.0.0+\n            Extra properties of this artifact.\n          ')
 
-    properties = property(__properties.value, __properties.set, None, u'2.0.0+\n            Extra properties of this artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}compatVersions uses Python identifier compatVersions
-    __compatVersions = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'compatVersions'), 'compatVersions', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0compatVersions', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 205, 6),)
+    __compatVersions = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'compatVersions'), 'compatVersions', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0compatVersions', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 205, 6), )
 
+    
+    compatVersions = property(__compatVersions.value, __compatVersions.set, None, '2.0.0+\n            Compatibility versions of this artifact.  If the list is\n            empty then this artifact is not considered as\n            compatibility artifact.\n          ')
 
-    compatVersions = property(__compatVersions.value, __compatVersions.set, None, u'2.0.0+\n            Compatibility versions of this artifact.  If the list is\n            empty then this artifact is not considered as\n            compatibility artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}aliases uses Python identifier aliases
-    __aliases = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'aliases'), 'aliases', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0aliases', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 220, 6),)
+    __aliases = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'aliases'), 'aliases', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0aliases', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 220, 6), )
 
+    
+    aliases = property(__aliases.value, __aliases.set, None, '2.0.0+\n            Alternative identifiers of the artifact.\n          ')
 
-    aliases = property(__aliases.value, __aliases.set, None, u'2.0.0+\n            Alternative identifiers of the artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}dependencies uses Python identifier dependencies
-    __dependencies = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'dependencies'), 'dependencies', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0dependencies', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 233, 6),)
+    __dependencies = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'dependencies'), 'dependencies', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactMetadata_httpfedorahosted_orgxmvnMETADATA2_0_0dependencies', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 233, 6), )
 
-
-    dependencies = property(__dependencies.value, __dependencies.set, None, u'2.0.0+\n            List of artifact dependencies.\n          ')
+    
+    dependencies = property(__dependencies.value, __dependencies.set, None, '2.0.0+\n            List of artifact dependencies.\n          ')
 
     _ElementMap.update({
         __groupId.name() : __groupId,
@@ -375,9 +373,9 @@ class ArtifactMetadata (pyxb.binding.basis.complexTypeDefinition):
         __dependencies.name() : __dependencies
     })
     _AttributeMap.update({
-
+        
     })
-Namespace.addCategoryObject('typeBinding', u'ArtifactMetadata', ArtifactMetadata)
+Namespace.addCategoryObject('typeBinding', 'ArtifactMetadata', ArtifactMetadata)
 
 
 # Complex type [anonymous] with content type ELEMENT_ONLY
@@ -395,10 +393,10 @@ class CTD_ANON_3 (pyxb.binding.basis.complexTypeDefinition):
     # Base type is pyxb.binding.datatypes.anyType
     _HasWildcardElement = True
     _ElementMap.update({
-
+        
     })
     _AttributeMap.update({
-
+        
     })
 
 
@@ -418,18 +416,18 @@ class CTD_ANON_4 (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}version uses Python identifier version
-    __version = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'version'), 'version', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_4_httpfedorahosted_orgxmvnMETADATA2_0_0version', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 216, 12),)
+    __version = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'version'), 'version', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_4_httpfedorahosted_orgxmvnMETADATA2_0_0version', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 216, 12), )
 
-
+    
     version = property(__version.value, __version.set, None, None)
 
     _ElementMap.update({
         __version.name() : __version
     })
     _AttributeMap.update({
-
+        
     })
 
 
@@ -447,18 +445,18 @@ class CTD_ANON_5 (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}alias uses Python identifier alias
-    __alias = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'alias'), 'alias', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_5_httpfedorahosted_orgxmvnMETADATA2_0_0alias', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 229, 12),)
+    __alias = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'alias'), 'alias', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_5_httpfedorahosted_orgxmvnMETADATA2_0_0alias', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 229, 12), )
 
-
+    
     alias = property(__alias.value, __alias.set, None, None)
 
     _ElementMap.update({
         __alias.name() : __alias
     })
     _AttributeMap.update({
-
+        
     })
 
 
@@ -476,18 +474,18 @@ class CTD_ANON_6 (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}dependency uses Python identifier dependency
-    __dependency = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'dependency'), 'dependency', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_6_httpfedorahosted_orgxmvnMETADATA2_0_0dependency', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 242, 12),)
+    __dependency = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'dependency'), 'dependency', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_6_httpfedorahosted_orgxmvnMETADATA2_0_0dependency', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 242, 12), )
 
-
+    
     dependency = property(__dependency.value, __dependency.set, None, None)
 
     _ElementMap.update({
         __dependency.name() : __dependency
     })
     _AttributeMap.update({
-
+        
     })
 
 
@@ -500,38 +498,38 @@ class ArtifactAlias (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'ArtifactAlias')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'ArtifactAlias')
     _XSDLocation = pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 248, 2)
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}groupId uses Python identifier groupId
-    __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactAlias_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 256, 6),)
+    __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactAlias_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 256, 6), )
 
+    
+    groupId = property(__groupId.value, __groupId.set, None, '2.0.0+\n            Group ID of the artifact alias.\n          ')
 
-    groupId = property(__groupId.value, __groupId.set, None, u'2.0.0+\n            Group ID of the artifact alias.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifactId uses Python identifier artifactId
-    __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactAlias_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 264, 6),)
+    __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactAlias_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 264, 6), )
 
+    
+    artifactId = property(__artifactId.value, __artifactId.set, None, '2.0.0+\n            Artifact ID of the artifact alias.\n          ')
 
-    artifactId = property(__artifactId.value, __artifactId.set, None, u'2.0.0+\n            Artifact ID of the artifact alias.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}extension uses Python identifier extension
-    __extension = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'extension'), 'extension', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactAlias_httpfedorahosted_orgxmvnMETADATA2_0_0extension', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 272, 6),)
+    __extension = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'extension'), 'extension', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactAlias_httpfedorahosted_orgxmvnMETADATA2_0_0extension', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 272, 6), )
 
+    
+    extension = property(__extension.value, __extension.set, None, '2.0.0+\n            Extension of the artifact alias.\n          ')
 
-    extension = property(__extension.value, __extension.set, None, u'2.0.0+\n            Extension of the artifact alias.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}classifier uses Python identifier classifier
-    __classifier = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'classifier'), 'classifier', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactAlias_httpfedorahosted_orgxmvnMETADATA2_0_0classifier', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 280, 6),)
+    __classifier = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'classifier'), 'classifier', '__httpfedorahosted_orgxmvnMETADATA2_0_0_ArtifactAlias_httpfedorahosted_orgxmvnMETADATA2_0_0classifier', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 280, 6), )
 
-
-    classifier = property(__classifier.value, __classifier.set, None, u'2.0.0+\n            Classifier of the artifact alias.\n          ')
+    
+    classifier = property(__classifier.value, __classifier.set, None, '2.0.0+\n            Classifier of the artifact alias.\n          ')
 
     _ElementMap.update({
         __groupId.name() : __groupId,
@@ -540,9 +538,9 @@ class ArtifactAlias (pyxb.binding.basis.complexTypeDefinition):
         __classifier.name() : __classifier
     })
     _AttributeMap.update({
-
+        
     })
-Namespace.addCategoryObject('typeBinding', u'ArtifactAlias', ArtifactAlias)
+Namespace.addCategoryObject('typeBinding', 'ArtifactAlias', ArtifactAlias)
 
 
 # Complex type {http://fedorahosted.org/xmvn/METADATA/2.0.0}Dependency with content type ELEMENT_ONLY
@@ -553,66 +551,66 @@ class Dependency (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'Dependency')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'Dependency')
     _XSDLocation = pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 290, 2)
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}groupId uses Python identifier groupId
-    __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 298, 6),)
+    __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 298, 6), )
 
+    
+    groupId = property(__groupId.value, __groupId.set, None, '2.0.0+\n            Group ID of the dependency artifact.\n          ')
 
-    groupId = property(__groupId.value, __groupId.set, None, u'2.0.0+\n            Group ID of the dependency artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifactId uses Python identifier artifactId
-    __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 306, 6),)
+    __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 306, 6), )
 
+    
+    artifactId = property(__artifactId.value, __artifactId.set, None, '2.0.0+\n            Artifact ID of the dependency artifact.\n          ')
 
-    artifactId = property(__artifactId.value, __artifactId.set, None, u'2.0.0+\n            Artifact ID of the dependency artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}extension uses Python identifier extension
-    __extension = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'extension'), 'extension', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0extension', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 314, 6),)
+    __extension = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'extension'), 'extension', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0extension', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 314, 6), )
 
+    
+    extension = property(__extension.value, __extension.set, None, '2.0.0+\n            Extension of the dependency artifact.\n          ')
 
-    extension = property(__extension.value, __extension.set, None, u'2.0.0+\n            Extension of the dependency artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}classifier uses Python identifier classifier
-    __classifier = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'classifier'), 'classifier', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0classifier', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 322, 6),)
+    __classifier = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'classifier'), 'classifier', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0classifier', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 322, 6), )
 
+    
+    classifier = property(__classifier.value, __classifier.set, None, '2.0.0+\n            Classifier of the dependency artifact.\n          ')
 
-    classifier = property(__classifier.value, __classifier.set, None, u'2.0.0+\n            Classifier of the dependency artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}requestedVersion uses Python identifier requestedVersion
-    __requestedVersion = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'requestedVersion'), 'requestedVersion', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0requestedVersion', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 330, 6),)
+    __requestedVersion = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'requestedVersion'), 'requestedVersion', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0requestedVersion', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 330, 6), )
 
+    
+    requestedVersion = property(__requestedVersion.value, __requestedVersion.set, None, '2.0.0+\n            Version of the dependency artifact as defined in the main\n            artifact descriptor.  This may be a version range as\n            supported by Aether.\n          ')
 
-    requestedVersion = property(__requestedVersion.value, __requestedVersion.set, None, u'2.0.0+\n            Version of the dependency artifact as defined in the main\n            artifact descriptor.  This may be a version range as\n            supported by Aether.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}resolvedVersion uses Python identifier resolvedVersion
-    __resolvedVersion = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'resolvedVersion'), 'resolvedVersion', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0resolvedVersion', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 340, 6),)
+    __resolvedVersion = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'resolvedVersion'), 'resolvedVersion', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0resolvedVersion', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 340, 6), )
 
+    
+    resolvedVersion = property(__resolvedVersion.value, __resolvedVersion.set, None, '2.0.0+\n            Version of the dependency artifact, as resolved during\n            build.  Absence of this field indicates a dependency on\n            default artifact version.\n          ')
 
-    resolvedVersion = property(__resolvedVersion.value, __resolvedVersion.set, None, u'2.0.0+\n            Version of the dependency artifact, as resolved during\n            build.  Absence of this field indicates a dependency on\n            default artifact version.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}namespace uses Python identifier namespace
-    __namespace = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'namespace'), 'namespace', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0namespace', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 350, 6),)
+    __namespace = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'namespace'), 'namespace', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0namespace', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 350, 6), )
 
+    
+    namespace = property(__namespace.value, __namespace.set, None, '2.0.0+\n            A namespace within which this artifact is stored.  This\n            usually is an identifier of software collection.\n          ')
 
-    namespace = property(__namespace.value, __namespace.set, None, u'2.0.0+\n            A namespace within which this artifact is stored.  This\n            usually is an identifier of software collection.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}exclusions uses Python identifier exclusions
-    __exclusions = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'exclusions'), 'exclusions', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0exclusions', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 359, 6),)
+    __exclusions = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'exclusions'), 'exclusions', '__httpfedorahosted_orgxmvnMETADATA2_0_0_Dependency_httpfedorahosted_orgxmvnMETADATA2_0_0exclusions', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 359, 6), )
 
-
-    exclusions = property(__exclusions.value, __exclusions.set, None, u'2.0.0+\n            List of dependency exclusions.\n          ')
+    
+    exclusions = property(__exclusions.value, __exclusions.set, None, '2.0.0+\n            List of dependency exclusions.\n          ')
 
     _ElementMap.update({
         __groupId.name() : __groupId,
@@ -625,9 +623,9 @@ class Dependency (pyxb.binding.basis.complexTypeDefinition):
         __exclusions.name() : __exclusions
     })
     _AttributeMap.update({
-
+        
     })
-Namespace.addCategoryObject('typeBinding', u'Dependency', Dependency)
+Namespace.addCategoryObject('typeBinding', 'Dependency', Dependency)
 
 
 # Complex type [anonymous] with content type ELEMENT_ONLY
@@ -643,18 +641,18 @@ class CTD_ANON_7 (pyxb.binding.basis.complexTypeDefinition):
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}exclusion uses Python identifier exclusion
-    __exclusion = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'exclusion'), 'exclusion', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_7_httpfedorahosted_orgxmvnMETADATA2_0_0exclusion', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 368, 12),)
+    __exclusion = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'exclusion'), 'exclusion', '__httpfedorahosted_orgxmvnMETADATA2_0_0_CTD_ANON_7_httpfedorahosted_orgxmvnMETADATA2_0_0exclusion', True, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 368, 12), )
 
-
+    
     exclusion = property(__exclusion.value, __exclusion.set, None, None)
 
     _ElementMap.update({
         __exclusion.name() : __exclusion
     })
     _AttributeMap.update({
-
+        
     })
 
 
@@ -667,47 +665,47 @@ class DependencyExclusion (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'DependencyExclusion')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'DependencyExclusion')
     _XSDLocation = pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 374, 2)
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}groupId uses Python identifier groupId
-    __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_DependencyExclusion_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 382, 6),)
+    __groupId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'groupId'), 'groupId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_DependencyExclusion_httpfedorahosted_orgxmvnMETADATA2_0_0groupId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 382, 6), )
 
+    
+    groupId = property(__groupId.value, __groupId.set, None, '2.0.0+\n            Group ID of the excluded artifact.\n          ')
 
-    groupId = property(__groupId.value, __groupId.set, None, u'2.0.0+\n            Group ID of the excluded artifact.\n          ')
-
-
+    
     # Element {http://fedorahosted.org/xmvn/METADATA/2.0.0}artifactId uses Python identifier artifactId
-    __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_DependencyExclusion_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 390, 6),)
+    __artifactId = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(Namespace, 'artifactId'), 'artifactId', '__httpfedorahosted_orgxmvnMETADATA2_0_0_DependencyExclusion_httpfedorahosted_orgxmvnMETADATA2_0_0artifactId', False, pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 390, 6), )
 
-
-    artifactId = property(__artifactId.value, __artifactId.set, None, u'2.0.0+\n            Artifact ID of the excluded artifact.\n          ')
+    
+    artifactId = property(__artifactId.value, __artifactId.set, None, '2.0.0+\n            Artifact ID of the excluded artifact.\n          ')
 
     _ElementMap.update({
         __groupId.name() : __groupId,
         __artifactId.name() : __artifactId
     })
     _AttributeMap.update({
-
+        
     })
-Namespace.addCategoryObject('typeBinding', u'DependencyExclusion', DependencyExclusion)
+Namespace.addCategoryObject('typeBinding', 'DependencyExclusion', DependencyExclusion)
 
 
-metadata = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'metadata'), PackageMetadata, documentation=u'2.0.0+\n        Root element of the metadata file.\n      ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 7, 2))
+metadata = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'metadata'), PackageMetadata, documentation='2.0.0+\n        Root element of the metadata file.\n      ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 7, 2))
 Namespace.addCategoryObject('elementBinding', metadata.name().localName(), metadata)
 
 
 
-PackageMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'uuid'), pyxb.binding.datatypes.string, scope=PackageMetadata, documentation=u'2.0.0+\n            Universally unique identifier of this piece of metadata.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 23, 6)))
+PackageMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'uuid'), pyxb.binding.datatypes.string, scope=PackageMetadata, documentation='2.0.0+\n            Universally unique identifier of this piece of metadata.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 23, 6)))
 
-PackageMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'properties'), CTD_ANON, scope=PackageMetadata, documentation=u'2.0.0+\n            Properties of this piece of metadata.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 31, 6)))
+PackageMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'properties'), CTD_ANON, scope=PackageMetadata, documentation='2.0.0+\n            Properties of this piece of metadata.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 31, 6)))
 
-PackageMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'artifacts'), CTD_ANON_, scope=PackageMetadata, documentation=u'2.0.0+\n            List of installed artifacts described by this piece of\n            metadata.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 44, 6)))
+PackageMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'artifacts'), CTD_ANON_, scope=PackageMetadata, documentation='2.0.0+\n            List of installed artifacts described by this piece of\n            metadata.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 44, 6)))
 
-PackageMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'skippedArtifacts'), CTD_ANON_2, scope=PackageMetadata, documentation=u'2.0.0+\n            List of artifacts built but not installed in any package.\n            Useful for detecting broken package dependencies.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 58, 6)))
+PackageMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'skippedArtifacts'), CTD_ANON_2, scope=PackageMetadata, documentation='2.0.0+\n            List of artifacts built but not installed in any package.\n            Useful for detecting broken package dependencies.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 58, 6)))
 
 def _BuildAutomaton_ ():
     # Remove this helper function from the namespace after it is invoked
@@ -716,12 +714,12 @@ def _BuildAutomaton_ ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 23, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 23, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(PackageMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'uuid')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 23, 6))
+    symbol = pyxb.binding.content.ElementUse(PackageMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'uuid')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 23, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -737,12 +735,12 @@ def _BuildAutomaton_2 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 31, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 31, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(PackageMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'properties')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 31, 6))
+    symbol = pyxb.binding.content.ElementUse(PackageMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'properties')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 31, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -758,12 +756,12 @@ def _BuildAutomaton_3 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 44, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 44, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(PackageMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'artifacts')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 44, 6))
+    symbol = pyxb.binding.content.ElementUse(PackageMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'artifacts')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 44, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -779,12 +777,12 @@ def _BuildAutomaton_4 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 58, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 58, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(PackageMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'skippedArtifacts')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 58, 6))
+    symbol = pyxb.binding.content.ElementUse(PackageMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'skippedArtifacts')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 58, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -800,13 +798,13 @@ def _BuildAutomaton ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 23, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 23, 6))
     counters.add(cc_0)
-    cc_1 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 31, 6))
+    cc_1 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 31, 6))
     counters.add(cc_1)
-    cc_2 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 44, 6))
+    cc_2 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 44, 6))
     counters.add(cc_2)
-    cc_3 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 58, 6))
+    cc_3 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 58, 6))
     counters.add(cc_3)
     states = []
     sub_automata = []
@@ -834,7 +832,7 @@ def _BuildAutomaton_5 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 40, 12))
+    cc_0 = fac.CounterCondition(min=0, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 40, 12))
     counters.add(cc_0)
     states = []
     final_update = set()
@@ -852,7 +850,7 @@ CTD_ANON._Automaton = _BuildAutomaton_5()
 
 
 
-CTD_ANON_._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'artifact'), ArtifactMetadata, scope=CTD_ANON_, location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 54, 12)))
+CTD_ANON_._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'artifact'), ArtifactMetadata, scope=CTD_ANON_, location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 54, 12)))
 
 def _BuildAutomaton_6 ():
     # Remove this helper function from the namespace after it is invoked
@@ -861,12 +859,12 @@ def _BuildAutomaton_6 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 54, 12))
+    cc_0 = fac.CounterCondition(min=0, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 54, 12))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(CTD_ANON_._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'artifact')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 54, 12))
+    symbol = pyxb.binding.content.ElementUse(CTD_ANON_._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'artifact')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 54, 12))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -879,7 +877,7 @@ CTD_ANON_._Automaton = _BuildAutomaton_6()
 
 
 
-CTD_ANON_2._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'skippedArtifact'), SkippedArtifactMetadata, scope=CTD_ANON_2, location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 68, 12)))
+CTD_ANON_2._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'skippedArtifact'), SkippedArtifactMetadata, scope=CTD_ANON_2, location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 68, 12)))
 
 def _BuildAutomaton_7 ():
     # Remove this helper function from the namespace after it is invoked
@@ -888,12 +886,12 @@ def _BuildAutomaton_7 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 68, 12))
+    cc_0 = fac.CounterCondition(min=0, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 68, 12))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(CTD_ANON_2._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'skippedArtifact')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 68, 12))
+    symbol = pyxb.binding.content.ElementUse(CTD_ANON_2._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'skippedArtifact')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 68, 12))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -906,13 +904,13 @@ CTD_ANON_2._Automaton = _BuildAutomaton_7()
 
 
 
-SkippedArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'groupId'), pyxb.binding.datatypes.string, scope=SkippedArtifactMetadata, documentation=u'2.0.0+\n            Group ID of skipped artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 83, 6)))
+SkippedArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'groupId'), pyxb.binding.datatypes.string, scope=SkippedArtifactMetadata, documentation='2.0.0+\n            Group ID of skipped artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 83, 6)))
 
-SkippedArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), pyxb.binding.datatypes.string, scope=SkippedArtifactMetadata, documentation=u'2.0.0+\n            Artifact ID of skipped artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 91, 6)))
+SkippedArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'artifactId'), pyxb.binding.datatypes.string, scope=SkippedArtifactMetadata, documentation='2.0.0+\n            Artifact ID of skipped artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 91, 6)))
 
-SkippedArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'extension'), pyxb.binding.datatypes.string, scope=SkippedArtifactMetadata, documentation=u'2.0.0+\n            Extension of skipped artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 99, 6), unicode_default=u'jar'))
+SkippedArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'extension'), pyxb.binding.datatypes.string, scope=SkippedArtifactMetadata, documentation='2.0.0+\n            Extension of skipped artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 99, 6), unicode_default='jar'))
 
-SkippedArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'classifier'), pyxb.binding.datatypes.string, scope=SkippedArtifactMetadata, documentation=u'2.0.0+\n            Classifier of skipped artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 107, 6), unicode_default=u''))
+SkippedArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'classifier'), pyxb.binding.datatypes.string, scope=SkippedArtifactMetadata, documentation='2.0.0+\n            Classifier of skipped artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 107, 6), unicode_default=''))
 
 def _BuildAutomaton_9 ():
     # Remove this helper function from the namespace after it is invoked
@@ -921,12 +919,12 @@ def _BuildAutomaton_9 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 83, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 83, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(SkippedArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'groupId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 83, 6))
+    symbol = pyxb.binding.content.ElementUse(SkippedArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'groupId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 83, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -942,12 +940,12 @@ def _BuildAutomaton_10 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 91, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 91, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(SkippedArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'artifactId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 91, 6))
+    symbol = pyxb.binding.content.ElementUse(SkippedArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'artifactId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 91, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -963,12 +961,12 @@ def _BuildAutomaton_11 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 99, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 99, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(SkippedArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'extension')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 99, 6))
+    symbol = pyxb.binding.content.ElementUse(SkippedArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'extension')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 99, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -984,12 +982,12 @@ def _BuildAutomaton_12 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 107, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 107, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(SkippedArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'classifier')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 107, 6))
+    symbol = pyxb.binding.content.ElementUse(SkippedArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'classifier')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 107, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1005,13 +1003,13 @@ def _BuildAutomaton_8 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 83, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 83, 6))
     counters.add(cc_0)
-    cc_1 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 91, 6))
+    cc_1 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 91, 6))
     counters.add(cc_1)
-    cc_2 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 99, 6))
+    cc_2 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 99, 6))
     counters.add(cc_2)
-    cc_3 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 107, 6))
+    cc_3 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 107, 6))
     counters.add(cc_3)
     states = []
     sub_automata = []
@@ -1032,29 +1030,29 @@ SkippedArtifactMetadata._Automaton = _BuildAutomaton_8()
 
 
 
-ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'groupId'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation=u'2.0.0+\n            Group identifier of the artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 125, 6)))
+ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'groupId'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation='2.0.0+\n            Group identifier of the artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 125, 6)))
 
-ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation=u'2.0.0+\n            Identifier of the artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 133, 6)))
+ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'artifactId'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation='2.0.0+\n            Identifier of the artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 133, 6)))
 
-ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'extension'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation=u'2.0.0+\n            Extension of artifact file.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 141, 6), unicode_default=u'jar'))
+ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'extension'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation='2.0.0+\n            Extension of artifact file.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 141, 6), unicode_default='jar'))
 
-ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'classifier'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation=u'2.0.0+\n            Classifier of the artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 149, 6), unicode_default=u''))
+ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'classifier'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation='2.0.0+\n            Classifier of the artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 149, 6), unicode_default=''))
 
-ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'version'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation=u'2.0.0+\n            Artifact version.  This is always upstream version, never\n            compat version nor SYSTEM.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 157, 6)))
+ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'version'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation='2.0.0+\n            Artifact version.  This is always upstream version, never\n            compat version nor SYSTEM.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 157, 6)))
 
-ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'path'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation=u'2.0.0+\n            Absolute path to artifact file stored in the local file\n            system.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 166, 6)))
+ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'path'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation='2.0.0+\n            Absolute path to artifact file stored in the local file\n            system.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 166, 6)))
 
-ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'namespace'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation=u'2.0.0+\n            A namespace within which this artifact is stored.  This\n            usually is an identifier of software collection.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 175, 6), unicode_default=u''))
+ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'namespace'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation='2.0.0+\n            A namespace within which this artifact is stored.  This\n            usually is an identifier of software collection.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 175, 6), unicode_default=''))
 
-ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'uuid'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation=u'2.0.0+\n            Universally unique identifier of this artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 184, 6)))
+ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'uuid'), pyxb.binding.datatypes.string, scope=ArtifactMetadata, documentation='2.0.0+\n            Universally unique identifier of this artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 184, 6)))
 
-ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'properties'), CTD_ANON_3, scope=ArtifactMetadata, documentation=u'2.0.0+\n            Extra properties of this artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 192, 6)))
+ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'properties'), CTD_ANON_3, scope=ArtifactMetadata, documentation='2.0.0+\n            Extra properties of this artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 192, 6)))
 
-ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'compatVersions'), CTD_ANON_4, scope=ArtifactMetadata, documentation=u'2.0.0+\n            Compatibility versions of this artifact.  If the list is\n            empty then this artifact is not considered as\n            compatibility artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 205, 6)))
+ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'compatVersions'), CTD_ANON_4, scope=ArtifactMetadata, documentation='2.0.0+\n            Compatibility versions of this artifact.  If the list is\n            empty then this artifact is not considered as\n            compatibility artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 205, 6)))
 
-ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'aliases'), CTD_ANON_5, scope=ArtifactMetadata, documentation=u'2.0.0+\n            Alternative identifiers of the artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 220, 6)))
+ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'aliases'), CTD_ANON_5, scope=ArtifactMetadata, documentation='2.0.0+\n            Alternative identifiers of the artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 220, 6)))
 
-ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'dependencies'), CTD_ANON_6, scope=ArtifactMetadata, documentation=u'2.0.0+\n            List of artifact dependencies.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 233, 6)))
+ArtifactMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'dependencies'), CTD_ANON_6, scope=ArtifactMetadata, documentation='2.0.0+\n            List of artifact dependencies.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 233, 6)))
 
 def _BuildAutomaton_14 ():
     # Remove this helper function from the namespace after it is invoked
@@ -1063,12 +1061,12 @@ def _BuildAutomaton_14 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 125, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 125, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'groupId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 125, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'groupId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 125, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1084,12 +1082,12 @@ def _BuildAutomaton_15 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 133, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 133, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'artifactId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 133, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'artifactId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 133, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1105,12 +1103,12 @@ def _BuildAutomaton_16 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 141, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 141, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'extension')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 141, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'extension')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 141, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1126,12 +1124,12 @@ def _BuildAutomaton_17 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 149, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 149, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'classifier')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 149, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'classifier')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 149, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1147,12 +1145,12 @@ def _BuildAutomaton_18 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 157, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 157, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'version')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 157, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'version')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 157, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1168,12 +1166,12 @@ def _BuildAutomaton_19 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 166, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 166, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'path')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 166, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'path')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 166, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1189,12 +1187,12 @@ def _BuildAutomaton_20 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 175, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 175, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'namespace')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 175, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'namespace')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 175, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1210,12 +1208,12 @@ def _BuildAutomaton_21 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 184, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 184, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'uuid')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 184, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'uuid')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 184, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1231,12 +1229,12 @@ def _BuildAutomaton_22 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 192, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 192, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'properties')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 192, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'properties')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 192, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1252,12 +1250,12 @@ def _BuildAutomaton_23 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 205, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 205, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'compatVersions')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 205, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'compatVersions')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 205, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1273,12 +1271,12 @@ def _BuildAutomaton_24 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 220, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 220, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'aliases')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 220, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'aliases')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 220, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1294,12 +1292,12 @@ def _BuildAutomaton_25 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 233, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 233, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'dependencies')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 233, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'dependencies')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 233, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1315,29 +1313,29 @@ def _BuildAutomaton_13 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 125, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 125, 6))
     counters.add(cc_0)
-    cc_1 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 133, 6))
+    cc_1 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 133, 6))
     counters.add(cc_1)
-    cc_2 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 141, 6))
+    cc_2 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 141, 6))
     counters.add(cc_2)
-    cc_3 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 149, 6))
+    cc_3 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 149, 6))
     counters.add(cc_3)
-    cc_4 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 157, 6))
+    cc_4 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 157, 6))
     counters.add(cc_4)
-    cc_5 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 166, 6))
+    cc_5 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 166, 6))
     counters.add(cc_5)
-    cc_6 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 175, 6))
+    cc_6 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 175, 6))
     counters.add(cc_6)
-    cc_7 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 184, 6))
+    cc_7 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 184, 6))
     counters.add(cc_7)
-    cc_8 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 192, 6))
+    cc_8 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 192, 6))
     counters.add(cc_8)
-    cc_9 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 205, 6))
+    cc_9 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 205, 6))
     counters.add(cc_9)
-    cc_10 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 220, 6))
+    cc_10 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 220, 6))
     counters.add(cc_10)
-    cc_11 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 233, 6))
+    cc_11 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 233, 6))
     counters.add(cc_11)
     states = []
     sub_automata = []
@@ -1373,7 +1371,7 @@ def _BuildAutomaton_26 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 201, 12))
+    cc_0 = fac.CounterCondition(min=0, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 201, 12))
     counters.add(cc_0)
     states = []
     final_update = set()
@@ -1391,7 +1389,7 @@ CTD_ANON_3._Automaton = _BuildAutomaton_26()
 
 
 
-CTD_ANON_4._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'version'), pyxb.binding.datatypes.string, scope=CTD_ANON_4, location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 216, 12)))
+CTD_ANON_4._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'version'), pyxb.binding.datatypes.string, scope=CTD_ANON_4, location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 216, 12)))
 
 def _BuildAutomaton_27 ():
     # Remove this helper function from the namespace after it is invoked
@@ -1400,12 +1398,12 @@ def _BuildAutomaton_27 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 216, 12))
+    cc_0 = fac.CounterCondition(min=0, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 216, 12))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(CTD_ANON_4._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'version')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 216, 12))
+    symbol = pyxb.binding.content.ElementUse(CTD_ANON_4._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'version')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 216, 12))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1418,7 +1416,7 @@ CTD_ANON_4._Automaton = _BuildAutomaton_27()
 
 
 
-CTD_ANON_5._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'alias'), ArtifactAlias, scope=CTD_ANON_5, location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 229, 12)))
+CTD_ANON_5._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'alias'), ArtifactAlias, scope=CTD_ANON_5, location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 229, 12)))
 
 def _BuildAutomaton_28 ():
     # Remove this helper function from the namespace after it is invoked
@@ -1427,12 +1425,12 @@ def _BuildAutomaton_28 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 229, 12))
+    cc_0 = fac.CounterCondition(min=0, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 229, 12))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(CTD_ANON_5._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'alias')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 229, 12))
+    symbol = pyxb.binding.content.ElementUse(CTD_ANON_5._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'alias')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 229, 12))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1445,7 +1443,7 @@ CTD_ANON_5._Automaton = _BuildAutomaton_28()
 
 
 
-CTD_ANON_6._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'dependency'), Dependency, scope=CTD_ANON_6, location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 242, 12)))
+CTD_ANON_6._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'dependency'), Dependency, scope=CTD_ANON_6, location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 242, 12)))
 
 def _BuildAutomaton_29 ():
     # Remove this helper function from the namespace after it is invoked
@@ -1454,12 +1452,12 @@ def _BuildAutomaton_29 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 242, 12))
+    cc_0 = fac.CounterCondition(min=0, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 242, 12))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(CTD_ANON_6._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'dependency')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 242, 12))
+    symbol = pyxb.binding.content.ElementUse(CTD_ANON_6._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'dependency')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 242, 12))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1472,13 +1470,13 @@ CTD_ANON_6._Automaton = _BuildAutomaton_29()
 
 
 
-ArtifactAlias._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'groupId'), pyxb.binding.datatypes.string, scope=ArtifactAlias, documentation=u'2.0.0+\n            Group ID of the artifact alias.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 256, 6)))
+ArtifactAlias._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'groupId'), pyxb.binding.datatypes.string, scope=ArtifactAlias, documentation='2.0.0+\n            Group ID of the artifact alias.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 256, 6)))
 
-ArtifactAlias._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), pyxb.binding.datatypes.string, scope=ArtifactAlias, documentation=u'2.0.0+\n            Artifact ID of the artifact alias.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 264, 6)))
+ArtifactAlias._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'artifactId'), pyxb.binding.datatypes.string, scope=ArtifactAlias, documentation='2.0.0+\n            Artifact ID of the artifact alias.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 264, 6)))
 
-ArtifactAlias._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'extension'), pyxb.binding.datatypes.string, scope=ArtifactAlias, documentation=u'2.0.0+\n            Extension of the artifact alias.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 272, 6), unicode_default=u'jar'))
+ArtifactAlias._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'extension'), pyxb.binding.datatypes.string, scope=ArtifactAlias, documentation='2.0.0+\n            Extension of the artifact alias.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 272, 6), unicode_default='jar'))
 
-ArtifactAlias._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'classifier'), pyxb.binding.datatypes.string, scope=ArtifactAlias, documentation=u'2.0.0+\n            Classifier of the artifact alias.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 280, 6), unicode_default=u''))
+ArtifactAlias._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'classifier'), pyxb.binding.datatypes.string, scope=ArtifactAlias, documentation='2.0.0+\n            Classifier of the artifact alias.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 280, 6), unicode_default=''))
 
 def _BuildAutomaton_31 ():
     # Remove this helper function from the namespace after it is invoked
@@ -1487,12 +1485,12 @@ def _BuildAutomaton_31 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 256, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 256, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactAlias._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'groupId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 256, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactAlias._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'groupId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 256, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1508,12 +1506,12 @@ def _BuildAutomaton_32 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 264, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 264, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactAlias._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'artifactId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 264, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactAlias._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'artifactId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 264, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1529,12 +1527,12 @@ def _BuildAutomaton_33 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 272, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 272, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactAlias._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'extension')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 272, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactAlias._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'extension')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 272, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1550,12 +1548,12 @@ def _BuildAutomaton_34 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 280, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 280, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(ArtifactAlias._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'classifier')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 280, 6))
+    symbol = pyxb.binding.content.ElementUse(ArtifactAlias._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'classifier')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 280, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1571,13 +1569,13 @@ def _BuildAutomaton_30 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 256, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 256, 6))
     counters.add(cc_0)
-    cc_1 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 264, 6))
+    cc_1 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 264, 6))
     counters.add(cc_1)
-    cc_2 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 272, 6))
+    cc_2 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 272, 6))
     counters.add(cc_2)
-    cc_3 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 280, 6))
+    cc_3 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 280, 6))
     counters.add(cc_3)
     states = []
     sub_automata = []
@@ -1598,21 +1596,21 @@ ArtifactAlias._Automaton = _BuildAutomaton_30()
 
 
 
-Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'groupId'), pyxb.binding.datatypes.string, scope=Dependency, documentation=u'2.0.0+\n            Group ID of the dependency artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 298, 6)))
+Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'groupId'), pyxb.binding.datatypes.string, scope=Dependency, documentation='2.0.0+\n            Group ID of the dependency artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 298, 6)))
 
-Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), pyxb.binding.datatypes.string, scope=Dependency, documentation=u'2.0.0+\n            Artifact ID of the dependency artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 306, 6)))
+Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'artifactId'), pyxb.binding.datatypes.string, scope=Dependency, documentation='2.0.0+\n            Artifact ID of the dependency artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 306, 6)))
 
-Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'extension'), pyxb.binding.datatypes.string, scope=Dependency, documentation=u'2.0.0+\n            Extension of the dependency artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 314, 6), unicode_default=u'jar'))
+Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'extension'), pyxb.binding.datatypes.string, scope=Dependency, documentation='2.0.0+\n            Extension of the dependency artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 314, 6), unicode_default='jar'))
 
-Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'classifier'), pyxb.binding.datatypes.string, scope=Dependency, documentation=u'2.0.0+\n            Classifier of the dependency artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 322, 6), unicode_default=u''))
+Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'classifier'), pyxb.binding.datatypes.string, scope=Dependency, documentation='2.0.0+\n            Classifier of the dependency artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 322, 6), unicode_default=''))
 
-Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'requestedVersion'), pyxb.binding.datatypes.string, scope=Dependency, documentation=u'2.0.0+\n            Version of the dependency artifact as defined in the main\n            artifact descriptor.  This may be a version range as\n            supported by Aether.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 330, 6)))
+Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'requestedVersion'), pyxb.binding.datatypes.string, scope=Dependency, documentation='2.0.0+\n            Version of the dependency artifact as defined in the main\n            artifact descriptor.  This may be a version range as\n            supported by Aether.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 330, 6)))
 
-Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'resolvedVersion'), pyxb.binding.datatypes.string, scope=Dependency, documentation=u'2.0.0+\n            Version of the dependency artifact, as resolved during\n            build.  Absence of this field indicates a dependency on\n            default artifact version.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 340, 6), unicode_default=u'SYSTEM'))
+Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'resolvedVersion'), pyxb.binding.datatypes.string, scope=Dependency, documentation='2.0.0+\n            Version of the dependency artifact, as resolved during\n            build.  Absence of this field indicates a dependency on\n            default artifact version.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 340, 6), unicode_default='SYSTEM'))
 
-Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'namespace'), pyxb.binding.datatypes.string, scope=Dependency, documentation=u'2.0.0+\n            A namespace within which this artifact is stored.  This\n            usually is an identifier of software collection.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 350, 6), unicode_default=u''))
+Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'namespace'), pyxb.binding.datatypes.string, scope=Dependency, documentation='2.0.0+\n            A namespace within which this artifact is stored.  This\n            usually is an identifier of software collection.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 350, 6), unicode_default=''))
 
-Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'exclusions'), CTD_ANON_7, scope=Dependency, documentation=u'2.0.0+\n            List of dependency exclusions.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 359, 6)))
+Dependency._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'exclusions'), CTD_ANON_7, scope=Dependency, documentation='2.0.0+\n            List of dependency exclusions.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 359, 6)))
 
 def _BuildAutomaton_36 ():
     # Remove this helper function from the namespace after it is invoked
@@ -1621,12 +1619,12 @@ def _BuildAutomaton_36 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 298, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 298, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'groupId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 298, 6))
+    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'groupId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 298, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1642,12 +1640,12 @@ def _BuildAutomaton_37 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 306, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 306, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'artifactId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 306, 6))
+    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'artifactId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 306, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1663,12 +1661,12 @@ def _BuildAutomaton_38 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 314, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 314, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'extension')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 314, 6))
+    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'extension')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 314, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1684,12 +1682,12 @@ def _BuildAutomaton_39 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 322, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 322, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'classifier')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 322, 6))
+    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'classifier')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 322, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1705,12 +1703,12 @@ def _BuildAutomaton_40 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 330, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 330, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'requestedVersion')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 330, 6))
+    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'requestedVersion')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 330, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1726,12 +1724,12 @@ def _BuildAutomaton_41 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 340, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 340, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'resolvedVersion')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 340, 6))
+    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'resolvedVersion')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 340, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1747,12 +1745,12 @@ def _BuildAutomaton_42 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 350, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 350, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'namespace')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 350, 6))
+    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'namespace')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 350, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1768,12 +1766,12 @@ def _BuildAutomaton_43 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 359, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 359, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'exclusions')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 359, 6))
+    symbol = pyxb.binding.content.ElementUse(Dependency._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'exclusions')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 359, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1789,21 +1787,21 @@ def _BuildAutomaton_35 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 298, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 298, 6))
     counters.add(cc_0)
-    cc_1 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 306, 6))
+    cc_1 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 306, 6))
     counters.add(cc_1)
-    cc_2 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 314, 6))
+    cc_2 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 314, 6))
     counters.add(cc_2)
-    cc_3 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 322, 6))
+    cc_3 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 322, 6))
     counters.add(cc_3)
-    cc_4 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 330, 6))
+    cc_4 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 330, 6))
     counters.add(cc_4)
-    cc_5 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 340, 6))
+    cc_5 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 340, 6))
     counters.add(cc_5)
-    cc_6 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 350, 6))
+    cc_6 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 350, 6))
     counters.add(cc_6)
-    cc_7 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 359, 6))
+    cc_7 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 359, 6))
     counters.add(cc_7)
     states = []
     sub_automata = []
@@ -1828,7 +1826,7 @@ Dependency._Automaton = _BuildAutomaton_35()
 
 
 
-CTD_ANON_7._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'exclusion'), DependencyExclusion, scope=CTD_ANON_7, location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 368, 12)))
+CTD_ANON_7._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'exclusion'), DependencyExclusion, scope=CTD_ANON_7, location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 368, 12)))
 
 def _BuildAutomaton_44 ():
     # Remove this helper function from the namespace after it is invoked
@@ -1837,12 +1835,12 @@ def _BuildAutomaton_44 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 368, 12))
+    cc_0 = fac.CounterCondition(min=0, max=None, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 368, 12))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(CTD_ANON_7._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'exclusion')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 368, 12))
+    symbol = pyxb.binding.content.ElementUse(CTD_ANON_7._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'exclusion')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 368, 12))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1855,9 +1853,9 @@ CTD_ANON_7._Automaton = _BuildAutomaton_44()
 
 
 
-DependencyExclusion._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'groupId'), pyxb.binding.datatypes.string, scope=DependencyExclusion, documentation=u'2.0.0+\n            Group ID of the excluded artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 382, 6)))
+DependencyExclusion._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'groupId'), pyxb.binding.datatypes.string, scope=DependencyExclusion, documentation='2.0.0+\n            Group ID of the excluded artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 382, 6)))
 
-DependencyExclusion._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'artifactId'), pyxb.binding.datatypes.string, scope=DependencyExclusion, documentation=u'2.0.0+\n            Artifact ID of the excluded artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 390, 6)))
+DependencyExclusion._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, 'artifactId'), pyxb.binding.datatypes.string, scope=DependencyExclusion, documentation='2.0.0+\n            Artifact ID of the excluded artifact.\n          ', location=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 390, 6)))
 
 def _BuildAutomaton_46 ():
     # Remove this helper function from the namespace after it is invoked
@@ -1866,12 +1864,12 @@ def _BuildAutomaton_46 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 382, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 382, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(DependencyExclusion._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'groupId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 382, 6))
+    symbol = pyxb.binding.content.ElementUse(DependencyExclusion._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'groupId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 382, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1887,12 +1885,12 @@ def _BuildAutomaton_47 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 390, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 390, 6))
     counters.add(cc_0)
     states = []
     final_update = set()
     final_update.add(fac.UpdateInstruction(cc_0, False))
-    symbol = pyxb.binding.content.ElementUse(DependencyExclusion._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'artifactId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 390, 6))
+    symbol = pyxb.binding.content.ElementUse(DependencyExclusion._UseForTag(pyxb.namespace.ExpandedName(Namespace, 'artifactId')), pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 390, 6))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     transitions = []
@@ -1908,9 +1906,9 @@ def _BuildAutomaton_45 ():
     import pyxb.utils.fac as fac
 
     counters = set()
-    cc_0 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 382, 6))
+    cc_0 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 382, 6))
     counters.add(cc_0)
-    cc_1 = fac.CounterCondition(min=0L, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 390, 6))
+    cc_1 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/work-local/projects/xmvn/xmvn-core/target/generated-site/resources/xsd/metadata-2.0.0.xsd', 390, 6))
     counters.add(cc_1)
     states = []
     sub_automata = []

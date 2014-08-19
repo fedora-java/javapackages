@@ -34,9 +34,10 @@
 
 import sys
 import re
+import six
 
-from pomreader import POMReader
-from printer import Printer
+from javapackages.maven.pomreader import POMReader
+from javapackages.maven.printer import Printer
 from lxml.etree import Element, SubElement, tostring
 
 
@@ -174,7 +175,7 @@ class AbstractArtifact(object):
         for member in self.__dict__:
             if (not member.startswith('_')
                 and getattr(self, member)
-                and isinstance(getattr(self, member), basestring)):
+                and isinstance(getattr(self, member), six.string_types)):
                     curr_value = getattr(self, member)
                     prog = re.compile("\$\{([^}]+)\}")
                     props = prog.findall(curr_value)
@@ -188,10 +189,10 @@ class AbstractArtifact(object):
         return leftovers
 
     def __unicode__(self):
-        return unicode(self.get_mvn_str())
+        return six.text_type(self.get_mvn_str())
 
     def __str__(self):
-        return unicode(self).encode(sys.getfilesystemencoding())
+        return self.__unicode__()
 
     def __eq__(self, other):
         if type(other) is type(self):

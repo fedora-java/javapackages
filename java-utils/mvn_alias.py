@@ -63,7 +63,11 @@ if __name__ == "__main__":
     parser = SaneParser(usage=usage,
                         epilog=epilog)
     for index, arg in enumerate(sys.argv):
-        sys.argv[index] = arg.decode(sys.getfilesystemencoding())
+        try:
+            if callable(getattr(arg, "decode")):
+                sys.argv[index] = arg.decode(sys.getfilesystemencoding())
+        except AttributeError:
+            pass
 
     (options, args) = parser.parse_args()
     if len(args) < 2:
@@ -76,7 +80,7 @@ if __name__ == "__main__":
             aliases.append(Artifact.from_mvn_str(alias))
 
         XMvnConfig().add_aliases(orig, aliases)
-    except (ArtifactValidationException, ArtifactFormatException), e:
+    except (ArtifactValidationException, ArtifactFormatException) as e:
         parser.error("{e}: Provided artifact strings were invalid. "
                      "Please see help  and check your arguments".format(e=e))
         sys.exit(1)

@@ -59,7 +59,11 @@ if __name__ == "__main__":
     parser = SaneParser(usage=usage,
                         epilog=epilog)
     for index, arg in enumerate(sys.argv):
-        sys.argv[index] = arg.decode(sys.getfilesystemencoding())
+        try:
+            if callable(getattr(arg, "decode")):
+                sys.argv[index] = arg.decode(sys.getfilesystemencoding())
+        except AttributeError:
+            pass
 
     (options, args) = parser.parse_args()
     if len(args) != 2:

@@ -52,7 +52,11 @@ if __name__ == "__main__":
     parser = SaneParser(usage=usage,
                         epilog=epilog)
     for index, arg in enumerate(sys.argv):
-        sys.argv[index] = arg.decode(sys.getfilesystemencoding())
+        try:
+            if callable(getattr(arg, "decode")):
+                sys.argv[index] = arg.decode(sys.getfilesystemencoding())
+        except AttributeError:
+            pass
 
     (options, args) = parser.parse_args()
     if len(args) != 1:
@@ -63,8 +67,8 @@ if __name__ == "__main__":
         deps = et.findall('./dependency')
         for dep in deps:
             art = Artifact.from_xml_element(dep)
-            print art.get_rpm_str(art.version)
-    except (ArtifactValidationException, ArtifactFormatException), e:
+            print(art.get_rpm_str(art.version))
+    except (ArtifactValidationException, ArtifactFormatException) as e:
         parser.error("{e}: Provided artifact strings were invalid. "
                      "Please see help  and check your arguments".format(e=e))
         sys.exit(1)

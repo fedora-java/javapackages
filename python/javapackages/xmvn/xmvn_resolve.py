@@ -59,7 +59,7 @@ class XMvnResolve(object):
         binpath = XMvnResolve._load_path_from_config()
         request = XMvnResolve.__join_raw_requests(raw_request_list)
         procargs = [binpath, '--raw-request']
-        proc = subprocess.Popen(procargs, shell=False, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+        proc = subprocess.Popen(procargs, shell=False, stdout=subprocess.PIPE, stdin=subprocess.PIPE, universal_newlines=True)
         stdout = proc.communicate(input=request)[0]
         proc.wait()
         result = XMvnResolve.__process_results(stdout)
@@ -78,7 +78,7 @@ class XMvnResolve(object):
     def __process_results(result_xml):
         results = []
 
-        doc = lxml.etree.fromstring(result_xml)
+        doc = lxml.etree.fromstring(result_xml.encode("UTF-8"))
         nodes = doc.xpath('/results/result')
         for node in nodes:
             if len(node) > 0:

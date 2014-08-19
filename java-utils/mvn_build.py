@@ -93,7 +93,11 @@ if __name__ == "__main__":
                       help="Enable Maven debugging output (implies -d).")
 
     for index, arg in enumerate(sys.argv):
-        sys.argv[index] = arg.decode(sys.getfilesystemencoding())
+        try:
+            if callable(getattr(arg, "decode")):
+                sys.argv[index] = arg.decode(sys.getfilesystemencoding())
+        except AttributeError:
+            pass
 
     (options, args) = parser.parse_args()
     xc = XMvnConfig()

@@ -1,3 +1,4 @@
+import io
 import os
 import re
 import subprocess
@@ -175,15 +176,16 @@ class Package(object):
             target = os.path.join(destpath, os.path.basename(targetname))
             shutil.copy(sourcepath, '{0}{1}'.format(target, index))
 
+
 def _prepare_macros():
     macropath = os.path.join(DIRPATH, '..', 'macros.d')
     java_utils = os.path.abspath(os.path.join(DIRPATH, '..', 'java-utils'))
 
-    with open('.rpmmacros', 'w') as rpmmacros:
+    with io.open('.rpmmacros', 'wt', encoding='utf-8') as rpmmacros:
         for filepath in os.listdir(macropath):
             if filepath.startswith('macros'):
-                with open(os.path.join(macropath, filepath), 'r') as macrofile:
-                    for line in macrofile:
+                with io.open(os.path.join(macropath, filepath), encoding='utf-8') as macrofile:
+                    for line in macrofile.readlines():
                         if '/usr/share/java-utils' in line:
                             rpmmacros.write(re.sub(r'/usr/share/java-utils',
                                     java_utils, line))

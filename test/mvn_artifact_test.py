@@ -2,10 +2,9 @@ import inspect
 import os
 import unittest
 import shutil
-import javapackages.metadata as m
 from test_common import *
 from lxml import etree
-from formencode import doctest_xml_compare
+from xml_compare import compare_lxml_etree
 
 
 class TestMvnArtifact(unittest.TestCase):
@@ -41,69 +40,70 @@ class TestMvnArtifact(unittest.TestCase):
             pass
 
     def xml_compare_reporter(self, report):
-        print report
+        print(report)
 
     def check_result(self, test_name):
-        dirpath = os.path.dirname(os.path.realpath(__file__))
         got = etree.parse(".xmvn-reactor").getroot()
         want = etree.parse(os.path.join(self.workdir,
                                         test_name+"-want.xml")).getroot()
-        res = doctest_xml_compare.xml_compare(got, want, self.xml_compare_reporter)
-        return got, want, res
+        report = compare_lxml_etree(got, want)
+        if report:
+            report = '\n' + report
+        return report
 
     @mvn_artifact('args4j.pom')
     def test_basic(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
-        got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-        self.assertEqual(res, True)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
 
     @mvn_artifact('args4j.pom', 'maven-artifact.jar')
     def test_basic_jar(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
-        got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-        self.assertEqual(res, True)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
 
     @mvn_artifact('args4j.pom', 'webapp.war')
     def test_artifact_war(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
-        got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-        self.assertEqual(res, True)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
 
     @mvn_artifact('a:b:12', 'test.jar')
     def test_mvn_spec_jar(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
-        got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-        self.assertEqual(res, True)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
 
     @mvn_artifact('a:b:war:12', 'test.war')
     def test_mvn_spec_war(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
-        got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-        self.assertEqual(res, True)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
 
     @mvn_artifact('a:b:jar:12', 'test.jar')
     def test_mvn_spec_ext(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
-        got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-        self.assertEqual(res, True)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
 
     @mvn_artifact('a:b:war:12', 'test.war')
     def test_mvn_spec_ext_war(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
-        got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-        self.assertEqual(res, True)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
 
     @mvn_artifact('a:b::sources:12', 'test-sources.jar')
     def test_mvn_spec_classifier(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
-        got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-        self.assertEqual(res, True)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
 
     @mvn_artifact('a:b:war:javadoc:12', 'test-javadoc.war')
     def test_mvn_spec_classifier_war(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
-        got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-        self.assertEqual(res, True)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
 
     @mvn_artifact('a:b:12')
     def test_mvn_spec_nojar(self, stdout, stderr, return_value):
@@ -126,20 +126,20 @@ class TestMvnArtifact(unittest.TestCase):
     #@mvn_artifact('args4j-deps.pom')
     #def test_dependencies_1(self, stdout, stderr, return_value):
     #    self.assertEqual(return_value, 0, stderr)
-    #    got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-    #    self.assertEqual(res, True)
+    #    report = self.check_result(inspect.currentframe().f_code.co_name)
+    #    self.assertEqual(report, '', report)
 
     #@mvn_artifact('args4j-deps.pom', 'some.jar')
     #def test_dependencies_2(self, stdout, stderr, return_value):
     #    self.assertEqual(return_value, 0, stderr)
-    #    got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-    #    self.assertEqual(res, True)
+    #    report = self.check_result(inspect.currentframe().f_code.co_name)
+    #    self.assertEqual(report, '', report)
 
     #@mvn_artifact('args4j-exclusions.pom', 'some.jar')
     #def test_dependencies_exclusions(self, stdout, stderr, return_value):
     #    self.assertEqual(return_value, 0, stderr)
-    #    got, want, res = self.check_result(inspect.currentframe().f_code.co_name)
-    #    self.assertEqual(res, True)
+    #    report = self.check_result(inspect.currentframe().f_code.co_name)
+    #    self.assertEqual(report, '', report)
 
     #@mvn_artifact('asm-analysis-5.0.2.pom')
     #def test_missing_version(self, stdout, stderr, return_value):

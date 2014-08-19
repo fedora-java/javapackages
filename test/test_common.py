@@ -17,23 +17,32 @@ SCRIPT_ENV = {'PATH':'{mock}:{real}'.format(mock=DIRPATH,
                                             real=os.environ['PATH']),
               'PYTHONPATH':PYTHONPATH}
 
+
 def call_script(name, args, stdin=None, wrapped=False, extra_env={}, config_path=''):
-    outfile = open("tmpout", 'w')
-    errfile = open("tmperr", 'w')
-    procargs = [sys.executable, path.join(DIRPATH, 'wrapper.py'), name, config_path]
-    env = dict(SCRIPT_ENV.items() + extra_env.items())
-    proc = subprocess.Popen(procargs + args, shell=False,
-        stdout=outfile, stderr=errfile, env=env,
-        stdin=subprocess.PIPE)
-    proc.communicate(stdin)
-    ret = proc.wait()
-    outfile = open("tmpout", 'r+')
-    errfile = open("tmperr", 'r+')
-    out = outfile.read()
-    err = errfile.read()
+    with open("tmpout", 'w') as outfile:
+        with open("tmperr", 'w') as errfile:
+            procargs = [sys.executable,
+                        path.join(DIRPATH, 'wrapper.py'),
+                        name,
+                        config_path]
+            env = SCRIPT_ENV.copy()
+            env.update(extra_env)
+            proc = subprocess.Popen(procargs + args, shell=False,
+                                    stdout=outfile,
+                                    stderr=errfile,
+                                    env=env,
+                                    stdin=subprocess.PIPE,
+                                    universal_newlines=True)
+            proc.communicate(stdin)
+            ret = proc.wait()
+    with open("tmpout", 'r') as outfile:
+        out = outfile.read()
+    with open("tmperr", 'r') as errfile:
+        err = errfile.read()
     os.remove('tmpout')
     os.remove('tmperr')
     return (out, err, ret)
+
 
 def get_config_file_list():
     try:
@@ -52,12 +61,19 @@ def get_expected_config(filename, scriptname, testname):
         expfname = filename
     return path.join(DIRPATH, 'data', scriptname, expfname)
 
+
 def get_actual_args():
-    return open('.xmvn/out').read()
+    with open('.xmvn/out', 'r') as f:
+        args = f.read()
+    return args
+
 
 def get_expected_args(scriptname, testname):
-    return open(path.join(DIRPATH, 'data', scriptname,
-       "{name}_out".format(name=testname))).read()
+    fpath = path.join(DIRPATH, 'data', scriptname, "{name}_out".format(name=testname))
+    with open(fpath, 'r') as f:
+        args = f.read()
+    return args
+
 
 def preload_xmvn_config(name, filename, dstname=None, update_index=False):
     def test_decorator(fun):
@@ -84,7 +100,8 @@ def prepare_metadata(metadata_dir):
         for filename in filenames:
             if filename.endswith("-want.xml"):
                 want_file = os.path.join(dirname, filename)
-                metadata = m.CreateFromDocument(open(want_file).read())
+                with open(want_file) as wfile:
+                    metadata = m.CreateFromDocument(wfile.read())
                 for a in metadata.artifacts.artifact:
                     if '%' in a.path:
                         a.path = a.path % (metadata_dir)

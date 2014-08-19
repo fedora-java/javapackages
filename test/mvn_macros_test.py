@@ -47,11 +47,11 @@ class MvnMacrosTest(unittest.TestCase):
     #    self.assertEqual(return_value, 0, stderr)
     #    confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
     #    filelist = os.listdir(confpath)
-    #    self.assertEquals(len(filelist), 1)
+    #    self.assertEqual(len(filelist), 1)
     #    actfile = os.path.join(confpath, filelist[0])
     #    expfile = os.path.join(DIRPATH, 'data', 'mvn_alias', 'simple_00001.xml')
     #    report = compare_xml_files(actfile, expfile, ['artifactGlob'])
-    #    self.assertEquals(report, '', report)
+    #    self.assertEqual(report, '', report)
 
     @rpm_test()
     def test_mvn_alias_backref(self, pack):
@@ -60,12 +60,12 @@ class MvnMacrosTest(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
         filelist = os.listdir(confpath)
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_alias',
                                'backref_00001.xml')
         report = compare_xml_files(actfile, expfile, ['artifactGlob'])
-        self.assertEquals(report, '', report)
+        self.assertEqual(report, '', report)
 
     #@rpm_test()
     #def test_mvn_alias_multi(self, pack):
@@ -75,12 +75,12 @@ class MvnMacrosTest(unittest.TestCase):
     #    self.assertEqual(return_value, 0, stderr)
     #    confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
     #    filelist = os.listdir(confpath)
-    #    self.assertEquals(len(filelist), 1)
+    #    self.assertEqual(len(filelist), 1)
     #    actfile = os.path.join(confpath, filelist[0])
     #    expfile = os.path.join(DIRPATH, 'data', 'mvn_alias',
     #                           'multi_00001.xml')
     #    report = compare_xml_files(actfile, expfile, ['artifactGlob'])
-    #    self.assertEquals(report, '', report)
+    #    self.assertEqual(report, '', report)
 
     @rpm_test()
     def test_mvn_alias_no_args(self, pack):
@@ -104,13 +104,13 @@ class MvnMacrosTest(unittest.TestCase):
     #    self.assertEqual(return_value, 0, stderr)
     #    confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
     #    filelist = sorted(os.listdir(confpath))
-    #    self.assertEquals(len(filelist), 2)
+    #    self.assertEqual(len(filelist), 2)
     #    for i in range(2):
     #        actfile = os.path.join(confpath, filelist[i])
     #        filename = 'more_invocations-0000{i}.xml'.format(i=i + 1)
     #        expfile = os.path.join(DIRPATH, 'data', 'mvn_alias', filename)
     #        report = compare_xml_files(actfile, expfile, ['artifactGlob'])
-    #        self.assertEquals(report, '', report)
+    #        self.assertEqual(report, '', report)
 
     @rpm_test()
     def test_mvn_file_simple(self, pack):
@@ -119,11 +119,11 @@ class MvnMacrosTest(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
         filelist = os.listdir(confpath)
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_file', 'simple_00001.xml')
         report = compare_xml_files(actfile, expfile, ['artifactGlob'])
-        self.assertEquals(report, '', report)
+        self.assertEqual(report, '', report)
 
     @rpm_test()
     def test_mvn_file_symlinks(self, pack):
@@ -132,12 +132,12 @@ class MvnMacrosTest(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
         filelist = os.listdir(confpath)
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_file',
                                'symlinks_00001.xml')
         report = compare_xml_files(actfile, expfile, ['artifactGlob'])
-        self.assertEquals(report, '', report)
+        self.assertEqual(report, '', report)
 
     @rpm_test()
     def test_mvn_file_no_args(self, pack):
@@ -160,12 +160,12 @@ class MvnMacrosTest(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
         filelist = os.listdir(confpath)
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_compat_version',
                                'simple_00001.xml')
         report = compare_xml_files(actfile, expfile, ['artifactGlob'])
-        self.assertEquals(report, '', report)
+        self.assertEqual(report, '', report)
 
     @rpm_test()
     def test_mvn_compat_version_no_args(self, pack):
@@ -188,12 +188,12 @@ class MvnMacrosTest(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
         filelist = os.listdir(confpath)
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_package',
                                'simple_00001.xml')
         report = compare_xml_files(actfile, expfile, ['artifactGlob'])
-        self.assertEquals(report, '', report)
+        self.assertEqual(report, '', report)
 
     @rpm_test()
     def test_mvn_package_no_args(self, pack):
@@ -209,12 +209,12 @@ class MvnMacrosTest(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
         filelist = os.listdir(confpath)
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_package',
                                'single_00001.xml')
         report = compare_xml_files(actfile, expfile, ['artifactGlob'])
-        self.assertEquals(report, '', report)
+        self.assertEqual(report, '', report)
 
     @rpm_test()
     def test_mvn_config_no_args(self, pack):
@@ -237,12 +237,12 @@ class MvnMacrosTest(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
         filelist = os.listdir(confpath)
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_config',
                                'path_00001.xml')
         report = compare_xml_files(actfile, expfile, ['artifactGlob'])
-        self.assertEquals(report, '', report)
+        self.assertEqual(report, '', report)
 
     @rpm_test()
     def test_mvn_config_multiline(self, pack):
@@ -255,12 +255,12 @@ class MvnMacrosTest(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
         filelist = os.listdir(confpath)
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_config',
                                'multiline_00001.xml')
         report = compare_xml_files(actfile, expfile, ['artifactGlob'])
-        self.assertEquals(report, '', report)
+        self.assertEqual(report, '', report)
 
     @rpm_test()
     def test_mvn_build_no_args(self, pack):
@@ -274,7 +274,7 @@ class MvnMacrosTest(unittest.TestCase):
                   'verify org.fedoraproject.xmvn:xmvn-mojo:install ' + \
                   'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
                   'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
-            self.assertEquals(argsfile.read(), exp)
+            self.assertEqual(argsfile.read(), exp)
 
     @rpm_test()
     def test_mvn_build_singleton(self, pack):
@@ -283,20 +283,20 @@ class MvnMacrosTest(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         confpath = os.path.join(pack.buildpath, '.xmvn', 'config.d')
         filelist = sorted(os.listdir(confpath))
-        self.assertEquals(len(filelist), 2)
+        self.assertEqual(len(filelist), 2)
         for i in range(2):
             actfile = os.path.join(confpath, filelist[i])
             filename = 'singleton_0000{i}.xml'.format(i=i + 1)
             expfile = os.path.join(DIRPATH, 'data', 'mvn_build', filename)
             report = compare_xml_files(actfile, expfile, ['artifactGlob'])
-            self.assertEquals(report, '', report)
+            self.assertEqual(report, '', report)
 
         expfile = os.path.join(pack.buildpath, '.xmvn', 'out')
         actfile = os.path.join(DIRPATH, 'data', 'mvn_build',
                                    'singleton_out')
         with open(actfile, 'r') as act:
             with open(expfile, 'r') as exp:
-                self.assertEquals(act.read(), exp.read())
+                self.assertEqual(act.read(), exp.read())
 
     @rpm_test()
     def test_mvn_build_environment(self, pack):
@@ -323,7 +323,7 @@ class MvnMacrosTest(unittest.TestCase):
                   'verify org.fedoraproject.xmvn:xmvn-mojo:install ' + \
                   'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
                   'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
-            self.assertEquals(argsfile.read(), exp)
+            self.assertEqual(argsfile.read(), exp)
 
     @rpm_test()
     def test_mvn_build_bootstrap(self, pack):
@@ -338,7 +338,7 @@ class MvnMacrosTest(unittest.TestCase):
                   'verify org.fedoraproject.xmvn:xmvn-mojo:install ' + \
                   'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
                   'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
-            self.assertEquals(argsfile.read(), exp)
+            self.assertEqual(argsfile.read(), exp)
 
     @rpm_test()
     def test_mvn_build_skip_javadoc(self, pack):
@@ -352,7 +352,7 @@ class MvnMacrosTest(unittest.TestCase):
             exp = '--batch-mode --offline ' + \
                   'verify org.fedoraproject.xmvn:xmvn-mojo:install ' + \
                   'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
-            self.assertEquals(argsfile.read(), exp)
+            self.assertEqual(argsfile.read(), exp)
 
     @rpm_test()
     def test_mvn_build_skip_test(self, pack):
@@ -367,7 +367,7 @@ class MvnMacrosTest(unittest.TestCase):
                   'package org.fedoraproject.xmvn:xmvn-mojo:install ' + \
                   'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
                   'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
-            self.assertEquals(argsfile.read(), exp)
+            self.assertEqual(argsfile.read(), exp)
 
     @rpm_test()
     def test_mvn_install(self, pack):

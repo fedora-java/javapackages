@@ -34,9 +34,9 @@ class TestMvnCompatVersion(unittest.TestCase):
 
     @xmvnconfig('mvn_compat_version',['aaa:bbb', '1', ])
     def test_simple(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_compat_version', 'simple'),
@@ -50,9 +50,9 @@ class TestMvnCompatVersion(unittest.TestCase):
 
     @xmvnconfig('mvn_compat_version',['aaa:bbb', '1', '2', '3', ])
     def test_more(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_compat_version', 'more'),
@@ -61,9 +61,9 @@ class TestMvnCompatVersion(unittest.TestCase):
 
     @xmvnconfig('mvn_compat_version',['aaa:bbb:ccc:ddd:1.2', '3.1', ])
     def test_version(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_compat_version', 'version'),
@@ -72,9 +72,9 @@ class TestMvnCompatVersion(unittest.TestCase):
 
     @xmvnconfig('mvn_compat_version',[':bbb', '2', ])
     def test_wildcard(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename,
@@ -84,9 +84,9 @@ class TestMvnCompatVersion(unittest.TestCase):
 
     @xmvnconfig('mvn_compat_version',['aa:bb:{1,2}', '@1', ])
     def test_backref1(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename,

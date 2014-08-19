@@ -1,10 +1,10 @@
 from javapackages.maven.artifact import Artifact
 from javapackages.maven.printer import Printer
-from exclusion import MetadataExclusion
+from javapackages.metadata.exclusion import MetadataExclusion
+import javapackages.metadata.pyxbmetadata as m
 
-import pyxbmetadata as m
 import pyxb
-import sys
+import six
 
 
 class MetadataDependency(object):
@@ -54,6 +54,15 @@ class MetadataDependency(object):
                 break
         return False, None
 
+    def is_skipped(self, skipped_artifacts):
+        for skipped in skipped_artifacts:
+            if (self.groupId == skipped.groupId and
+               self.artifactId == skipped.artifactId and
+               self.classifier == skipped.classifier and
+               self.extension == skipped.extension):
+                return True
+        return False
+
     def to_metadata(self):
         d = m.Dependency()
         d.groupId = self.groupId
@@ -68,10 +77,35 @@ class MetadataDependency(object):
         return d
 
     def __unicode__(self):
-        return unicode(self.get_mvn_str())
+        return six.text_type(self.get_mvn_str())
 
     def __str__(self):
-        return unicode(self).encode(sys.getfilesystemencoding())
+        return self.__unicode__()
+
+    def __hash__(self):
+        h = 47
+        h += 12 + hash(self.groupId)
+        h += 22 + hash(self.artifactId)
+        h += 32 + hash(self.extension)
+        h += 42 + hash(self.classifier)
+        h += 62 + hash(self.namespace)
+        h += 72 + hash(self.resolvedVersion)
+        return h
+
+    def __eq__(self, other):
+        if type(other) is not type(self):
+            return False
+        if (self.groupId == other.groupId and
+           self.artifactId == other.artifactId and
+           self.extension == other.extension and
+           self.classifier == other.classifier and
+           self.namespace == other.namespace and
+           self.resolvedVersion == other.resolvedVersion):
+            return True
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     @classmethod
     def from_metadata(cls, metadata):

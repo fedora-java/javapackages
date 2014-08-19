@@ -32,11 +32,12 @@
 # Authors:  Alexander Kurtakov <akurtako@redhat.com>
 
 import os
+import io
 import pickle
 import zipfile
 from zipfile import ZipFile
 
-import config
+import javapackages.common.config as config
 from javapackages.metadata.metadata import Metadata, MetadataInvalidException
 
 
@@ -98,7 +99,11 @@ def open_manifest(path):
         try:
             jarfile = ZipFile(path)
             if "META-INF/MANIFEST.MF" in jarfile.namelist():
-                return jarfile.open("META-INF/MANIFEST.MF")
+                b_manifest = jarfile.open("META-INF/MANIFEST.MF", "rU")
+                t_manifest = io.TextIOWrapper(b_manifest,
+                                              encoding='utf-8',
+                                              newline='')
+                return t_manifest
         except IOError:
             pass
     return None
@@ -135,7 +140,9 @@ def get_provides_from_manifest(manifest):
             versions = line.split(':')[1].strip()
             versions = versions.split('.')[0:3]
             version = ".".join(versions)
-    return {symbolicName: version}
+    if symbolicName and version:
+        return {symbolicName: version}
+    return {}
 
 
 def get_provides(path):
@@ -178,7 +185,7 @@ def _check_path(path):
 
 def read_provided_bundles_cache(cachedir):
     try:
-        cachefile = open(os.path.join(cachedir, config.prov_bundles_cache_f), 'r')
+        cachefile = open(os.path.join(cachedir, config.prov_bundles_cache_f), 'rb')
         provided = pickle.load(cachefile)
         cachefile.close()
     except IOError:
@@ -188,7 +195,7 @@ def read_provided_bundles_cache(cachedir):
 
 def write_provided_bundles_cache(cachedir, provided):
     try:
-        cachefile = open(os.path.join(cachedir, config.prov_bundles_cache_f), 'w')
+        cachefile = open(os.path.join(cachedir, config.prov_bundles_cache_f), 'wb')
         pickle.dump(provided, cachefile)
         cachefile.close()
     except IOError:

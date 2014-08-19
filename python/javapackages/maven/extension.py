@@ -33,8 +33,8 @@
 
 import sys
 
-from artifact import AbstractArtifact, ArtifactFormatException
-from pomreader import POMReader
+from javapackages.maven.artifact import AbstractArtifact, ArtifactFormatException
+from javapackages.maven.pomreader import POMReader
 
 
 class Extension(AbstractArtifact):

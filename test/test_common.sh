@@ -1,5 +1,5 @@
-#!/bin/sh
-# Copyright (c) 2013 Red Hat, Inc.
+#!/usr/bin/sh
+# Copyright (c) 2014, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,25 +28,25 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
+# Authors:  Michal Srb <msrb@redhat.com>
 
-if ! test -f config.status; then
-    echo config.status does not exist. Run configure first. >&2
-    exit 1
-fi
-. ./config.status
-. ./test/test_common.sh
-f_set_python $1
-
-echo "running python tests with ${python}"
-(cd ./python && ${python} setup.py test)
-r1=$?
-r1=0
-(cd ./test && ./run_tests.sh ${1})
-r2=$?
-
-if [ ${r1} -lt ${r2} ]; then
-    r1=${r2}
-fi
-
-exit ${r1}
+f_set_python() {
+    # default is still python 2
+    python="/usr/bin/python"
+    if [ "$1" != "" ]; then
+        case $1 in
+            2)
+                python=${python}
+                ;;
+            3)
+                python="/usr/bin/python3"
+                ;;
+            *)
+                echo "Invalid argument: $1"
+                echo "$0 [2|3]"
+                echo "2  - run tests with python 2 (default)"
+                echo "3  - run tests with python 3"
+                exit 1
+        esac
+    fi
+}

@@ -39,9 +39,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',[':x', 'file', ])
     def test_simple(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'simple'),
@@ -50,9 +50,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',[':guice', 'google/guice', 'guice', ])
     def test_symlink(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'symlink'),
@@ -61,9 +61,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',['a:b', 'file', ])
     def test_group(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'group'),
@@ -72,9 +72,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',[':a:1.3', 'file', ])
     def test_version(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'version'),
@@ -83,9 +83,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',['a:b:c:', 'file', ])
     def test_extension(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'extension'),
@@ -94,9 +94,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',['*:a', 'file', ])
     def test_wildcard(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'wildcard'),
@@ -115,9 +115,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',[':a', 'file', 'sym1', 'sym2', 'sym3', ])
     def test_symlinks(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'symlinks'),
@@ -126,9 +126,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',['a:b:c:d:1', 'sym', ])
     def test_classifier(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'classifier'),
@@ -137,9 +137,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',['a::c:', 'sym', ])
     def test_wildcard2(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'wildcard2'),
@@ -150,9 +150,9 @@ class TestMvnFile(unittest.TestCase):
         'sym6', 'sym7', 'sym8', 'sym9', 'sym10', 'sym11', 'sym12', 'sym13',
         'sym14', 'sym15', 'sym16', 'sym17', 'sym18', 'sym19', 'sym20', 'sym21'])
     def test_more_symlinks(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'more_symlinks'),
@@ -161,9 +161,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',[':{aa,bb}', '@1', ])
     def test_backref(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'backref'),
@@ -172,9 +172,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',['{aa,bb}:{cc,dd}', '@2', '@1', ])
     def test_backref1(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'backref1'),
@@ -203,9 +203,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',['a:b', 'a/file1', ])
     def test_relative1(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'relative1'),
@@ -214,9 +214,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',['a:b', '../file1', ])
     def test_relative2(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'relative2'),
@@ -225,9 +225,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',['a:{bb,cc}', 'a/@1', ])
     def test_relative3(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'relative3'),
@@ -236,9 +236,9 @@ class TestMvnFile(unittest.TestCase):
 
     @xmvnconfig('mvn_file',['a:b', 'file', '/usr/share/java/sym'])
     def test_absolute1(self, stdout, stderr, return_value):
-        self.assertEquals(return_value, 0, stderr)
+        self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
-        self.assertEquals(len(filelist), 1)
+        self.assertEqual(len(filelist), 1)
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_file', 'absolute1'),

@@ -7,7 +7,7 @@ from javapackages.metadata.skippedartifact import MetadataSkippedArtifact
 from javapackages.metadata.exclusion import MetadataExclusion
 from javapackages.metadata.dependency import MetadataDependency
 
-from misc import exception_expected
+from test.misc import exception_expected
 
 
 def depmapfile(fname):
@@ -124,20 +124,20 @@ class TestDepmap(unittest.TestCase):
 
         self.assertTrue(MetadataDependency("org.apache.maven",
                                    "maven-project",
-                                   "12") in reqs)
+                                   requestedVersion="12") in reqs)
 
         self.assertTrue(MetadataDependency("org.codehaus.plexus",
                                    "plexus-container-default",
-                                   "12") in reqs)
+                                   requestedVersion="12") in reqs)
 
         self.assertTrue(MetadataDependency("org.codehaus.plexus",
                                    "plexus-utils",
-                                   "12",
+                                   requestedVersion="12",
                                    extension="war") in reqs)
 
         self.assertTrue(MetadataDependency("org.apache.maven.wagon",
                                    "wagon-provider-api",
-                                   "12",
+                                   requestedVersion="12",
                                    classifier="test-jar") in reqs)
 
     @depmapfile("depmap_namespace.xml")
@@ -200,33 +200,33 @@ class TestDepmap(unittest.TestCase):
 
         self.assertTrue(MetadataDependency("org.apache.maven",
                                            "maven-project",
-                                           "12") in reqs)
+                                           requestedVersion="12") in reqs)
 
         self.assertTrue(MetadataDependency("org.codehaus.plexus",
                                            "plexus-utils",
-                                           "12",
+                                           requestedVersion="12",
                                            namespace="plexus") in reqs)
 
         self.assertTrue(MetadataDependency("org.codehaus.plexus",
                                            "plexus-utils",
-                                           "12",
+                                           requestedVersion="12",
                                            extension="war",
                                            namespace="codehaus") in reqs)
 
         self.assertTrue(MetadataDependency("org.codehaus.plexus",
                                            "plexus-utils",
-                                           "12",
+                                           requestedVersion="12",
                                            resolvedVersion="0.9",
                                            namespace="test") in reqs)
 
         self.assertTrue(MetadataDependency("org.apache.maven.wagon",
                                            "wagon-provider-api",
-                                           "12",
+                                           requestedVersion="12",
                                            classifier="test-jar") in reqs)
 
         self.assertTrue(MetadataDependency("org.codehaus.plexus",
                                            "plexus-container-default",
-                                           "12") in reqs)
+                                           requestedVersion="12") in reqs)
 
     @depmapfile("depmap_skipped.xml")
     def test_skipped(self, d):
