@@ -31,7 +31,7 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
-. test_common.sh
+. ./test_common.sh
 f_set_python $1
 
 echo "running tests with ${python}"
