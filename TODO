@@ -40,5 +40,9 @@
 
    https://bugzilla.redhat.com/buglist.cgi?product=Fedora&component=javapackages-tools&keywords=NeedsTestCase
 
+** $ python3 mvn_macros_test.py
+   test_rpmbuild.py:94: ResourceWarning: unclosed file <_io.TextIOWrapper name='tmpout' mode='w' encoding='UTF-8'>
+     outfile = open("tmpout", 'r+')
+
 
 * FEATURES
