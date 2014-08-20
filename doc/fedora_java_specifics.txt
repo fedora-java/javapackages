@@ -52,9 +52,9 @@ There are 3 programs which provide 'java'.
 Enter to keep the current selection[+], or type selection number:
 -------
 
-Example above shows how to chose default Java environments from all
-environments currently available on the system. All Java applications
-will start using this chosen environment from now on.
+Example above shows how to chose default Java environment. `java`
+command will then point to the Java implementation provided by given
+JRE.
 
 [TIP]
 ========
@@ -63,7 +63,7 @@ See `man alternatives` for more information on how to use
 ========
 
 Developers may want to use Java compiler from different JDK. This can be
-also achieved with `alternatives --config javac`.
+achieved with `alternatives --config javac`.
 
 === Building classpath with `build-classpath`
 
