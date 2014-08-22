@@ -65,10 +65,10 @@ for _dir in %{_jnidir} %{_javajnidir} %{_javadir}; do \
 	_jpath="%{buildroot}$_dir/$_jarpart" \
     fi \
 done \
-python -m %{javadir}-utils/maven_depmap %{-a} %{-v*:-r %{-v*}} \\\
-          -n "%{?scl}" \\\
-          %{buildroot}%{_datadir}/maven-metadata/%{?scl:%{pkg_name}}%{!?scl:%{name}}%{-f*:-%{-f*}}.xml \\\
-          %{buildroot}%{_mavenpomdir}/$_pompart \\\
+%{pyinterpreter} -m %{javadir}-utils/maven_depmap %{-a} %{-v*:-r %{-v*}} \\\
+                 -n "%{?scl}" \\\
+                 %{buildroot}%{_datadir}/maven-metadata/%{?scl:%{pkg_name}}%{!?scl:%{name}}%{-f*:-%{-f*}}.xml \\\
+                 %{buildroot}%{_mavenpomdir}/$_pompart \\\
 %if %# == 2 \
           "${_jpath}" \\\
 %endif \
@@ -95,7 +95,7 @@ sort -u -o ${_filelist} ${_filelist} \
 #
 
 # Private macro, shouldn't be used directly
-%__pom_call           python %{javadir}-utils/pom_editor.py pom_
+%__pom_call           %{pyinterpreter} %{javadir}-utils/pom_editor.py pom_
 
 
 # %pom_remove_dep - remove dependency on Maven artifact from POM file

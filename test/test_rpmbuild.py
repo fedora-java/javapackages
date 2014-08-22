@@ -1,6 +1,7 @@
 import io
 import os
 import re
+import sys
 import subprocess
 import shutil
 
@@ -187,10 +188,12 @@ def _prepare_macros():
                 with io.open(os.path.join(macropath, filepath), encoding='utf-8') as macrofile:
                     for line in macrofile.readlines():
                         if '/usr/share/java-utils' in line:
-                            rpmmacros.write(re.sub(r'/usr/share/java-utils',
-                                    java_utils, line))
-                        elif '%{javadir}-utils' in line:
-                            rpmmacros.write(re.sub(r'%\{javadir\}-utils',
-                                    java_utils, line))
-                        else:
-                            rpmmacros.write(line)
+                            line = re.sub(r'/usr/share/java-utils',
+                                          java_utils, line)
+                        if '%{javadir}-utils' in line:
+                            line = re.sub(r'%\{javadir\}-utils',
+                                          java_utils, line)
+                        if '%{pyinterpreter}' in line:
+                            line = re.sub(r'%\{pyinterpreter\}',
+                                          sys.executable.split('/')[-1], line)
+                        rpmmacros.write(line)

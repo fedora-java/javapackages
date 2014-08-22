@@ -32,6 +32,15 @@
 
 set -e
 
+function set_pyinterpreter() {
+    type python3 2>&1 > /dev/null
+    if [ $? -eq 0 ]; then
+        pyinterpreter="python3"
+    else
+        pyinterpreter="python"
+    fi
+}
+
 vars="
 bindir
 datadir
@@ -59,6 +68,7 @@ jvmlibdir
 jvmprivdir
 jvmsysconfdir
 mavenpomdir
+pyinterpreter
 "
 
 vars="$vars mavendepmapdir mavendepmapfragdir" # @Deprecated
@@ -79,7 +89,9 @@ test -z "${sysconfdir}" && sysconfdir="${prefix}/etc"
 test -z "${rpmconfigdir}" && rpmconfigdir="${prefix}/lib/rpm"
 
 test -z "${m2home}" && m2home="${datadir}/xmvn"
+test -z "${pyinterpreter}" && set_pyinterpreter
 
 eval $(sed -n 's/^%_\('"$vars_re"'\)\ *\(.*\)$/\1="\2"/;T;s/%{_\(.*}\)/${\1/;p' macros.d/macros.jpackage)
 
 set | sed -n 's/^\('"$vars_re"'\)=/&/;T;p' >config.status
+

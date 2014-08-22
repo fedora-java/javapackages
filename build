@@ -64,6 +64,7 @@ expand()
         -e "s|%{prefix}|${prefix}|" \
         -e "s|%{rundir}|${rundir}|" \
         -e "s|%{sysconfdir}|${sysconfdir}|" \
+        -e "s|%{pyinterpreter}|${pyinterpreter}|" \
         "${1}" >"${target}"
 }
 
