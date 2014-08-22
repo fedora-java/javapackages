@@ -7,6 +7,8 @@ from test_common import xmvnconfig, get_config_file_list, \
 
 from xml_compare import compare_xml_files
 
+unordered = ['artifactGlob', 'alias']
+
 class TestMvnAlias(unittest.TestCase):
 
     maxDiff = 2048
@@ -41,7 +43,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'simple'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy:1.2', ])
@@ -52,7 +54,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'version'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy:zzz:', ])
@@ -63,7 +65,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'extension'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'xxx:yyy:zzz:www:', ])
@@ -74,7 +76,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'classifier'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb:3.1', 'xxx:yyy:zzz:3.0', ])
@@ -85,7 +87,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'comb1'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb:ccc:ddd:2.1', 'xxx:yyy:', ])
@@ -96,7 +98,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'comb2'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb:ccc:', 'xxx:yyy:zzz:www:2.1', ])
@@ -107,7 +109,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'comb3'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb:ccc:4.1', 'xxx:yyy:zzz:', ])
@@ -118,7 +120,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'comb4'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
@@ -137,7 +139,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'longopt'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['*:aaa', 'xxx:yyy', ])
@@ -148,7 +150,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'wildcard1'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',[':aaa', 'xxx:yyy', ])
@@ -159,7 +161,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'wildcard2'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa::ccc', 'xxx:yyy', ])
@@ -170,7 +172,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'wildcard3'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb', ])
@@ -196,7 +198,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'wildcard4'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['a:b:c:d:e:f', 'x:y', ])
@@ -217,7 +219,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'multi'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa:bbb', 'ccc:ddd', 'eee:fff', ])
@@ -228,7 +230,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'odd'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',[':', ':', ])
@@ -249,7 +251,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'wildcard9'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['*:{aaa,bbb}*', ':@1', ])
@@ -260,7 +262,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'backref'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',['aaa', ':@1', ])
@@ -276,7 +278,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'backref2'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @xmvnconfig('mvn_alias',[':{aaa,bbb}', '@1:@2', ])
@@ -316,7 +318,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'simple'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
     @preload_xmvn_config('mvn_alias', 'preexisting.xml',
@@ -330,7 +332,7 @@ class TestMvnAlias(unittest.TestCase):
         for filename in filelist:
             report = compare_xml_files(get_actual_config(filename),
                  get_expected_config(filename, 'mvn_alias', 'preexisting'),
-                 ['artifactGlob'])
+                 unordered)
             self.assertFalse(report, '\n' + report)
 
 if __name__ == '__main__':

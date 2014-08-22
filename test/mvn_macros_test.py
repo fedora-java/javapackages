@@ -9,6 +9,8 @@ from test_rpmbuild import Package
 
 WORKDIR = os.path.join(DIRPATH, '.workdir')
 
+unordered = ['artifactGlob', 'alias']
+
 def rpm_test():
     def test_decorator(function):
         def test_decorated(self):
@@ -50,7 +52,7 @@ class MvnMacrosTest(unittest.TestCase):
     #    self.assertEqual(len(filelist), 1)
     #    actfile = os.path.join(confpath, filelist[0])
     #    expfile = os.path.join(DIRPATH, 'data', 'mvn_alias', 'simple_00001.xml')
-    #    report = compare_xml_files(actfile, expfile, ['artifactGlob'])
+    #    report = compare_xml_files(actfile, expfile, unordered)
     #    self.assertEqual(report, '', report)
 
     @rpm_test()
@@ -64,7 +66,7 @@ class MvnMacrosTest(unittest.TestCase):
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_alias',
                                'backref_00001.xml')
-        report = compare_xml_files(actfile, expfile, ['artifactGlob'])
+        report = compare_xml_files(actfile, expfile, unordered)
         self.assertEqual(report, '', report)
 
     #@rpm_test()
@@ -79,7 +81,7 @@ class MvnMacrosTest(unittest.TestCase):
     #    actfile = os.path.join(confpath, filelist[0])
     #    expfile = os.path.join(DIRPATH, 'data', 'mvn_alias',
     #                           'multi_00001.xml')
-    #    report = compare_xml_files(actfile, expfile, ['artifactGlob'])
+    #    report = compare_xml_files(actfile, expfile, unordered)
     #    self.assertEqual(report, '', report)
 
     @rpm_test()
@@ -109,7 +111,7 @@ class MvnMacrosTest(unittest.TestCase):
     #        actfile = os.path.join(confpath, filelist[i])
     #        filename = 'more_invocations-0000{i}.xml'.format(i=i + 1)
     #        expfile = os.path.join(DIRPATH, 'data', 'mvn_alias', filename)
-    #        report = compare_xml_files(actfile, expfile, ['artifactGlob'])
+    #        report = compare_xml_files(actfile, expfile, unordered)
     #        self.assertEqual(report, '', report)
 
     @rpm_test()
@@ -122,7 +124,7 @@ class MvnMacrosTest(unittest.TestCase):
         self.assertEqual(len(filelist), 1)
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_file', 'simple_00001.xml')
-        report = compare_xml_files(actfile, expfile, ['artifactGlob'])
+        report = compare_xml_files(actfile, expfile, unordered)
         self.assertEqual(report, '', report)
 
     @rpm_test()
@@ -136,7 +138,7 @@ class MvnMacrosTest(unittest.TestCase):
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_file',
                                'symlinks_00001.xml')
-        report = compare_xml_files(actfile, expfile, ['artifactGlob'])
+        report = compare_xml_files(actfile, expfile, unordered)
         self.assertEqual(report, '', report)
 
     @rpm_test()
@@ -164,7 +166,7 @@ class MvnMacrosTest(unittest.TestCase):
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_compat_version',
                                'simple_00001.xml')
-        report = compare_xml_files(actfile, expfile, ['artifactGlob'])
+        report = compare_xml_files(actfile, expfile, unordered)
         self.assertEqual(report, '', report)
 
     @rpm_test()
@@ -192,7 +194,7 @@ class MvnMacrosTest(unittest.TestCase):
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_package',
                                'simple_00001.xml')
-        report = compare_xml_files(actfile, expfile, ['artifactGlob'])
+        report = compare_xml_files(actfile, expfile, unordered)
         self.assertEqual(report, '', report)
 
     @rpm_test()
@@ -213,7 +215,7 @@ class MvnMacrosTest(unittest.TestCase):
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_package',
                                'single_00001.xml')
-        report = compare_xml_files(actfile, expfile, ['artifactGlob'])
+        report = compare_xml_files(actfile, expfile, unordered)
         self.assertEqual(report, '', report)
 
     @rpm_test()
@@ -241,7 +243,7 @@ class MvnMacrosTest(unittest.TestCase):
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_config',
                                'path_00001.xml')
-        report = compare_xml_files(actfile, expfile, ['artifactGlob'])
+        report = compare_xml_files(actfile, expfile, unordered)
         self.assertEqual(report, '', report)
 
     @rpm_test()
@@ -259,7 +261,7 @@ class MvnMacrosTest(unittest.TestCase):
         actfile = os.path.join(confpath, filelist[0])
         expfile = os.path.join(DIRPATH, 'data', 'mvn_config',
                                'multiline_00001.xml')
-        report = compare_xml_files(actfile, expfile, ['artifactGlob'])
+        report = compare_xml_files(actfile, expfile, unordered)
         self.assertEqual(report, '', report)
 
     @rpm_test()
@@ -288,7 +290,7 @@ class MvnMacrosTest(unittest.TestCase):
             actfile = os.path.join(confpath, filelist[i])
             filename = 'singleton_0000{i}.xml'.format(i=i + 1)
             expfile = os.path.join(DIRPATH, 'data', 'mvn_build', filename)
-            report = compare_xml_files(actfile, expfile, ['artifactGlob'])
+            report = compare_xml_files(actfile, expfile, unordered)
             self.assertEqual(report, '', report)
 
         expfile = os.path.join(pack.buildpath, '.xmvn', 'out')
