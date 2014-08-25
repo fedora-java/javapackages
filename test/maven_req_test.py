@@ -238,9 +238,8 @@ class TestMavenReq(unittest.TestCase):
     @mavenreq(["require6/require.xml"])
     def test_pom_dep_fail(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
-        serr = [x for x in stderr.split('\n') if x]
         want = ("unresolvable:pom-dependency:pom:2.2.1")
-        assertIn(self, want, serr)
+        self.assertTrue(want in stderr, stderr)
 
 if __name__ == '__main__':
     unittest.main()
