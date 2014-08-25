@@ -429,7 +429,7 @@ def macro(types=(XmlFile,)):
             except (PomException, etree.XMLSyntaxError, IOError) as exception:
                 if xmlpath:
                     print("Error in processing {0}".format(xmlpath), file=sys.stderr)
-                print(exception.message, file=sys.stderr)
+                print(exception, file=sys.stderr)
                 print_usage(function)
                 sys.exit(3)
 
