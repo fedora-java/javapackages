@@ -207,9 +207,9 @@ class XmlFile(object):
         self.root = etree.parse(self.xmlpath).getroot()
 
     def write(self, filename):
-        with open(filename, 'w') as xmlfile:
+        with open(filename, 'wb') as xmlfile:
             xmlfile.write(etree.tostring(self.root))
-            xmlfile.write('\n')
+            xmlfile.write(b'\n')
 
     def patch(self, function, fnargs):
         xmldir = path.dirname(self.xmlpath)
