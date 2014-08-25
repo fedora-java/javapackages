@@ -6,6 +6,7 @@ import re
 import shutil
 import sys
 import optparse
+import six
 
 from lxml import etree
 from os import path
@@ -317,7 +318,7 @@ class XmlFile(object):
             child = node.find('{*}' + elem)
             if child is None:
                 name = elements[0]
-                for ns, url in self.NSMAP.iteritems():
+                for ns, url in six.iteritems(self.NSMAP):
                     ns_token = ns + ':'
                     url_token = '{' + url + '}'
                     name = name.replace(ns_token, url_token)
