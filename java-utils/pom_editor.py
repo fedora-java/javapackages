@@ -405,6 +405,7 @@ def macro(types=(XmlFile,)):
                 xmlpath = None
                 options, fnargs, xmls = parse_args(function, args)
 
+                stored_exception = None
                 for xmlspec in xmls:
                     if options.recursive:
                         xmlpaths = find_xml_recursive(xmlspec)
@@ -422,9 +423,10 @@ def macro(types=(XmlFile,)):
                             xml.patch(function, fnargs)
                             matches += 1
                         except PomQueryNoMatch as exception:
+                            stored_exception = exception
                             pass
                     if matches == 0 and not options.force:
-                        raise exception
+                        raise stored_exception
 
             except (PomException, etree.XMLSyntaxError, IOError) as exception:
                 if xmlpath:
