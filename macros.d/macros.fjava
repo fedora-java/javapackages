@@ -65,7 +65,7 @@ for _dir in %{_jnidir} %{_javajnidir} %{_javadir}; do \
 	_jpath="%{buildroot}$_dir/$_jarpart" \
     fi \
 done \
-%{pyinterpreter} -m %{javadir}-utils/maven_depmap %{-a} %{-v*:-r %{-v*}} \\\
+%{pyinterpreter} %{javadir}-utils/maven_depmap.py %{-a} %{-v*:-r %{-v*}} \\\
                  -n "%{?scl}" \\\
                  %{buildroot}%{_datadir}/maven-metadata/%{?scl:%{pkg_name}}%{!?scl:%{name}}%{-f*:-%{-f*}}.xml \\\
                  %{buildroot}%{_mavenpomdir}/$_pompart \\\
