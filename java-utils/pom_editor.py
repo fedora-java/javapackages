@@ -50,14 +50,14 @@ def MetaArtifact(specification, attributes=False, **defaults):
             return cls(**values)
 
         def update(self, artifact):
-            for key, value in artifact.values.iteritems():
+            for key, value in six.iteritems(artifact.values):
                 if key not in parts:
                     raise KeyError(key + ' not defined')
                 if value:
                     self[key] = value
 
         def remove_items(self, fn):
-            for prop, val in dict(self.values).iteritems():
+            for prop, val in six.iteritems(dict(self.values)):
                 if fn(val):
                     del self.values[prop]
 
@@ -102,7 +102,7 @@ def MetaArtifact(specification, attributes=False, **defaults):
         @classmethod
         def from_xml(cls, element):
             values = dict([(key, val) for key, val
-                          in element.attrib.iteritems() if key in parts])
+                          in six.iteritems(element.attrib) if key in parts])
             return cls(**values)
 
         def get_xml(self, node='artifact', extra=''):
