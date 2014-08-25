@@ -7,6 +7,7 @@ import shutil
 import sys
 import optparse
 import six
+import io
 
 from lxml import etree
 from os import path
@@ -352,7 +353,7 @@ class Pom(XmlFile):
         super(Pom, self).__init__(pompath)
 
     def _load_file(self):
-        with open(self.xmlpath) as pomfile:
+        with io.open(self.xmlpath, encoding="UTF-8") as pomfile:
             pom = re.sub(r'\<\s*project\s*\>',
                     ('<project {ns}>').format(ns=self.XMLNS), pomfile.read())
         self.root = etree.fromstring(six.binary_type(pom, "UTF-8"))
