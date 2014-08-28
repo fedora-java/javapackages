@@ -280,7 +280,9 @@ class Artifact(AbstractArtifact):
             val = getattr(self, key)
             if not val:
                 continue
-            if val:
+            if val and key == "extension" and self._default_extension:
+                continue
+            else:
                 all_empty = False
             if val.find('*') != -1:
                 wildcard_used = True
