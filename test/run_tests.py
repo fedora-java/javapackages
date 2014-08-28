@@ -39,8 +39,8 @@ import nose
 if __name__ == "__main__":
 
     exclude = ["--exclude"]
-    # skip these tests (TODO: fix them):
-    exclude.append("mvn_alias_test.py")  # XML comparison problems
+    # skip these tests
+    #exclude.append("mvn_alias_test.py")
 
     args = []
     # generate xunit report, if nose version is at least 1.x.x
