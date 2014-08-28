@@ -33,6 +33,8 @@
 
 import os
 import signal
+import sys
+import six
 
 
 def kill_parent_process():
@@ -44,3 +46,10 @@ def get_cachedir(path, create_if_not_exists=True):
     if not os.path.exists(cachedir_path) and create_if_not_exists:
         os.mkdir(cachedir_path)
     return cachedir_path
+
+
+def args_to_unicode(args):
+    if six.PY2:
+        for index, arg in enumerate(args):
+            args[index] = arg.decode(sys.getfilesystemencoding())
+    return args

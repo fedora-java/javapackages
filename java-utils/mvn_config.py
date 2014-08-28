@@ -34,6 +34,7 @@ import sys
 import optparse
 
 from javapackages.xmvn.xmvn_config import XMvnConfig
+from javapackages.common.util import args_to_unicode
 
 
 class SaneParser(optparse.OptionParser):
@@ -58,12 +59,7 @@ content -- XML content to be added to specified node. Can be just text, XML node
 if __name__ == "__main__":
     parser = SaneParser(usage=usage,
                         epilog=epilog)
-    for index, arg in enumerate(sys.argv):
-        try:
-            if callable(getattr(arg, "decode")):
-                sys.argv[index] = arg.decode(sys.getfilesystemencoding())
-        except AttributeError:
-            pass
+    sys.argv = args_to_unicode(sys.argv)
 
     (options, args) = parser.parse_args()
     if len(args) != 2:

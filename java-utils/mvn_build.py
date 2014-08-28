@@ -39,6 +39,7 @@ import sys
 
 from javapackages.maven.artifact import Artifact
 from javapackages.xmvn.xmvn_config import XMvnConfig
+from javapackages.common.util import args_to_unicode
 
 
 def goal_callback(option, opt_str, value, parser):
@@ -92,12 +93,7 @@ if __name__ == "__main__":
                       action="store_true",
                       help="Enable Maven debugging output (implies -d).")
 
-    for index, arg in enumerate(sys.argv):
-        try:
-            if callable(getattr(arg, "decode")):
-                sys.argv[index] = arg.decode(sys.getfilesystemencoding())
-        except AttributeError:
-            pass
+    sys.argv = args_to_unicode(sys.argv)
 
     (options, args) = parser.parse_args()
     xc = XMvnConfig()

@@ -42,6 +42,7 @@ from javapackages.maven.pom import POM, PomLoadingException
 from javapackages.ivy.ivyfile import IvyFile
 
 from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionResult, ResolutionRequest
+from javapackages.common.util import args_to_unicode
 
 import sys
 import os
@@ -245,12 +246,8 @@ if __name__ == "__main__":
                       help="skip dependencies section in resulting metadata")
     parser.add_option("-D", action="append", type="str",
                       help="add artifact property", metavar="property=value")
-    for index, arg in enumerate(sys.argv):
-        try:
-            if callable(getattr(arg, "decode")):
-                sys.argv[index] = arg.decode(sys.getfilesystemencoding())
-        except AttributeError:
-            pass
+
+    sys.argv = args_to_unicode(sys.argv)
 
     (options, args) = parser.parse_args()
     if len(args) < 1:
