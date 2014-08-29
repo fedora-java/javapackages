@@ -356,7 +356,7 @@ class Pom(XmlFile):
         with io.open(self.xmlpath, encoding="UTF-8") as pomfile:
             pom = re.sub(r'\<\s*project\s*\>',
                          u'<project {ns}>'.format(ns=self.XMLNS), pomfile.read())
-        self.root = etree.fromstring(pom)
+        self.root = etree.fromstring(pom.encode(encoding="utf-8"))
 
     @classmethod
     def create_artifact(cls, *args, **kwargs):
