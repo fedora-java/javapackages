@@ -50,6 +50,6 @@ if __name__ == "__main__":
     if len(exclude) > 1:
         args += exclude
 
-    success = nose.run(argv=args)
+    success = nose.run(argv=args or None)
     if not success:
         sys.exit(1)
