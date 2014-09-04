@@ -250,7 +250,7 @@ class XmlFile(object):
         parent[:] = content
         if replace_attrib and hasattr(content, 'attrib'):
             parent.attrib.clear()
-            parent.attrib.update(content.attrib)
+            parent.attrib.update(content.attrib.iteritems())
         parent.text = content.text
         self.reformat(parent, parent)
 
