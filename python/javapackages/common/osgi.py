@@ -49,7 +49,8 @@ def print_provides(provides):
 
 def normalize_manifest(manifest):
     lines = []
-    for line in manifest.readlines():
+    manifest = manifest.split(u'\n')
+    for line in manifest:
         if line.startswith(' '):
             lines[-1] += line.strip()
         else:
@@ -91,22 +92,23 @@ def split_bundle_name(bundles):
 
 
 def open_manifest(path):
+    mf = None
     if path.endswith("META-INF/MANIFEST.MF"):
-        return open(path)
+        mf = open(path, "rb")
     if zipfile.is_zipfile(path):
         # looks like "zipfile.is_zipfile()" is not reliable
         # see rhbz#889131 for more details
         try:
             jarfile = ZipFile(path)
             if "META-INF/MANIFEST.MF" in jarfile.namelist():
-                b_manifest = jarfile.open("META-INF/MANIFEST.MF", "rU")
-                t_manifest = io.TextIOWrapper(b_manifest,
-                                              encoding='utf-8',
-                                              newline='')
-                return t_manifest
+                mf = jarfile.open("META-INF/MANIFEST.MF", "rU")
         except IOError:
             pass
-    return None
+    if mf is None:
+        return None
+    content = mf.read()
+    mf.close()
+    return content.decode("utf-8")
 
 
 def get_requires_from_manifest(manifest):
@@ -125,7 +127,6 @@ def get_requires(path):
     if manifest is None:
         return reqs
     reqs = get_requires_from_manifest(manifest)
-    manifest.close()
     return reqs
 
 
@@ -151,7 +152,6 @@ def get_provides(path):
     if manifest is None:
         return provs
     provs = get_provides_from_manifest(manifest)
-    manifest.close()
     return provs
 
 
