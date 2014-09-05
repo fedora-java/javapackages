@@ -73,9 +73,9 @@ class POMReader(object):
         return ret
 
     @staticmethod
-    def find_parts(doc, parts, xpath="./{*}"):
+    def find_parts(doc, parts, xpath=".//"):
         for key in parts:
-            node = doc.find(xpath + key)
-            if node is not None and node.text is not None:
-                parts[key] = node.text.strip()
+            node = doc.xpath('{0}*[local-name() = "{1}"]'.format(xpath, key))
+            if node is not None and len(node) > 0 and node[0].text is not None:
+                parts[key] = node[0].text.strip()
         return parts
