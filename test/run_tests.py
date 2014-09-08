@@ -42,7 +42,7 @@ if __name__ == "__main__":
     # skip these tests
     #exclude.append("mvn_alias_test.py")
 
-    args = []
+    args = ['foo']     # nose ignores the first argument
     # generate xunit report, if nose version is at least 1.x.x
     if nose.__versioninfo__[0] > 0:
         args.append("--with-xunit")
@@ -50,6 +50,6 @@ if __name__ == "__main__":
     if len(exclude) > 1:
         args += exclude
 
-    success = nose.run(argv=args or None)
+    success = nose.run(argv=args)
     if not success:
         sys.exit(1)
