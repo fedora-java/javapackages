@@ -57,8 +57,7 @@ class TagBuilder(object):
                     provided = self.get_provided_bundles()
                 for req in reqs:
                     if req in provided:
-                        prov = provided[req]
-                        print("osgi(%s) = %s" % (req, prov.version))
+                        print("osgi(%s) = %s" % (req, provided[req]))
                     else:
                         print("osgi(%s)" % (req))
 
