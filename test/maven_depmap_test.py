@@ -190,19 +190,19 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(report, '', report)
 
-    @mvn_depmap('a:b:12', 'usr/foo/share/java/.out_archive.jar')
+    @mvn_depmap('a:b:12', 'usr/foo/share/java/compare_jar.jar')
     def test_compare_jar(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
         got, want = self.check_archive(inspect.currentframe().f_code.co_name,
-                'usr/foo/share/java/.out_archive.jar')
+                'usr/foo/share/java/compare_jar.jar')
         self.assertEqual(got, want)
 
     #test case for rhbz#1012982
-    @mvn_depmap('x:y:war:z:0.1', 'usr/foo/share/java/.out_archive-z.war')
+    @mvn_depmap('x:y:war:z:0.1', 'usr/foo/share/java/compare_jar_class_ext.war')
     def test_compare_jar_class_ext(self, stdout, stderr, return_value, depmap):
         self.assertEqual(return_value, 0, stderr)
         got, want = self.check_archive(inspect.currentframe().f_code.co_name,
-                'usr/foo/share/java/.out_archive-z.war')
+                'usr/foo/share/java/compare_jar_class_ext.war')
         self.assertEqual(got, want)
 
     @mvn_depmap('a:b:12', 'usr/share/java/already-has-pom-properties.jar')
