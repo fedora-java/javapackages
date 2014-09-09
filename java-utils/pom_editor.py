@@ -36,7 +36,7 @@ class PomQueryAmbigous(PomException):
 class PomQueryInvalid(PomException):
     pass
 
-def MetaArtifact(specification, attributes=False, **defaults):
+def MetaArtifact(specification, attributes=False, namespace=None, **defaults):
     parts = specification.split(':')
     class Artifact(object):
         def __init__(self, **values):
@@ -75,9 +75,13 @@ def MetaArtifact(specification, attributes=False, **defaults):
         def from_xml(cls, element):
             values = {}
             for part in parts:
-                subelement = element.find('{*}' + part)
-                if subelement is not None:
-                    values[part] = subelement.text.strip()
+                if namespace:
+                    subelements = element.xpath('ns:' + part,
+                                               namespaces={'ns': namespace})
+                else:
+                    subelements = element.xpath(part)
+                if subelements:
+                    values[part] = subelements[0].text.strip()
             return cls(**values)
 
         def get_xml(self, node='artifact', extra=''):
@@ -319,10 +323,8 @@ class XmlFile(object):
     def make_path(self, node, elements):
         if elements:
             elem = elements[0]
-            if ':' in elem:
-                elem = elem.split(':')[1]
-            child = node.find('{*}' + elem)
-            if child is None:
+            child = (node.xpath(elem, namespaces=self.NSMAP) or [None])[0]
+            if not child:
                 name = elements[0]
                 for ns, url in six.iteritems(self.NSMAP):
                     ns_token = ns + ':'
@@ -370,11 +372,15 @@ class Pom(XmlFile):
             del kwargs['plugin']
         if plugin:
             pom_plugin_spec = 'groupId:artifactId:version'
-            ArtifactClass = MetaArtifact(pom_plugin_spec, version='any',
-                                     groupId='org.apache.maven.plugins')
+            ArtifactClass = MetaArtifact(pom_plugin_spec,
+                                         namespace=cls.NSMAP['pom'],
+                                         version='any',
+                                         groupId='org.apache.maven.plugins')
         else:
             pom_dependency_spec = 'groupId:artifactId:version:scope'
-            ArtifactClass = MetaArtifact(pom_dependency_spec, version='any')
+            ArtifactClass = MetaArtifact(pom_dependency_spec,
+                                         namespace=cls.NSMAP['pom'],
+                                         version='any')
         return ArtifactClass(*args, **kwargs)
 
 
@@ -533,7 +539,7 @@ def pom_disable_module(module, pom=None):
 @macro(types=(Pom,))
 def pom_add_parent(parent, pom=None):
     """groupId:artifactId[:version] [POM location]"""
-    if pom.root.find('{*}parent') is not None:
+    if pom.xpath_query('/pom:parent', boolean=True):
         raise PomException("POM already has a parent.")
     artifact = pom.create_artifact().from_mvn_str(parent)
     pom.inject_artifact('', 'parent', artifact)
