@@ -155,7 +155,7 @@ def find_xml_recursive(module_path):
     try:
         module_path = find_xml(module_path)
         module_xml = etree.parse(module_path)
-        submodules, submod_paths = submodule_info(module_xml, module_path)
+        _, submod_paths = submodule_info(module_xml, module_path)
         found = [module_path]
         for submod_path in submod_paths:
             found += find_xml_recursive(submod_path)
@@ -425,8 +425,8 @@ def macro(types=(XmlFile,)):
                             matches += 1
                         except PomQueryNoMatch as exception:
                             stored_exception = exception
-                            pass
                     if matches == 0 and not options.force:
+                        # pylint: disable=E0702
                         raise stored_exception
 
             except (PomException, etree.XMLSyntaxError, IOError) as exception:
