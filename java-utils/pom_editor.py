@@ -297,10 +297,15 @@ class XmlFile(object):
         except etree.XPathEvalError as error:
             raise PomQueryInvalid("XPath query '{0}': {1}.".format(query,
                                                                error.message))
-        if not boolean and len(query_result) == 0:
-            raise PomQueryNoMatch(dedent("""\
-                    XPath query '{0}' didn't match any node.
-                    (Did you forget to specify 'pom:' namespace?)""").format(query))
+        if not boolean:
+            if len(query_result) == 0:
+                raise PomQueryNoMatch(dedent("""\
+                        XPath query '{0}' didn't match any node.
+                        (Did you forget to specify 'pom:' namespace?)""").format(query))
+            for i, element in enumerate(query_result):
+                if hasattr(element, 'is_attribute') and element.is_attribute:
+                    element.attrname = self.root.xpath('name({q}[{i1}])'.format(q=query, i1=i + 1),
+                                                       namespaces=nsmap)
         return query_result
 
     def subtree_from_string(self, xml_string):
