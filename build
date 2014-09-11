@@ -45,7 +45,7 @@ manpage()
 {
     echo Generating manpage for "${1}"...
     asciidoc -b docbook -d manpage -o "target/${1}.xml" "man/${1}.txt"
-    (cd ./target && xmlto man --skip-validation "${1}.xml") 2>/dev/null
+    (cd ./target && xmlto man --skip-validation "${1}.xml")
 }
 
 expand()
