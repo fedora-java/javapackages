@@ -200,7 +200,13 @@ class Metadata(object):
                             reqs |= set(content.split(','))
                             continue
                         except KeyError:
-                            pass
+                            try:
+                                osgi_id = artifact.properties["osgi.id"]
+                                # this file was already processed by XMvn and
+                                # there are no interesting OSGi requires, move on
+                                continue
+                            except KeyError:
+                                pass
                     if artifact.path:
                         import javapackages.common.osgi as osgi
                         r = osgi.get_requires(artifact.get_buildroot_path())
