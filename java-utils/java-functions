@@ -205,11 +205,11 @@ set_classpath()
     _set_java_home
 
     # get local classpath first
-    set -- ${@} ${ADDITIONAL_JARS}
-    LOCAL_CLASSPATH=$("%{bindir}/build-classpath" ${@})
+    set -- "${@}" ${ADDITIONAL_JARS}
+    LOCAL_CLASSPATH=$("%{bindir}/build-classpath" "${@}")
 
     # append original classpath if defined
-    CLASSPATH=${LOCAL_CLASSPATH}${CLASSPATH:+:}${CLASSPATH}
+    CLASSPATH="${LOCAL_CLASSPATH}${CLASSPATH:+:}${CLASSPATH}"
 }
 
 set_javacmd()
@@ -247,13 +247,25 @@ set_javacmd()
 # Set flags
 set_flags()
 {
-    FLAGS="${@}${ADDITIONAL_FLAGS:+ }${ADDITIONAL_FLAGS}"
+    local q="'\\''"
+    FLAGS=""
+    set -- "${@}" ${ADDITIONAL_FLAGS}
+    while [ $# -gt 0 ]; do
+	FLAGS="${FLAGS}${FLAGS:+ }'${1//\'/$q}'"
+	shift
+    done
 }
 
 # Set options
 set_options()
 {
-    OPTIONS="${@}${ADDITIONAL_OPTIONS:+ }${ADDITIONAL_OPTIONS}"
+    local q="'\\''"
+    OPTIONS=""
+    set -- "${@}" ${ADDITIONAL_OPTIONS}
+    while [ $# -gt 0 ]; do
+	OPTIONS="${OPTIONS}${OPTIONS:+ }'${1//\'/$q}'"
+	shift
+    done
 }
 
 # Run application
@@ -286,7 +298,7 @@ set_jvm_dirs()
     _set_java_home
 
     # Jar repository provided by the JVM
-    JVM_LIBDIR=${JVM_ROOT}-exports/$(echo "${JAVA_HOME}" |\
+    JVM_LIBDIR="${JVM_ROOT}"-exports/$(echo "${JAVA_HOME}" |\
         sed -n "s+${JVM_ROOT}/\([-_[:alnum:].]*\)\(.*\)+\1+p")
 
     # Java standard version of the JVM.  -fullversion seems to be lot faster
@@ -300,7 +312,7 @@ set_jvm_dirs()
     for option in -fullversion -version; do
         # Yuck, "grep -o" would be cleaner, but requires GNU grep >= 2.5.
         # This could be improved/simplified if sed had non-greedy matching.
-        version=$(${JAVACMD} $option 2>&1 | sed -n \
+        version=$("${JAVACMD}" $option 2>&1 | sed -n \
             -e '/\(openjdk\|java\) \(full \)*version "/s/'$re'/<<<\1>>>/' \
             -e '/\(openjdk\|java\) \(full \)*version "/s/.*<<<\([^>]\{1,\}\)>>>.*/\1/p')
         if [ -n "${version}" ]; then
