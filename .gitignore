@@ -5,6 +5,7 @@
 *.pyc
 
 config.status
+files-*
 
 target/
 root/
@@ -12,3 +13,4 @@ python/build/
 python/javapackages.egg-info/
 python/javapackages/version.py
 test/nosetests.xml
+doc/images/xmvn.svg
