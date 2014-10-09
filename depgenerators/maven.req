@@ -123,7 +123,7 @@ class TagBuilder(object):
         requires = set()
 
         # always generate R on packages specified in config file
-        always_req = self.config['always_generate']
+        always_req = self.config.get('always_generate', ())
         requires.update([x for x in always_req])
 
         unknown_deps = []
@@ -202,7 +202,7 @@ class TagBuilder(object):
         requires = set()
         for rule_name, fn in (('java_requires', Metadata.get_java_requires),
                               ('java_devel_requires', Metadata.get_java_devel_requires)):
-            rules = self.config[rule_name]
+            rules = self.config.get(rule_name, {})
             if not rules.get('skip', False):
                 required_version = fn(metadata)
                 if required_version:
@@ -211,8 +211,9 @@ class TagBuilder(object):
                              'op': rules.get('cmp_operator', '>='),
                              'version': version_string}
                     requires.add("{pkg} {op} {version}".format(**parts))
-                elif rules['always_generate']:
-                    requires.add(rules['package_name'])
+                elif rules.get('always_generate'):
+                    if rules.get('package_name'):
+                        requires.add(rules.get('package_name'))
         return requires
 
     def _filter_requires(self, requires):
@@ -244,7 +245,7 @@ class TagBuilder(object):
         new_config = {}
         configs = get_configs(['%{javaconfdir}'])
         for config_file in configs:
-            config = config_file['maven.req']
+            config = config_file.get('maven.req', {})
             filters = set(new_config.get('filter_requires', ()))
             filters = filters.union(config.get('filter_requires', ()))
             new_config.update(config)
