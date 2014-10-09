@@ -38,6 +38,7 @@ import sys
 import traceback
 from javapackages.metadata.metadata import Metadata
 from javapackages.common.util import kill_parent_process
+from javapackages.common.logging import init_logging
 
 
 class TagBuilder:
@@ -60,6 +61,7 @@ class TagBuilder:
 
 if __name__ == "__main__":
     try:
+        init_logging()
         builder = TagBuilder()
     except Exception:
         traceback.print_exc(file=sys.stderr)

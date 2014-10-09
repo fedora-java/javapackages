@@ -36,11 +36,13 @@ import os
 import re
 import sys
 import traceback
+import logging
 
 from lxml import etree
 
 from javapackages.common.config import get_configs, get_buildroot
 from javapackages.common.util import kill_parent_process, get_cachedir
+from javapackages.common.logging import init_logging
 from javapackages.maven.pom import POM
 from javapackages.maven.artifact import Artifact
 from javapackages.metadata.metadata import Metadata
@@ -386,6 +388,7 @@ if __name__ == "__main__":
             cachedir = get_cachedir(sys.argv[1])
         else:
             raise Exception("Missing param: cachedir")
+        init_logging()
         builder = TagBuilder(cachedir=cachedir)
     except Exception:
         traceback.print_exc(file=sys.stderr)

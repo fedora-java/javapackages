@@ -33,6 +33,7 @@
 import javapackages.common.osgi as osgi
 import javapackages.common.config as config
 from javapackages.common.util import kill_parent_process, get_cachedir
+from javapackages.common.logging import init_logging
 import sys
 import pickle
 import os
@@ -82,6 +83,7 @@ if __name__ == "__main__":
             cachedir = get_cachedir(sys.argv[1])
         else:
             raise Exception("Missing param: cachedir")
+        init_logging()
         builder = TagBuilder(cachedir=cachedir)
     except Exception:
         traceback.print_exc(file=sys.stderr)
