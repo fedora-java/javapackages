@@ -29,6 +29,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Authors: Alexander Kurtakov <akurtako@redhat.com>
+#          Michal Srb <msrb@redhat.com>
 
 import javapackages.common.osgi as osgi
 import javapackages.common.config as config
@@ -38,6 +39,7 @@ import sys
 import pickle
 import os
 import traceback
+
 
 class TagBuilder(object):
 
@@ -49,18 +51,23 @@ class TagBuilder(object):
 
         provided = None
         for path in paths:
-            # check if OSGi requires for this path were handled by metadata
-            if osgi.check_path_in_metadata(path, self.cachedir):
-                continue
+            # symlinks are not interesting, skip them
             if not os.path.islink(path):
+                # check if OSGi requires for this path were handled by metadata
+                # if so, move on
+                if osgi.check_path_in_metadata(path, self.cachedir):
+                    continue
                 reqs = osgi.get_requires(path)
                 if provided is None:
                     provided = self.get_provided_bundles()
+                rpm_requires = set()
                 for req in reqs:
                     if req in provided:
-                        print("osgi(%s) = %s" % (req, provided[req]))
+                        rpm_requires.add("osgi({0}) = {1}".format(req, provided[req]))
                     else:
-                        print("osgi(%s)" % (req))
+                        rpm_requires.add("osgi({0})".format(req))
+                if rpm_requires:
+                    print("\n".join(rpm_requires))
 
 
     def get_provided_bundles(self):
