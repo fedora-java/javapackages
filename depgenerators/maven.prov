@@ -60,7 +60,7 @@ class TagBuilder:
             # print OSGi provides from metadata
             osgi_provides = mdata.get_osgi_provides()
             for p in osgi_provides:
-                privides.add("osgi({osgi_id}) = {version}".format(osgi_id=p,
+                provides.add("osgi({osgi_id}) = {version}".format(osgi_id=p,
                                                            version=osgi_provides[p]))
             _log.debug("metadata provides: %s", ", ".join(provides))
             if provides:
