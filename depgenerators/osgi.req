@@ -31,14 +31,18 @@
 # Authors: Alexander Kurtakov <akurtako@redhat.com>
 #          Michal Srb <msrb@redhat.com>
 
-import javapackages.common.osgi as osgi
-import javapackages.common.config as config
-from javapackages.common.util import kill_parent_process, get_cachedir
-from javapackages.common.logging import init_logging
 import sys
 import pickle
 import os
 import traceback
+import logging
+import javapackages.common.osgi as osgi
+import javapackages.common.config as config
+from javapackages.common.util import kill_parent_process, get_cachedir
+from javapackages.common.logging import init_logging
+
+logging.basicConfig(level=logging.DEBUG)
+_log = logging.getLogger("osgi.req")
 
 
 class TagBuilder(object):
@@ -66,6 +70,7 @@ class TagBuilder(object):
                         rpm_requires.add("osgi({0}) = {1}".format(req, provided[req]))
                     else:
                         rpm_requires.add("osgi({0})".format(req))
+                _log.debug("OSGi requires for {0}: {1}", path, ", ".join(rpm_requires))
                 if rpm_requires:
                     print("\n".join(rpm_requires))
 
