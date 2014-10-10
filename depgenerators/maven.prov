@@ -36,9 +36,13 @@ import os
 import signal
 import sys
 import traceback
+import logging
 from javapackages.metadata.metadata import Metadata
 from javapackages.common.util import kill_parent_process
 from javapackages.common.logging import init_logging
+
+logging.basicConfig(level=logging.DEBUG)
+_log = logging.getLogger("maven.prov")
 
 
 class TagBuilder:
@@ -49,14 +53,18 @@ class TagBuilder:
         for path in paths:
             mdata = Metadata(path)
 
+            provides = set()
             for artifact in mdata.get_provided_artifacts():
-                print(artifact.get_rpm_str(namespace=artifact.namespace,
-                                           pkgver=artifact.version))
+                provides.add(artifact.get_rpm_str(namespace=artifact.namespace,
+                                                  pkgver=artifact.version))
             # print OSGi provides from metadata
             osgi_provides = mdata.get_osgi_provides()
             for p in osgi_provides:
-                print("osgi({osgi_id}) = {version}".format(osgi_id=p,
+                privides.add("osgi({osgi_id}) = {version}".format(osgi_id=p,
                                                            version=osgi_provides[p]))
+            _log.debug("metadata provides: %s", ", ".join(provides))
+            if provides:
+                print('\n'.join(provides))
 
 
 if __name__ == "__main__":

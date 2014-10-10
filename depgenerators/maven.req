@@ -49,6 +49,9 @@ from javapackages.metadata.metadata import Metadata
 from javapackages.metadata.dependency import MetadataDependency
 from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionRequest
 
+logging.basicConfig(level=logging.DEBUG)
+_log = logging.getLogger("maven.req")
+
 
 class TagBuilder(object):
     def __init__(self, filelist=None, cachedir=None):
@@ -194,6 +197,8 @@ class TagBuilder(object):
                 requires.add("osgi({osgi_id})".format(osgi_id=req))
             elif req not in osgi_provs:
                 requires.add("osgi({osgi_id}) = {version}".format(osgi_id=req, version=self.provided_osgi[req]))
+
+        _log.debug("metadata requires: %s", ", ".join(requires))
 
         # print resulting requires!
         print('\n'.join(requires))
