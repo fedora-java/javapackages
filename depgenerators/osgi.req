@@ -70,8 +70,8 @@ class TagBuilder(object):
                         rpm_requires.add("osgi({0}) = {1}".format(req, provided[req]))
                     else:
                         rpm_requires.add("osgi({0})".format(req))
-                _log.debug("OSGi requires for {0}: {1}".format(path, ", ".join(rpm_requires)))
                 if rpm_requires:
+                    _log.debug("OSGi requires for {0}: {1}".format(path, ", ".join(rpm_requires)))
                     print("\n".join(rpm_requires))
 
 
