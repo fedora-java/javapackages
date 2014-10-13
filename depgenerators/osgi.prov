@@ -34,9 +34,13 @@
 import sys
 import os
 import traceback
+import logging
 import javapackages.common.osgi as osgi
 from javapackages.common.util import kill_parent_process, get_cachedir
 from javapackages.common.logging import init_logging
+
+logging.basicConfig(level=logging.DEBUG)
+_log = logging.getLogger("osgi.req")
 
 
 class TagBuilder(object):
@@ -54,6 +58,7 @@ class TagBuilder(object):
                 if osgi.check_path_in_metadata(path, self.cachedir):
                     continue
                 provides = osgi.get_provides(path)
+                _log.debug("OSGi provides for {0}: {1}".format(path, ", ".join(provides)))
                 osgi.print_provides(provides)
 
 
