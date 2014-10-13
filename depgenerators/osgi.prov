@@ -58,8 +58,9 @@ class TagBuilder(object):
                 if osgi.check_path_in_metadata(path, self.cachedir):
                     continue
                 provides = osgi.get_provides(path)
-                _log.debug("OSGi provides for {0}: {1}".format(path, ", ".join(provides)))
-                osgi.print_provides(provides)
+                if provides:
+                    _log.debug("OSGi provides for {0}: {1}".format(path, ", ".join(provides)))
+                    osgi.print_provides(provides)
 
 
 if __name__ == "__main__":
