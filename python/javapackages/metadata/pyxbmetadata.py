@@ -1,9 +1,10 @@
 # ./pyxbmetadata.py
 # -*- coding: utf-8 -*-
 # PyXB bindings for NM:cc7c37311c49f3aaf8d407a5a18021140495bbc9
-# Generated 2014-07-22 15:28:22.293369 by PyXB version 1.2.4 using Python 3.3.2.final.0
+# Generated 2014-10-20 13:34:00.773634 by PyXB version 1.2.4 using Python 3.3.2.final.0
 # Namespace http://fedorahosted.org/xmvn/METADATA/2.0.0
 
+from __future__ import unicode_literals
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,9 +12,10 @@ import io
 import pyxb.utils.utility
 import pyxb.utils.domutils
 import sys
+import pyxb.utils.six as _six
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:0d2f5d8e-11a4-11e4-9a8c-3c970e1833ad')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:fc7e4988-584c-11e4-af6d-3c970e1833ad')
 
 # Version of PyXB used to generate the bindings
 _PyXBVersion = '1.2.4'
@@ -55,7 +57,7 @@ def CreateFromDocument (xml_text, default_namespace=None, location_base=None):
     saxer = pyxb.binding.saxer.make_parser(fallback_namespace=default_namespace, location_base=location_base)
     handler = saxer.getContentHandler()
     xmld = xml_text
-    if isinstance(xmld, str):
+    if isinstance(xmld, _six.text_type):
         xmld = xmld.encode(pyxb._InputEncoding)
     saxer.parse(io.BytesIO(xmld))
     instance = handler.rootObject()
