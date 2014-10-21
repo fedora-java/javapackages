@@ -324,8 +324,8 @@ class XmlFile(object):
     def make_path(self, node, elements):
         if elements:
             elem = elements[0]
-            child = (node.xpath(elem, namespaces=self.NSMAP) or [None])[0]
-            if not child:
+            children = node.xpath(elem, namespaces=self.NSMAP)
+            if not children:
                 name = elements[0]
                 for ns, url in six.iteritems(self.NSMAP):
                     ns_token = ns + ':'
@@ -335,6 +335,8 @@ class XmlFile(object):
                 node.insert(0, child)
                 node.insert(0, etree.Comment(" section added by maintainer "))
                 self.reformat(node, node[:2])
+            else:
+                child = children[0]
             return self.make_path(child, elements[1:])
         return node
 
