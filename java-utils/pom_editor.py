@@ -300,7 +300,7 @@ class XmlFile(object):
             query_result = self.root.xpath(query, namespaces=nsmap)
         except etree.XPathEvalError as error:
             raise PomQueryInvalid("XPath query '{0}': {1}.".format(query,
-                                                               error.message))
+                                                               error))
         if not boolean:
             if len(query_result) == 0:
                 raise PomQueryNoMatch(dedent("""\
