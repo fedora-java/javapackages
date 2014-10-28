@@ -10,7 +10,13 @@ import javapackages.metadata.pyxbmetadata as m
 import six
 import pyxb
 import os
+import logging
 from xml.dom.minidom import getDOMImplementation
+
+
+# Prevent warnings from PyXB about missing logger handler:
+# No handlers could be found for logger "pyxb.binding.basis"
+logging.getLogger("pyxb.binding.basis").addHandler(logging.NullHandler())
 
 
 class MetadataArtifact(object):
