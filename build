@@ -65,6 +65,7 @@ expand()
         -e "s|%{rundir}|${rundir}|" \
         -e "s|%{sysconfdir}|${sysconfdir}|" \
         -e "s|%{pyinterpreter}|${pyinterpreter}|" \
+        -e "s|%{abrtlibdir}|${abrtlibdir}|" \
         "${1}" >"${target}"
 }
 

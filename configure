@@ -69,6 +69,7 @@ jvmprivdir
 jvmsysconfdir
 mavenpomdir
 pyinterpreter
+abrtlibdir
 "
 
 vars="$vars mavendepmapdir mavendepmapfragdir" # @Deprecated
@@ -90,6 +91,7 @@ test -z "${rpmconfigdir}" && rpmconfigdir="${prefix}/lib/rpm"
 
 test -z "${m2home}" && m2home="${datadir}/xmvn"
 test -z "${pyinterpreter}" && set_pyinterpreter
+test -z "${abrtlibdir}" && abrtlibdir="${prefix}/lib/abrt-java-connector"
 
 eval $(sed -n 's/^%_\('"$vars_re"'\)\ *\(.*\)$/\1="\2"/;T;s/%{_\(.*}\)/${\1/;p' macros.d/macros.jpackage)
 
