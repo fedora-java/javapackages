@@ -73,6 +73,6 @@ if __name__ == "__main__":
         builder = TagBuilder(cachedir=cachedir)
     except Exception:
         traceback.print_exc(file=sys.stderr)
-        # rpmbuild ignores non-zero exit codes but this that is bad. Make sure
+        # rpmbuild ignores non-zero exit codes, but this is bad. Make sure
         # the build fails and doesn't silently ignore problems
         kill_parent_process()
