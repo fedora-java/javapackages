@@ -232,7 +232,12 @@ set_javacmd()
 	JAVACMD="${JAVA_HOME}/${cmd}"
 	if [ -x "${JAVACMD}" ]; then
 	    _log "Using configured JAVACMD: $JAVACMD"
-	    JAVACMD="${JAVACMD}${JAVACMD_OPTS:+ }${JAVACMD_OPTS}"
+	    if [ -n "${JAVACMD_OPTS}" ]; then
+		_log "Using java-wrapper with extra options: ${JAVACMD_OPTS}"
+		export _JP_JAVACMD="${JAVACMD}"
+		export _JP_JAVACMD_OPTS="${JAVACMD_OPTS}"
+		JAVACMD="%{javadir}-utils/java-wrapper"
+	    fi
 	    return 0
 	fi
     done
@@ -240,7 +245,12 @@ set_javacmd()
     JAVACMD=$(which java 2>/dev/null || :)
     if [ -x "${JAVACMD}" ]; then
 	_log "Using JAVACMD from PATH: $JAVACMD"
-	JAVACMD="${JAVACMD}${JAVACMD_OPTS:+ }${JAVACMD_OPTS}"
+	if [ -n "${JAVACMD_OPTS}" ]; then
+	    _log "Using java-wrapper with extra options: ${JAVACMD_OPTS}"
+	    export _JP_JAVACMD="${JAVACMD}"
+	    export _JP_JAVACMD_OPTS="${JAVACMD_OPTS}"
+	    JAVACMD="%{javadir}-utils/java-wrapper"
+	fi
 	return 0
     fi
 

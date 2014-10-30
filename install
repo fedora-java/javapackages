@@ -122,6 +122,7 @@ inst_config etc/font.properties "${javaconfdir}"
 inst_config target/java.conf "${javaconfdir}"
 
 inst_data target/java-functions "${javadir}-utils"
+inst_exec target/java-wrapper "${javadir}-utils"
 inst_data java-utils/maven_depmap.py "${javadir}-utils"
 inst_data java-utils/pom_editor.py "${javadir}-utils"
 

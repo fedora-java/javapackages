@@ -1,0 +1,8 @@
+#!/bin/sh
+
+JAVACMD="${_JP_JAVACMD}"
+JAVACMD_OPTS="${_JP_JAVACMD_OPTS}"
+unset _JP_JAVACMD
+unset _JP_JAVACMD_OPTS
+
+exec "${JAVACMD}" ${JAVACMD_OPTS} "${@}"
