@@ -2,4 +2,4 @@
 %__osgi_provides_opts	%{_builddir}/%{?buildsubdir}
 %__osgi_requires	%{_rpmconfigdir}/osgi.req
 %__osgi_requires_opts	%{_builddir}/%{?buildsubdir}
-%__osgi_path	^(.*\\.jar$|((%{_libdir}|%{_datadir}).*/MANIFEST.MF))
+%__osgi_path	^(.*\\.jar$|((%{_prefix}/lib|%{_datadir})/.*/MANIFEST.MF))

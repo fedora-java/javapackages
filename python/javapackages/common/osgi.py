@@ -177,7 +177,7 @@ def _check_path(path):
         # who knows where the manifest can be in buildroot
         # TODO: improve this check somehow(?)
         # this is an attempt to identify only MANIFEST.MF files
-        # which are in %{_datadir} or %{_libdir}
+        # which are in %{_datadir} or %{_prefix}/lib
         if "/usr/share/" in path or "/usr/lib" in path:
             return True
     return False

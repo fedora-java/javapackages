@@ -44,7 +44,6 @@ function set_pyinterpreter() {
 vars="
 bindir
 datadir
-libdir
 localstatedir
 mandir
 prefix
@@ -82,7 +81,6 @@ eval $(for _; do echo "$_"; done |
 test -z "${prefix}" && prefix="/usr/local"
 test -z "${bindir}" && bindir="${prefix}/bin"
 test -z "${datadir}" && datadir="${prefix}/share"
-test -z "${libdir}" && libdir="${prefix}/lib"
 test -z "${localstatedir}" && localstatedir="${prefix}/var"
 test -z "${mandir}" && mandir="${datadir}/man"
 test -z "${rundir}" && rundir="${localstatedir}/run"
