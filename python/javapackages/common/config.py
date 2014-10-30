@@ -66,6 +66,8 @@ def get_configs(cfg_paths=None):
 def get_buildroot():
     try:
         buildroot = os.environ['RPM_BUILD_ROOT']
+        if not os.path.isdir(buildroot):
+            raise Exception("RPM_BUILD_ROOT is not directory")
+        return os.path.abspath(buildroot)
     except KeyError:
-        raise Exception("RPM_BUILD_ROOT environment is not set")
-    return os.path.abspath(buildroot)
+        return "/"
