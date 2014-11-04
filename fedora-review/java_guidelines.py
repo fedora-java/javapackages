@@ -263,7 +263,7 @@ class CheckUseMavenpomdirMacro(JavaCheckBase):
         JavaCheckBase.__init__(self, base)
         self.url = 'https://fedoraproject.org/wiki/Packaging:Java' \
                    '#add_maven_depmap_macro'
-        self.text = 'Packages use %{_mavenpomdir} instead of ' \
+        self.text = 'Packages use .mfiles file list instead of ' \
                     '%{_datadir}/maven2/poms'
         self.automatic = True
         self.type = 'MUST'
