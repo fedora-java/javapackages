@@ -36,7 +36,7 @@ class JavaCheckBase(CheckBase):
     def _is_xmvn_pkg(self):
         """Returns True if this package is being built with XMvn (new style
         Maven packaging)"""
-        return self.spec.find_re('[^#]*%mvn_build')
+        return self.spec.find_re('([^#]*%mvn_build)|([^#]*%mvn_install)')
 
     def _get_javadoc_sub(self):
         """Returns name of javadoc rpm or None if no such subpackage
@@ -174,7 +174,7 @@ class CheckJPackageRequires(JavaCheckBase):
             if 'jpackage-utils' in req:
                 r_found = True
 
-        if self._is_maven_pkg():
+        if self._is_maven_pkg() or self._is_xmvn_pkg():
             extra = "Maven packages do not need to (Build)Require " \
                     "jpackage-utils. It is pulled in by maven-local"
             self.set_passed(not (br_found or r_found), extra)
