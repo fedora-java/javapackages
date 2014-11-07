@@ -107,7 +107,9 @@ class CheckJavadoc(JavaCheckBase):
         """ run check for java packages """
         pkg = self._get_javadoc_sub()
         if not pkg:
-            self.set_passed(self.FAIL, "No javadoc subpackage present")
+            self.set_passed(self.FAIL, "No javadoc subpackage present. "
+                                       "Note: Javadocs are optional for Fedora "
+                                       "versions >= 21")
             return
 
         # and now look for at least one html file
