@@ -216,7 +216,7 @@ class CheckNoOldMavenDepmap(JavaCheckBase):
     def __init__(self, base):
         JavaCheckBase.__init__(self, base)
         self.url = 'https://fedoraproject.org/wiki/Packaging:Java' \
-                   '#add_maven_depmap_macro'
+                   '#Maven_pom.xml_files'
         self.text = 'Old add_to_maven_depmap macro is not being used'
         self.automatic = True
         self.type = 'MUST'
@@ -234,7 +234,7 @@ class CheckAddMavenDepmap(JavaCheckBase):
     def __init__(self, base):
         JavaCheckBase.__init__(self, base)
         self.url = 'https://fedoraproject.org/wiki/Packaging:Java' \
-                   '#add_maven_depmap_macro'
+                   '#Maven_pom.xml_files'
         self.text = 'POM files have correct Maven mapping'
         self.automatic = True
         self.type = 'MUST'
@@ -262,7 +262,7 @@ class CheckUseMavenpomdirMacro(JavaCheckBase):
     def __init__(self, base):
         JavaCheckBase.__init__(self, base)
         self.url = 'https://fedoraproject.org/wiki/Packaging:Java' \
-                   '#add_maven_depmap_macro'
+                   '#Maven_pom.xml_files'
         self.text = 'Packages use .mfiles file list instead of ' \
                     '%{_datadir}/maven2/poms'
         self.automatic = True
@@ -283,7 +283,7 @@ class CheckUpdateDepmap(JavaCheckBase):
     def __init__(self, base):
         JavaCheckBase.__init__(self, base)
         self.url = 'https://fedoraproject.org/wiki/Packaging:Java' \
-                   '#add_maven_depmap_macro'
+                   '#Maven_pom.xml_files'
         self.text = 'Package DOES NOT use %update_maven_depmap in ' \
                     '%post/%postun'
         self.automatic = True
