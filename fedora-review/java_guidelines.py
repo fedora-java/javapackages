@@ -368,38 +368,25 @@ class CheckTestSkip(JavaCheckBase):
             self.set_passed(self.NA)
 
 
-class CheckLocalDepmap(JavaCheckBase):
-    """Check if -Dmaven.local.depmap is being used and look for
-    comment"""
+class CheckMvnRpmbuild(JavaCheckBase):
+    """Check if mvn-rpmbuild is not being used"""
     group = "Maven"
 
     def __init__(self, base):
         JavaCheckBase.__init__(self, base)
         self.url = 'https://fedoraproject.org/wiki/Packaging:Java'
-        self.text = "If package uses '-Dmaven.local.depmap' explain " \
-                    "why it was needed in a comment"
+        self.text = "mvn-rpmbuild is deprecated and will be removed in future " \
+                    "releases"
         self.automatic = True
         self.type = 'MUST'
 
     def run(self):
-        depmap_regex = re.compile(r'\s+-Dmaven.local.depmap.*')
-        mvn_regex = re.compile(r'\s*mvn-rpmbuild\s+')
-        comment_regex = re.compile(r'^\s*#.*')
-        build_sec = self.spec.get_section('%build')
-        if not self.spec.find_re(depmap_regex) or not build_sec:
-            self.set_passed(self.NA)
-            return
-        result = self._search_previous_line(build_sec,
-                                            depmap_regex,
-                                            mvn_regex,
-                                            comment_regex)
-        if not result:
-            # weird. It has skip regex but no maven call?
-            self.set_passed(self.PASS)
+        mvn_rpmbuild = re.compile(r'[^#]*mvn-rpmbuild')
+        if self.spec.find_re(mvn_rpmbuild):
+            self.set_passed(self.FAIL, "Convert the package to use %mvn_build "
+                                       "instead of deprecated mvn-rpmbuild")
         else:
-            self.set_passed(self.PENDING, """Some comment is
-                used before mvn-rpmbuild command. Please verify
-                it explains use of -Dmaven.local.depmap""")
+            self.set_passed(self.NA)
 
 
 class CheckBundledJars(JavaCheckBase):
