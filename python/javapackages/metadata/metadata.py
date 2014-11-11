@@ -250,7 +250,8 @@ class Metadata(object):
     def _write_cache_file(self, cachefile, content):
         try:
             cachefile = open(cachefile, 'wb')
-            pickle.dump(content, cachefile)
+            cache = (os.getppid(), content)
+            pickle.dump(cache, cachefile)
             cachefile.close()
         except IOError:
             return None
@@ -260,8 +261,11 @@ class Metadata(object):
     def _read_cache_file(cachefile):
         try:
             cachefile = open(cachefile, 'rb')
-            content = pickle.load(cachefile)
+            cache = pickle.load(cachefile)
             cachefile.close()
+            # check if the cache was most likely created during current build
+            if cache[0] != os.getppid():
+                return None
         except IOError:
             return None
-        return content
+        return cache[1]
