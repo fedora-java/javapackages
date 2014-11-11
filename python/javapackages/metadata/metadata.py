@@ -265,6 +265,7 @@ class Metadata(object):
             cachefile.close()
             # check if the cache was most likely created during current build
             if cache[0] != os.getppid():
+                logging.warning("Cache is outdated, skipping")
                 return None
         except IOError:
             return None
