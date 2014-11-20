@@ -93,7 +93,7 @@ def split_bundle_name(bundles):
 
 def open_manifest(path):
     mf = None
-    if path.endswith("META-INF/MANIFEST.MF"):
+    if path.endswith("/META-INF/MANIFEST.MF"):
         mf = open(path, "rb")
     if zipfile.is_zipfile(path):
         # looks like "zipfile.is_zipfile()" is not reliable
