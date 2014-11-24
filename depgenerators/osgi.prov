@@ -40,7 +40,7 @@ from javapackages.common.util import kill_parent_process, get_cachedir
 from javapackages.common.logging import init_logging
 
 logging.basicConfig(level=logging.DEBUG)
-_log = logging.getLogger("osgi.req")
+_log = logging.getLogger("osgi.prov")
 
 
 class TagBuilder(object):
