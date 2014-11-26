@@ -118,7 +118,7 @@ def is_it_ivy_file(fpath):
     return doc.tag == "ivy-module"
 
 
-def add_artifact_elements(root, art, namespace="", ppath=None, jpath=None):
+def add_artifact_elements(root, art, ppath=None, jpath=None):
     artifacts = []
     ext_backup = art.extension
     for path in [ppath, jpath]:
@@ -133,10 +133,6 @@ def add_artifact_elements(root, art, namespace="", ppath=None, jpath=None):
                 art.extension = ext_backup
 
             art.path = os.path.abspath(path)
-
-            if namespace:
-                art.namespace = namespace
-
             a = art.to_metadata()
             artifacts.append(a)
 
@@ -250,8 +246,6 @@ if __name__ == "__main__":
                       help="skip dependencies section in resulting metadata")
     parser.add_option("-D", action="append", type="str",
                       help="add artifact property", metavar="property=value")
-    parser.add_option("-n", "--namespace", type="str",
-                      help="Namespace for generated artifacts", default="")
 
     sys.argv = args_to_unicode(sys.argv)
 
@@ -317,7 +311,7 @@ if __name__ == "__main__":
             key, value = d_opt.split('=')
             art.properties[key] = value
 
-    add_artifact_elements(metadata, art, options.namespace, pom_path, jar_path)
+    add_artifact_elements(metadata, art, pom_path, jar_path)
 
     with open(config, 'w') as f:
         dom = metadata.toDOM(None)
