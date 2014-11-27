@@ -34,11 +34,12 @@
 import os
 import json
 
+# for maven.req/maven.prov
 prov_artifacts_cache_f = "provided_artifacts.cache"
 skip_artifacts_cache_f = "skipped_artifacts.cache"
 prov_osgi_cache_f = "provided_osgi.cache"
-# TODO: do I need separate cache file for Provides from JARs/manifests? propbaly no
-prov_bundles_cache_f = "provided_bundles.cache"
+# for osgi.req/osgi.prov
+osgi_cache_f = "osgi.cache"
 
 
 def get_configs(cfg_paths=None):
