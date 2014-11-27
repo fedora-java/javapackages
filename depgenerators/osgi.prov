@@ -35,7 +35,7 @@ import sys
 import os
 import traceback
 import logging
-import javapackages.common.osgi as osgi
+from javapackages.common.osgi import OSGiCache, check_path_in_metadata
 from javapackages.common.util import kill_parent_process, get_cachedir
 from javapackages.common.logging import init_logging
 
@@ -50,17 +50,27 @@ class TagBuilder(object):
         if filelist == None:
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
+        cache = OSGiCache(self.cachedir)
+
+        provides = []
         for path in paths:
+
             # symlinks are not interesting, skip them
-            if not os.path.islink(path):
-                # check if OSGi provides for this path were handled by metadata
-                # if so, move on
-                if osgi.check_path_in_metadata(path, self.cachedir):
-                    continue
-                provides = osgi.get_provides(path)
-                if provides:
-                    _log.debug("OSGi provides for {0}: {1}".format(path, ", ".join(provides)))
-                    osgi.print_provides(provides)
+            if os.path.islink(path):
+                continue
+
+            # check if OSGi provides for this path were handled by metadata
+            # if so, move on
+            if check_path_in_metadata(path, self.cachedir):
+                continue
+
+            bundle = cache.get_bundle_for_path(path)
+            if bundle:
+                provides.append(bundle.get_rpm_str())
+
+        if provides:
+            _log.debug("{path}: {provs}".format(path=path, provs=", ".join(provides)))
+            print("\n".join(provides))
 
 
 if __name__ == "__main__":
