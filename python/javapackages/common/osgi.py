@@ -342,7 +342,7 @@ def check_path_in_metadata(path, cachedir_path):
         if path.startswith(buildroot):
             path = path[len(buildroot):]
             path = os.path.join('/', path)
-        if a.path:
+        if a.path and a.has_osgi_information():
             if (os.path.abspath(a.path) == path or
                (path.startswith(os.path.abspath(a.path)) and
                os.path.realpath(buildroot + path))):

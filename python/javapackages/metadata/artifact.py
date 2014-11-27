@@ -43,6 +43,15 @@ class MetadataArtifact(object):
         This means package should have versioned provides for this artifact"""
         return True if self.compatVersions else False
 
+    def has_osgi_information(self):
+        if self.properties:
+            try:
+                self.properties["osgi.id"]
+                return True
+            except KeyError:
+                pass
+        return False
+
     def get_buildroot_path(self, prefix=None):
         if not self.path:
             return None
