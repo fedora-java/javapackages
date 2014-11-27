@@ -36,8 +36,7 @@ import pickle
 import os
 import traceback
 import logging
-import javapackages.common.osgi as osgi
-import javapackages.common.config as config
+from javapackages.common.osgi import OSGiCache, check_path_in_metadata
 from javapackages.common.util import kill_parent_process, get_cachedir
 from javapackages.common.logging import init_logging
 
@@ -53,46 +52,33 @@ class TagBuilder(object):
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
 
-        provided = None
+        cache = OSGiCache(self.cachedir)
+        requires = []
         for path in paths:
+
             # symlinks are not interesting, skip them
-            if not os.path.islink(path):
-                # check if OSGi requires for this path were handled by metadata
-                # if so, move on
-                if osgi.check_path_in_metadata(path, self.cachedir):
-                    continue
-                if provided is None:
-                    provided = self.get_provided_bundles()
-                if osgi.OSGiResolver.is_available():
-                    bundle = osgi.OSGiResolver.process_path(path)
-                    if bundle:
-                        for req in bundle[0].requires:
-                            print(req.get_rpm_str(provided))
+            if os.path.islink(path):
+                continue
+
+            # check if OSGi requires for this path were handled by metadata
+            # if so, move on
+            if check_path_in_metadata(path, self.cachedir):
+                continue
+
+            bundle = cache.get_bundle_for_path(path)
+            if not bundle:
+                continue
+
+            for req in bundle.requires:
+                prov = cache.get_bundle(req.bundle)
+                if prov:
+                    requires.append(req.get_rpm_str(version=prov.version))
                 else:
-                    reqs = osgi.get_requires(path)
-                    rpm_requires = set()
-                    for req in reqs:
-                        if req in provided:
-                            rpm_requires.add("osgi({0}) = {1}".format(req, provided[req]))
-                        else:
-                            rpm_requires.add("osgi({0})".format(req))
-                    if rpm_requires:
-                        _log.debug("OSGi requires for {0}: {1}".format(path, ", ".join(rpm_requires)))
-                        print("\n".join(rpm_requires))
+                    requires.append(req.get_rpm_str())
 
-
-    def get_provided_bundles(self):
-        # get all provided bundles, try cache first
-        provided = osgi.read_provided_bundles_cache(self.cachedir)
-        if not provided:
-            provided = {}
-            # no cache, create one
-            buildroot = config.get_buildroot()
-            bpaths = osgi.find_possible_bundles(buildroot)
-            for path in bpaths:
-                provided.update(osgi.get_provides(path))
-            osgi.write_provided_bundles_cache(self.cachedir, provided)
-        return provided
+        if requires:
+            _log.debug("{path}: {reqs}".format(path=path, reqs=", ".join(requires)))
+            print("\n".join(requires))
 
 
 if __name__ == "__main__":
