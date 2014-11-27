@@ -189,14 +189,18 @@ class TagBuilder(object):
         requires.update(self._generate_java_requires(metadata))
         requires = self._filter_requires(requires)
 
-        # process also OSGi requires from metadata (from properties or from path)
+        # process also OSGi requires from metadata (from properties)
         osgi_reqs = metadata.get_osgi_requires()
         osgi_provs = metadata.get_osgi_provides()
         for req in osgi_reqs:
-            if req not in self.provided_osgi:
-                requires.add("osgi({osgi_id})".format(osgi_id=req))
-            elif req not in osgi_provs:
-                requires.add("osgi({osgi_id}) = {version}".format(osgi_id=req, version=self.provided_osgi[req]))
+            if req.bundle not in self.provided_osgi:
+                requires.add(req.get_rpm_str())
+            elif req.bundle not in [x.bundle for x in osgi_provs]:
+                for prov in osgi_provs:
+                    if prov.bundle == req.bundle:
+                        version = prov.version
+                        break
+                requires.add("osgi({osgi_id}) = {version}".format(osgi_id=req, version=version))
 
         _log.debug("metadata requires: %s", ", ".join(requires))
 

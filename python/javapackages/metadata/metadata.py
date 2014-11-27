@@ -43,6 +43,7 @@ from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.dependency import MetadataDependency
 from javapackages.metadata.skippedartifact import MetadataSkippedArtifact
 from javapackages.metadata.exclusion import MetadataExclusion
+from javapackages.common.osgi import OSGiRequire, OSGiBundle
 import javapackages.common.config as config
 import javapackages.metadata.pyxbmetadata as m
 
@@ -169,27 +170,27 @@ class Metadata(object):
         return None
 
     def get_osgi_provides(self):
-        provs = {}
+        provs = []
         for metadata in self.__metadata:
             if metadata.artifacts and metadata.artifacts.artifact:
                 for a in metadata.artifacts.artifact:
                     artifact = MetadataArtifact.from_metadata(a)
                     if artifact.properties:
+                        osgi_id = ""
+                        version = ""
                         try:
                             osgi_id = artifact.properties["osgi.id"]
                             version = artifact.properties["osgi.version"]
-                            provs[osgi_id] = version
-                            continue
                         except KeyError:
                             pass
-                    if artifact.path:
-                        import javapackages.common.osgi as osgi
-                        p = osgi.get_provides(artifact.get_buildroot_path())
-                        provs.update(p)
+                        if osgi_id:
+                            bundle = OSGiBundle.from_string(osgi_id)
+                            bundle.version = version
+                            provs.append(bundle)
         return provs
 
     def get_osgi_requires(self):
-        reqs = set()
+        reqs = []
         for metadata in self.__metadata:
             if metadata.artifacts and metadata.artifacts.artifact:
                 for a in metadata.artifacts.artifact:
@@ -197,20 +198,11 @@ class Metadata(object):
                     if artifact.properties:
                         try:
                             content = artifact.properties["osgi.requires"]
-                            reqs |= set(content.split(','))
-                            continue
-                        except KeyError:
-                            try:
-                                osgi_id = artifact.properties["osgi.id"]
-                                # this file was already processed by XMvn and
-                                # there are no interesting OSGi requires, move on
-                                continue
-                            except KeyError:
-                                pass
-                    if artifact.path:
-                        import javapackages.common.osgi as osgi
-                        r = osgi.get_requires(artifact.get_buildroot_path())
-                        reqs.update(r)
+                            req_strings = set()
+                            req_strings |= set(content.split(','))
+                            reqs.extend([OSGiRequire.parse(x) for x in req_strings])
+                        except:
+                            pass
         return reqs
 
     def contains_only_poms(self):
