@@ -137,27 +137,34 @@ def mavenprov(filelist):
         return test_decorated
     return test_decorator
 
-def osgiprov(filelist):
+
+def osgi_common(args, scriptpath):
+    stdin = os.path.abspath(args[0])
+    if len(args) == 2:
+        extra_env = {"RPM_BUILD_ROOT": args[1]}
+    else:
+        extra_env = {"RPM_BUILD_ROOT": "/dev/null"}
+    ret = call_script(scriptpath, ["/tmp"], stdin=stdin,
+                      wrapped=True, extra_env=extra_env)
+    shutil.rmtree("/tmp/.javapackages_cache/")
+    return ret
+
+
+def osgiprov(args):
     def test_decorator(fun):
         def test_decorated(self):
             scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'osgi.prov')
-            stdin = "\n".join(filelist)
-            (stdout, stderr, return_value) = call_script(scriptpath,
-                    ["/tmp"], stdin=stdin, wrapped=True, extra_env={"RPM_BUILD_ROOT":"/dev/null",
-                                                              "JAVAPACKAGES_CACHE_DIR":"/tmp"})
+            (stdout, stderr, return_value) = osgi_common(args, scriptpath)
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
 
 
-def osgireq(filelist):
+def osgireq(args):
     def test_decorator(fun):
         def test_decorated(self):
             scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'osgi.req')
-            stdin = "\n".join(filelist)
-            (stdout, stderr, return_value) = call_script(scriptpath,
-                    ["/tmp"], stdin=stdin, wrapped=True,
-                    extra_env={"RPM_BUILD_ROOT": "/dev/null"})
+            (stdout, stderr, return_value) = osgi_common(args, scriptpath)
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
