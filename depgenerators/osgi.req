@@ -61,18 +61,24 @@ class TagBuilder(object):
                 # if so, move on
                 if osgi.check_path_in_metadata(path, self.cachedir):
                     continue
-                reqs = osgi.get_requires(path)
                 if provided is None:
                     provided = self.get_provided_bundles()
-                rpm_requires = set()
-                for req in reqs:
-                    if req in provided:
-                        rpm_requires.add("osgi({0}) = {1}".format(req, provided[req]))
-                    else:
-                        rpm_requires.add("osgi({0})".format(req))
-                if rpm_requires:
-                    _log.debug("OSGi requires for {0}: {1}".format(path, ", ".join(rpm_requires)))
-                    print("\n".join(rpm_requires))
+                if osgi.OSGiResolver.is_available():
+                    bundle = osgi.OSGiResolver.process_path(path)
+                    if bundle:
+                        for req in bundle[0].requires:
+                            print(req.get_rpm_str(provided))
+                else:
+                    reqs = osgi.get_requires(path)
+                    rpm_requires = set()
+                    for req in reqs:
+                        if req in provided:
+                            rpm_requires.add("osgi({0}) = {1}".format(req, provided[req]))
+                        else:
+                            rpm_requires.add("osgi({0})".format(req))
+                    if rpm_requires:
+                        _log.debug("OSGi requires for {0}: {1}".format(path, ", ".join(rpm_requires)))
+                        print("\n".join(rpm_requires))
 
 
     def get_provided_bundles(self):
