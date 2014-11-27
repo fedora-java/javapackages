@@ -11,13 +11,15 @@ class TestOSGiReq(unittest.TestCase):
         except OSError:
             pass
 
-    @osgireq(["data/osgi/basic/META-INF/MANIFEST.MF"])
+    @osgireq(["data/osgi/basic/buildroot/usr/share/META-INF/MANIFEST.MF",
+              "data/osgi/basic/buildroot/"])
     def test_basic(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
         assertIn(self, "osgi(org.hamcrest.core)", sout)
 
-    @osgireq(["data/osgi/basic_jar/basic.jar"])
+    @osgireq(["data/osgi/basic_jar/buildroot/usr/lib/basic.jar",
+              "data/osgi/basic_jar/buildroot/"])
     def test_basic_jar(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
