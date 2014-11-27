@@ -30,15 +30,15 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Authors:  Alexander Kurtakov <akurtako@redhat.com>
+#           Michal Srb <msrb@redhat.com>
 
 import os
 import pickle
-import zipfile
 import re
 import subprocess
-from zipfile import ZipFile
 
 import javapackages.common.config as config
+from javapackages.common.manifest import Manifest
 
 
 class OSGiRequire(object):
@@ -105,13 +105,29 @@ class OSGiBundle(object):
     @classmethod
     def from_string(cls, osgistr):
         bundle, version, namespace, requires = OSGiBundle.parse(osgistr)
-        return cls(bundle, version=version, namespace=namespace, requires=requires)
+        return cls(bundle, version=version, namespace=namespace,
+                   requires=requires)
+
+    @classmethod
+    def from_manifest(cls, path):
+        try:
+            manifest = Manifest(path)
+        except IOError:
+            return None
+        bundle, version = manifest.get_provides()
+        requires = []
+        requires.extend([OSGiRequire.from_string(x) for x in manifest.get_requires()])
+
+        if not bundle:
+            return None
+        return cls(bundle, version=version, requires=requires)
 
     def get_rpm_str(self, version="", namespace=""):
         return "{ns}{d}osgi({bundle}) = {version}".format(ns=namespace or self.namespace,
                                                           d="-" if self.namespace else "",
                                                           bundle=self.bundle,
                                                           version=version or self.version)
+
 
 class OSGiResolver(object):
 
