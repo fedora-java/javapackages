@@ -320,6 +320,7 @@ def write_provided_bundles_cache(cachedir, provided):
 def check_path_in_metadata(path, cachedir_path):
     buildroot = config.get_buildroot()
 
+    from javapackages.metadata.metadata import Metadata, MetadataInvalidException
     artifacts = Metadata.read_provided_artifacts_from_cache(cachedir_path)
     if artifacts is None:
         artifacts = []
