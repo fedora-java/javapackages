@@ -32,13 +32,127 @@
 # Authors:  Alexander Kurtakov <akurtako@redhat.com>
 
 import os
-import io
 import pickle
 import zipfile
+import re
+import subprocess
 from zipfile import ZipFile
 
 import javapackages.common.config as config
-from javapackages.metadata.metadata import Metadata, MetadataInvalidException
+
+
+class OSGiRequire(object):
+
+    def __init__(self, bundle, namespace=""):
+        self.bundle = bundle
+        self.namespace = namespace
+
+    @staticmethod
+    def parse(osgistr):
+        result = re.split("[()]", osgistr)
+        namespace = ""
+        try:
+            bundle = result[0]
+            namespace = result[1]
+        except IndexError:
+            pass
+        return (bundle, namespace)
+
+    @classmethod
+    def from_string(cls, osgistr):
+        bundle, namespace = OSGiRequire.parse(osgistr)
+        return cls(bundle, namespace=namespace)
+
+    def get_rpm_str(self, version="", namespace=""):
+        ns = namespace or self.namespace
+        verstr = ""
+        if version:
+            verstr = " = {ver}".format(ver=version)
+        return "{ns}{d}osgi({bundle}){verstr}".format(ns=ns,
+                                                      d="-" if ns else "",
+                                                      bundle=self.bundle,
+                                                      verstr=verstr)
+
+
+class OSGiBundle(object):
+
+    def __init__(self, bundle, version, namespace="", requires=[]):
+        self.bundle = bundle
+        self.version = version
+        self.namespace = namespace
+        self.requires = requires
+
+    @staticmethod
+    def parse(osgistr):
+        namespace = ""
+        version = ""
+        reqstr = ""
+        requires = []
+        result = osgistr.split(" ")
+        try:
+            bundle = result[0]
+            version = result[1]
+            reqstr = result[2]
+        except IndexError:
+            pass
+        bundle, namespace = OSGiRequire.parse(bundle)
+
+        if reqstr:
+            requires.extend([OSGiRequire.from_string(x) for x in reqstr.split(",")])
+
+        return (bundle, version, namespace, requires)
+
+    @classmethod
+    def from_string(cls, osgistr):
+        bundle, version, namespace, requires = OSGiBundle.parse(osgistr)
+        return cls(bundle, version=version, namespace=namespace, requires=requires)
+
+    def get_rpm_str(self, version="", namespace=""):
+        return "{ns}{d}osgi({bundle}) = {version}".format(ns=namespace or self.namespace,
+                                                          d="-" if self.namespace else "",
+                                                          bundle=self.bundle,
+                                                          version=version or self.version)
+
+class OSGiResolver(object):
+
+    # FIXME: make it configurable
+    _binpath = "/usr/share/java-utils/p2-install"
+
+    @staticmethod
+    def process_metadata(metadata):
+        artifacts = metadata.get_provided_artifacts()
+        paths = []
+        paths.extend([x.get_buildroot_path() for x in artifacts])
+        return OSGiResolver.process_paths(paths)
+
+    @staticmethod
+    def process_path(path):
+        return OSGiResolver.process_paths([path])
+
+    @staticmethod
+    def process_paths(paths):
+        return OSGiResolver._call_script(paths)
+
+    @staticmethod
+    def is_available():
+        if os.path.exists(OSGiResolver._binpath):
+            return True
+        return False
+
+    @staticmethod
+    def _call_script(paths):
+        procargs = [OSGiResolver._binpath, "--name", "rpmdepgen",
+                    "--dry-run", "--print-deps"]
+        procargs.extend(paths)
+        proc = subprocess.Popen(procargs, shell=False, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                universal_newlines=True)
+        stdout, stderr = proc.communicate()
+        proc.wait()
+        if proc.returncode != 0:
+            raise Exception(stderr)
+        result = stdout.split("\n")[:-1]
+        return [OSGiBundle.from_string(x) for x in result]
 
 
 def print_provides(provides):
