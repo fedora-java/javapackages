@@ -171,168 +171,6 @@ class OSGiResolver(object):
         return [OSGiBundle.from_string(x) for x in result]
 
 
-def print_provides(provides):
-    for key in provides.keys():
-        print("osgi({name}) = {ver}".format(name=key,
-                                            ver=provides[key]))
-
-
-def normalize_manifest(manifest):
-    lines = []
-    manifest = manifest.split(u'\n')
-    for line in manifest:
-        if line.startswith(' '):
-            lines[-1] += line.strip()
-        else:
-            lines.append(line.strip())
-    return lines
-
-
-def parse_manifest(manifest):
-    headers = {}
-    DELIM = ": "
-    for line in normalize_manifest(manifest):
-        split = line.split(DELIM)
-        if len(split) > 1:
-            name = split[0].strip()
-            headers[name] = split[1].strip()
-    return headers
-
-
-def split_bundle_name(bundles):
-    bundlenames = []
-    bundleline = ""
-    for bundle in bundles.split(','):
-        if not bundle:
-            continue
-        if "(" in bundle or "[" in bundle:
-            bundleline = bundle
-            continue
-        if bundleline:
-            bundle = bundleline + bundle
-        if ":=optional" in bundle:
-            bundleline = ""
-            continue
-        if ";" in bundle:
-            bundlenames.append(bundle.split(";")[0].strip())
-        else:
-            bundlenames.append(bundle.strip())
-        bundleline = ""
-    return bundlenames
-
-
-def open_manifest(path):
-    mf = None
-    if path.endswith("/META-INF/MANIFEST.MF"):
-        mf = open(path, "rb")
-    if zipfile.is_zipfile(path):
-        # looks like "zipfile.is_zipfile()" is not reliable
-        # see rhbz#889131 for more details
-        try:
-            jarfile = ZipFile(path)
-            if "META-INF/MANIFEST.MF" in jarfile.namelist():
-                mf = jarfile.open("META-INF/MANIFEST.MF", "rU")
-        except IOError:
-            pass
-    if mf is None:
-        return None
-    content = mf.read()
-    mf.close()
-    return content.decode("utf-8")
-
-
-def get_requires_from_manifest(manifest):
-    reqs = []
-    headers = parse_manifest(manifest)
-    if headers.get("Require-Bundle"):
-        for bundle in split_bundle_name(headers.get("Require-Bundle")):
-            if bundle != "system.bundle":
-                reqs.append(bundle)
-    return reqs
-
-
-def get_requires(path):
-    reqs = []
-    manifest = open_manifest(path)
-    if manifest is None:
-        return reqs
-    reqs = get_requires_from_manifest(manifest)
-    return reqs
-
-
-def get_provides_from_manifest(manifest):
-    symbolicName = None
-    version = None
-    for line in normalize_manifest(manifest):
-        if line.startswith("Bundle-SymbolicName:"):
-            symbolicName = line.split(':')[1].strip()
-            symbolicName = symbolicName.split(";")[0].strip()
-        if line.startswith("Bundle-Version:"):
-            versions = line.split(':')[1].strip()
-            versions = versions.split('.')[0:3]
-            version = ".".join(versions)
-    if symbolicName and version:
-        return {symbolicName: version}
-    return {}
-
-
-def get_provides(path):
-    provs = {}
-    manifest = open_manifest(path)
-    if manifest is None:
-        return provs
-    provs = get_provides_from_manifest(manifest)
-    return provs
-
-
-def find_possible_bundles(buildroot):
-    """
-    Search given path (typically buildroot) for JAR and MANIFEST files.
-    """
-    paths = []
-    for dirpath, _, filenames in os.walk(buildroot):
-        for filename in filenames:
-            fpath = os.path.abspath(os.path.join(dirpath, filename))
-            if _check_path(fpath):
-                paths.append(fpath)
-    return paths
-
-
-def _check_path(path):
-    if os.path.islink(path):
-        return False
-    if path.endswith(".jar"):
-        return True
-    if path.endswith("/MANIFEST.MF"):
-        # who knows where the manifest can be in buildroot
-        # TODO: improve this check somehow(?)
-        # this is an attempt to identify only MANIFEST.MF files
-        # which are in %{_datadir} or %{_prefix}/lib
-        if "/usr/share/" in path or "/usr/lib" in path:
-            return True
-    return False
-
-
-def read_provided_bundles_cache(cachedir):
-    try:
-        cachefile = open(os.path.join(cachedir, config.prov_bundles_cache_f), 'rb')
-        provided = pickle.load(cachefile)
-        cachefile.close()
-    except IOError:
-        return None
-    return provided
-
-
-def write_provided_bundles_cache(cachedir, provided):
-    try:
-        cachefile = open(os.path.join(cachedir, config.prov_bundles_cache_f), 'wb')
-        pickle.dump(provided, cachefile)
-        cachefile.close()
-    except IOError:
-        return None
-    return provided
-
-
 def check_path_in_metadata(path, cachedir_path):
     buildroot = config.get_buildroot()
 
@@ -364,3 +202,86 @@ def check_path_in_metadata(path, cachedir_path):
                os.path.realpath(buildroot + path))):
                 return True
     return False
+
+
+class OSGiCache(object):
+
+    def __init__(self, cachedir):
+        self._cachedir = cachedir
+        self._cache = self._read_osgi_cache()
+
+        if self._cache is None:
+            cache = self._process_osgi_in_buildroot()
+            self._write_osgi_cache(cache)
+            self._cache = cache
+
+    def get_bundle_for_path(self, path):
+        try:
+            return self._cache[path]
+        except KeyError:
+            pass
+        return None
+
+    def get_bundle(self, name):
+        for bundle in self._cache.values():
+            if bundle == name:
+                return bundle
+        return None
+
+    def _process_osgi_in_buildroot(self):
+        # "path: OSGiBundle" mapping
+        cache = {}
+
+        bundle_paths = self._find_possible_bundles()
+        for path in bundle_paths:
+            if OSGiResolver.is_available():
+                cache.update({path: OSGiResolver.process_path(path)})
+            else:
+                bundle = OSGiBundle.from_manifest(path)
+                if bundle:
+                    cache.update({path: bundle})
+
+        return cache
+
+    def _find_possible_bundles(self):
+        buildroot = config.get_buildroot()
+        paths = []
+        for dirpath, _, filenames in os.walk(buildroot):
+            for filename in filenames:
+                fpath = os.path.abspath(os.path.join(dirpath, filename))
+                if self._check_path(fpath):
+                    paths.append(fpath)
+        return paths
+
+    def _check_path(self, path):
+        if os.path.islink(path):
+            return False
+        if path.endswith(".jar"):
+            return True
+        if path.endswith("/MANIFEST.MF"):
+            # who knows where the manifest can be in buildroot.
+            # this is an attempt to identify only MANIFEST.MF files
+            # which are in %{_datadir} or %{_prefix}/lib
+            if "/usr/share/" in path or "/usr/lib" in path:
+                return True
+        return False
+
+    def _read_osgi_cache(self):
+        try:
+            cachefile = open(os.path.join(self._cachedir,
+                                          config.osgi_cache_f), 'rb')
+            cache = pickle.load(cachefile)
+            cachefile.close()
+        except IOError:
+            return None
+        return cache
+
+    def _write_osgi_cache(self, cache):
+        try:
+            cachefile = open(os.path.join(self._cachedir,
+                                          config.osgi_cache_f), 'wb')
+            pickle.dump(cache, cachefile)
+            cachefile.close()
+        except IOError:
+            return None
+        return cache
