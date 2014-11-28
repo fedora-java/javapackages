@@ -42,17 +42,8 @@ class XMvnResolve(object):
     # - documentation
 
     @staticmethod
-    def _load_path_from_config():
-        configs = get_configs()
-        path = None
-        for config in configs:
-            path = config.get('path', "")
-            if os.path.exists(path):
-                break
-        if not path:
-            # default path
-            path = "/usr/bin/xmvn-resolve"
-        return path
+    def is_available():
+        return os.path.exists(XMvnResolve._load_path_from_config())
 
     @staticmethod
     def process_raw_request(raw_request_list):
@@ -64,6 +55,19 @@ class XMvnResolve(object):
         proc.wait()
         result = XMvnResolve.__process_results(stdout)
         return result
+
+    @staticmethod
+    def _load_path_from_config():
+        configs = get_configs()
+        path = None
+        for config in configs:
+            path = config.get('path', "")
+            if os.path.exists(path):
+                break
+        if not path:
+            # default path
+            path = "/usr/bin/xmvn-resolve"
+        return path
 
     @staticmethod
     def __join_raw_requests(raw_request_list):

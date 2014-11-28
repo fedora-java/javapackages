@@ -93,7 +93,7 @@ class TagBuilder(object):
 
         # generate also R on plugins and extensions from POM file, but only
         # if this is POM-only package and xmvn-resolve is installed
-        if os.path.exists(XMvnResolve._load_path_from_config()):
+        if XMvnResolve.is_available():
             if curr_metadata.contains_only_poms():
                 self.print_pom_requires(curr_metadata)
 
@@ -129,7 +129,7 @@ class TagBuilder(object):
 
         unknown_deps = []
         # check if dependencies on POM files are satisfiable
-        if os.path.exists(XMvnResolve._load_path_from_config()):
+        if XMvnResolve.is_available():
             unknown_deps = self._check_pom_deps()
 
         for dependency in metadata.get_required_artifacts():
