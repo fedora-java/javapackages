@@ -41,6 +41,8 @@ from optparse import OptionParser
 
 
 def kill_parent_process():
+    # rpmbuild ignores non-zero exit codes, but this is bad. Make sure
+    # the build fails and doesn't silently ignore problems
     os.kill(os.getppid(), signal.SIGTERM)
 
 
