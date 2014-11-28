@@ -48,14 +48,14 @@ class XMvnResolve(object):
     @staticmethod
     def process_raw_request(raw_request_list, scl=None):
         binpath = XMvnResolve._load_path_from_config()
-        request = XMvnResolve.__join_raw_requests(raw_request_list)
+        request = XMvnResolve._join_raw_requests(raw_request_list)
         rc, stdout, stderr = execute_command(binpath, args=["--raw-request"],
                                              input=request, enable_scl=scl)
 
         if rc != 0:
             raise Exception(stderr)
 
-        result = XMvnResolve.__process_results(stdout)
+        result = XMvnResolve._process_results(stdout)
         return result
 
     @staticmethod
@@ -72,7 +72,7 @@ class XMvnResolve(object):
         return path
 
     @staticmethod
-    def __join_raw_requests(raw_request_list):
+    def _join_raw_requests(raw_request_list):
         request = "<requests>"
         for r in raw_request_list:
             request += r.get_xml()
@@ -81,7 +81,7 @@ class XMvnResolve(object):
         return request
 
     @staticmethod
-    def __process_results(result_xml):
+    def _process_results(result_xml):
         results = []
 
         doc = lxml.etree.fromstring(result_xml.encode("UTF-8"))
@@ -117,7 +117,8 @@ class ResolutionResult(object):
 
 
 class ResolutionRequest(object):
-    def __init__(self, groupId, artifactId, extension="", classifier="", version=""):
+    def __init__(self, groupId, artifactId, extension="",
+                 classifier="", version=""):
         self.groupId = groupId
         self.artifactId = artifactId
         self.extension = extension
@@ -125,10 +126,15 @@ class ResolutionRequest(object):
         self.version = version
 
     def get_xml(self):
-        return ResolutionRequest.create_raw_request_xml(self.groupId, self.artifactId, self.extension, self.classifier, self.version)
+        return ResolutionRequest.create_raw_request_xml(self.groupId,
+                                                        self.artifactId,
+                                                        self.extension,
+                                                        self.classifier,
+                                                        self.version)
 
     @staticmethod
-    def create_raw_request_xml(groupId, artifactId, extension="", classifier="", version=""):
+    def create_raw_request_xml(groupId, artifactId, extension="",
+                               classifier="", version=""):
         template = """
 <request>
     <artifact>
