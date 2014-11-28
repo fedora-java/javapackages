@@ -30,11 +30,11 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
-from javapackages.common.config import get_configs
-
-import subprocess
 import lxml.etree
 import os
+
+from javapackages.common.config import get_configs
+from javapackages.common.util import execute_command
 
 
 class XMvnResolve(object):
@@ -46,13 +46,15 @@ class XMvnResolve(object):
         return os.path.exists(XMvnResolve._load_path_from_config())
 
     @staticmethod
-    def process_raw_request(raw_request_list):
+    def process_raw_request(raw_request_list, scl=None):
         binpath = XMvnResolve._load_path_from_config()
         request = XMvnResolve.__join_raw_requests(raw_request_list)
-        procargs = [binpath, '--raw-request']
-        proc = subprocess.Popen(procargs, shell=False, stdout=subprocess.PIPE, stdin=subprocess.PIPE, universal_newlines=True)
-        stdout = proc.communicate(input=request)[0]
-        proc.wait()
+        rc, stdout, stderr = execute_command(binpath, args=["--raw-request"],
+                                             input=request, enable_scl=scl)
+
+        if rc != 0:
+            raise Exception(stderr)
+
         result = XMvnResolve.__process_results(stdout)
         return result
 
