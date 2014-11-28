@@ -187,7 +187,7 @@ class OSGiResolver(object):
     def _call_script(paths, scl=None):
         args = "--name rpmdepgen --dry-run --print-deps"
         rc, stdout, stderr = execute_command(OSGiResolver._binpath,
-                                             args=[args.split()],
+                                             args=args.split(),
                                              enable_scl=scl)
         if rc != 0:
             raise Exception(stderr)
