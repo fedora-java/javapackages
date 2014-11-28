@@ -123,6 +123,30 @@ class OSGiBundle(object):
             return None
         return cls(bundle, version=version, requires=requires)
 
+    @classmethod
+    def from_properties(cls, properties):
+        osgi_id = ""
+        version = ""
+        try:
+            osgi_id = properties["osgi.id"]
+            version = properties["osgi.version"]
+        except KeyError:
+            return None
+        bundle, _, namespace, _ = OSGiBundle.parse(osgi_id)
+
+        requires = []
+        try:
+            reqstr = properties["osgi.requires"]
+            for r in reqstr.split(","):
+                req = OSGiRequire.from_string(r)
+                if req:
+                    requires.append(req)
+        except:
+            pass
+
+        return cls(bundle, version=version, namespace=namespace,
+                   requires=requires)
+
     def get_rpm_str(self, version="", namespace=""):
         return "{ns}{d}osgi({bundle}) = {version}".format(ns=namespace or self.namespace,
                                                           d="-" if self.namespace else "",
