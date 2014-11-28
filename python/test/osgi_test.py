@@ -27,6 +27,14 @@ class TestOSGi(unittest.TestCase):
         self.assertEqual(b.get_rpm_str(), "osgi(bundle.name) = 1")
         self.assertEqual(len(b.requires), 2)
 
+    def test_bundle_whitespaces(self):
+        b = OSGiBundle.from_string("  bundle.name()   1 req1.abc,req2(ns) ")
+        self.assertEqual(b.bundle, "bundle.name")
+        self.assertEqual(b.version, "1")
+        self.assertEqual(b.namespace, "")
+        self.assertEqual(b.get_rpm_str(), "osgi(bundle.name) = 1")
+        self.assertEqual(len(b.requires), 2)
+
     def test_require(self):
         r = OSGiRequire.from_string("osgi.req")
         self.assertEqual(r.bundle, "osgi.req")
