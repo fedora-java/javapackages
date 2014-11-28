@@ -36,17 +36,12 @@ import signal
 import sys
 import six
 import subprocess
+import logging
+from optparse import OptionParser
 
 
 def kill_parent_process():
     os.kill(os.getppid(), signal.SIGTERM)
-
-
-def get_cachedir(path, create_if_not_exists=True):
-    cachedir_path = os.path.join(path, ".javapackages_cache")
-    if not os.path.exists(cachedir_path) and create_if_not_exists:
-        os.makedirs(cachedir_path)
-    return cachedir_path
 
 
 def args_to_unicode(args):
@@ -74,3 +69,41 @@ def execute_command(binpath, args=[], env=None, input=None, shell=False,
     stdout, stderr = proc.communicate(input=None)
     proc.wait()
     return proc.returncode, stdout, stderr
+
+
+def init_rpmgen(argv):
+    _init_rpmgen_logging()
+    return _parse_rpmgen_args(argv)
+
+
+class _SkipPyXBWarningsFilter(logging.Filter):
+    def filter(self, record):
+        return not record.getMessage().startswith("Unable to convert DOM node")
+
+
+def _init_rpmgen_logging():
+    # Omit PyXB "Unable to convert DOM node to binding" warnings
+    logger = logging.getLogger("pyxb.binding.basis")
+    f = _SkipPyXBWarningsFilter()
+    logger.addFilter(f)
+
+
+def _parse_rpmgen_args(argv):
+    parser = OptionParser()
+    parser.add_option("--cachedir", dest="cachedir")
+    parser.add_option("--scl", dest="scl", default=None)
+
+    options = parser.parse_args()[0]
+
+    if not options.cachedir:
+        raise Exception("Missing option: --cachedir")
+    options.cachedir = _get_cachedir(options.cachedir)
+
+    return options
+
+
+def _get_cachedir(path, create_if_not_exists=True):
+    cachedir_path = os.path.join(path, ".javapackages_cache")
+    if not os.path.exists(cachedir_path) and create_if_not_exists:
+        os.makedirs(cachedir_path)
+    return cachedir_path

@@ -37,8 +37,7 @@ import os
 import traceback
 import logging
 from javapackages.common.osgi import OSGiCache, check_path_in_metadata
-from javapackages.common.util import kill_parent_process, get_cachedir
-from javapackages.common.logging import init_logging
+from javapackages.common.util import kill_parent_process, init_rpmgen
 
 logging.basicConfig(level=logging.DEBUG)
 _log = logging.getLogger("osgi.req")
@@ -51,7 +50,7 @@ class TagBuilder(object):
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
 
-        cache = OSGiCache(_cachedir, scl=_scl)
+        cache = OSGiCache(rpmconf.cachedir, scl=rpmconf.scl)
         requires = []
         for path in paths:
 
@@ -61,7 +60,7 @@ class TagBuilder(object):
 
             # check if OSGi requires for this path were handled by metadata
             # if so, move on
-            if check_path_in_metadata(path, _cachedir):
+            if check_path_in_metadata(path, rpmconf.cachedir):
                 continue
 
             bundle = cache.get_bundle_for_path(path)
@@ -82,14 +81,7 @@ class TagBuilder(object):
 
 if __name__ == "__main__":
     try:
-        if len(sys.argv) > 1:
-            _cachedir = get_cachedir(sys.argv[1])
-        else:
-            raise Exception("Missing param: cachedir")
-        _scl = None
-        if len(sys.argv) > 2:
-            _scl = sys.argv[2]
-        init_logging()
+        rpmconf = init_rpmgen(sys.argv)
         builder = TagBuilder()
     except Exception:
         traceback.print_exc(file=sys.stderr)

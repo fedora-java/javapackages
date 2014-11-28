@@ -38,8 +38,7 @@ import sys
 import traceback
 import logging
 from javapackages.metadata.metadata import Metadata
-from javapackages.common.util import kill_parent_process
-from javapackages.common.logging import init_logging
+from javapackages.common.util import kill_parent_process, init_rpmgen
 
 logging.basicConfig(level=logging.DEBUG)
 _log = logging.getLogger("maven.prov")
@@ -68,7 +67,7 @@ class TagBuilder:
 
 if __name__ == "__main__":
     try:
-        init_logging()
+        init_rpmgen(sys.argv)
         builder = TagBuilder()
     except Exception:
         traceback.print_exc(file=sys.stderr)

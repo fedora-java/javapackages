@@ -41,8 +41,7 @@ import logging
 from lxml import etree
 
 from javapackages.common.config import get_configs, get_buildroot
-from javapackages.common.util import kill_parent_process, get_cachedir
-from javapackages.common.logging import init_logging
+from javapackages.common.util import kill_parent_process, init_rpmgen
 from javapackages.maven.pom import POM
 from javapackages.maven.artifact import Artifact
 from javapackages.metadata.metadata import Metadata
@@ -72,22 +71,22 @@ class TagBuilder(object):
             metadata = None
 
             # get all provided artifacts
-            self.provided_artifacts = Metadata.read_provided_artifacts_from_cache(_cachedir)
+            self.provided_artifacts = Metadata.read_provided_artifacts_from_cache(rpmconf.cachedir)
             if self.provided_artifacts is None:
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.provided_artifacts = metadata.write_provided_artifacts_to_cache(_cachedir) or []
+                self.provided_artifacts = metadata.write_provided_artifacts_to_cache(rpmconf.cachedir) or []
 
             # get all skipped artifacts
-            self.skipped_artifacts = Metadata.read_skipped_artifacts_from_cache(_cachedir)
+            self.skipped_artifacts = Metadata.read_skipped_artifacts_from_cache(rpmconf.cachedir)
             if self.skipped_artifacts is None:
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.skipped_artifacts = metadata.write_skipped_artifacts_to_cache(_cachedir) or []
+                self.skipped_artifacts = metadata.write_skipped_artifacts_to_cache(rpmconf.cachedir) or []
 
             # get all provided OSGi bundles
-            self.provided_osgi = Metadata.read_provided_osgi_from_cache(_cachedir)
+            self.provided_osgi = Metadata.read_provided_osgi_from_cache(rpmconf.cachedir)
             if self.provided_osgi is None:
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.provided_osgi = metadata.write_provided_osgi_to_cache(_cachedir) or {}
+                self.provided_osgi = metadata.write_provided_osgi_to_cache(rpmconf.cachedir) or {}
 
         curr_metadata = Metadata(paths[0])
         self.print_requires(curr_metadata)
@@ -398,11 +397,7 @@ class TagBuilder(object):
 
 if __name__ == "__main__":
     try:
-        if len(sys.argv) > 1:
-            _cachedir = get_cachedir(sys.argv[1])
-        else:
-            raise Exception("Missing param: cachedir")
-        init_logging()
+        rpmconf = init_rpmgen(sys.argv)
         builder = TagBuilder()
     except Exception:
         traceback.print_exc(file=sys.stderr)
