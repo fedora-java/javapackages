@@ -89,7 +89,7 @@ class OSGiBundle(object):
         version = ""
         reqstr = ""
         requires = []
-        result = osgistr.split(" ")
+        result = osgistr.split()
         try:
             bundle = result[0]
             version = result[1]
