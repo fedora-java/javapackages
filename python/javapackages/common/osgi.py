@@ -143,7 +143,10 @@ class OSGiResolver(object):
 
     @staticmethod
     def process_path(path):
-        return OSGiResolver.process_paths([path])
+        bundle = OSGiResolver.process_paths([path])
+        if bundle:
+            return bundle[0]
+        return None
 
     @staticmethod
     def process_paths(paths):
@@ -235,11 +238,11 @@ class OSGiCache(object):
         bundle_paths = self._find_possible_bundles()
         for path in bundle_paths:
             if OSGiResolver.is_available():
-                cache.update({path: OSGiResolver.process_path(path)})
+                bundle = OSGiResolver.process_path(path)
             else:
                 bundle = OSGiBundle.from_manifest(path)
-                if bundle:
-                    cache.update({path: bundle})
+            if bundle:
+                cache.update({path: bundle})
 
         return cache
 
