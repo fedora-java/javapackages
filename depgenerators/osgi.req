@@ -51,7 +51,7 @@ class TagBuilder(object):
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
 
-        cache = OSGiCache(_cachedir)
+        cache = OSGiCache(_cachedir, scl=_scl)
         requires = []
         for path in paths:
 
@@ -86,6 +86,9 @@ if __name__ == "__main__":
             _cachedir = get_cachedir(sys.argv[1])
         else:
             raise Exception("Missing param: cachedir")
+        _scl = None
+        if len(sys.argv) > 2:
+            _scl = sys.argv[2]
         init_logging()
         builder = TagBuilder()
     except Exception:
