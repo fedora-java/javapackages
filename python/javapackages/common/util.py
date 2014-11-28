@@ -35,6 +35,7 @@ import os
 import signal
 import sys
 import six
+import subprocess
 
 
 def kill_parent_process():
@@ -53,3 +54,23 @@ def args_to_unicode(args):
         for index, arg in enumerate(args):
             args[index] = arg.decode(sys.getfilesystemencoding())
     return args
+
+
+def execute_command(binpath, args=[], env=None, input=None, shell=False,
+                    enable_scl=None):
+    scl_cmd = "scl enable {scl}"
+    command = ""
+    if enable_scl:
+        scl_cmd = scl_cmd.format(scl=enable_scl)
+        command = scl_cmd + " && "
+        shell = True
+    command = [command + binpath]
+    command.extend(args)
+
+    proc = subprocess.Popen(command, shell=shell,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            stdin=subprocess.PIPE, universal_newlines=True,
+                            env=env)
+    stdout, stderr = proc.communicate(input=None)
+    proc.wait()
+    return proc.returncode, stdout, stderr
