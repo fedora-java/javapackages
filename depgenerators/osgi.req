@@ -46,13 +46,12 @@ _log = logging.getLogger("osgi.req")
 
 class TagBuilder(object):
 
-    def __init__(self, filelist=None, cachedir=None):
-        self.cachedir = cachedir
+    def __init__(self, filelist=None):
         if filelist == None:
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
 
-        cache = OSGiCache(self.cachedir)
+        cache = OSGiCache(_cachedir)
         requires = []
         for path in paths:
 
@@ -62,7 +61,7 @@ class TagBuilder(object):
 
             # check if OSGi requires for this path were handled by metadata
             # if so, move on
-            if check_path_in_metadata(path, self.cachedir):
+            if check_path_in_metadata(path, _cachedir):
                 continue
 
             bundle = cache.get_bundle_for_path(path)
@@ -84,11 +83,11 @@ class TagBuilder(object):
 if __name__ == "__main__":
     try:
         if len(sys.argv) > 1:
-            cachedir = get_cachedir(sys.argv[1])
+            _cachedir = get_cachedir(sys.argv[1])
         else:
             raise Exception("Missing param: cachedir")
         init_logging()
-        builder = TagBuilder(cachedir=cachedir)
+        builder = TagBuilder()
     except Exception:
         traceback.print_exc(file=sys.stderr)
         # rpmbuild ignores non-zero exit codes, but this is bad. Make sure

@@ -54,8 +54,7 @@ _log = logging.getLogger("maven.req")
 
 
 class TagBuilder(object):
-    def __init__(self, filelist=None, cachedir=None):
-        self.cachedir = cachedir
+    def __init__(self, filelist=None):
         if filelist == None:
             filelist = sys.stdin
 
@@ -73,22 +72,22 @@ class TagBuilder(object):
             metadata = None
 
             # get all provided artifacts
-            self.provided_artifacts = Metadata.read_provided_artifacts_from_cache(self.cachedir)
+            self.provided_artifacts = Metadata.read_provided_artifacts_from_cache(_cachedir)
             if self.provided_artifacts is None:
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.provided_artifacts = metadata.write_provided_artifacts_to_cache(self.cachedir) or []
+                self.provided_artifacts = metadata.write_provided_artifacts_to_cache(_cachedir) or []
 
             # get all skipped artifacts
-            self.skipped_artifacts = Metadata.read_skipped_artifacts_from_cache(self.cachedir)
+            self.skipped_artifacts = Metadata.read_skipped_artifacts_from_cache(_cachedir)
             if self.skipped_artifacts is None:
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.skipped_artifacts = metadata.write_skipped_artifacts_to_cache(self.cachedir) or []
+                self.skipped_artifacts = metadata.write_skipped_artifacts_to_cache(_cachedir) or []
 
             # get all provided OSGi bundles
-            self.provided_osgi = Metadata.read_provided_osgi_from_cache(self.cachedir)
+            self.provided_osgi = Metadata.read_provided_osgi_from_cache(_cachedir)
             if self.provided_osgi is None:
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.provided_osgi = metadata.write_provided_osgi_to_cache(self.cachedir) or {}
+                self.provided_osgi = metadata.write_provided_osgi_to_cache(_cachedir) or {}
 
         curr_metadata = Metadata(paths[0])
         self.print_requires(curr_metadata)
@@ -400,11 +399,11 @@ class TagBuilder(object):
 if __name__ == "__main__":
     try:
         if len(sys.argv) > 1:
-            cachedir = get_cachedir(sys.argv[1])
+            _cachedir = get_cachedir(sys.argv[1])
         else:
             raise Exception("Missing param: cachedir")
         init_logging()
-        builder = TagBuilder(cachedir=cachedir)
+        builder = TagBuilder()
     except Exception:
         traceback.print_exc(file=sys.stderr)
         # rpmbuild ignores non-zero exit codes, but this is bad. Make sure
