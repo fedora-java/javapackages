@@ -132,7 +132,7 @@ def mavenprov(filelist):
             scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'maven.prov')
             stdin = build_depmap_paths(filelist)
             (stdout, stderr, return_value) = call_script(scriptpath,
-                    ["/tmp"], stdin=stdin, wrapped=True, extra_env=env)
+                    ["--cachedir", "/tmp"], stdin=stdin, wrapped=True, extra_env=env)
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
@@ -144,7 +144,7 @@ def osgi_common(args, scriptpath):
         extra_env = {"RPM_BUILD_ROOT": args[1]}
     else:
         extra_env = {"RPM_BUILD_ROOT": "/dev/null"}
-    ret = call_script(scriptpath, ["/tmp"], stdin=stdin,
+    ret = call_script(scriptpath, ["--cachedir", "/tmp"], stdin=stdin,
                       wrapped=True, extra_env=extra_env)
     shutil.rmtree("/tmp/.javapackages_cache/")
     return ret
@@ -184,7 +184,7 @@ def requires_generator(name, filelist, config=None, javaconfdirs=None):
             else:
                 config_path = os.path.join(DIRPATH, '..', 'etc')
             (stdout, stderr, return_value) = call_script(scriptpath,
-                    ["/tmp"], stdin=stdin, wrapped=True, extra_env=env,
+                    ["--cachedir", "/tmp"], stdin=stdin, wrapped=True, extra_env=env,
                     config_path=config_path)
             fun(self, stdout, stderr, return_value)
         return test_decorated
