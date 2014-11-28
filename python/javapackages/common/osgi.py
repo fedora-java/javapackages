@@ -39,6 +39,7 @@ import subprocess
 
 import javapackages.common.config as config
 from javapackages.common.manifest import Manifest
+from javapackages.common.util import execute_command
 
 
 class OSGiRequire(object):
@@ -135,22 +136,22 @@ class OSGiResolver(object):
     _binpath = "/usr/share/java-utils/p2-install"
 
     @staticmethod
-    def process_metadata(metadata):
+    def process_metadata(metadata, scl=None):
         artifacts = metadata.get_provided_artifacts()
         paths = []
         paths.extend([x.get_buildroot_path() for x in artifacts])
-        return OSGiResolver.process_paths(paths)
+        return OSGiResolver.process_paths(paths, scl=scl)
 
     @staticmethod
-    def process_path(path):
-        bundle = OSGiResolver.process_paths([path])
+    def process_path(path, scl=None):
+        bundle = OSGiResolver.process_paths([path], scl=scl)
         if bundle:
             return bundle[0]
         return None
 
     @staticmethod
-    def process_paths(paths):
-        return OSGiResolver._call_script(paths)
+    def process_paths(paths, scl=None):
+        return OSGiResolver._call_script(paths, scl=scl)
 
     @staticmethod
     def is_available():
@@ -159,16 +160,12 @@ class OSGiResolver(object):
         return False
 
     @staticmethod
-    def _call_script(paths):
-        procargs = [OSGiResolver._binpath, "--name", "rpmdepgen",
-                    "--dry-run", "--print-deps"]
-        procargs.extend(paths)
-        proc = subprocess.Popen(procargs, shell=False, stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                universal_newlines=True)
-        stdout, stderr = proc.communicate()
-        proc.wait()
-        if proc.returncode != 0:
+    def _call_script(paths, scl=None):
+        args = "--name rpmdepgen --dry-run --print-deps"
+        rc, stdout, stderr = execute_command(OSGiResolver._binpath,
+                                             args=[args.split()],
+                                             enable_scl=scl)
+        if rc != 0:
             raise Exception(stderr)
         result = stdout.split("\n")[:-1]
         return [OSGiBundle.from_string(x) for x in result]
@@ -209,9 +206,10 @@ def check_path_in_metadata(path, cachedir_path):
 
 class OSGiCache(object):
 
-    def __init__(self, cachedir):
+    def __init__(self, cachedir, scl=None):
         self._cachedir = cachedir
         self._cache = self._read_osgi_cache()
+        self._scl = scl
 
         if self._cache is None:
             cache = self._process_osgi_in_buildroot()
@@ -238,7 +236,7 @@ class OSGiCache(object):
         bundle_paths = self._find_possible_bundles()
         for path in bundle_paths:
             if OSGiResolver.is_available():
-                bundle = OSGiResolver.process_path(path)
+                bundle = OSGiResolver.process_path(path, scl=self._scl)
             else:
                 bundle = OSGiBundle.from_manifest(path)
             if bundle:
