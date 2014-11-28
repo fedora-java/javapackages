@@ -68,7 +68,7 @@ def execute_command(binpath, args=[], env=None, input=None, shell=False,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                             stdin=subprocess.PIPE, universal_newlines=True,
                             env=env)
-    stdout, stderr = proc.communicate(input=None)
+    stdout, stderr = proc.communicate(input=input)
     proc.wait()
     return proc.returncode, stdout, stderr
 
