@@ -241,5 +241,12 @@ class TestMavenReq(unittest.TestCase):
         want = ("unresolvable:pom-dependency:pom:2.2.1")
         self.assertTrue(want in stderr, stderr)
 
+    @mavenreq(["osgi_simple/require.xml"])
+    def test_osgi_basic(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("osgi(osgi.req1)", "jpackage-utils", "java-headless")
+        self.assertEqual(set(want), set(sout))
+
 if __name__ == '__main__':
     unittest.main()
