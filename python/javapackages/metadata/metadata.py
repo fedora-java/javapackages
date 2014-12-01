@@ -183,7 +183,8 @@ class Metadata(object):
     def get_osgi_requires(self):
         reqs = []
         bundles = self.get_osgi_provides()
-        reqs.extend(x.requires for x in bundles)
+        for bundle in bundles:
+            reqs.extend(bundle.requires)
         return reqs
 
     def contains_only_poms(self):

@@ -86,7 +86,7 @@ class TagBuilder(object):
             self.provided_osgi = Metadata.read_provided_osgi_from_cache(rpmconf.cachedir)
             if self.provided_osgi is None:
                 metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.provided_osgi = metadata.write_provided_osgi_to_cache(rpmconf.cachedir) or {}
+                self.provided_osgi = metadata.write_provided_osgi_to_cache(rpmconf.cachedir) or []
 
         curr_metadata = Metadata(paths[0])
         self.print_requires(curr_metadata)
@@ -191,7 +191,7 @@ class TagBuilder(object):
         osgi_reqs = metadata.get_osgi_requires()
         osgi_provs = metadata.get_osgi_provides()
         for req in osgi_reqs:
-            if req.bundle not in self.provided_osgi:
+            if req.bundle not in [x.bundle for x in self.provided_osgi]:
                 requires.add(req.get_rpm_str())
             elif req.bundle not in [x.bundle for x in osgi_provs]:
                 for prov in osgi_provs:
