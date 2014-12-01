@@ -1,0 +1,26 @@
+<metadata xmlns="http://fedorahosted.org/xmvn/METADATA/2.0.0">
+    <uuid>432048235932</uuid>
+    <artifacts>
+        <artifact>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-ant-factory</artifactId>
+            <version>1.0</version>
+            <properties>
+                <osgi.id>osgi.id</osgi.id>
+                <osgi.version>osgi.id</osgi.version>
+                <osgi.requires>osgi.req1</osgi.requires>
+            </properties>
+            <path>/usr/share/java/plexus/plexus-ant-factory.jar</path>
+        </artifact>
+        <artifact>
+            <groupId>gid</groupId>
+            <artifactId>aid</artifactId>
+            <version>1.0</version>
+            <properties>
+                <osgi.id>osgi.req1</osgi.id>
+                <osgi.version>1.0</osgi.version>
+            </properties>
+            <path>/usr/share/java/aid.jar</path>
+        </artifact>
+    </artifacts>
+</metadata>

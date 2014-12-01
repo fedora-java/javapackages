@@ -248,5 +248,12 @@ class TestMavenReq(unittest.TestCase):
         want = ("osgi(osgi.req1)", "jpackage-utils", "java-headless")
         self.assertEqual(set(want), set(sout))
 
+    @mavenreq(["osgi_self/require.xml"])
+    def test_osgi_self(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("jpackage-utils", "java-headless")
+        self.assertEqual(set(want), set(sout))
+
 if __name__ == '__main__':
     unittest.main()
