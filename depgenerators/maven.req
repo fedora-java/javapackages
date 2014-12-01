@@ -196,9 +196,8 @@ class TagBuilder(object):
             elif req.bundle not in [x.bundle for x in osgi_provs]:
                 for prov in osgi_provs:
                     if prov.bundle == req.bundle:
-                        version = prov.version
+                        requires.add(req.get_rpm_str(version=version))
                         break
-                requires.add("osgi({osgi_id}) = {version}".format(osgi_id=req, version=version))
 
         _log.debug("metadata requires: %s", ", ".join(requires))
 
