@@ -170,39 +170,20 @@ class Metadata(object):
         return None
 
     def get_osgi_provides(self):
-        provs = []
+        bundles = []
         for metadata in self.__metadata:
             if metadata.artifacts and metadata.artifacts.artifact:
                 for a in metadata.artifacts.artifact:
                     artifact = MetadataArtifact.from_metadata(a)
-                    if artifact.properties:
-                        osgi_id = ""
-                        version = ""
-                        try:
-                            osgi_id = artifact.properties["osgi.id"]
-                            version = artifact.properties["osgi.version"]
-                        except KeyError:
-                            pass
-                        if osgi_id:
-                            bundle = OSGiBundle.from_string(osgi_id)
-                            bundle.version = version
-                            provs.append(bundle)
-        return provs
+                    bundle = artifact.get_osgi_bundle()
+                    if bundle:
+                        bundles.append(bundle)
+        return bundles
 
     def get_osgi_requires(self):
         reqs = []
-        for metadata in self.__metadata:
-            if metadata.artifacts and metadata.artifacts.artifact:
-                for a in metadata.artifacts.artifact:
-                    artifact = MetadataArtifact.from_metadata(a)
-                    if artifact.properties:
-                        try:
-                            content = artifact.properties["osgi.requires"]
-                            req_strings = set()
-                            req_strings |= set(content.split(','))
-                            reqs.extend([OSGiRequire.parse(x) for x in req_strings])
-                        except:
-                            pass
+        bundles = self.get_osgi_provides()
+        reqs.extend(x.requires for x in bundles)
         return reqs
 
     def contains_only_poms(self):

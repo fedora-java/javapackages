@@ -1,4 +1,5 @@
 import javapackages.common.config as config
+from javapackages.common.osgi import OSGiBundle
 from javapackages.maven.artifact import Artifact
 from javapackages.maven.pom import POM
 from javapackages.maven.printer import Printer
@@ -51,6 +52,11 @@ class MetadataArtifact(object):
             except KeyError:
                 pass
         return False
+
+    def get_osgi_bundle(self):
+        if not self.properties:
+            return None
+        return OSGiBundle.from_properties(self.properties)
 
     def get_buildroot_path(self, prefix=None):
         if not self.path:
