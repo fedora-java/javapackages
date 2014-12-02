@@ -64,6 +64,20 @@ class OSGiRequire(object):
         bundle, namespace = OSGiRequire.parse(osgistr)
         return cls(bundle, namespace=namespace)
 
+    @classmethod
+    def from_properties(cls, properties):
+        requires = []
+        try:
+            reqstr = properties["osgi.requires"]
+            for r in reqstr.split(","):
+                req = OSGiRequire.from_string(r)
+                if req:
+                    requires.append(req)
+        except:
+            pass
+
+        return requires
+
     def get_rpm_str(self, version="", namespace=""):
         ns = namespace or self.namespace
         verstr = ""
@@ -134,15 +148,7 @@ class OSGiBundle(object):
             return None
         bundle, _, namespace, _ = OSGiBundle.parse(osgi_id)
 
-        requires = []
-        try:
-            reqstr = properties["osgi.requires"]
-            for r in reqstr.split(","):
-                req = OSGiRequire.from_string(r)
-                if req:
-                    requires.append(req)
-        except:
-            pass
+        requires = OSGiRequire.from_properties(properties)
 
         return cls(bundle, version=version, namespace=namespace,
                    requires=requires)
