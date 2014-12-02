@@ -1,6 +1,5 @@
 import unittest
 import shutil
-import sys
 
 from test_common import mavenreq, assertIn
 
@@ -253,6 +252,13 @@ class TestMavenReq(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
         want = ("jpackage-utils", "java-headless")
+        self.assertEqual(set(want), set(sout))
+
+    @mavenreq(["osgi_versioned/maven-metadata/require.xml"])
+    def test_osgi_versioned(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("osgi(osgi.req1) = 1.0", "jpackage-utils", "java-headless")
         self.assertEqual(set(want), set(sout))
 
 if __name__ == '__main__':
