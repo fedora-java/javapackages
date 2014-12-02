@@ -153,6 +153,18 @@ class OSGiBundle(object):
         return cls(bundle, version=version, namespace=namespace,
                    requires=requires)
 
+    def __eq__(self, other):
+        if not isinstance(other, (OSGiBundle, OSGiRequire)):
+            return False
+        if self.bundle != other.bundle:
+            return False
+        if self.namespace != other.namespace:
+            return False
+        return True
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def get_rpm_str(self, version="", namespace=""):
         return "{ns}{d}osgi({bundle}) = {version}".format(ns=namespace or self.namespace,
                                                           d="-" if self.namespace else "",
