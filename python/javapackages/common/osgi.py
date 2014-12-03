@@ -35,11 +35,9 @@
 import os
 import pickle
 import re
-import subprocess
 
 import javapackages.common.config as config
 from javapackages.common.manifest import Manifest
-from javapackages.common.util import execute_command
 
 
 class OSGiRequire(object):
