@@ -146,7 +146,10 @@ def osgi_common(args, scriptpath):
         extra_env = {"RPM_BUILD_ROOT": "/dev/null"}
     ret = call_script(scriptpath, ["--cachedir", "/tmp"], stdin=stdin,
                       wrapped=True, extra_env=extra_env)
-    shutil.rmtree("/tmp/.javapackages_cache/")
+    try:
+        shutil.rmtree("/tmp/.javapackages_cache/")
+    except OSError:
+        pass
     return ret
 
 
