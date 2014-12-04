@@ -34,11 +34,7 @@
 import os
 import json
 
-# for maven.req/maven.prov
-prov_artifacts_cache_f = "provided_artifacts.cache"
-skip_artifacts_cache_f = "skipped_artifacts.cache"
-prov_osgi_cache_f = "provided_osgi.cache"
-# for osgi.req/osgi.prov
+metadata_cache_f = "metadata.cache"
 osgi_cache_f = "osgi.cache"
 
 
