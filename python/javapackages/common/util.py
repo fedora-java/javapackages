@@ -41,6 +41,11 @@ from optparse import OptionParser
 
 
 def kill_parent_process():
+    # mock may kill us immediately after rpmbuild dies, before output
+    # is flushed. To avoid this race condiditon we must explicitly
+    # flush any pending output before trying to kill parent.
+    sys.stdout.flush()
+    sys.stderr.flush()
     # rpmbuild ignores non-zero exit codes, but this is bad. Make sure
     # the build fails and doesn't silently ignore problems
     os.kill(os.getppid(), signal.SIGTERM)
