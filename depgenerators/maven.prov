@@ -38,6 +38,7 @@ import sys
 import traceback
 import logging
 from javapackages.metadata.metadata import Metadata
+from javapackages.cache.metadata import MetadataCache
 from javapackages.common.util import kill_parent_process, init_rpmgen
 
 logging.basicConfig(level=logging.DEBUG)
@@ -49,15 +50,16 @@ class TagBuilder:
         if filelist == None:
             filelist = sys.stdin
         paths = [line.rstrip() for line in filelist.readlines()]
+        cache = MetadataCache(rpmconf.cachedir, rpmconf.scl)
         for path in paths:
-            mdata = Metadata(path)
+            metadata = cache.get_metadata_for_path(path)
 
             provides = set()
-            for artifact in mdata.get_provided_artifacts():
+            for artifact in metadata.artifacts:
                 provides.add(artifact.get_rpm_str(namespace=artifact.namespace,
                                                   pkgver=artifact.version))
             # print OSGi provides from metadata
-            osgi_provides = mdata.get_osgi_provides()
+            osgi_provides = metadata.get_osgi_provides()
             for p in osgi_provides:
                 provides.add(p.get_rpm_str())
             _log.debug("metadata provides: %s", ", ".join(provides))
@@ -67,7 +69,7 @@ class TagBuilder:
 
 if __name__ == "__main__":
     try:
-        init_rpmgen(sys.argv)
+        rpmconf = init_rpmgen(sys.argv)
         builder = TagBuilder()
     except Exception:
         traceback.print_exc(file=sys.stderr)

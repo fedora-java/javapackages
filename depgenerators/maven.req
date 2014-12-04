@@ -42,6 +42,7 @@ from lxml import etree
 
 from javapackages.common.config import get_configs, get_buildroot
 from javapackages.common.util import kill_parent_process, init_rpmgen
+from javapackages.cache.metadata import MetadataCache
 from javapackages.maven.pom import POM
 from javapackages.maven.artifact import Artifact
 from javapackages.metadata.metadata import Metadata
@@ -58,44 +59,22 @@ class TagBuilder(object):
             filelist = sys.stdin
 
         paths = [line.rstrip() for line in filelist.readlines()]
-
         self.config = self._get_config()
-        self.metadata_paths = None
-        self.provided_artifacts = []
-        self.skipped_artifacts = []
-        self.provided_osgi = {}
+        cache = MetadataCache(rpmconf.cachedir, rpmconf.scl)
+        self.provided_artifacts = cache.get_provided_artifacts()
+        self.skipped_artifacts = cache.get_skipped_artifacts()
+        self.provided_osgi = cache.get_provided_osgi()
+        self.metadata_dir = os.path.dirname(paths[0])
 
-        if paths:
-            self.metadata_dir = os.path.dirname(paths[0])
-            metadata_paths = None
-            metadata = None
+        for path in paths:
+            metadata = cache.get_metadata_for_path(path)
+            self.print_requires(metadata)
 
-            # get all provided artifacts
-            self.provided_artifacts = Metadata.read_provided_artifacts_from_cache(rpmconf.cachedir)
-            if self.provided_artifacts is None:
-                metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.provided_artifacts = metadata.write_provided_artifacts_to_cache(rpmconf.cachedir) or []
-
-            # get all skipped artifacts
-            self.skipped_artifacts = Metadata.read_skipped_artifacts_from_cache(rpmconf.cachedir)
-            if self.skipped_artifacts is None:
-                metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.skipped_artifacts = metadata.write_skipped_artifacts_to_cache(rpmconf.cachedir) or []
-
-            # get all provided OSGi bundles
-            self.provided_osgi = Metadata.read_provided_osgi_from_cache(rpmconf.cachedir)
-            if self.provided_osgi is None:
-                metadata = Metadata(self.metadata_paths or self._gather_metadata_files())
-                self.provided_osgi = metadata.write_provided_osgi_to_cache(rpmconf.cachedir) or []
-
-        curr_metadata = Metadata(paths[0])
-        self.print_requires(curr_metadata)
-
-        # generate also R on plugins and extensions from POM file, but only
-        # if this is POM-only package and xmvn-resolve is installed
-        if XMvnResolve.is_available():
-            if curr_metadata.contains_only_poms():
-                self.print_pom_requires(curr_metadata)
+            # generate also R on plugins and extensions from POM file, but only
+            # if this is POM-only package and xmvn-resolve is installed
+            if XMvnResolve.is_available():
+                if metadata.contains_only_poms():
+                    self.print_pom_requires(metadata)
 
 
     def print_pom_requires(self, metadata):
@@ -103,7 +82,7 @@ class TagBuilder(object):
         Print Requires on plugins and extensions in POM files
         """
         pom_paths = []
-        for artifact in metadata.get_provided_artifacts():
+        for artifact in metadata.artifacts:
             if artifact.path:
                 pom_path = os.path.join(get_buildroot(), artifact.path[1:])
                 pom_paths.append(pom_path)
@@ -113,8 +92,8 @@ class TagBuilder(object):
         for i, pom_path in enumerate(pom_paths):
             pom = POM(pom_path)
             self._generate_requires_from_pom(pom,
-                                             metadata.get_provided_artifacts()[i],
-                                             metadata.get_provided_artifacts())
+                                             metadata.artifacts[i],
+                                             metadata.artifacts)
 
     def print_requires(self, metadata):
         """
@@ -143,7 +122,7 @@ class TagBuilder(object):
             subpkg_dep, pkgver = dependency.is_provided_by(self.provided_artifacts)
             if subpkg_dep:
                 # check if dependency isn't provided by same metadata file
-                if not dependency.is_provided_by(metadata.get_provided_artifacts())[0]:
+                if not dependency.is_provided_by(metadata.artifacts)[0]:
                     # requires on subpackages are always versioned
                     rpmstr = dependency.get_rpm_str(namespace=dependency.namespace,
                                                     compat=dependency.resolvedVersion,
@@ -169,8 +148,8 @@ class TagBuilder(object):
             raise Exception(unknown_msg)
 
         if skipped_but_required:
-            skipped_msg = "Following artifacts were built " \
-                          "but are not being installed however other " \
+            skipped_msg = "Following artifacts were built, " \
+                          "but are not being installed. However, other " \
                           "artifacts require them:\n"
             for skipped in skipped_but_required:
                 required_by = self._find_what_requires(skipped)
