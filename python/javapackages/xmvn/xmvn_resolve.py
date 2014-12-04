@@ -52,9 +52,6 @@ class XMvnResolve(object):
         rc, stdout, stderr = execute_command(binpath, args=["--raw-request"],
                                              input=request, enable_scl=scl)
 
-        if rc != 0:
-            raise Exception(stderr)
-
         result = XMvnResolve._process_results(stdout)
         return result
 
