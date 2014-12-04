@@ -37,18 +37,13 @@ import gzip
 import logging
 import os.path
 import xml
-import pickle
 
 from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.dependency import MetadataDependency
 from javapackages.metadata.skippedartifact import MetadataSkippedArtifact
-from javapackages.metadata.exclusion import MetadataExclusion
-from javapackages.common.osgi import OSGiRequire, OSGiBundle
-import javapackages.common.config as config
 import javapackages.metadata.pyxbmetadata as m
 
 import pyxb
-
 
 
 class MetadataLoadingException(Exception):
@@ -62,122 +57,91 @@ class MetadataInvalidException(Exception):
 class Metadata(object):
 
     def __init__(self, path):
-        if type(path) == list:
-            self.__paths = path
-        else:
-            self.__paths = [path]
-        self.__metadata = []
-        for p in self.__paths:
-            try:
-                self.__load_metadata(p)
-            except (pyxb.UnrecognizedContentError,
-                    pyxb.UnrecognizedDOMRootNodeError,
-                    xml.sax.SAXParseException) as e:
-                logging.warning("Failed to parse metadata {path}: {e}"
-                                .format(path=path,
-                                        e=e))
-        if len(self.__metadata) == 0:
-            raise MetadataInvalidException("None of metadata paths could be parsed")
+        self._path = path
+        self.artifacts = []
+        self.skipped_artifacts = []
+        self.properties = {}
 
+        try:
+            metadata = self._load_metadata(self._path)
+        except (pyxb.UnrecognizedContentError,
+                pyxb.UnrecognizedDOMRootNodeError,
+                xml.sax.SAXParseException) as e:
+            logging.warning("Failed to parse metadata {path}: {e}"
+                            .format(path=path, e=e))
+            raise MetadataLoadingException()
 
-    def __load_metadata(self, metadata_path):
+        self.artifacts = self._read_artifacts(metadata)
+        self.skipped_artifacts = self._read_skipped_artifacts(metadata)
+        self.properties = self._read_properties(metadata)
+
+    def _load_metadata(self, metadata_path):
         with open(metadata_path, 'rb') as f:
             try:
                 gzf = gzip.GzipFile(os.path.basename(metadata_path),
-                                    'rb',
-                                    fileobj=f)
+                                    'rb', fileobj=f)
                 data = gzf.read()
             except IOError:
                 # not a compressed metadata, just rewind and read the data
                 f.seek(0)
                 data = f.read()
+        return m.CreateFromDocument(data)
 
-            self.__metadata.append(m.CreateFromDocument(data))
-
-    def get_provided_artifacts(self):
-        """Returns list of Artifact provided by given metadata."""
-
+    def _read_artifacts(self, metadata):
         artifacts = []
-        for metadata in self.__metadata:
-            if metadata.artifacts and metadata.artifacts.artifact:
-                for a in metadata.artifacts.artifact:
-                    artifact = MetadataArtifact.from_metadata(a)
-                    if not artifact.version:
-                        raise MetadataInvalidException("Artifact {a} does not have version in maven provides".format(a=artifact))
-                    artifacts.append(artifact)
+        if metadata.artifacts and metadata.artifacts.artifact:
+            for a in metadata.artifacts.artifact:
+                artifact = MetadataArtifact.from_metadata(a)
+                if not artifact.version:
+                    raise MetadataInvalidException("Artifact {a} does not have version in maven provides".format(a=artifact))
+                artifacts.append(artifact)
         return artifacts
 
+    def _read_skipped_artifacts(self, metadata):
+        artifacts = []
+        if metadata.skippedArtifacts and metadata.skippedArtifacts.skippedArtifact:
+            for a in metadata.skippedArtifacts.skippedArtifact:
+                artifact = MetadataSkippedArtifact.from_metadata(a)
+                artifacts.append(artifact)
+        return list(artifacts)
+
+    def _read_properties(self, metadata):
+        properties = {}
+        if hasattr(metadata, 'properties') and metadata.properties:
+            properties = dict((prop.tagName, prop.firstChild.value)
+                              for prop in metadata.properties.wildcardElements())
+        return properties
 
     def get_required_artifacts(self):
         """Returns list of Artifact required by given metadata."""
-        artifacts = set()
-        for metadata in self.__metadata:
-            for a in metadata.artifacts.artifact:
-                if not a.dependencies:
-                    continue
-
-                for dep in a.dependencies.dependency:
-                    artifacts.add(MetadataDependency.from_metadata(dep))
-
-        return list(artifacts)
-
-    def get_skipped_artifacts(self):
-        """Returns list of Artifact that were build but not installed"""
-        artifacts = set()
-        for metadata in self.__metadata:
-            if not metadata.skippedArtifacts:
-                continue
-            for dep in metadata.skippedArtifacts.skippedArtifact:
-                artifact = MetadataSkippedArtifact.from_metadata(dep)
-                artifacts.add(artifact)
-        return list(artifacts)
-
-    def get_excluded_artifacts(self):
-        """Returns list of Artifacts that should be skipped for requires"""
-        artifacts = set()
-        for metadata in self.__metadata:
-            for a in metadata.artifacts.artifact:
-                if not a.dependencies:
-                    continue
-
-                for dep in a.dependencies.dependency:
-                    if not dep.exclusions:
-                        continue
-
-                    for exclusion in dep.exclusions.exclusion:
-                        artifact = MetadataExclusion.from_metadata(exclusion)
-                artifacts.add(artifact)
-        return list(artifacts)
+        dependencies = set()
+        for artifact in self.artifacts:
+            for dependency in artifact.dependencies:
+                dependencies.add(dependency)
+        return list(dependencies)
 
     def get_java_requires(self):
         """Returns JVM version required by metadata or None"""
-        for metadata in self.__metadata:
-            if not metadata.properties:
-                return None
-            for prop in metadata.properties.wildcardElements():
-                if prop.tagName == u'requiresJava':
-                    return prop.firstChild.value
+        try:
+            return self.properties[u'requiresJava']
+        except KeyError:
+            pass
         return None
 
     def get_java_devel_requires(self):
         """Returns JVM development version required by metadata or None"""
-        for metadata in self.__metadata:
-            if not metadata.properties:
-                return None
-            for prop in metadata.properties.wildcardElements():
-                if prop.tagName == u'requiresJavaDevel':
-                    return prop.firstChild.value
+        try:
+            return self.properties[u'requiresJavaDevel']
+        except KeyError:
+            pass
         return None
 
     def get_osgi_provides(self):
         bundles = []
-        for metadata in self.__metadata:
-            if metadata.artifacts and metadata.artifacts.artifact:
-                for a in metadata.artifacts.artifact:
-                    artifact = MetadataArtifact.from_metadata(a)
-                    bundle = artifact.get_osgi_bundle()
-                    if bundle:
-                        bundles.append(bundle)
+        for artifact in self.artifacts:
+            bundle = artifact.get_osgi_bundle()
+            if bundle:
+                bundles.append(bundle)
         return bundles
 
     def get_osgi_requires(self):
@@ -189,58 +153,20 @@ class Metadata(object):
 
     def contains_only_poms(self):
         """Check if metadata file contains only POM file(s)"""
-        for artifact in self.get_provided_artifacts():
+        for artifact in self.artifacts:
             if artifact.extension != "pom":
                 return False
         return True
 
-    def write_provided_artifacts_to_cache(self, cachedir):
-        cachefile = os.path.join(cachedir, config.prov_artifacts_cache_f)
-        return self._write_cache_file(cachefile, self.get_provided_artifacts())
-
-    @staticmethod
-    def read_provided_artifacts_from_cache(cachedir):
-        cachefile = os.path.join(cachedir, config.prov_artifacts_cache_f)
-        return Metadata._read_cache_file(cachefile)
-
-    def write_skipped_artifacts_to_cache(self, cachedir):
-        cachefile = os.path.join(cachedir, config.skip_artifacts_cache_f)
-        return self._write_cache_file(cachefile, self.get_skipped_artifacts())
-
-    @staticmethod
-    def read_skipped_artifacts_from_cache(cachedir):
-        cachefile = os.path.join(cachedir, config.skip_artifacts_cache_f)
-        return Metadata._read_cache_file(cachefile)
-
-    def write_provided_osgi_to_cache(self, cachedir):
-        cachefile = os.path.join(cachedir, config.prov_osgi_cache_f)
-        return self._write_cache_file(cachefile, self.get_osgi_provides())
-
-    @staticmethod
-    def read_provided_osgi_from_cache(cachedir):
-        cachefile = os.path.join(cachedir, config.prov_osgi_cache_f)
-        return Metadata._read_cache_file(cachefile)
-
-    def _write_cache_file(self, cachefile, content):
-        try:
-            cachefile = open(cachefile, 'wb')
-            cache = (os.getppid(), content)
-            pickle.dump(cache, cachefile)
-            cachefile.close()
-        except IOError:
-            return None
-        return content
-
-    @staticmethod
-    def _read_cache_file(cachefile):
-        try:
-            cachefile = open(cachefile, 'rb')
-            cache = pickle.load(cachefile)
-            cachefile.close()
-            # check if the cache was most likely created during current build
-            if cache[0] != os.getppid():
-                logging.warning("Cache is outdated, skipping")
-                return None
-        except IOError:
-            return None
-        return cache[1]
+    def get_artifact_for_path(self, path, can_be_dir=False):
+        path = os.path.abspath(path)
+        for artifact in self.artifacts:
+            artifact_path = artifact.get_buildroot_path()
+            if can_be_dir:
+                # artifact_path can be a directory
+                if path.startswith(artifact_path):
+                    return artifact
+            else:
+                if path == artifact_path:
+                    return artifact
+        return None
