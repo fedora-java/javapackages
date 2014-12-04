@@ -72,10 +72,15 @@ class OSGiCache(Cache):
 
         bundle_paths = self._find_paths()
         for path in bundle_paths:
-            bundle = OSGiBundle.from_manifest(path)
+            artifact = self._metadata_cache.get_artifact_for_path(path, can_be_dir=True)
+            if artifact and artifact.has_osgi_information():
+                bundle = artifact.get_osgi_bundle()
+            else:
+                bundle = OSGiBundle.from_manifest(path)
+                if bundle:
+                    if not bundle.namespace and self._scl:
+                        bundle.namespace = self._scl
             if bundle:
-                if not bundle.namespace and self._scl:
-                    bundle.namespace = self._scl
                 cache.update({path: bundle})
 
         return cache
