@@ -48,9 +48,10 @@ class XMvnResolve(object):
 
     @staticmethod
     def process_raw_request(raw_request_list, scl=None):
+        command = "{tool} {args}".format(tool=XMvnResolve.tool,
+                                         args="--raw-request")
         request = XMvnResolve._join_raw_requests(raw_request_list)
-        rc, stdout, stderr = execute_command(XMvnResolve.tool,
-                                             args=["--raw-request"],
+        rc, stdout, stderr = execute_command(command,
                                              shell=True,
                                              input=request,
                                              enable_scl=scl)
