@@ -21,7 +21,7 @@ setup(
     license = 'BSD',
     download_url = 'https://fedorahosted.org/released/javapackages/',
     url = 'https://git.fedorahosted.org/git/javapackages.git',
-    packages = ['javapackages', 'javapackages.maven', 'javapackages.metadata', 'javapackages.xmvn', 'javapackages.common', 'javapackages.ivy'],
+    packages = ['javapackages', 'javapackages.maven', 'javapackages.metadata', 'javapackages.xmvn', 'javapackages.common', 'javapackages.ivy', 'javapackages.cache'],
     test_suite = "test",
     maintainer  = 'javapackages maintainers',
     maintainer_email = 'java-devel@lists.fedoraproject.org'
