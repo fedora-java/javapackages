@@ -74,6 +74,8 @@ class OSGiCache(Cache):
         for path in bundle_paths:
             bundle = OSGiBundle.from_manifest(path)
             if bundle:
+                if not bundle.namespace and self._scl:
+                    bundle.namespace = self._scl
                 cache.update({path: bundle})
 
         return cache
