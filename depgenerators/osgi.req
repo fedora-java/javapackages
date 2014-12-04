@@ -83,6 +83,8 @@ if __name__ == "__main__":
     try:
         rpmconf = init_rpmgen(sys.argv)
 
+        # this dependency generator should never run in SCL environment.
+        # but check it, just in case...
         if rpmconf.scl:
             raise Exception("{name} dependency generator doesn't support SCLs"
                             .format(name=os.path.basename(__file__)))
