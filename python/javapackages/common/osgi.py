@@ -32,11 +32,8 @@
 # Authors:  Alexander Kurtakov <akurtako@redhat.com>
 #           Michal Srb <msrb@redhat.com>
 
-import os
-import pickle
 import re
 
-import javapackages.common.config as config
 from javapackages.common.manifest import Manifest
 
 
@@ -168,117 +165,3 @@ class OSGiBundle(object):
                                                           d="-" if self.namespace else "",
                                                           bundle=self.bundle,
                                                           version=version or self.version)
-
-
-def check_path_in_metadata(path, cachedir_path):
-    buildroot = config.get_buildroot()
-
-    from javapackages.metadata.metadata import Metadata, MetadataInvalidException
-    artifacts = Metadata.read_provided_artifacts_from_cache(cachedir_path)
-    if artifacts is None:
-        artifacts = []
-        metadata_paths = []
-        for dirpath, dirnames, filenames in os.walk(buildroot):
-            for filename in filenames:
-                fpath = os.path.abspath(os.path.join(dirpath, filename))
-                # FIXME: add path to metadata directory to config file?
-                if "/maven-metadata/" in fpath:
-                    metadata_paths.append(fpath)
-        try:
-            mdata = Metadata(metadata_paths)
-            artifacts = mdata.write_provided_artifacts_to_cache(cachedir_path)
-        except MetadataInvalidException:
-            pass
-
-    for a in artifacts:
-        path = os.path.abspath(path)
-        if path.startswith(buildroot):
-            path = path[len(buildroot):]
-            path = os.path.join('/', path)
-        if a.path and a.has_osgi_information():
-            if (os.path.abspath(a.path) == path or
-               (path.startswith(os.path.abspath(a.path)) and
-               os.path.realpath(buildroot + path))):
-                return True
-    return False
-
-
-class OSGiCache(object):
-
-    def __init__(self, cachedir, scl=None):
-        self._cachedir = cachedir
-        self._cache = self._read_osgi_cache()
-        self._scl = scl
-
-        if self._cache is None:
-            cache = self._process_osgi_in_buildroot()
-            self._write_osgi_cache(cache)
-            self._cache = cache
-
-    def get_bundle_for_path(self, path):
-        try:
-            return self._cache[path]
-        except KeyError:
-            pass
-        return None
-
-    def get_bundle(self, name):
-        for bundle in self._cache.values():
-            if bundle == name:
-                return bundle
-        return None
-
-    def _process_osgi_in_buildroot(self):
-        # "path: OSGiBundle" mapping
-        cache = {}
-
-        bundle_paths = self._find_possible_bundles()
-        for path in bundle_paths:
-            bundle = OSGiBundle.from_manifest(path)
-            if bundle:
-                cache.update({path: bundle})
-
-        return cache
-
-    def _find_possible_bundles(self):
-        buildroot = config.get_buildroot()
-        paths = []
-        for dirpath, _, filenames in os.walk(buildroot):
-            for filename in filenames:
-                fpath = os.path.abspath(os.path.join(dirpath, filename))
-                if self._check_path(fpath):
-                    paths.append(fpath)
-        return paths
-
-    def _check_path(self, path):
-        if os.path.islink(path):
-            return False
-        if path.endswith(".jar"):
-            return True
-        if path.endswith("/MANIFEST.MF"):
-            # who knows where the manifest can be in buildroot.
-            # this is an attempt to identify only MANIFEST.MF files
-            # which are in %{_datadir} or %{_prefix}/lib
-            if "/usr/share/" in path or "/usr/lib" in path:
-                return True
-        return False
-
-    def _read_osgi_cache(self):
-        try:
-            cachefile = open(os.path.join(self._cachedir,
-                                          config.osgi_cache_f), 'rb')
-            cache = pickle.load(cachefile)
-            cachefile.close()
-        except IOError:
-            return None
-        return cache
-
-    def _write_osgi_cache(self, cache):
-        try:
-            cachefile = open(os.path.join(self._cachedir,
-                                          config.osgi_cache_f), 'wb')
-            pickle.dump(cache, cachefile)
-            cachefile.close()
-        except IOError:
-            return None
-        return cache
