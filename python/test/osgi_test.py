@@ -45,9 +45,10 @@ class TestOSGi(unittest.TestCase):
         self.assertEqual(len(b.requires), 0)
 
     def test_bundle_from_properties_complex(self):
-        props = {"osgi.id": "bundle.name(ns1)",
+        props = {"osgi.id": "bundle.name",
                  "osgi.version": "1",
-                 "osgi.requires": "req1.abc,req2(ns2)"
+                 "osgi.requires": "req1.abc,req2(ns2)",
+                 "osgi.namespace": "ns1"
                  }
         b = OSGiBundle.from_properties(props)
         self.assertEqual(b.bundle, "bundle.name")
