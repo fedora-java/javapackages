@@ -138,14 +138,32 @@ def mavenprov(filelist):
     return test_decorator
 
 
-def osgi_common(args, scriptpath):
-    stdin = os.path.abspath(args[0])
-    if len(args) == 2:
-        extra_env = {"RPM_BUILD_ROOT": args[1]}
-    else:
-        extra_env = {"RPM_BUILD_ROOT": "/dev/null"}
-    ret = call_script(scriptpath, ["--cachedir", "/tmp"], stdin=stdin,
-                      wrapped=True, extra_env=extra_env)
+def call_rpmgen(rpmgen_name, filelist_prefix, filelist, env=None):
+    scriptpath = path.join(DIRPATH, '..', 'depgenerators', rpmgen_name)
+    stdin = []
+    stdin.extend([os.path.abspath(os.path.join(filelist_prefix, x))
+                  for x in filelist])
+
+    buildroot = "/dev/null"
+
+    if not env:
+        env = {}
+
+    if "RPM_BUILD_ROOT" not in env:
+        result = re.match(".*?/buildroot/", stdin[0])
+        if result:
+            buildroot = os.path.abspath(result.group(0))
+            env.update({"RPM_BUILD_ROOT": buildroot})
+        else:
+            env.update({"RPM_BUILD_ROOT": "/dev/null"})
+
+    try:
+        shutil.rmtree("/tmp/.javapackages_cache/")
+    except OSError:
+        pass
+    for line in stdin:
+        ret = call_script(scriptpath, ["--cachedir", "/tmp"], stdin=line,
+                          wrapped=True, extra_env=env)
     try:
         shutil.rmtree("/tmp/.javapackages_cache/")
     except OSError:
@@ -153,21 +171,23 @@ def osgi_common(args, scriptpath):
     return ret
 
 
-def osgiprov(args):
+def osgiprov(*args, **kwargs):
     def test_decorator(fun):
         def test_decorated(self):
-            scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'osgi.prov')
-            (stdout, stderr, return_value) = osgi_common(args, scriptpath)
+            (stdout, stderr, return_value) = call_rpmgen("osgi.prov",
+                                                         "data/osgi/",
+                                                         *args, **kwargs)
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
 
 
-def osgireq(args):
+def osgireq(*args, **kwargs):
     def test_decorator(fun):
         def test_decorated(self):
-            scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'osgi.req')
-            (stdout, stderr, return_value) = osgi_common(args, scriptpath)
+            (stdout, stderr, return_value) = call_rpmgen("osgi.req",
+                                                         "data/osgi/",
+                                                         *args, **kwargs)
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
