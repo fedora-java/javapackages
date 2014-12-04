@@ -31,42 +31,32 @@
 # Authors:  Michal Srb <msrb@redhat.com>
 
 import lxml.etree
-import os
 
-from javapackages.common.config import get_configs
 from javapackages.common.util import execute_command
 
 
 class XMvnResolve(object):
     # TODO:
     # - documentation
+    tool = "xmvn-resolve"
 
     @staticmethod
-    def is_available():
-        return os.path.exists(XMvnResolve._load_path_from_config())
+    def is_available(scl=None):
+        command = "type {tool}".format(tool=XMvnResolve.tool)
+        rc, _, _ = execute_command(command, shell=True, enable_scl=scl)
+        return True if not rc else False
 
     @staticmethod
     def process_raw_request(raw_request_list, scl=None):
-        binpath = XMvnResolve._load_path_from_config()
         request = XMvnResolve._join_raw_requests(raw_request_list)
-        rc, stdout, stderr = execute_command(binpath, args=["--raw-request"],
-                                             input=request, enable_scl=scl)
+        rc, stdout, stderr = execute_command(XMvnResolve.tool,
+                                             args=["--raw-request"],
+                                             shell=True,
+                                             input=request,
+                                             enable_scl=scl)
 
         result = XMvnResolve._process_results(stdout)
         return result
-
-    @staticmethod
-    def _load_path_from_config():
-        configs = get_configs()
-        path = None
-        for config in configs:
-            path = config.get('path', "")
-            if os.path.exists(path):
-                break
-        if not path:
-            # default path
-            path = "/usr/bin/xmvn-resolve"
-        return path
 
     @staticmethod
     def _join_raw_requests(raw_request_list):

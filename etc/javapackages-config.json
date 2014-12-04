@@ -19,7 +19,4 @@
             "jpackage-utils"
         ]
     },
-    "xmvn-resolve": {
-        "path": "/usr/bin/xmvn-resolve"
-    }
 }
