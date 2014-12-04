@@ -82,6 +82,11 @@ class TagBuilder(object):
 if __name__ == "__main__":
     try:
         rpmconf = init_rpmgen(sys.argv)
+
+        if rpmconf.scl:
+            raise Exception("{name} dependency generator doesn't support SCLs"
+                            .format(name=os.path.basename(__file__)))
+
         builder = TagBuilder()
     except Exception:
         traceback.print_exc(file=sys.stderr)
