@@ -136,16 +136,21 @@ class OSGiBundle(object):
     def from_properties(cls, properties):
         osgi_id = ""
         version = ""
+        namespace = ""
         try:
             osgi_id = properties["osgi.id"]
             version = properties["osgi.version"]
         except KeyError:
             return None
-        bundle, _, namespace, _ = OSGiBundle.parse(osgi_id)
+
+        try:
+            namespace = properties["osgi.namespace"]
+        except KeyError:
+            pass
 
         requires = OSGiRequire.from_properties(properties)
 
-        return cls(bundle, version=version, namespace=namespace,
+        return cls(osgi_id, version=version, namespace=namespace,
                    requires=requires)
 
     def __eq__(self, other):
