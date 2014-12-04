@@ -18,5 +18,5 @@
         "always_generate": [
             "jpackage-utils"
         ]
-    },
+    }
 }
