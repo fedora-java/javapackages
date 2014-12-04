@@ -118,7 +118,7 @@
 #
 # Usage: %mvn_artifact <pom> [<artifact-file>]
 #
-%mvn_artifact %{pyinterpreter} %{javadir}-utils/mvn_artifact.py
+%mvn_artifact %{pyinterpreter} %{javadir}-utils/mvn_artifact.py %{?scl:-n %{?scl}}
 
 
 # %mvn_build - build Maven project

@@ -49,7 +49,7 @@ import os
 import traceback
 import pyxb
 import lxml.etree
-from optparse import OptionParser
+from optparse import OptionParser, SUPPRESS_HELP
 
 
 usage="usage: %prog [options] <MVN spec | POM path> [artifact path]"
@@ -88,7 +88,7 @@ class UnknownVersion(Exception):
     pass
 
 
-def get_parent_pom(pom):
+def get_parent_pom(pom, scl=None):
     try:
         metadata = Metadata(config)
         known_artifacts = metadata.get_provided_artifacts()
@@ -103,7 +103,7 @@ def get_parent_pom(pom):
 
     req = ResolutionRequest(pom.groupId, pom.artifactId,
                             extension="pom", version=pom.version)
-    result = XMvnResolve.process_raw_request([req])[0]
+    result = XMvnResolve.process_raw_request([req], scl=scl)[0]
     if not result:
         raise Exception("Unable to resolve parent POM")
 
@@ -169,7 +169,7 @@ def expand_props(deps, props):
         d.interpolate(props)
 
 
-def gather_dependencies(pom_path):
+def gather_dependencies(pom_path, scl=None):
     if not pom_path:
         return []
     pom = POM(pom_path)
@@ -189,7 +189,7 @@ def gather_dependencies(pom_path):
             except PomLoadingException:
                 pass
         if not ppom:
-            ppom = get_parent_pom(parent)
+            ppom = get_parent_pom(parent, scl=scl)
 
         parent = ppom.parent
         pom_props = get_model_variables(ppom)
@@ -246,6 +246,8 @@ if __name__ == "__main__":
                       help="skip dependencies section in resulting metadata")
     parser.add_option("-D", action="append", type="str",
                       help="add artifact property", metavar="property=value")
+    parser.add_option("-n", "--namespace", type="str",
+                      help=SUPPRESS_HELP, default=None)
 
     sys.argv = args_to_unicode(sys.argv)
 
@@ -298,7 +300,7 @@ if __name__ == "__main__":
     if (not options.skip_dependencies and pom_path
        and not is_it_ivy_file(pom_path)):
         deps = []
-        mvn_deps = gather_dependencies(pom_path)
+        mvn_deps = gather_dependencies(pom_path, scl=options.namespace)
         for d in mvn_deps:
             deps.append(MetadataDependency.from_mvn_dependency(d))
         if deps:
