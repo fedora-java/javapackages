@@ -1,0 +1,15 @@
+<metadata xmlns="http://fedorahosted.org/xmvn/METADATA/2.0.0">
+    <uuid>432048235932</uuid>
+    <artifacts>
+        <artifact>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-plugins</artifactId>
+            <version>25</version>
+            <extension>pom</extension>
+            <compatVersions>
+              <version>1.0</version>
+            </compatVersions>
+            <path>/usr/share/maven-poms/pom.xml</path>
+        </artifact>
+    </artifacts>
+</metadata>
