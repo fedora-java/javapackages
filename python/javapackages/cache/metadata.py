@@ -36,7 +36,7 @@ class MetadataCache(Cache):
         return False
 
     def get_artifact_for_path(self, path, can_be_dir=False):
-        for metadata in self._cache:
+        for metadata in self._cache.values():
             artifact = metadata.get_artifact_for_path(path,
                                                       can_be_dir=can_be_dir)
             if artifact:
