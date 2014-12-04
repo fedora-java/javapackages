@@ -119,26 +119,9 @@ def xmvnconfig(name, fnargs):
         return test_decorated
     return test_decorator
 
-def build_depmap_paths(filelist):
-    paths = []
-    for filename in filelist:
-        paths.append(os.path.join(DIRPATH, 'metadata', filename))
-    return '\n'.join(paths)
 
-def mavenprov(filelist):
-    def test_decorator(fun):
-        def test_decorated(self):
-            env = {"RPM_BUILD_ROOT": "/dev/null"}
-            scriptpath = path.join(DIRPATH, '..', 'depgenerators', 'maven.prov')
-            stdin = build_depmap_paths(filelist)
-            (stdout, stderr, return_value) = call_script(scriptpath,
-                    ["--cachedir", "/tmp"], stdin=stdin, wrapped=True, extra_env=env)
-            fun(self, stdout, stderr, return_value)
-        return test_decorated
-    return test_decorator
-
-
-def call_rpmgen(rpmgen_name, filelist_prefix, filelist, env=None):
+def call_rpmgen(rpmgen_name, filelist_prefix, filelist, env=None,
+                config=''):
     scriptpath = path.join(DIRPATH, '..', 'depgenerators', rpmgen_name)
     stdin = []
     stdin.extend([os.path.abspath(os.path.join(filelist_prefix, x))
@@ -163,7 +146,7 @@ def call_rpmgen(rpmgen_name, filelist_prefix, filelist, env=None):
         pass
     for line in stdin:
         ret = call_script(scriptpath, ["--cachedir", "/tmp"], stdin=line,
-                          wrapped=True, extra_env=env)
+                          wrapped=True, extra_env=env, config_path=config)
     try:
         shutil.rmtree("/tmp/.javapackages_cache/")
     except OSError:
@@ -193,31 +176,44 @@ def osgireq(*args, **kwargs):
     return test_decorator
 
 
-def requires_generator(name, filelist, config=None, javaconfdirs=None):
+def mavenprov(*args, **kwargs):
     def test_decorator(fun):
         def test_decorated(self):
-            scriptpath = path.join(DIRPATH, '..', 'depgenerators', name)
-            stdin = build_depmap_paths(filelist)
-            env = {'RPM_BUILD_ROOT': os.getcwd()}
-            if javaconfdirs:
-                confdirs = [os.path.join(DIRPATH, conf) for conf in javaconfdirs]
-                env['JAVACONFDIRS'] = os.pathsep.join(confdirs)
-            if config:
-                config_path = os.path.join(DIRPATH, 'data', 'config', config)
-            else:
-                config_path = os.path.join(DIRPATH, '..', 'etc')
-            (stdout, stderr, return_value) = call_script(scriptpath,
-                    ["--cachedir", "/tmp"], stdin=stdin, wrapped=True, extra_env=env,
-                    config_path=config_path)
+            (stdout, stderr, return_value) = call_rpmgen("maven.prov",
+                                                         "metadata/",
+                                                         *args, **kwargs)
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
 
-def mavenreq(*args, **kwargs):
-    return requires_generator('maven.req', *args, **kwargs)
 
-def javadocreq(*args, **kwargs):
-    return requires_generator('javadoc.req', *args, **kwargs)
+def mavenreq(*args, **kwargs):
+    def test_decorator(fun):
+        def test_decorated(self):
+            if "config" in kwargs:
+                config_path = os.path.join(DIRPATH, 'data', 'config', kwargs["config"])
+            else:
+                config_path = os.path.abspath(os.path.join(DIRPATH, '..', 'etc'))
+            kwargs.update({"config": config_path})
+            if "javaconfdirs" in kwargs:
+                confdirs = [os.path.join(DIRPATH, conf) for conf in kwargs["javaconfdirs"]]
+                try:
+                    env = kwargs["env"]
+                except KeyError:
+                    env = {}
+                env.update({"JAVACONFDIRS": os.pathsep.join(confdirs)})
+                kwargs.update({"env": env})
+                del kwargs["javaconfdirs"]
+            (stdout, stderr, return_value) = call_rpmgen("maven.req",
+                                                         "metadata/",
+                                                         *args,
+                                                         **kwargs)
+            fun(self, stdout, stderr, return_value)
+        return test_decorated
+    return test_decorator
+
+#def javadocreq(*args, **kwargs):
+#    return requires_generator('javadoc.req', *args, **kwargs)
 
 def mvn_depmap(pom, jar=None, fnargs=None):
     def test_decorator(fun):
