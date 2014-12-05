@@ -335,7 +335,6 @@ class TagBuilder(object):
         print more descriptive error messages when we can. If it cannot find
         anything, returns None.
         """
-        # TODO: this can be simplified
         try:
             pom_dir = os.path.join(self.metadata_dir, '..', 'maven-poms')
             for dirname, _, filenames in os.walk(pom_dir):
