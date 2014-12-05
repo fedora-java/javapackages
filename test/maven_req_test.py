@@ -140,14 +140,14 @@ class TestMavenReq(unittest.TestCase):
         self.assertEqual(set(want), set(sout))
 
     #test for rhbz#1012980
-    #@mavenreq(["require_skipped/buildroot/usr/share/maven-metadata/require.xml"])
-    #def test_require_skipped(self, stdout, stderr, return_value):
-    #    self.assertNotEqual(return_value, 0)
-    #    self.assertNotEqual(stderr, '')
-    #    lines = stderr.split('\n')
-    #    self.assertEqual(True, len(lines) > 1)
-    #    self.assertEqual(lines[-5], 'org.codehaus.plexus:plexus-ant-factory:1.0 ' \
-    #                                 'required by org.apache.commons-lang:commons-lang')
+    @mavenreq(["require_skipped/buildroot/usr/share/maven-metadata/require.xml"])
+    def test_require_skipped(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertNotEqual(stderr, '')
+        lines = stderr.split('\n')
+        self.assertEqual(True, len(lines) > 1)
+        self.assertEqual(lines[-5], 'org.codehaus.plexus:plexus-ant-factory:1.0 ' \
+                                     'required by org.apache.commons-lang:commons-lang')
 
     # rhbz#1017701 comment 2
     @mavenreq(["aether/buildroot/usr/share/maven-metadata/require.xml"])

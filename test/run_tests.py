@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     exclude = ["--exclude"]
     # skip these tests
-    exclude.append("javadoc_req_test.py")
+    #exclude.append("maven_req_test.py")
 
     args = ['foo']     # nose ignores the first argument
     # generate xunit report, if nose version is at least 1.x.x
