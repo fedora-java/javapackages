@@ -112,8 +112,16 @@ class Metadata(object):
                               for prop in metadata.properties.wildcardElements())
         return properties
 
+    def get_provided_artifacts(self):
+        """Returns list of MetadataArtifact provided by given metadata."""
+        return self.artifacts
+
+    def get_skipped_artifacts(self):
+        """Returns list of MetadataSkippedArtifact provided by given metadata."""
+        return self.skipped_artifacts
+
     def get_required_artifacts(self):
-        """Returns list of Artifact required by given metadata."""
+        """Returns list of Dependency required by given metadata."""
         dependencies = set()
         for artifact in self.artifacts:
             for dependency in artifact.dependencies:
