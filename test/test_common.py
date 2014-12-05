@@ -124,21 +124,24 @@ def call_rpmgen(rpmgen_name, filelist_prefix, filelist, env=None,
                 config=''):
     scriptpath = path.join(DIRPATH, '..', 'depgenerators', rpmgen_name)
     stdin = []
-    stdin.extend([os.path.abspath(os.path.join(filelist_prefix, x))
-                  for x in filelist])
+    if not filelist:
+        filelist = ["/dev/null"]
 
-    buildroot = "/dev/null"
+    if filelist_prefix:
+        stdin.extend([os.path.abspath(os.path.join(filelist_prefix, x))
+                     for x in filelist])
+    else:
+        stdin = filelist
 
     if not env:
         env = {}
 
-    if "RPM_BUILD_ROOT" not in env:
+    buildroot = "/dev/null"
+    if "RPM_BUILD_ROOT" not in env and stdin:
         result = re.match(".*?/buildroot/", stdin[0])
         if result:
             buildroot = os.path.abspath(result.group(0))
-            env.update({"RPM_BUILD_ROOT": buildroot})
-        else:
-            env.update({"RPM_BUILD_ROOT": "/dev/null"})
+    env.update({"RPM_BUILD_ROOT": buildroot})
 
     try:
         shutil.rmtree("/tmp/.javapackages_cache/")
@@ -190,30 +193,46 @@ def mavenprov(*args, **kwargs):
 def mavenreq(*args, **kwargs):
     def test_decorator(fun):
         def test_decorated(self):
-            if "config" in kwargs:
-                config_path = os.path.join(DIRPATH, 'data', 'config', kwargs["config"])
-            else:
-                config_path = os.path.abspath(os.path.join(DIRPATH, '..', 'etc'))
-            kwargs.update({"config": config_path})
-            if "javaconfdirs" in kwargs:
-                confdirs = [os.path.join(DIRPATH, conf) for conf in kwargs["javaconfdirs"]]
-                try:
-                    env = kwargs["env"]
-                except KeyError:
-                    env = {}
-                env.update({"JAVACONFDIRS": os.pathsep.join(confdirs)})
-                kwargs.update({"env": env})
-                del kwargs["javaconfdirs"]
+            pargs, pkwargs = rpmgen_process_args(args, kwargs)
             (stdout, stderr, return_value) = call_rpmgen("maven.req",
                                                          "metadata/",
-                                                         *args,
-                                                         **kwargs)
+                                                         *pargs,
+                                                         **pkwargs)
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
 
-#def javadocreq(*args, **kwargs):
-#    return requires_generator('javadoc.req', *args, **kwargs)
+
+def javadocreq(*args, **kwargs):
+    def test_decorator(fun):
+        def test_decorated(self):
+            pargs, pkwargs = rpmgen_process_args(args, kwargs)
+            (stdout, stderr, return_value) = call_rpmgen("javadoc.req",
+                                                         "",
+                                                         *pargs,
+                                                         **pkwargs)
+            fun(self, stdout, stderr, return_value)
+        return test_decorated
+    return test_decorator
+
+
+def rpmgen_process_args(args, kwargs):
+    if "config" in kwargs:
+        config_path = os.path.join(DIRPATH, 'data', 'config', kwargs["config"])
+    else:
+        config_path = os.path.abspath(os.path.join(DIRPATH, '..', 'etc'))
+    kwargs.update({"config": config_path})
+    if "javaconfdirs" in kwargs:
+        confdirs = [os.path.join(DIRPATH, conf) for conf in kwargs["javaconfdirs"]]
+        try:
+            env = kwargs["env"]
+        except KeyError:
+            env = {}
+        env.update({"JAVACONFDIRS": os.pathsep.join(confdirs)})
+        kwargs.update({"env": env})
+        del kwargs["javaconfdirs"]
+    return args, kwargs
+
 
 def mvn_depmap(pom, jar=None, fnargs=None):
     def test_decorator(fun):
