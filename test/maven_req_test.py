@@ -176,7 +176,7 @@ class TestMavenReq(unittest.TestCase):
                 "jpackage-utils")
         self.assertEqual(set(want), set(sout))
 
-    @mavenreq(["require_multi/buildroot/usr/share/maven-metadata/require.xml"], javaconfdirs=['data/config/filtered'])
+    @mavenreq(["require_multi/buildroot/usr/share/maven-metadata/require.xml"], javaconfdirs=['filtered/'])
     def test_config_env1(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
@@ -186,7 +186,7 @@ class TestMavenReq(unittest.TestCase):
         self.assertEqual(set(want), set(sout))
 
     @mavenreq(["require_multi/buildroot/usr/share/maven-metadata/require.xml"],
-              javaconfdirs=['data/config/filtered', 'data/config/alternative-java'])
+              javaconfdirs=['filtered/', 'alternative-java/'])
     def test_config_env2(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
