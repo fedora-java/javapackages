@@ -41,7 +41,6 @@ f_set_python $1
 echo "running python tests with ${python}"
 (cd ./python && ${python} setup.py test)
 r1=$?
-r1=0
 (cd ./test && ./run_tests.sh ${1})
 r2=$?
 
