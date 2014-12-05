@@ -262,16 +262,6 @@ class TagBuilder(object):
                         unresolvable.append(deps[i])
         return unresolvable
 
-    def _gather_metadata_files(self):
-        metadata_paths = []
-        for dirname, _, filenames in os.walk(self.metadata_dir):
-            for filename in filenames:
-                if filename.endswith(".pom"):
-                    continue
-                metadata_paths.append(os.path.join(dirname, filename))
-        self.metadata_paths = metadata_paths
-        return metadata_paths
-
     def _generate_requires_from_pom(self, pom, pom_artifact, pkg_arts):
         plugins = pom.plugins
         extensions = pom.extensions
