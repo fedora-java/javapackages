@@ -1,0 +1,8 @@
+{
+    "javadoc.req": {
+        "always_generate": [
+            "extra-req1",
+            "extra-req2"
+        ]
+    }
+}
