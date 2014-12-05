@@ -1,10 +1,9 @@
 import os
 import unittest
 
-from javapackages.metadata.metadata import Metadata, MetadataInvalidException
+from javapackages.metadata.metadata import Metadata, MetadataInvalidException, MetadataLoadingException
 from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.skippedartifact import MetadataSkippedArtifact
-from javapackages.metadata.exclusion import MetadataExclusion
 from javapackages.metadata.dependency import MetadataDependency
 
 from test.misc import exception_expected
@@ -16,7 +15,6 @@ def depmapfile(fname):
             main_dir = os.path.dirname(os.path.realpath(__file__))
             fn(self, Metadata(os.path.join(main_dir, "data", fname)))
         return test_decorated
-
     return test_decorator
 
 
@@ -245,19 +243,7 @@ class TestDepmap(unittest.TestCase):
                                                 "maven-idea-plugin",
                                                 classifier="test-jar") in skipped)
 
-    @depmapfile("depmap_exclusions.xml")
-    def test_exlusions(self, d):
-        skipped = d.get_excluded_artifacts()
-
-        self.assertEqual(len(skipped), 2)
-
-        self.assertTrue(MetadataExclusion("junit",
-                                          "junit") in skipped)
-
-        self.assertTrue(MetadataExclusion("org.codehaus.plexus",
-                                          "plexus-utils") in skipped)
-
-    @exception_expected(MetadataInvalidException)
+    @exception_expected(MetadataLoadingException)
     @depmapfile("depmap_incorrect_provides.xml")
     def test_incorrect_provides(self, d):
         pass
