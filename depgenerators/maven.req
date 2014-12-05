@@ -342,23 +342,18 @@ class TagBuilder(object):
                 for filename in filenames:
                     if filename.endswith(".pom"):
                         pomfile = os.path.join(dirname, filename)
-                        pom = etree.parse(pomfile)
-                        pom_obj = POM(pomfile)
-                        for elem in pom.getiterator():
-                            if hasattr(elem.tag, 'startswith') and elem.tag.startswith('{'):
-                                elem.tag = elem.tag[elem.tag.find('}') + 1:]
-                        dependencies = pom.xpath('/project/dependencies/dependency')
+                        pom = POM(pomfile)
+                        dependencies = pom.dependencies
                         for dep in dependencies:
-                            dep_artifact = Artifact.from_xml_element(dep)
-                            scope = dep.find('./scope')
-                            if scope is not None and scope.text.strip() not in \
-                                    ('compile', 'runtime'):
-                                if not (scope == 'test' and pom_obj.packaging == 'pom'):
+                            if dep.scope not in ('compile', 'runtime'):
+                                if not (dep.scope == 'test' and pom.packaging == 'pom'):
                                     continue
-                            if (artifact.artifactId == dep_artifact.artifactId and
-                               artifact.groupId == dep_artifact.groupId):
-                                return "{g}:{a}".format(g=pom_obj.groupId,
-                                                        a=pom_obj.artifactId)
+                            if (artifact.artifactId == dep.artifactId and
+                               artifact.groupId == dep.groupId and
+                               artifact.extension == dep.extension and
+                               artifact.classifier == dep.classifier):
+                                return "{g}:{a}".format(g=pom.groupId,
+                                                        a=pom.artifactId)
         except Exception:
             pass
 
