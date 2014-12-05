@@ -1,10 +1,14 @@
 #!/usr/bin/python
 import json
 
-CONFIG_PATH = '%{javaconfdir}/javapackages-config.json'
+from javapackages.common.config import get_configs
 
-with open(CONFIG_PATH) as config_file:
-    config = json.load(config_file)['javadoc.req']
+always_generate = set()
 
-for pkg in config['always_generate']:
+configs = get_configs(["%{javaconfdir}"])
+for config_file in configs:
+    config = config_file.get("javadoc.req", {})
+    always_generate = always_generate.union(config.get("always_generate", set()))
+
+for pkg in always_generate:
     print(pkg)
