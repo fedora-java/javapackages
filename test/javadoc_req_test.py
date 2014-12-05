@@ -19,5 +19,10 @@ class TestJavadocReq(unittest.TestCase):
         assertIn(self, "extra-req1", sout)
         assertIn(self, "extra-req2", sout)
 
+    @javadocreq([], javaconfdirs=["non-existent"])
+    def test_missing_configuration(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        self.assertEqual("", stdout)
+
 if __name__ == '__main__':
     unittest.main()
