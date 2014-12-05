@@ -223,7 +223,7 @@ def rpmgen_process_args(args, kwargs):
         config_path = os.path.abspath(os.path.join(DIRPATH, '..', 'etc'))
     kwargs.update({"config": config_path})
     if "javaconfdirs" in kwargs:
-        confdirs = [os.path.join(DIRPATH, conf) for conf in kwargs["javaconfdirs"]]
+        confdirs = [os.path.join(DIRPATH, "data", "config", conf) for conf in kwargs["javaconfdirs"]]
         try:
             env = kwargs["env"]
         except KeyError:
