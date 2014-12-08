@@ -195,7 +195,8 @@ class TestMavenReq(unittest.TestCase):
                 "jpackage-utils")
         self.assertEqual(set(want), set(sout))
 
-    @mavenreq(["require2/buildroot/usr/share/maven-metadata/require.xml"])
+    @mavenreq(["require2/buildroot/usr/share/maven-metadata/require.xml"],
+              xmvnresolve_output="pom_deps")
     def test_deps_from_pom(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
@@ -204,7 +205,8 @@ class TestMavenReq(unittest.TestCase):
                 "mvn(org.fedoraproject.xmvn:xmvn-api)")
         self.assertEqual(set(want), set(sout))
 
-    @mavenreq(["require3/buildroot/usr/share/maven-metadata/require.xml"])
+    @mavenreq(["require3/buildroot/usr/share/maven-metadata/require.xml"],
+              xmvnresolve_output="pom_parent_deps")
     def test_deps_from_pom_with_parent(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
@@ -212,7 +214,8 @@ class TestMavenReq(unittest.TestCase):
                 "mvn(org.fedoraproject.xmvn:xmvn-api:pom:)", "java-headless")
         self.assertEqual(set(want), set(sout))
 
-    @mavenreq(["require4/buildroot/usr/share/maven-metadata/require.xml"])
+    @mavenreq(["require4/buildroot/usr/share/maven-metadata/require.xml"],
+              xmvnresolve_output="subpkg_deps")
     def test_deps_from_pom_on_subpkg(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
@@ -227,7 +230,8 @@ class TestMavenReq(unittest.TestCase):
         want = ("org.apache.maven:maven-project:2.2.1")
         assertIn(self, want, serr)
 
-    @mavenreq(["require6/buildroot/usr/share/maven-metadata/require.xml"])
+    @mavenreq(["require6/buildroot/usr/share/maven-metadata/require.xml"],
+              xmvnresolve_output="pom_deps_fail")
     def test_pom_dep_fail(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         want = ("unresolvable:pom-dependency:pom:2.2.1")
