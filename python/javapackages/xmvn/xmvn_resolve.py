@@ -30,6 +30,7 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
+import os
 import lxml.etree
 
 from javapackages.common.util import execute_command
@@ -51,10 +52,20 @@ class XMvnResolve(object):
         command = "{tool} {args}".format(tool=XMvnResolve.tool,
                                          args="--raw-request")
         request = XMvnResolve._join_raw_requests(raw_request_list)
-        rc, stdout, stderr = execute_command(command,
-                                             shell=True,
-                                             input=request,
-                                             enable_scl=scl)
+        test_env = os.environ.get("JAVAPACKAGES_XMVN_RESOLVE_TEST", None)
+        if not test_env:
+            rc, stdout, stderr = execute_command(command,
+                                                 shell=True,
+                                                 input=request,
+                                                 enable_scl=scl)
+        else:
+            stdout = ""
+            with open(test_env, "rb") as f:
+                lines = f.readlines()
+                stdout = lines[0]
+                lines = lines[1:]
+            with open(test_env, "wb") as f:
+                f.write("\n".join(lines))
 
         result = XMvnResolve._process_results(stdout)
         return result

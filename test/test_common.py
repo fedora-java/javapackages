@@ -231,6 +231,18 @@ def rpmgen_process_args(args, kwargs):
         env.update({"JAVACONFDIRS": os.pathsep.join(confdirs)})
         kwargs.update({"env": env})
         del kwargs["javaconfdirs"]
+
+    if "xmvnresolve_output" in kwargs:
+        dest = "/tmp/"
+        src = os.path.abspath(os.path.join("resolve", kwargs["xmvnresolve_output"]))
+        shutil.copy(src, dest)
+        try:
+            env = kwargs["env"]
+        except KeyError:
+            env = {}
+        env.update({"JAVAPACKAGES_XMVN_RESOLVE_TEST": os.path.join(dest, os.path.basename(src))})
+        kwargs.update({"env": env})
+        del kwargs["xmvnresolve_output"]
     return args, kwargs
 
 
