@@ -15,9 +15,13 @@ import logging
 from xml.dom.minidom import getDOMImplementation
 
 
+# for Python 2.6 compatibility
+class NullHandler(logging.Handler):
+    def emit(self, record):
+        pass
 # Prevent warnings from PyXB about missing logger handler:
 # No handlers could be found for logger "pyxb.binding.basis"
-logging.getLogger("pyxb.binding.basis").addHandler(logging.NullHandler())
+logging.getLogger("pyxb.binding.basis").addHandler(NullHandler())
 
 
 class MetadataArtifact(object):
