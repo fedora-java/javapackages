@@ -43,6 +43,10 @@ class XMvnResolve(object):
 
     @staticmethod
     def is_available(scl=None):
+        # always return True if running in test environment
+        if os.environ.get("JAVAPACKAGES_XMVN_RESOLVE_TEST", None) is not None:
+            return True
+
         command = "type {tool}".format(tool=XMvnResolve.tool)
         rc, _, _ = execute_command(command, shell=True, enable_scl=scl)
         return True if not rc else False
