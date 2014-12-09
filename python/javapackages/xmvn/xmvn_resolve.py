@@ -62,10 +62,10 @@ class XMvnResolve(object):
             stdout = ""
             with open(test_env, "rb") as f:
                 lines = f.readlines()
-                stdout = lines[0]
+                stdout = lines[0].decode("UTF-8")
                 lines = lines[1:]
             with open(test_env, "wb") as f:
-                f.write("\n".join(lines))
+                f.write(b"\n".join(lines))
 
         result = XMvnResolve._process_results(stdout)
         return result
