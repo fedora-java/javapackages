@@ -36,10 +36,9 @@ import os
 import traceback
 import logging
 from javapackages.cache.osgi import OSGiCache
-from javapackages.common.util import kill_parent_process, init_rpmgen
+from javapackages.common.util import kill_parent_process, init_rpmgen, get_logger
 
-logging.basicConfig(level=logging.DEBUG)
-_log = logging.getLogger("osgi.prov")
+_log = get_logger("osgi.prov")
 
 
 class TagBuilder(object):

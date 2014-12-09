@@ -114,3 +114,11 @@ def _get_cachedir(path, create_if_not_exists=True):
     if not os.path.exists(cachedir_path) and create_if_not_exists:
         os.makedirs(cachedir_path)
     return cachedir_path
+
+
+def get_logger(name):
+    logger = logging.getLogger(name)
+
+    if os.environ.get("JAVAPACKAGES_DEBUG"):
+        logger.setLevel(logging.DEBUG)
+    return logger

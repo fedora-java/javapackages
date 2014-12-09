@@ -41,7 +41,7 @@ import logging
 from lxml import etree
 
 from javapackages.common.config import get_configs, get_buildroot
-from javapackages.common.util import kill_parent_process, init_rpmgen
+from javapackages.common.util import kill_parent_process, init_rpmgen, get_logger
 from javapackages.cache.metadata import MetadataCache
 from javapackages.maven.pom import POM
 from javapackages.maven.artifact import Artifact
@@ -49,8 +49,7 @@ from javapackages.metadata.metadata import Metadata
 from javapackages.metadata.dependency import MetadataDependency
 from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionRequest
 
-logging.basicConfig(level=logging.DEBUG)
-_log = logging.getLogger("maven.req")
+_log = get_logger("maven.req")
 
 
 class TagBuilder(object):
