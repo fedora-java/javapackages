@@ -52,6 +52,8 @@ class TagBuilder:
         if filelist == None:
             filelist = sys.stdin
         paths = [line.rstrip() for line in filelist.readlines()]
+        _log.info("input: {fl}".format(fl=paths))
+
         cache = MetadataCache(rpmconf.cachedir, rpmconf.scl)
         for path in paths:
             metadata = cache.get_metadata_for_path(path)
@@ -64,7 +66,7 @@ class TagBuilder:
             osgi_provides = metadata.get_osgi_provides()
             for p in osgi_provides:
                 provides.add(p.get_rpm_str())
-            _log.debug("metadata provides: %s", ", ".join(provides))
+            _log.info(", ".join(provides))
             if provides:
                 print('\n'.join(provides))
 

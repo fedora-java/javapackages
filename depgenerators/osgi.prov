@@ -49,6 +49,8 @@ class TagBuilder(object):
         if filelist == None:
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
+        _log.info("input: {fl}".format(fl=paths))
+
         cache = OSGiCache(rpmconf.cachedir, scl=rpmconf.scl)
 
         provides = []
@@ -68,7 +70,7 @@ class TagBuilder(object):
                 provides.append(bundle.get_rpm_str())
 
         if provides:
-            _log.debug("{path}: {provs}".format(path=path, provs=", ".join(provides)))
+            _log.info(", ".join(provides))
             print("\n".join(provides))
 
 

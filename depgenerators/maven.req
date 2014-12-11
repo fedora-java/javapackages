@@ -61,6 +61,8 @@ class TagBuilder(object):
             filelist = sys.stdin
 
         paths = [line.rstrip() for line in filelist.readlines()]
+        _log.info("input: {fl}".format(fl=paths))
+
         self.config = self._get_config()
         cache = MetadataCache(rpmconf.cachedir, rpmconf.scl)
         self.provided_artifacts = cache.get_provided_artifacts()
@@ -180,7 +182,7 @@ class TagBuilder(object):
                         requires.add(req.get_rpm_str(version=prov.version))
                         break
 
-        _log.debug("metadata requires: %s", ", ".join(requires))
+        _log.info(", ".join(requires))
 
         # print resulting requires!
         print('\n'.join(requires))
@@ -321,7 +323,7 @@ class TagBuilder(object):
             else:
                 unresolvable.append(dep)
 
-        _log.debug("POM requires: %s", ", ".join(pom_requires))
+        _log.info("from POM(s): {reqs}".format(reqs=", ".join(pom_requires)))
         if pom_requires:
             print("\n".join(pom_requires))
 

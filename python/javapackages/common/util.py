@@ -114,7 +114,5 @@ def _get_cachedir(path, create_if_not_exists=True):
 
 def get_logger(name):
     logger = logging.getLogger(name)
-
-    if os.environ.get("JAVAPACKAGES_DEBUG"):
-        logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     return logger
