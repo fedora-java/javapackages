@@ -37,7 +37,7 @@ import sys
 import six
 import subprocess
 import logging
-from optparse import OptionParser
+from javapackages.common.pypath import _parse_argv
 
 
 def kill_parent_process():
@@ -96,11 +96,7 @@ def _init_rpmgen_logging():
 
 
 def _parse_rpmgen_args(argv):
-    parser = OptionParser()
-    parser.add_option("--cachedir", dest="cachedir")
-    parser.add_option("--scl", dest="scl", default=None)
-
-    options = parser.parse_args()[0]
+    options = _parse_argv(argv)[0]
 
     if not options.cachedir:
         raise Exception("Missing option: --cachedir")

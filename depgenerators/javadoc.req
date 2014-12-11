@@ -1,4 +1,8 @@
 #!/usr/bin/python
+
+from javapackages.common.pypath import set_pythonpath
+set_pythonpath()
+
 import json
 
 from javapackages.common.config import get_configs
