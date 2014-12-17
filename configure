@@ -33,8 +33,7 @@
 set -e
 
 function set_pyinterpreter() {
-    type python3 > /dev/null 2>&1
-    if [ $? -eq 0 ]; then
+    if type python3 > /dev/null 2>&1; then
         pyinterpreter="python3"
     else
         pyinterpreter="python"
