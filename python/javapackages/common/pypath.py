@@ -44,9 +44,8 @@ def set_pythonpath(argv=sys.argv):
     """
     options = _parse_argv(argv)[0]
     if options.sclroot:
-        sitedir_template = "usr/lib/python{major}.{minor}/site-packages/"
-        sitedir = sitedir_template.format(major=sys.version_info.major,
-                                          minor=sys.version_info.minor)
+        sitedir_template = "usr/lib/python{0}.{1}/site-packages/"
+        sitedir = sitedir_template.format(*sys.version_info[:2])
         sys.path.insert(1, os.path.join(options.sclroot, sitedir))
 
 
