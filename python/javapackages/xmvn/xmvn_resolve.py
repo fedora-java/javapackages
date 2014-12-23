@@ -42,26 +42,23 @@ class XMvnResolve(object):
     tool = "xmvn-resolve"
 
     @staticmethod
-    def is_available(scl=None):
+    def is_available():
         # always return True if running in test environment
         if os.environ.get("JAVAPACKAGES_XMVN_RESOLVE_TEST", None) is not None:
             return True
 
         command = "type {tool}".format(tool=XMvnResolve.tool)
-        rc, _, _ = execute_command(command, shell=True, enable_scl=scl)
+        rc, _, _ = execute_command(command)
         return True if not rc else False
 
     @staticmethod
-    def process_raw_request(raw_request_list, scl=None):
+    def process_raw_request(raw_request_list):
         command = "{tool} {args}".format(tool=XMvnResolve.tool,
                                          args="--raw-request")
         request = XMvnResolve._join_raw_requests(raw_request_list)
         test_env = os.environ.get("JAVAPACKAGES_XMVN_RESOLVE_TEST", None)
         if not test_env:
-            rc, stdout, stderr = execute_command(command,
-                                                 shell=True,
-                                                 input=request,
-                                                 enable_scl=scl)
+            rc, stdout, stderr = execute_command(command, input=request)
         else:
             stdout = ""
             with open(test_env, "rb") as f:

@@ -76,7 +76,7 @@ class TagBuilder(object):
 
             # generate also R on plugins and extensions from POM file, but only
             # if this is POM-only package and xmvn-resolve is installed
-            if XMvnResolve.is_available(scl=rpmconf.scl):
+            if XMvnResolve.is_available():
                 if metadata.contains_only_poms():
                     self.print_pom_requires(metadata)
 
@@ -112,7 +112,7 @@ class TagBuilder(object):
 
         unknown_deps = []
         # check if dependencies on POM files are satisfiable
-        if XMvnResolve.is_available(scl=rpmconf.scl):
+        if XMvnResolve.is_available():
             unknown_deps = self._check_pom_deps()
 
         for dependency in metadata.get_required_artifacts():
@@ -260,7 +260,7 @@ class TagBuilder(object):
                                                 version=dep.requestedVersion)
                     requests.append(request)
             if requests:
-                results = XMvnResolve.process_raw_request(requests, scl=rpmconf.scl)
+                results = XMvnResolve.process_raw_request(requests)
                 for i, r in enumerate(results):
                     if not r:
                         unresolvable.append(deps[i])
@@ -279,7 +279,7 @@ class TagBuilder(object):
         reqs = []
         for d in deps:
             reqs.append(ResolutionRequest(d.groupId, d.artifactId, version=d.version))
-        results = XMvnResolve.process_raw_request(reqs, scl=rpmconf.scl)
+        results = XMvnResolve.process_raw_request(reqs)
         pom_requires = set()
         for i, r in enumerate(results):
             dep = MetadataDependency(deps[i].groupId, deps[i].artifactId,
@@ -307,7 +307,7 @@ class TagBuilder(object):
                                 "because its parent POM {}:{} has unknown version".format(pgid, paid))
 
             req = ResolutionRequest(pgid, paid, extension="pom")
-            r = XMvnResolve.process_raw_request([req], scl=rpmconf.scl)[0]
+            r = XMvnResolve.process_raw_request([req])[0]
             dep = MetadataDependency(pgid, paid, requestedVersion=pver, extension="pom")
 
             dver = dep.is_provided_by(self.provided_artifacts)[1]

@@ -58,21 +58,10 @@ def args_to_unicode(args):
     return args
 
 
-def execute_command(binpath, args=[], env=None, input=None, shell=False,
-                    enable_scl=None):
-    scl_cmd = "scl enable {scl}"
-    command = ""
-    if enable_scl:
-        scl_cmd = scl_cmd.format(scl=enable_scl)
-        command = scl_cmd + " && "
-        shell = True
-    command = [command + binpath]
-    command.extend(args)
-
-    proc = subprocess.Popen(command, shell=shell,
+def execute_command(command, input=None):
+    proc = subprocess.Popen([command], shell=True,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                            stdin=subprocess.PIPE, universal_newlines=True,
-                            env=env)
+                            stdin=subprocess.PIPE, universal_newlines=True)
     stdout, stderr = proc.communicate(input=input)
     proc.wait()
     return proc.returncode, stdout, stderr
