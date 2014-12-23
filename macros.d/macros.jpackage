@@ -167,7 +167,7 @@
 %jpackage_script() \
 install -d -m 755 %{buildroot}%{_bindir} \
 cat > %{buildroot}%{_bindir}/%5 << EOF \
-#!/bin/sh\
+#!/bin/bash\
 #\
 # %{name} script\
 # JPackage Project <http://www.jpackage.org/>\

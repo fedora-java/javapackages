@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Small script to build a classpath depending on the JVM used
 #

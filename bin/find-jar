@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Small helper script to find a jar or a directory of jars depending on the JVM used
 #
 # JPackage Project <http://www.jpackage.org/>

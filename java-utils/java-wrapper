@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 JAVACMD="${_JP_JAVACMD}"
 JAVACMD_OPTS="${_JP_JAVACMD_OPTS}"

@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash
 # Copyright (c) 2013 Red Hat, Inc.
 # All rights reserved.
 #
@@ -29,6 +29,8 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
+
+set -e
 
 # Allow -Dmaven.local.effective.pom=false to be used to disable
 # resolution from effective POM repository.

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Small script to build a jar repository depending on the JVM used
 #
