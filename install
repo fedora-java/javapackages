@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2013 Red Hat, Inc.
+# Copyright (c) 2013-2014 Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -151,10 +151,10 @@ inst_data target/pom_xpath_remove.7 "${mandir}/man7"
 inst_data target/pom_xpath_replace.7 "${mandir}/man7"
 inst_data target/pom_xpath_set.7 "${mandir}/man7"
 
-inst_exec depgenerators/maven.prov "${rpmconfigdir}"
+inst_exec target/maven.prov "${rpmconfigdir}"
 inst_exec target/maven.req "${rpmconfigdir}"
-inst_exec depgenerators/osgi.prov "${rpmconfigdir}"
-inst_exec depgenerators/osgi.req "${rpmconfigdir}"
+inst_exec target/osgi.prov "${rpmconfigdir}"
+inst_exec target/osgi.req "${rpmconfigdir}"
 inst_exec target/javadoc.req "${rpmconfigdir}"
 
 inst_data depgenerators/fileattrs/maven.attr "${rpmconfigdir}/fileattrs"
