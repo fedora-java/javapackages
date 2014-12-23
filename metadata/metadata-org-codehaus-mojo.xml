@@ -22,11 +22,6 @@
       <artifactId>appassembler-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Appassembler :: Maven Plug-In</name>
-      <prefix>appassembler</prefix>
-      <artifactId>appassembler-maven-plugin</artifactId>
-    </plugin>
-    <plugin>
       <name>Appfuse Maven Plugin</name>
       <prefix>appfuse</prefix>
       <artifactId>appfuse-maven-plugin</artifactId>
@@ -37,12 +32,12 @@
       <artifactId>apt-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>AspectJ compiler Maven Plugin</name>
+      <name>Mojo's AspectJ Maven Plugin</name>
       <prefix>aspectj</prefix>
       <artifactId>aspectj-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven Axis Tools Plugin</name>
+      <name>Axis Tools Maven Plugin</name>
       <prefix>axistools</prefix>
       <artifactId>axistools-maven-plugin</artifactId>
     </plugin>
@@ -112,16 +107,6 @@
       <artifactId>clirr-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Clirr Maven Plugin</name>
-      <prefix>clirr</prefix>
-      <artifactId>clirr-maven-plugin</artifactId>
-    </plugin>
-    <plugin>
-      <name>Mojo's Maven plugin for Cobertura</name>
-      <prefix>cobertura</prefix>
-      <artifactId>cobertura-maven-plugin</artifactId>
-    </plugin>
-    <plugin>
       <name>Mojo's Maven plugin for Cobertura</name>
       <prefix>cobertura</prefix>
       <artifactId>cobertura-maven-plugin</artifactId>
@@ -187,11 +172,6 @@
       <artifactId>enchanter-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven Exec Plugin</name>
-      <prefix>exec</prefix>
-      <artifactId>exec-maven-plugin</artifactId>
-    </plugin>
-    <plugin>
       <name>Exec Maven Plugin</name>
       <prefix>exec</prefix>
       <artifactId>exec-maven-plugin</artifactId>
@@ -217,14 +197,9 @@
       <artifactId>fitnesse-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>FitNesse Maven Plugin</name>
-      <prefix>fitnesse</prefix>
-      <artifactId>fitnesse-maven-plugin</artifactId>
-    </plugin>
-    <plugin>
-      <name>GMaven Legacy :: Groovy Maven Plugin</name>
-      <prefix>groovy</prefix>
-      <artifactId>groovy-maven-plugin</artifactId>
+      <name>Maven Flatten Plugin</name>
+      <prefix>flatten</prefix>
+      <artifactId>flatten-maven-plugin</artifactId>
     </plugin>
     <plugin>
       <name>Groovy Maven Plugin</name>
@@ -282,22 +257,12 @@
       <artifactId>jaxb2-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven JAXB 2.1 Plugin</name>
-      <prefix>jaxb2</prefix>
-      <artifactId>jaxb2-maven-plugin</artifactId>
-    </plugin>
-    <plugin>
-      <name>JAXB-2 Maven Plugin</name>
-      <prefix>jaxb2</prefix>
-      <artifactId>jaxb2-maven-plugin</artifactId>
-    </plugin>
-    <plugin>
       <name>Maven JAXWS 2.x Plugin</name>
       <prefix>jaxws</prefix>
       <artifactId>jaxws-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven JBoss plugin</name>
+      <name>JBoss Maven Plugin</name>
       <prefix>jboss</prefix>
       <artifactId>jboss-maven-plugin</artifactId>
     </plugin>
@@ -307,7 +272,7 @@
       <artifactId>jboss-packaging-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven JDepend Plugin</name>
+      <name>JDepend Maven Plugin</name>
       <prefix>jdepend</prefix>
       <artifactId>jdepend-maven-plugin</artifactId>
     </plugin>
@@ -340,11 +305,6 @@
       <name>Maven JXR Plugin</name>
       <prefix>jxr</prefix>
       <artifactId>jxr-maven-plugin</artifactId>
-    </plugin>
-    <plugin>
-      <name>Keytool: Maven Plugin</name>
-      <prefix>keytool</prefix>
-      <artifactId>keytool-maven-plugin</artifactId>
     </plugin>
     <plugin>
       <name>Keytool: Maven Plugin</name>
@@ -402,17 +362,12 @@
       <artifactId>multibuild-optimizer-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Native Maven Plugin</name>
+      <name>Maven Native Plugin</name>
       <prefix>native</prefix>
       <artifactId>native-maven-plugin</artifactId>
     </plugin>
     <plugin>
       <name>Maven Native2ascii Plugin</name>
-      <prefix>native2ascii</prefix>
-      <artifactId>native2ascii-maven-plugin</artifactId>
-    </plugin>
-    <plugin>
-      <name>Native2Ascii Maven Plugin</name>
       <prefix>native2ascii</prefix>
       <artifactId>native2ascii-maven-plugin</artifactId>
     </plugin>
@@ -492,7 +447,7 @@
       <artifactId>remote-source-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Retrotranslator Maven Plugin</name>
+      <name>Retrotranslator MAven Plugin</name>
       <prefix>retrotranslator</prefix>
       <artifactId>retrotranslator-maven-plugin</artifactId>
     </plugin>
@@ -592,12 +547,7 @@
       <artifactId>sql-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>SQL Maven Plugin</name>
-      <prefix>sql</prefix>
-      <artifactId>sql-maven-plugin</artifactId>
-    </plugin>
-    <plugin>
-      <name>Mojo's SQLJ Maven Plugin</name>
+      <name>SQLJ Maven Plugin</name>
       <prefix>sqlj</prefix>
       <artifactId>sqlj-maven-plugin</artifactId>
     </plugin>
@@ -612,7 +562,7 @@
       <artifactId>sysdeo-tomcat-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Maven Tag List Plugin</name>
+      <name>Taglist Maven Plugin</name>
       <prefix>taglist</prefix>
       <artifactId>taglist-maven-plugin</artifactId>
     </plugin>
@@ -632,12 +582,7 @@
       <artifactId>tomcat-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>TrueZIP Maven Plugin</name>
-      <prefix>truezip</prefix>
-      <artifactId>truezip-maven-plugin</artifactId>
-    </plugin>
-    <plugin>
-      <name>TrueZIP Maven Plugin</name>
+      <name>Maven Plugin for TrueZIP</name>
       <prefix>truezip</prefix>
       <artifactId>truezip-maven-plugin</artifactId>
     </plugin>
@@ -677,19 +622,9 @@
       <artifactId>weblogic-maven-plugin</artifactId>
     </plugin>
     <plugin>
-      <name>Mojo's Maven plugin for WebLogic</name>
-      <prefix>weblogic</prefix>
-      <artifactId>weblogic-maven-plugin</artifactId>
-    </plugin>
-    <plugin>
       <name>Web Minifier Maven Plugin</name>
       <prefix>webminifier</prefix>
       <artifactId>webminifier-maven-plugin</artifactId>
-    </plugin>
-    <plugin>
-      <name>MWEBSTART :: Webstart Maven Plugin</name>
-      <prefix>webstart</prefix>
-      <artifactId>webstart-maven-plugin</artifactId>
     </plugin>
     <plugin>
       <name>MWEBSTART :: Webstart Maven Plugin</name>
