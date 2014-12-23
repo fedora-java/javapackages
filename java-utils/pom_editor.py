@@ -6,7 +6,7 @@ import re
 import shutil
 import sys
 import optparse
-import six
+import pyxb.utils.six
 import io
 
 from lxml import etree

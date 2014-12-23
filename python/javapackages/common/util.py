@@ -34,7 +34,7 @@
 import os
 import signal
 import sys
-import six
+import pyxb.utils.six
 import subprocess
 import logging
 from javapackages.common.pypath import _parse_argv
