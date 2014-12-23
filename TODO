@@ -22,6 +22,8 @@
 
 ** changes around OSGi prov/req generators need some tests
 
+** implement recommends and suggests generators
+
 * BUGS
 
 ** Add testcase for pom properties with whitespace
