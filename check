@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2013 Red Hat, Inc.
+# Copyright (c) 2013-2014 Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -35,13 +35,11 @@ if ! test -f config.status; then
     exit 1
 fi
 . ./config.status
-. ./test/test_common.sh
-f_set_python $1
 
-echo "running python tests with ${python}"
-(cd ./python && ${python} setup.py test)
+echo "Running Python tests with ${pyinterpreter}..."
+(cd ./python && "${pyinterpreter}" setup.py test)
 r1=$?
-(cd ./test && ./run_tests.sh ${1})
+(cd ./test && PYTHONPATH="../python" "${pyinterpreter}" run_tests.py)
 r2=$?
 
 if [ ${r1} -lt ${r2} ]; then
