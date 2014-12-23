@@ -8,7 +8,7 @@ from javapackages.metadata.alias import MetadataAlias
 from javapackages.metadata.dependency import MetadataDependency
 import javapackages.metadata.pyxbmetadata as m
 
-import pyxb.utils.six
+import pyxb.utils.six as six
 import pyxb
 import os
 import logging

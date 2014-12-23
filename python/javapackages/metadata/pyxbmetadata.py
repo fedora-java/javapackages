@@ -12,7 +12,7 @@ import io
 import pyxb.utils.utility
 import pyxb.utils.domutils
 import sys
-import pyxb.utils.six as _six
+import pyxb.utils.six as six as _six
 
 # Unique identifier for bindings created at the same time
 _GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:fc7e4988-584c-11e4-af6d-3c970e1833ad')

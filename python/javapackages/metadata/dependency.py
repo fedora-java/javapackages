@@ -4,7 +4,7 @@ from javapackages.metadata.exclusion import MetadataExclusion
 import javapackages.metadata.pyxbmetadata as m
 
 import pyxb
-import pyxb.utils.six
+import pyxb.utils.six as six
 
 
 class MetadataDependency(object):
