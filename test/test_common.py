@@ -11,11 +11,9 @@ from test_rpmbuild import Package
 from xml_compare import compare_xml_files
 
 DIRPATH = path.dirname(path.realpath(__file__))
-PYTHONPATH = path.join(DIRPATH, '../python')
-sys.path.append(PYTHONPATH)
 SCRIPT_ENV = {'PATH':'{mock}:{real}'.format(mock=DIRPATH,
                                             real=os.environ['PATH']),
-              'PYTHONPATH':PYTHONPATH}
+              'PYTHONPATH':os.environ['PYTHONPATH']}
 
 
 def call_script(name, args, stdin=None, wrapped=False, extra_env={}, config_path=''):

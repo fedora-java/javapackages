@@ -18,8 +18,6 @@
 
 ** Update documentation - it still refers to %{_mavendepmapfragdir} and so on
 
-** How to set PYTHONPATH for tests correctly?
-
 ** changes around OSGi prov/req generators need some tests
 
 ** implement recommends and suggests generators

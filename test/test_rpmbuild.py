@@ -29,7 +29,6 @@ class Package(object):
         self.buildpath = os.path.join('rpmbuild', 'BUILD', name + '-1')
         self.__env = dict(os.environ)
         self.__env['HOME'] = os.getcwd()
-        self.__env['PYTHONPATH'] = os.path.join(DIRPATH, '..', 'python')
         self.__env['PATH'] = '{mock}:{path}'.format(mock=DIRPATH,
                                             path=self.__env['PATH'])
 
