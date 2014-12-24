@@ -14,10 +14,8 @@ class TestJavadocReq(unittest.TestCase):
     def test_configuration(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        self.assertEqual(len(sout), 3)
+        self.assertEqual(len(sout), 1)
         assertIn(self, "SCL-jpackage-utils", sout)
-        assertIn(self, "extra-req1", sout)
-        assertIn(self, "extra-req2", sout)
 
     @javadocreq([], javaconfdirs=["non-existent"])
     def test_missing_configuration(self, stdout, stderr, return_value):

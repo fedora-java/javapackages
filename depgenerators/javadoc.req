@@ -36,12 +36,10 @@ import json
 
 from javapackages.common.config import get_configs
 
-always_generate = set()
-
 configs = get_configs(["%{javaconfdir}"])
-for config_file in configs:
-    config = config_file.get("javadoc.req", {})
-    always_generate = always_generate.union(config.get("always_generate", set()))
 
-for pkg in always_generate:
-    print(pkg)
+if len(configs) > 0:
+    config = configs[0].get("javadoc.req", {})
+    always_generate = config.get("always_generate", set())
+    for pkg in always_generate:
+        print(pkg)
