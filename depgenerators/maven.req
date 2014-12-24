@@ -40,7 +40,7 @@ import logging
 
 from lxml import etree
 
-from javapackages.common.config import get_configs, get_buildroot
+from javapackages.common.config import get_config, get_buildroot
 from javapackages.common.util import kill_parent_process, init_rpmgen, get_logger
 from javapackages.cache.metadata import MetadataCache
 from javapackages.maven.pom import POM
@@ -228,10 +228,8 @@ class TagBuilder(object):
             return "{0}.{1}".format(major, minor)
 
     def _get_config(self):
-        configs = get_configs(['%{javaconfdir}'])
-        if len(configs) > 0:
-            return configs[0].get('maven.req', {})
-        return new_config
+        config = get_config(['%{javaconfdir}'])
+        return config.get('maven.req', {}) if config else {}
 
     def _check_pom_deps(self):
         """ Check if dependencies on POM files are satisfiable """

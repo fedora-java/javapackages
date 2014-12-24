@@ -38,7 +38,7 @@ metadata_cache_f = "metadata.cache"
 osgi_cache_f = "osgi.cache"
 
 
-def get_configs(cfg_paths=None):
+def get_config(cfg_paths=None):
     """
     Returns list of dictionaries which represent configuration files.
     """
@@ -49,15 +49,15 @@ def get_configs(cfg_paths=None):
     else:
         config_paths = ['/etc/java/']
 
-    configs = []
     for config_path in config_paths:
         try:
             file_path = os.path.join(config_path, 'javapackages-config.json')
             with open(file_path) as config_file:
-                configs.append(json.load(config_file))
+                return json.load(config_file)
         except (OSError, IOError):
             pass
-    return configs
+
+    return None
 
 
 def get_buildroot():

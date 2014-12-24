@@ -34,12 +34,11 @@
 
 import json
 
-from javapackages.common.config import get_configs
+from javapackages.common.config import get_config
 
-configs = get_configs(["%{javaconfdir}"])
-
-if len(configs) > 0:
-    config = configs[0].get("javadoc.req", {})
-    always_generate = config.get("always_generate", set())
+config = get_config(["%{javaconfdir}"])
+if config:
+    javadoc_config = config.get("javadoc.req", {})
+    always_generate = javadoc_config.get("always_generate", set())
     for pkg in always_generate:
         print(pkg)
