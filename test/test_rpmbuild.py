@@ -141,7 +141,7 @@ class Package(object):
 
         %prep
         mkdir %{name}-%{version}
-        cd %{name}-%{version}
+        cd ./%{name}-%{version}
         """)
         for index, (_, filename) in enumerate(self.__sources):
             directory = os.path.dirname(filename)
@@ -154,7 +154,7 @@ class Package(object):
         build_section = dedent("""\
 
         %build
-        cd %{name}-%{version}
+        cd ./%{name}-%{version}
         """)
         build_section += self.__build
 

@@ -125,4 +125,4 @@ manpage shade-jar
 
 make -C doc clean all
 
-(cd python && "${pyinterpreter}" setup.py build)
+(cd ./python && "${pyinterpreter}" setup.py build)
