@@ -39,7 +39,7 @@ fi
 . ./config.status
 
 DEST=${DEST:-${RPM_BUILD_ROOT}}
-DEST=${DEST:-root}
+DEST=${DEST:-${PWD}/root}
 rm -rf "${DEST}"
 
 dir()
@@ -224,3 +224,7 @@ inst_doc doc/images
 inst_doc doc/rpm_project
 inst_doc doc/ideas
 inst_doc doc/java_project
+
+exec >files-python
+(cd python && "${pyinterpreter}" setup.py install -O1 --skip-build --prefix "${prefix}" --root "${DEST}") >&2
+echo "${prefix}/lib/python?.?/site-packages/javapackages"
