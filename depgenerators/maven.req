@@ -32,9 +32,6 @@
 #   Stanislav Ochotnicky <sochotnicky@redhat.com>
 #   Michal Srb <msrb@redhat.com>
 
-from javapackages.common.pypath import set_pythonpath
-set_pythonpath()
-
 import os
 import re
 import sys

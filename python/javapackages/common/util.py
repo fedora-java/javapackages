@@ -37,7 +37,7 @@ import sys
 import pyxb.utils.six as six
 import subprocess
 import logging
-from javapackages.common.pypath import _parse_argv
+from optparse import OptionParser
 
 
 def kill_parent_process():
@@ -82,6 +82,15 @@ def _init_rpmgen_logging():
     logger = logging.getLogger("pyxb.binding.basis")
     f = _SkipPyXBWarningsFilter()
     logger.addFilter(f)
+
+
+def _parse_argv(argv):
+    parser = OptionParser()
+    parser.add_option("--cachedir", dest="cachedir")
+    parser.add_option("--scl", dest="scl", default=None)
+    parser.add_option("--sclroot", dest="sclroot", default=None)
+
+    return parser.parse_args()
 
 
 def _parse_rpmgen_args(argv):
