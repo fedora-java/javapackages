@@ -190,7 +190,7 @@ class TestMavenReq(unittest.TestCase):
     def test_config_env2(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        want = ("ns-mvn(org.codehaus.plexus:plexus-ant-factory)", "java-spineless",
+        want = ("ns-mvn(org.codehaus.plexus:plexus-ant-factory)", "java-headless",
                 "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)",
                 "jpackage-utils")
         self.assertEqual(set(want), set(sout))

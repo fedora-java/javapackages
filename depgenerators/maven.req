@@ -228,14 +228,9 @@ class TagBuilder(object):
             return "{0}.{1}".format(major, minor)
 
     def _get_config(self):
-        new_config = {}
         configs = get_configs(['%{javaconfdir}'])
-        for config_file in configs:
-            config = config_file.get('maven.req', {})
-            filters = set(new_config.get('filter_requires', ()))
-            filters = filters.union(config.get('filter_requires', ()))
-            new_config.update(config)
-            new_config['filter_requires'] = filters
+        if len(configs) > 0:
+            return configs[0].get('maven.req', {})
         return new_config
 
     def _check_pom_deps(self):
