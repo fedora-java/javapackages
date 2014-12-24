@@ -39,7 +39,7 @@ fi
 echo "Running Python tests with ${pyinterpreter}..."
 (cd ./python && "${pyinterpreter}" setup.py test)
 r1=$?
-(cd ./test && PYTHONPATH="../python" "${pyinterpreter}" run_tests.py)
+(cd ./test && PYTHONPATH="../python${PYTHONPATH:+:}${PYTHONPATH:-}" "${pyinterpreter}" run_tests.py)
 r2=$?
 
 if [ ${r1} -lt ${r2} ]; then
