@@ -37,9 +37,8 @@ from javapackages.cache.cache import Cache
 
 
 class MetadataCache(Cache):
-    def __init__(self, cachedir, scl=None):
-        self._cachedir = cachedir
-        self._scl = scl
+    def __init__(self, rpmconf):
+        super(MetadataCache, self).__init__(rpmconf)
         self._config_name = config.metadata_cache_f
         self._cache = self._read_cache()
 

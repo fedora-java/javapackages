@@ -51,7 +51,7 @@ class TagBuilder:
         paths = [line.rstrip() for line in filelist.readlines()]
         _log.info("input: {fl}".format(fl=paths))
 
-        cache = MetadataCache(rpmconf.cachedir, rpmconf.scl)
+        cache = MetadataCache(rpmconf)
         for path in paths:
             metadata = cache.get_metadata_for_path(path)
 
@@ -69,9 +69,10 @@ class TagBuilder:
 
 
 if __name__ == "__main__":
+    rpmconf = None
     try:
         rpmconf = init_rpmgen(sys.argv)
         builder = TagBuilder()
     except Exception:
         traceback.print_exc(file=sys.stderr)
-        kill_parent_process()
+        kill_parent_process(rpmconf)

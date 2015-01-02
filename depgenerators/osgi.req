@@ -50,7 +50,7 @@ class TagBuilder(object):
         paths = [x.rstrip() for x in filelist.readlines()]
         _log.info("input: {fl}".format(fl=paths))
 
-        cache = OSGiCache(rpmconf.cachedir, scl=rpmconf.scl)
+        cache = OSGiCache(rpmconf)
         requires = []
         for path in paths:
 
@@ -80,6 +80,7 @@ class TagBuilder(object):
 
 
 if __name__ == "__main__":
+    rpmconf = None
     try:
         rpmconf = init_rpmgen(sys.argv)
 
@@ -92,4 +93,4 @@ if __name__ == "__main__":
         builder = TagBuilder()
     except Exception:
         traceback.print_exc(file=sys.stderr)
-        kill_parent_process()
+        kill_parent_process(rpmconf)

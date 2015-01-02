@@ -38,9 +38,10 @@ import javapackages.common.config as config
 
 
 class Cache(object):
-    def __init__(self, cachedir, scl=None):
-        self._cachedir = cachedir
-        self._scl = scl
+    def __init__(self, rpmconf):
+        self._cachedir = rpmconf.cachedir
+        self._rpm_pid = rpmconf.rpm_pid
+        self._scl = rpmconf.scl
 
     def _process_buildroot(self):
         cache = {}
@@ -65,10 +66,10 @@ class Cache(object):
         try:
             cachepath = os.path.join(self._cachedir, self._config_name)
             cachefile = open(cachepath, 'rb')
-            ppid, cache = pickle.load(cachefile)
+            cached_pid, cache = pickle.load(cachefile)
             cachefile.close()
             # check if the cache was most likely created during current build
-            if ppid != os.getppid():
+            if cached_pid != self._rpm_pid:
                 logging.warning("Cache in {path} is outdated, skipping"
                                 .format(path=cachepath))
                 return None
@@ -80,7 +81,7 @@ class Cache(object):
         try:
             cachefile = open(os.path.join(self._cachedir,
                                           self._config_name), 'wb')
-            content = (os.getppid(), cache)
+            content = (self._rpm_pid, cache)
             pickle.dump(content, cachefile)
             cachefile.close()
         except IOError:

@@ -61,7 +61,7 @@ class TagBuilder(object):
         _log.info("input: {fl}".format(fl=paths))
 
         self.config = self._get_config()
-        cache = MetadataCache(rpmconf.cachedir, rpmconf.scl)
+        cache = MetadataCache(rpmconf)
         self.provided_artifacts = cache.get_provided_artifacts()
         self.skipped_artifacts = cache.get_skipped_artifacts()
         self.provided_osgi = cache.get_provided_osgi()
@@ -353,9 +353,10 @@ class TagBuilder(object):
 
 
 if __name__ == "__main__":
+    rpmconf = None
     try:
         rpmconf = init_rpmgen(sys.argv)
         builder = TagBuilder()
     except Exception:
         traceback.print_exc(file=sys.stderr)
-        kill_parent_process()
+        kill_parent_process(rpmconf)

@@ -40,7 +40,9 @@ import logging
 from optparse import OptionParser
 
 
-def kill_parent_process():
+def kill_parent_process(rpmconf):
+    if not rpmconf:
+        return
     # mock may kill us immediately after rpmbuild dies, before output
     # is flushed. To avoid this race condiditon we must explicitly
     # flush any pending output before trying to kill parent.
@@ -48,7 +50,7 @@ def kill_parent_process():
     sys.stderr.flush()
     # rpmbuild ignores non-zero exit codes, but this is bad. Make sure
     # the build fails and doesn't silently ignore problems
-    os.kill(os.getppid(), signal.SIGTERM)
+    os.kill(rpmconf.rpm_pid, signal.SIGTERM)
 
 
 def args_to_unicode(args):
@@ -87,6 +89,7 @@ def _init_rpmgen_logging():
 def _parse_argv(argv):
     parser = OptionParser()
     parser.add_option("--cachedir", dest="cachedir")
+    parser.add_option("--rpm-pid", type="int", dest="rpm_pid")
     parser.add_option("--scl", dest="scl", default=None)
 
     return parser.parse_args()
@@ -98,6 +101,8 @@ def _parse_rpmgen_args(argv):
     if not options.cachedir:
         raise Exception("Missing option: --cachedir")
     options.cachedir = _get_cachedir(options.cachedir)
+    if not options.rpm_pid:
+        raise Exception("Missing option: --rpm-pid")
 
     return options
 

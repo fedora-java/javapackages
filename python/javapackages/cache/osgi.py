@@ -42,12 +42,11 @@ from javapackages.cache.metadata import MetadataCache
 
 class OSGiCache(Cache):
 
-    def __init__(self, cachedir, scl=None):
-        self._cachedir = cachedir
-        self._scl = scl
+    def __init__(self, rpmconf):
+        super(OSGiCache, self).__init__(rpmconf)
         self._config_name = config.osgi_cache_f
         self._cache = self._read_cache()
-        self._metadata_cache = MetadataCache(cachedir, scl)
+        self._metadata_cache = MetadataCache(rpmconf)
 
         if self._cache is None:
             self._cache = self._process_buildroot()
