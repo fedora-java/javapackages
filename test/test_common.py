@@ -143,7 +143,8 @@ def call_rpmgen(rpmgen_name, filelist_prefix, filelist, env=None,
     except OSError:
         pass
     for line in stdin:
-        ret = call_script(scriptpath, ["--cachedir", "/tmp"],
+        # FIXME this PID is a temporary hack
+        ret = call_script(scriptpath, ["--cachedir", "/tmp", "--rpm-pid", "1"],
                           stdin=line, extra_env=env)
     try:
         shutil.rmtree("/tmp/.javapackages_cache/")
