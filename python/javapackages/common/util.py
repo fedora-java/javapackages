@@ -89,7 +89,7 @@ def _init_rpmgen_logging():
 def _parse_argv(argv):
     parser = OptionParser()
     parser.add_option("--cachedir", dest="cachedir")
-    parser.add_option("--rpm-pid", type="int", dest="rpm_pid")
+    parser.add_option("--rpm-pid", dest="rpm_pid")
     parser.add_option("--scl", dest="scl", default=None)
 
     return parser.parse_args()
@@ -101,8 +101,10 @@ def _parse_rpmgen_args(argv):
     if not options.cachedir:
         raise Exception("Missing option: --cachedir")
     options.cachedir = _get_cachedir(options.cachedir)
+
     if not options.rpm_pid:
         raise Exception("Missing option: --rpm-pid")
+    options.rpm_pid = int(options.rpm_pid)
 
     return options
 
