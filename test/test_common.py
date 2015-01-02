@@ -16,13 +16,10 @@ SCRIPT_ENV = {'PATH':'{mock}:{real}'.format(mock=DIRPATH,
               'PYTHONPATH':os.environ['PYTHONPATH']}
 
 
-def call_script(name, args, stdin=None, wrapped=False, extra_env={}, config_path=''):
+def call_script(name, args, stdin=None, extra_env={}):
     with open("tmpout", 'w') as outfile:
         with open("tmperr", 'w') as errfile:
-            procargs = [sys.executable,
-                        path.join(DIRPATH, 'wrapper.py'),
-                        name,
-                        config_path]
+            procargs = [sys.executable, name]
             env = SCRIPT_ENV.copy()
             env.update(extra_env)
             proc = subprocess.Popen(procargs + args, shell=False,
@@ -146,8 +143,8 @@ def call_rpmgen(rpmgen_name, filelist_prefix, filelist, env=None,
     except OSError:
         pass
     for line in stdin:
-        ret = call_script(scriptpath, ["--cachedir", "/tmp"], stdin=line,
-                          wrapped=True, extra_env=env, config_path=config)
+        ret = call_script(scriptpath, ["--cachedir", "/tmp"],
+                          stdin=line, extra_env=env)
     try:
         shutil.rmtree("/tmp/.javapackages_cache/")
     except OSError:
@@ -255,7 +252,7 @@ def mvn_depmap(pom, jar=None, fnargs=None):
             if jar:
                 args.append(path.join(os.getcwd(), jar))
             args.extend(fnargs or [])
-            (stdout, stderr, return_value) = call_script(scriptpath, args, extra_env = env)
+            (stdout, stderr, return_value) = call_script(scriptpath, args, extra_env=env)
             frag = None
             if return_value == 0:
                 with open('.fragment_data','r') as frag_file:
