@@ -59,6 +59,8 @@ class XMvnResolve(object):
         test_env = os.environ.get("JAVAPACKAGES_XMVN_RESOLVE_TEST", None)
         if not test_env:
             rc, stdout, stderr = execute_command(command, input=request)
+            if rc:
+                raise Exception("xmvn-resolve failed:\n" + stderr)
         else:
             stdout = ""
             with open(test_env, "rb") as f:
