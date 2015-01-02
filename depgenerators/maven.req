@@ -228,7 +228,7 @@ class TagBuilder(object):
             return "{0}.{1}".format(major, minor)
 
     def _get_config(self):
-        config = get_config(['%{javaconfdir}'])
+        config = get_config()
         return config.get('maven.req', {}) if config else {}
 
     def _check_pom_deps(self):

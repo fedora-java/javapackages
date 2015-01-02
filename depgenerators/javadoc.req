@@ -36,7 +36,7 @@ import json
 
 from javapackages.common.config import get_config
 
-config = get_config(["%{javaconfdir}"])
+config = get_config()
 if config:
     javadoc_config = config.get("javadoc.req", {})
     always_generate = javadoc_config.get("always_generate", set())

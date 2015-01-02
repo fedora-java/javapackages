@@ -38,14 +38,12 @@ metadata_cache_f = "metadata.cache"
 osgi_cache_f = "osgi.cache"
 
 
-def get_config(cfg_paths=None):
+def get_config():
     """
     Returns list of dictionaries which represent configuration files.
     """
     if 'JAVACONFDIRS' in os.environ:
         config_paths = os.environ['JAVACONFDIRS'].split(os.pathsep)
-    elif cfg_paths:
-        config_paths = cfg_paths
     else:
         config_paths = ['/etc/java/']
 
