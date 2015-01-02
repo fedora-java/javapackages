@@ -50,7 +50,10 @@ def kill_parent_process(rpmconf):
     sys.stderr.flush()
     # rpmbuild ignores non-zero exit codes, but this is bad. Make sure
     # the build fails and doesn't silently ignore problems
-    os.kill(rpmconf.rpm_pid, signal.SIGTERM)
+    try:
+        os.kill(rpmconf.rpm_pid, signal.SIGTERM)
+    except OSError:
+        pass
 
 
 def args_to_unicode(args):
