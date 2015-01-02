@@ -159,7 +159,7 @@ class TestMavenReq(unittest.TestCase):
         self.assertEqual(set(want), set(sout))
 
 
-    @mavenreq(["require1/buildroot/usr/share/maven-metadata/require.xml"], config='alternative-java')
+    @mavenreq(["require1/buildroot/usr/share/maven-metadata/require.xml"], javaconfdirs=['alternative-java'])
     def test_java_config(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
@@ -167,7 +167,7 @@ class TestMavenReq(unittest.TestCase):
                 "mvn(org.apache.maven:maven-project)")
         self.assertEqual(set(want), set(sout))
 
-    @mavenreq(["require_multi/buildroot/usr/share/maven-metadata/require.xml"], config='filtered')
+    @mavenreq(["require_multi/buildroot/usr/share/maven-metadata/require.xml"], javaconfdirs=['filtered'])
     def test_dep_filtering(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]

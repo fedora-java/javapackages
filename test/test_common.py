@@ -213,11 +213,6 @@ def javadocreq(*args, **kwargs):
 
 
 def rpmgen_process_args(args, kwargs):
-    if "config" in kwargs:
-        config_path = os.path.join(DIRPATH, 'data', 'config', kwargs["config"])
-    else:
-        config_path = os.path.abspath(os.path.join(DIRPATH, '..', 'etc'))
-    kwargs.update({"config": config_path})
     if "javaconfdirs" in kwargs:
         confdirs = [os.path.join(DIRPATH, "data", "config", conf) for conf in kwargs["javaconfdirs"]]
         try:
