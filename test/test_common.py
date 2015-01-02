@@ -222,6 +222,10 @@ def rpmgen_process_args(args, kwargs):
         env.update({"JAVACONFDIRS": os.pathsep.join(confdirs)})
         kwargs.update({"env": env})
         del kwargs["javaconfdirs"]
+    else:
+        env = {}
+        env.update({"JAVACONFDIRS": os.path.abspath(os.path.join(DIRPATH, '..', 'etc'))})
+        kwargs.update({"env": env})
 
     if "xmvnresolve_output" in kwargs:
         dest = "/tmp/"
