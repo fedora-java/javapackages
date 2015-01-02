@@ -42,3 +42,8 @@ if config:
     always_generate = javadoc_config.get("always_generate", set())
     for pkg in always_generate:
         print(pkg)
+
+
+# Local Variables:
+# mode: Python
+# End:
