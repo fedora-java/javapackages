@@ -1,5 +1,5 @@
 %__osgi_provides	%{_rpmconfigdir}/osgi.prov
-%__osgi_provides_opts	--cachedir %{_builddir}/%{?buildsubdir} %{?scl:--scl %{?scl} --sclroot %{?_scl_root}}
+%__osgi_provides_opts	--cachedir %{_builddir}/%{?buildsubdir} %{?scl:--scl %{?scl}}
 %__osgi_requires	%{!?scl:%{_rpmconfigdir}/osgi.req}%{?scl:%{_root_bindir}/true}
-%__osgi_requires_opts	--cachedir %{_builddir}/%{?buildsubdir} %{?scl:--scl %{?scl} --sclroot %{?_scl_root}}
+%__osgi_requires_opts	--cachedir %{_builddir}/%{?buildsubdir} %{?scl:--scl %{?scl}}
 %__osgi_path	^(.*\\.jar|((%{_prefix}/lib(64)?|%{_datadir})/.*/META-INF/MANIFEST.MF))$

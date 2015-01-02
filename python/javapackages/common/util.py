@@ -88,7 +88,6 @@ def _parse_argv(argv):
     parser = OptionParser()
     parser.add_option("--cachedir", dest="cachedir")
     parser.add_option("--scl", dest="scl", default=None)
-    parser.add_option("--sclroot", dest="sclroot", default=None)
 
     return parser.parse_args()
 
