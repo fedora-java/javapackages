@@ -54,6 +54,7 @@ def kill_parent_process(rpmconf):
         os.kill(rpmconf.rpm_pid, signal.SIGTERM)
     except OSError:
         pass
+    sys.exit(1)
 
 
 def args_to_unicode(args):
