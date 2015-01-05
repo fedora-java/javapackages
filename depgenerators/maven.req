@@ -107,7 +107,7 @@ class TagBuilder(object):
         unknown_deps = []
         # check if dependencies on POM files are satisfiable
         if XMvnResolve.is_available():
-            unknown_deps = self._check_pom_deps()
+            unknown_deps = self._check_pom_deps(metadata)
 
         for dependency in metadata.get_required_artifacts():
             # skip optional dependencies
@@ -233,12 +233,12 @@ class TagBuilder(object):
         config = get_config()
         return config.get('maven.req', {}) if config else {}
 
-    def _check_pom_deps(self):
+    def _check_pom_deps(self, metadata):
         """ Check if dependencies on POM files are satisfiable """
         unresolvable = []
         requests = []
         deps = []
-        for provided in self.provided_artifacts:
+        for provided in metadata.get_provided_artifacts():
             for dep in provided.dependencies:
                 if dep.extension != "pom":
                     continue
@@ -251,11 +251,11 @@ class TagBuilder(object):
                                                 classifier=dep.classifier,
                                                 version=dep.requestedVersion)
                     requests.append(request)
-            if requests:
-                results = XMvnResolve.process_raw_request(requests)
-                for i, r in enumerate(results):
-                    if not r:
-                        unresolvable.append(deps[i])
+        if requests:
+            results = XMvnResolve.process_raw_request(requests)
+            for i, r in enumerate(results):
+                if not r:
+                    unresolvable.append(deps[i])
         return unresolvable
 
     def _generate_requires_from_pom(self, pom, pom_artifact, pkg_arts):
