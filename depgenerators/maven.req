@@ -273,7 +273,8 @@ class TagBuilder(object):
         pom_requires = set()
         for i, r in enumerate(results):
             dep = MetadataDependency(deps[i].groupId, deps[i].artifactId,
-                                     requestedVersion=deps[i].version)
+                                     requestedVersion=deps[i].version,
+                                     namespace=rpmconf.scl or "")
             dver = dep.is_provided_by(self.provided_artifacts)[1]
             if dver is not None:
                 if not dep.is_provided_by(pkg_arts)[0]:
@@ -298,7 +299,8 @@ class TagBuilder(object):
 
             req = ResolutionRequest(pgid, paid, extension="pom")
             r = XMvnResolve.process_raw_request([req])[0]
-            dep = MetadataDependency(pgid, paid, requestedVersion=pver, extension="pom")
+            dep = MetadataDependency(pgid, paid, requestedVersion=pver,
+                                     extension="pom", namespace=rpmconf.scl or "")
 
             dver = dep.is_provided_by(self.provided_artifacts)[1]
             if dver is not None:
