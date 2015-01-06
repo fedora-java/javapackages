@@ -51,6 +51,7 @@ from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.alias import MetadataAlias
 
 import javapackages.metadata.pyxbmetadata as m
+import javapackages.common.util as util
 import pyxb
 
 
@@ -199,8 +200,7 @@ def write_metadata(metadata_file, artifacts):
     root.artifacts = pyxb.BIND(*artifacts)
 
     with open(metadata_file, 'w') as f:
-        dom = root.toDOM(None)
-        f.write(dom.toprettyxml(indent="   "))
+        util.write_metadata(f, root)
 
 if __name__ == "__main__":
 

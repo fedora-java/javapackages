@@ -42,7 +42,7 @@ from javapackages.maven.pom import POM, PomLoadingException
 from javapackages.ivy.ivyfile import IvyFile
 
 from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionResult, ResolutionRequest
-from javapackages.common.util import args_to_unicode
+from javapackages.common.util import args_to_unicode, write_metadata
 
 import sys
 import os
@@ -316,5 +316,4 @@ if __name__ == "__main__":
     add_artifact_elements(metadata, art, pom_path, jar_path)
 
     with open(config, 'w') as f:
-        dom = metadata.toDOM(None)
-        f.write(dom.toprettyxml(indent="   "))
+        write_metadata(f, metadata)

@@ -128,3 +128,14 @@ def get_logger(name):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
+
+
+def write_metadata(fileobj, metadata):
+    dom = metadata.toDOM(None)
+
+    # minidom in Python < 2.6 adds unnecessary whitespace
+    # see: http://bugs.python.org/issue4147
+    if sys.version_info < (2, 7):
+        fileobj.write(dom.toxml())
+    else:
+        fileobj.write(dom.toprettyxml(indent="   "))
