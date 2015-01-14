@@ -45,7 +45,7 @@
       <stereotypes>
         <stereotype>
           <extension>hpi</extension>
-        <stereotype>
+        </stereotype>
       </stereotypes>
     </repository>
     <repository>
