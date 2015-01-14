@@ -31,6 +31,8 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
+from javapackages.common.util import sanitize_version
+
 class Printer(object):
     @staticmethod
     def get_mvn_str(gid, aid, ext="", cla="", ver=""):
@@ -66,6 +68,7 @@ class Printer(object):
             rpmstr = "{ns}-{rpmstr}".format(ns=namespace, rpmstr=rpmstr)
 
         if pkgver is not None:
+            pkgver = sanitize_version(pkgver)
             rpmstr = "{rpmstr} = {ver}".format(rpmstr=rpmstr, ver=pkgver)
 
         return rpmstr

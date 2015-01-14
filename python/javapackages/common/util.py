@@ -139,3 +139,7 @@ def write_metadata(fileobj, metadata):
         fileobj.write(dom.toxml())
     else:
         fileobj.write(dom.toprettyxml(indent="   "))
+
+
+def sanitize_version(version):
+    return version.replace("-", ".")

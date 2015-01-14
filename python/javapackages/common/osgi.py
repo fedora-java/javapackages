@@ -35,6 +35,21 @@
 import re
 
 from javapackages.common.manifest import Manifest
+from javapackages.common.util import sanitize_version
+
+
+class OSGiUtils(object):
+
+    @staticmethod
+    def get_rpm_str(bundle, version="", namespace=""):
+        ns = namespace
+        if version:
+            version = sanitize_version(version)
+        return "{ns}{d}osgi({bundle}){eq}{version}".format(ns=ns,
+                                                           d="-" if ns else "",
+                                                           bundle=bundle,
+                                                           eq=" = " if version else "",
+                                                           version=version)
 
 
 class OSGiRequire(object):
@@ -75,13 +90,7 @@ class OSGiRequire(object):
 
     def get_rpm_str(self, version="", namespace=""):
         ns = namespace or self.namespace
-        verstr = ""
-        if version:
-            verstr = " = {ver}".format(ver=version)
-        return "{ns}{d}osgi({bundle}){verstr}".format(ns=ns,
-                                                      d="-" if ns else "",
-                                                      bundle=self.bundle,
-                                                      verstr=verstr)
+        return OSGiUtils.get_rpm_str(self.bundle, version=version, namespace=ns)
 
 
 class OSGiBundle(object):
@@ -166,7 +175,6 @@ class OSGiBundle(object):
         return not self.__eq__(other)
 
     def get_rpm_str(self, version="", namespace=""):
-        return "{ns}{d}osgi({bundle}) = {version}".format(ns=namespace or self.namespace,
-                                                          d="-" if self.namespace else "",
-                                                          bundle=self.bundle,
-                                                          version=version or self.version)
+        ver = version or self.version
+        ns = namespace or self.namespace
+        return OSGiUtils.get_rpm_str(self.bundle, version=ver, namespace=ns)
