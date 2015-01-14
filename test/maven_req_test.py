@@ -259,7 +259,7 @@ class TestMavenReq(unittest.TestCase):
         self.assertEqual(set(want), set(sout))
 
     @mavenreq(["osgi_versioned_ns/buildroot/usr/share/maven-metadata/require.xml"])
-    def test_osgi_versioned(self, stdout, stderr, return_value):
+    def test_osgi_versioned_ns(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
         want = ("devtoolset-3-osgi(osgi.req1) = 1.0", "jpackage-utils", "java-headless")
