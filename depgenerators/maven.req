@@ -176,7 +176,8 @@ class TagBuilder(object):
             elif req.bundle not in [x.bundle for x in osgi_provs]:
                 for prov in self.provided_osgi:
                     if prov.bundle == req.bundle:
-                        requires.add(req.get_rpm_str(version=prov.version))
+                        requires.add(req.get_rpm_str(version=prov.version,
+                                                     namespace=prov.namespace))
                         break
 
         _log.info(", ".join(requires))
