@@ -265,5 +265,14 @@ class TestMavenReq(unittest.TestCase):
         want = ("devtoolset-3-osgi(osgi.req1) = 1.0", "jpackage-utils", "java-headless")
         self.assertEqual(set(want), set(sout))
 
+    @mavenreq(["dashes/buildroot/usr/share/maven-metadata/require.xml"])
+    def test_dashes(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("mvn(org.apache.maven:maven-plugin-api) = 1.alpha.2",
+                "osgi(osgi2) = 1.5.1.SNAPSHOT",
+                "java-headless", "jpackage-utils")
+        self.assertEqual(set(want), set(sout))
+
 if __name__ == '__main__':
     unittest.main()

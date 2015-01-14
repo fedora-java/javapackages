@@ -142,5 +142,13 @@ class TestMavenProv(unittest.TestCase):
         assertIn(self, "mvn(args4j:args4j:pom:) = 2.0.16", sout)
         assertIn(self, "mvn(args4j:args4j) = 2.0.16", sout)
 
+    @mavenprov(["dashes/buildroot/usr/share/maven-metadata/require.xml"])
+    def test_dashes(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        self.assertEqual(len(sout), 2)
+        assertIn(self, "mvn(org.apache.maven:maven-model) = 1.alpha.2", sout)
+        assertIn(self, "osgi(osgi1) = 1.5.101.SNAPSHOT", sout)
+
 if __name__ == '__main__':
     unittest.main()
