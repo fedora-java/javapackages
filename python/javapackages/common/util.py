@@ -142,4 +142,6 @@ def write_metadata(fileobj, metadata):
 
 
 def sanitize_version(version):
-    return version.replace("-", ".")
+    if version:
+        return version.replace("-", ".")
+    return ""

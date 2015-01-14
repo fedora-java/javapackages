@@ -42,9 +42,8 @@ class OSGiUtils(object):
 
     @staticmethod
     def get_rpm_str(bundle, version="", namespace=""):
-        ns = namespace
-        if version:
-            version = sanitize_version(version)
+        ns = namespace or ""
+        version = sanitize_version(version)
         return "{ns}{d}osgi({bundle}){eq}{version}".format(ns=ns,
                                                            d="-" if ns else "",
                                                            bundle=bundle,
