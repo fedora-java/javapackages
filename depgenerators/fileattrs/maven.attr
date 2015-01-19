@@ -1,5 +1,5 @@
 %__maven_provides	%{_rpmconfigdir}/maven.prov
-%__maven_provides_opts	--cachedir %{_builddir}/%{?buildsubdir} --rpm-pid %{lua:print(posix.getprocessid("pid"))} %{?scl:--scl %{?scl}}
+%__maven_provides_opts	--cachedir %{_builddir}/%{?buildsubdir} --rpm-pid %{lua:print(math.floor(posix.getprocessid("pid")))} %{?scl:--scl %{?scl}}
 %__maven_requires	%{_rpmconfigdir}/maven.req
-%__maven_requires_opts	--cachedir %{_builddir}/%{?buildsubdir} --rpm-pid %{lua:print(posix.getprocessid("pid"))} %{?scl:--scl %{?scl}}
+%__maven_requires_opts	--cachedir %{_builddir}/%{?buildsubdir} --rpm-pid %{lua:print(math.floor(posix.getprocessid("pid")))} %{?scl:--scl %{?scl}}
 %__maven_path	^%{_datadir}/maven-metadata/.*
