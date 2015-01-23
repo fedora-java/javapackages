@@ -79,7 +79,7 @@ def MetaArtifact(specification, attributes=False, namespace=None, **defaults):
             for part in parts:
                 if namespace:
                     subelements = element.xpath('ns:' + part,
-                                               namespaces={'ns': namespace})
+                                                namespaces={'ns': namespace})
                 else:
                     subelements = element.xpath(part)
                 if subelements:
@@ -109,7 +109,7 @@ def MetaArtifact(specification, attributes=False, namespace=None, **defaults):
         @classmethod
         def from_xml(cls, element):
             values = dict([(key, val) for key, val
-                          in six.iteritems(element.attrib) if key in parts])
+                           in six.iteritems(element.attrib) if key in parts])
             return cls(**values)
 
         def get_xml(self, node='artifact', extra=''):
@@ -118,8 +118,8 @@ def MetaArtifact(specification, attributes=False, namespace=None, **defaults):
                 value = self.values.get(key, defaults.get(key, ''))
                 if value:
                     xml.append('{0}="{1}"'.format(key, value))
-            return etree.fromstring('<{0} {1}>{2}</{0}>'.format(node,
-                ' '.join(xml), extra))
+            return etree.fromstring('<{0} {1}>{2}</{0}>'
+                                    .format(node, ' '.join(xml), extra))
 
         def get_xpath_condition(self):
             expr = "@{0}='{1}'"
@@ -302,7 +302,7 @@ class XmlFile(object):
             query_result = self.root.xpath(query, namespaces=nsmap)
         except etree.XPathEvalError as error:
             raise PomQueryInvalid("XPath query '{0}': {1}.".format(query,
-                                                               error))
+                                                                   error))
         if not boolean:
             if len(query_result) == 0:
                 raise PomQueryNoMatch(dedent("""\
@@ -352,12 +352,12 @@ class XmlFile(object):
 class Pom(XmlFile):
     default_name = 'pom.xml'
     NSMAP = {'pom': 'http://maven.apache.org/POM/4.0.0',
-              'xsi': 'http://www.w3.org/2001/XMLSchema-instance'}
+             'xsi': 'http://www.w3.org/2001/XMLSchema-instance'}
     NS = '{' + NSMAP['pom'] + '}'
     XMLNS = ('xmlns="http://maven.apache.org/POM/4.0.0" '
-    'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
-    'xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 '
-    'http://maven.apache.org/xsd/maven-4.0.0.xsd"')
+             'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+             'xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 '
+             'http://maven.apache.org/xsd/maven-4.0.0.xsd"')
     DEPENDENCY_NODE = 'pom:dependency'
     DEPENDENCIES_NODE = 'pom:dependencies'
 
