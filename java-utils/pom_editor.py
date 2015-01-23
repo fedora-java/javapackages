@@ -206,20 +206,28 @@ class XmlFile(object):
 
     def __init__(self, xmlpath):
         self.xmlpath = xmlpath
-        self.document = self._load_file()
-        self._load_file()
+        with io.open(self.xmlpath, encoding='UTF-8') as raw_xml:
+            raw_xml = raw_xml.read()
+        raw_xml = self._preprocess_raw(raw_xml)
+        self.xml_declaration = re.match(r'\<\?xml\s[^?]*\?\>', raw_xml)
+        tmpfile = self.xmlpath + '.tmp'
+        with io.open(tmpfile, 'w') as prepared:
+            prepared.write(raw_xml)
+        self.document = etree.parse(tmpfile)
         self.tab = get_indent(self.root)
 
-    def _load_file(self):
-        return etree.parse(self.xmlpath)
+    def _preprocess_raw(self, raw_xml):
+        return raw_xml
 
     @property
     def root(self):
         return self.document.getroot()
 
     def write(self, filename):
-        with open(filename, 'wb') as xmlfile:
-            xmlfile.write(etree.tostring(self.document))
+        info = self.document.docinfo
+        self.document.write(filename, encoding=info.encoding,
+                            xml_declaration=bool(self.xml_declaration))
+        with io.open(filename, 'ab') as xmlfile:
             xmlfile.write(b'\n')
 
     def patch(self, function, fnargs):
@@ -368,14 +376,9 @@ class Pom(XmlFile):
     def __init__(self, pompath):
         super(Pom, self).__init__(pompath)
 
-    def _load_file(self):
-        tmpfile = self.xmlpath + '.tmp'
-        with io.open(self.xmlpath, encoding="UTF-8") as pomfile:
-            pom = re.sub(r'\<\s*project\s*\>',
-                         u'<project {ns}>'.format(ns=self.XMLNS), pomfile.read())
-        with io.open(tmpfile, 'w') as prepared:
-            prepared.write(pom)
-        return etree.parse(tmpfile)
+    def _preprocess_raw(self, raw_xml):
+        return re.sub(r'\<\s*project\s*\>',
+                      u'<project {ns}>'.format(ns=self.XMLNS), raw_xml)
 
     @classmethod
     def create_artifact(cls, *args, **kwargs):
