@@ -233,13 +233,11 @@ class XmlFile(object):
     def patch(self, function, fnargs):
         xmldir = path.dirname(self.xmlpath)
         xmlfile = path.basename(self.xmlpath)
-        try:
-            self.write(path.join(xmldir, xmlfile + '.tmp'))
-            function(**fnargs)
-        finally:
-            origfile = path.join(xmldir, xmlfile + '.orig')
-            shutil.move(self.xmlpath, origfile)
-            self.write(self.xmlpath)
+        self.write(path.join(xmldir, xmlfile + '.tmp'))
+        function(**fnargs)
+        origfile = path.join(xmldir, xmlfile + '.orig')
+        shutil.move(self.xmlpath, origfile)
+        self.write(self.xmlpath)
 
     def inject_xml(self, parent, content):
         items = len(content)
