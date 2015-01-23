@@ -16,16 +16,18 @@ from textwrap import dedent
 # all macro fuctions that can be called from external world
 macros = {}
 
-
-BEGIN_COMMENT = etree.Comment(' begin of code added by maintainer ')
-END_COMMENT = etree.Comment(' end of code added by maintainer ')
-
 def annotate(elements):
+    begin_comment = etree.Comment(' begin of code added by maintainer ')
+    end_comment = etree.Comment(' end of code added by maintainer ')
+
     if isinstance(elements, etree._Element):
-        elements[:0] = [BEGIN_COMMENT]
-        elements.append(END_COMMENT)
+        if elements.text and elements.text.strip():
+            begin_comment.tail = elements.text.strip()
+            elements.text = ''
+        elements[:0] = [begin_comment]
+        elements.append(end_comment)
         return elements
-    return [BEGIN_COMMENT] + elements + [END_COMMENT]
+    return [begin_comment] + elements + [end_comment]
 
 class PomException(Exception):
     pass

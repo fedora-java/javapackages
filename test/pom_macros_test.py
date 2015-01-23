@@ -420,6 +420,14 @@ class PomMacrosTest(unittest.TestCase):
         report, res = check_result(pom_path)
         self.assertEqual(res, True, report)
 
+    @exec_macro("pom_xpath_replace 'pom:parent/pom:groupId/text()' 'commons'",
+                "pom_xpath_replace_text.xml")
+    def test_xpath_replace_text(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want = get_result_literally(pom_path)
+        self.assertEqual(got, want)
+
     @exec_macro("pom_xpath_replace //pom:dependency/pom:groupId "
                 "'<groupId>a</groupId>'",
                 "pom_xpath_replace_multiple.xml")
