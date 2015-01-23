@@ -206,16 +206,20 @@ class XmlFile(object):
 
     def __init__(self, xmlpath):
         self.xmlpath = xmlpath
-        self.root = None
+        self.document = self._load_file()
         self._load_file()
         self.tab = get_indent(self.root)
 
     def _load_file(self):
-        self.root = etree.parse(self.xmlpath).getroot()
+        return etree.parse(self.xmlpath)
+
+    @property
+    def root(self):
+        return self.document.getroot()
 
     def write(self, filename):
         with open(filename, 'wb') as xmlfile:
-            xmlfile.write(etree.tostring(self.root))
+            xmlfile.write(etree.tostring(self.document))
             xmlfile.write(b'\n')
 
     def patch(self, function, fnargs):
@@ -365,10 +369,13 @@ class Pom(XmlFile):
         super(Pom, self).__init__(pompath)
 
     def _load_file(self):
+        tmpfile = self.xmlpath + '.tmp'
         with io.open(self.xmlpath, encoding="UTF-8") as pomfile:
             pom = re.sub(r'\<\s*project\s*\>',
                          u'<project {ns}>'.format(ns=self.XMLNS), pomfile.read())
-        self.root = etree.fromstring(pom.encode("utf-8"))
+        with io.open(tmpfile, 'w') as prepared:
+            prepared.write(pom)
+        return etree.parse(tmpfile)
 
     @classmethod
     def create_artifact(cls, *args, **kwargs):
