@@ -60,7 +60,7 @@ set -e \
 %endif \
 _filelist=".mfiles%{-f*:-%{-f*}}" \
 install -dm 755 %{buildroot}%{_datadir}/maven-metadata \
-for _dir in %{_jnidir} %{_javajnidir} %{_javadir}; do \
+for _dir in %{_jnidir} %{_javadir}; do \
     if [ -f %{buildroot}$_dir/$_jarpart ]; then \
 	_jpath="%{buildroot}$_dir/$_jarpart" \
     fi \
