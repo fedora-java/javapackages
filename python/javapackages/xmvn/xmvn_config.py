@@ -38,13 +38,14 @@ import pyxb.utils.six as six
 from pyxb.utils.six import BytesIO
 
 from javapackages.maven.artifact import ArtifactValidationException
+from javapackages.common.exception import JavaPackagesToolsException
 from lxml.etree import ElementTree, Element, SubElement
 import lxml
 
 import lxml.etree as ET
 
 
-class XMvnConfigException(Exception):
+class XMvnConfigException(JavaPackagesToolsException):
     pass
 
 
@@ -119,7 +120,7 @@ class XMvnConfig(object):
 
     def __add_config(self, level1, level2, level3=None, content=None):
         if not content:
-            raise Exception("Provide content as keyword argument")
+            raise XMvnConfigException("Provide content as keyword argument")
 
         confpath = self.__get_current_config()
         root = self.__init_xml()
@@ -158,9 +159,9 @@ class XMvnConfig(object):
         right = s.count('}')
 
         if left != right:
-            raise Exception("Number of opening and closing "
-                            "parenthesis for groups of wildcard "
-                            "matching is different.")
+            raise XMvnConfigException("Number of opening and closing "
+                                      "parenthesis for groups of wildcard "
+                                      "matching is different.")
         return left
 
     def add_aliases(self, artifact, aliases):
@@ -288,5 +289,5 @@ class XMvnConfig(object):
             for element in contentRoot:
                 par.append(element)
         except lxml.etree.XMLSyntaxError:
-            raise Exception("content is not valid content for XML node")
+            raise XMvnConfigException("content is not valid content for XML node")
         self.__write_xml(confpath, root)

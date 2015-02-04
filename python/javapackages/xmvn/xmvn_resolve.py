@@ -34,6 +34,11 @@ import os
 import lxml.etree
 
 from javapackages.common.util import execute_command
+from javapackages.common.exception import JavaPackagesToolsException
+
+
+class XMvnResolveException(JavaPackagesToolsException):
+    pass
 
 
 class XMvnResolve(object):
@@ -62,7 +67,7 @@ class XMvnResolve(object):
         if not test_env:
             rc, stdout, stderr = execute_command(command, input=request)
             if rc:
-                raise Exception("xmvn-resolve failed:\n" + stderr)
+                raise XMvnResolveException("xmvn-resolve failed:\n" + stderr)
         else:
             stdout = ""
             with open(test_env, "rb") as f:
