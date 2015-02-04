@@ -37,6 +37,7 @@ from javapackages.maven.artifact import (Artifact, ArtifactFormatException,
                                          ArtifactValidationException)
 from javapackages.xmvn.xmvn_config import XMvnConfig
 from javapackages.common.util import args_to_unicode
+from javapackages.common.exception import JavaPackagesToolsException
 
 
 class SaneParser(optparse.OptionParser):
@@ -81,3 +82,5 @@ if __name__ == "__main__":
         parser.error("{e}: Provided artifact strings were invalid. "
                      "Please see help  and check your arguments".format(e=e))
         sys.exit(1)
+    except JavaPackagesToolsException as e:
+        sys.exit(e)

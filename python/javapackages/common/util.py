@@ -38,6 +38,7 @@ import pyxb.utils.six as six
 import subprocess
 import logging
 from optparse import OptionParser
+from javapackages.common.exception import JavaPackagesToolsException
 
 
 def kill_parent_process(rpmconf):
@@ -103,11 +104,11 @@ def _parse_rpmgen_args(argv):
     options = _parse_argv(argv)[0]
 
     if not options.cachedir:
-        raise Exception("Missing option: --cachedir")
+        raise JavaPackagesToolsException("Missing option: --cachedir")
     options.cachedir = _get_cachedir(options.cachedir)
 
     if not options.rpm_pid:
-        raise Exception("Missing option: --rpm-pid")
+        raise JavaPackagesToolsException("Missing option: --rpm-pid")
     options.rpm_pid = int(options.rpm_pid)
 
     return options

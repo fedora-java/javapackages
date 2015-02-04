@@ -35,6 +35,7 @@ import optparse
 
 from javapackages.xmvn.xmvn_config import XMvnConfig
 from javapackages.common.util import args_to_unicode
+from javapackages.common.exception import JavaPackagesToolsException
 
 
 class SaneParser(optparse.OptionParser):
@@ -65,4 +66,7 @@ if __name__ == "__main__":
     if len(args) != 2:
         parser.error("Exactly 2 arguments are required")
 
-    XMvnConfig().add_custom_option(args[0], args[1])
+    try:
+        XMvnConfig().add_custom_option(args[0], args[1])
+    except JavaPackagesToolsException as e:
+        sys.exit(e)

@@ -12,6 +12,7 @@ import io
 from lxml import etree
 from os import path
 from textwrap import dedent
+from javapackages.common.exception import JavaPackagesToolsException
 
 # all macro fuctions that can be called from external world
 macros = {}
@@ -29,7 +30,7 @@ def annotate(elements):
         return elements
     return [begin_comment] + elements + [end_comment]
 
-class PomException(Exception):
+class PomException(JavaPackagesToolsException):
     pass
 class PomQueryNoMatch(PomException):
     pass
@@ -620,4 +621,7 @@ if __name__ == '__main__':
               file=sys.stderr)
         sys.exit(1)
 
-    macros[sys.argv[1]](*sys.argv[2:])
+    try:
+        macros[sys.argv[1]](*sys.argv[2:])
+    except JavaPackagesToolsException as e:
+        sys.exit(e)

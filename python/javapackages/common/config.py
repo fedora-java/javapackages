@@ -33,6 +33,7 @@
 
 import os
 import json
+from javapackages.common.exception import JavaPackagesToolsException
 
 metadata_cache_f = "metadata.cache"
 osgi_cache_f = "osgi.cache"
@@ -62,5 +63,5 @@ def get_buildroot():
     try:
         buildroot = os.environ['RPM_BUILD_ROOT']
     except KeyError:
-        raise Exception("RPM_BUILD_ROOT environment variable is not set")
+        raise JavaPackagesToolsException("RPM_BUILD_ROOT environment variable is not set")
     return os.path.abspath(buildroot)

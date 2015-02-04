@@ -34,7 +34,7 @@
 
 import re
 
-from javapackages.common.manifest import Manifest
+from javapackages.common.manifest import Manifest, ManifestException
 from javapackages.common.util import sanitize_version
 
 
@@ -130,7 +130,7 @@ class OSGiBundle(object):
     def from_manifest(cls, path):
         try:
             manifest = Manifest(path)
-        except IOError:
+        except ManifestException:
             return None
         bundle, version = manifest.get_provides()
         requires = []

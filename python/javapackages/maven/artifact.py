@@ -38,18 +38,19 @@ import pyxb.utils.six as six
 
 from javapackages.maven.pomreader import POMReader
 from javapackages.maven.printer import Printer
+from javapackages.common.exception import JavaPackagesToolsException
 from lxml.etree import Element, SubElement, tostring
 
 
-class ArtifactException(Exception):
+class ArtifactException(JavaPackagesToolsException):
     pass
 
 
-class ArtifactFormatException(Exception):
+class ArtifactFormatException(JavaPackagesToolsException):
     pass
 
 
-class ArtifactValidationException(ArtifactException):
+class ArtifactValidationException(JavaPackagesToolsException):
     pass
 
 

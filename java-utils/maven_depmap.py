@@ -52,26 +52,27 @@ from javapackages.metadata.alias import MetadataAlias
 
 import javapackages.metadata.pyxbmetadata as m
 import javapackages.common.util as util
+from javapackages.common.exception import JavaPackagesToolsException
 import pyxb
 
 
-class PackagingTypeMissingFile(Exception):
+class PackagingTypeMissingFile(JavaPackagesToolsException):
     def __init__(self, pom_path):
         self.args=("Packaging type is not 'pom' and no artifact path has been provided for POM %s" % pom_path,)
 
-class IncompatibleFilenames(Exception):
+class IncompatibleFilenames(JavaPackagesToolsException):
     def __init__(self, pom_path, jar_path):
         self.args=("Filenames of POM %s and JAR %s does not match properly. Check that JAR subdirectories matches '.' in pom name." % (pom_path, jar_path),)
 
-class ExtensionsDontMatch(Exception):
+class ExtensionsDontMatch(JavaPackagesToolsException):
     def __init__(self, coordinates_ext, file_ext):
         self.args=("Extensions don't match: '%s' != '%s'" % (coordinates_ext, file_ext),)
 
-class MissingJarFile(Exception):
+class MissingJarFile(JavaPackagesToolsException):
     def __init__(self):
         self.args=("JAR seems to be missing in standard directories. Make sure you have installed it",)
 
-class UnknownFileExtension(Exception):
+class UnknownFileExtension(JavaPackagesToolsException):
     def __init__(self, jar_path):
         self.args=("Unknown file extension: %s" % (jar_path),)
 
@@ -202,8 +203,8 @@ def write_metadata(metadata_file, artifacts):
     with open(metadata_file, 'w') as f:
         util.write_metadata(f, root)
 
-if __name__ == "__main__":
 
+def _main():
     usage="usage: %prog [options] metadata_path pom_path|<MVN spec> [jar_path]"
     parser = OptionParser(usage=usage)
     parser.add_option("-a","--append",type="str",
@@ -305,3 +306,10 @@ if __name__ == "__main__":
             print(pom_path)
 
     write_metadata(metadata_path, am)
+
+
+if __name__ == "__main__":
+    try:
+        _main()
+    except JavaPackagesToolsException as e:
+        sys.exit(e)

@@ -41,8 +41,9 @@ from javapackages.maven.artifact import Artifact, ArtifactFormatException
 from javapackages.maven.pom import POM, PomLoadingException
 from javapackages.ivy.ivyfile import IvyFile
 
-from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionResult, ResolutionRequest
+from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionResult, ResolutionRequest, XMvnResolveException
 from javapackages.common.util import args_to_unicode, write_metadata
+from javapackages.common.exception import JavaPackagesToolsException
 
 import sys
 import os
@@ -80,11 +81,7 @@ Path where Artifact file (usually JAR) is located.
 config = ".xmvn-reactor"
 
 
-class ExtensionsDontMatch(Exception):
-    pass
-
-
-class UnknownVersion(Exception):
+class ExtensionsDontMatch(JavaPackagesToolsException):
     pass
 
 
@@ -105,9 +102,9 @@ def get_parent_pom(pom):
                             extension="pom", version=pom.version)
     result = XMvnResolve.process_raw_request([req])[0]
     if not result:
-        raise Exception("Unable to resolve parent POM {g}:{a}:{e}:{v}"
-                        .format(g=pom.groupId, a=pom.artifactId, e="pom",
-                                v=pom.version))
+        raise XMvnResolveException("Unable to resolve parent POM {g}:{a}:{e}:{v}"
+                                   .format(g=pom.groupId, a=pom.artifactId,
+                                           e="pom", v=pom.version))
 
     return POM(result.artifactPath)
 
@@ -240,7 +237,7 @@ def _get_dependencies(pom):
     return deps, depm, props
 
 
-if __name__ == "__main__":
+def _main():
     OptionParser.format_epilog = lambda self, formatter: self.epilog
     parser = OptionParser(usage=usage,
                         epilog=epilog)
@@ -317,3 +314,9 @@ if __name__ == "__main__":
 
     with open(config, 'w') as f:
         write_metadata(f, metadata)
+
+if __name__ == "__main__":
+    try:
+        _main()
+    except JavaPackagesToolsException as e:
+        sys.exit(e)

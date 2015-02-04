@@ -41,16 +41,17 @@ import xml
 from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.dependency import MetadataDependency
 from javapackages.metadata.skippedartifact import MetadataSkippedArtifact
+from javapackages.common.exception import JavaPackagesToolsException
 import javapackages.metadata.pyxbmetadata as m
 
 import pyxb
 
 
-class MetadataLoadingException(Exception):
+class MetadataLoadingException(JavaPackagesToolsException):
     pass
 
 
-class MetadataInvalidException(Exception):
+class MetadataInvalidException(JavaPackagesToolsException):
     pass
 
 

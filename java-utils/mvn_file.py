@@ -37,6 +37,7 @@ from javapackages.maven.artifact import (Artifact, ArtifactFormatException,
                                          ArtifactValidationException)
 from javapackages.xmvn.xmvn_config import XMvnConfig, XMvnConfigException
 from javapackages.common.util import args_to_unicode
+from javapackages.common.exception import JavaPackagesToolsException
 
 
 class SaneParser(optparse.OptionParser):
@@ -80,3 +81,5 @@ if __name__ == "__main__":
     except XMvnConfigException as e:
         parser.error("Incorrect configuration: {e}".format(e=e))
         sys.exit(1)
+    except JavaPackagesToolsException as e:
+        sys.exit(e)

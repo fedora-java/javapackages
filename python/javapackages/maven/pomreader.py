@@ -32,9 +32,10 @@
 # Authors:  Michal Srb <msrb@redhat.com>
 
 from lxml.etree import ElementTree, XMLParser
+from javapackages.common.exception import JavaPackagesToolsException
 
 
-class PomLoadingException(Exception):
+class PomLoadingException(JavaPackagesToolsException):
     pass
 
 

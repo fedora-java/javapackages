@@ -34,6 +34,11 @@
 
 import zipfile
 from zipfile import ZipFile
+from javapackages.common.exception import JavaPackagesToolsException
+
+
+class ManifestException(JavaPackagesToolsException):
+    pass
 
 
 class Manifest(object):
@@ -43,7 +48,7 @@ class Manifest(object):
         self._manifest = self._read_manifest()
 
         if self._manifest is None:
-            raise IOError("Unable to open MANIFEST.MF in {path}".format(path=self._path))
+            raise ManifestException("Unable to open MANIFEST.MF in {path}".format(path=self._path))
 
     def _read_manifest(self):
         mf = None
