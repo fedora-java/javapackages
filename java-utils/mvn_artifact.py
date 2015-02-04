@@ -105,7 +105,9 @@ def get_parent_pom(pom):
                             extension="pom", version=pom.version)
     result = XMvnResolve.process_raw_request([req])[0]
     if not result:
-        raise Exception("Unable to resolve parent POM")
+        raise Exception("Unable to resolve parent POM {g}:{a}:{e}:{v}"
+                        .format(g=pom.groupId, a=pom.artifactId, e="pom",
+                                v=pom.version))
 
     return POM(result.artifactPath)
 
