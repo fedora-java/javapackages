@@ -219,9 +219,8 @@ def gather_dependencies(pom_path):
                 d.merge_with(dm)
                 break
 
-    # only non-optional deps with scope "compile" or "runtime" are interesting
-    deps = [x for x in deps if x.scope in ["", "compile", "runtime"]
-            and not x.is_optional()]
+    # only deps with scope "compile" or "runtime" are interesting
+    deps = [x for x in deps if x.scope in ["", "compile", "runtime"]]
 
     return deps
 
