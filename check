@@ -36,6 +36,11 @@ if ! test -f config.status; then
 fi
 . ./config.status
 
+for test in test/java-functions/*_test.sh; do
+    echo "`basename $test`:"
+    sh $test || exit 1
+done
+
 echo "Running Python tests with ${pyinterpreter}..."
 (cd ./python && "${pyinterpreter}" setup.py test)
 r1=$?
