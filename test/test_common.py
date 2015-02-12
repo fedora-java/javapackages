@@ -95,8 +95,12 @@ def prepare_metadata(metadata_dir):
         for filename in filenames:
             if filename.endswith("-want.xml"):
                 want_file = os.path.join(dirname, filename)
-                with open(want_file) as wfile:
-                    metadata = m.CreateFromDocument(wfile.read())
+                with open(want_file, 'rb') as wfile:
+                    # FIXME make proper support for multiple model versions
+                    data = wfile.read().replace(b'http://fedorahosted.org/xmvn/METADATA/2.0.0',
+                                                b'http://fedorahosted.org/xmvn/METADATA/2.3.0')
+
+                    metadata = m.CreateFromDocument(data)
                 for a in metadata.artifacts.artifact:
                     if '%' in a.path:
                         a.path = a.path % (metadata_dir)

@@ -86,6 +86,10 @@ class Metadata(object):
                 # not a compressed metadata, just rewind and read the data
                 f.seek(0)
                 data = f.read()
+
+        # FIXME make proper support for multiple model versions
+        data = data.replace(b'http://fedorahosted.org/xmvn/METADATA/2.0.0',
+                            b'http://fedorahosted.org/xmvn/METADATA/2.3.0')
         return m.CreateFromDocument(data)
 
     def _read_artifacts(self, metadata):
