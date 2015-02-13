@@ -128,8 +128,8 @@ class MetadataDependency(object):
             extension = metadata.extension.strip()
         if hasattr(metadata, 'classifier') and metadata.classifier:
             classifier = metadata.classifier.strip()
-        if hasattr(metadata, 'optional') and metadata.optional:
-            optional = metadata.optional.strip()
+        if hasattr(metadata, 'optional'):
+            optional = str(metadata.optional).lower()
         if hasattr(metadata, 'namespace') and metadata.namespace:
             namespace = metadata.namespace.strip()
 
