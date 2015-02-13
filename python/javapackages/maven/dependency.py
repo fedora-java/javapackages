@@ -62,6 +62,16 @@ class Dependency(AbstractArtifact):
             return True
         return False
 
+    def get_optional(self):
+        """Return original value of 'optional' node as defined in POM.
+
+        If the 'optional' node is missing in POM file, return None.
+        """
+        if self._default_optional:
+            return None
+        return self.optional
+
+
     def get_xml_element(self, root="dependency"):
         """
         Return XML Element node representation of the Artifact

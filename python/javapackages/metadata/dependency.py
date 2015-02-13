@@ -9,7 +9,7 @@ import pyxb.utils.six as six
 
 class MetadataDependency(object):
     def __init__(self, groupId, artifactId, extension="",
-                 classifier="", namespace="",
+                 classifier="", namespace="", optional="",
                  requestedVersion="", resolvedVersion="",
                  exclusions=set()):
 
@@ -18,9 +18,15 @@ class MetadataDependency(object):
         self.extension = extension or "jar"
         self.classifier = classifier
         self.namespace = namespace
+        self.optional = optional
         self.requestedVersion = requestedVersion or "SYSTEM"
         self.resolvedVersion = resolvedVersion
         self.exclusions = exclusions or set()
+
+    def is_optional(self):
+        if self.optional and self.optional.lower() == "true":
+            return True
+        return False
 
     def get_mvn_str(self):
         return Printer.get_mvn_str(self.groupId, self.artifactId,
@@ -67,10 +73,11 @@ class MetadataDependency(object):
         d = m.Dependency()
         d.groupId = self.groupId
         d.artifactId = self.artifactId
-        d.requestedVersion = self.requestedVersion or None
-        d.resolvedVersion = self.resolvedVersion or None
         d.classifier = self.classifier or None
         d.extension = self.extension or None
+        d.optional = self.optional or None
+        d.requestedVersion = self.requestedVersion or None
+        d.resolvedVersion = self.resolvedVersion or None
         if self.exclusions:
             excl = set(e.to_metadata() for e in self.exclusions)
             d.exclusions = pyxb.BIND(*excl)
@@ -112,7 +119,7 @@ class MetadataDependency(object):
         groupId = metadata.groupId.strip()
         artifactId = metadata.artifactId.strip()
 
-        requestedVersion = resolvedVersion = extension = classifier = namespace = ""
+        requestedVersion = resolvedVersion = extension = classifier = optional = namespace = ""
         if hasattr(metadata, 'requestedVersion') and metadata.requestedVersion:
             requestedVersion = metadata.requestedVersion.strip()
         if hasattr(metadata, 'resolvedVersion') and metadata.resolvedVersion:
@@ -121,17 +128,19 @@ class MetadataDependency(object):
             extension = metadata.extension.strip()
         if hasattr(metadata, 'classifier') and metadata.classifier:
             classifier = metadata.classifier.strip()
+        if hasattr(metadata, 'optional') and metadata.optional:
+            optional = metadata.optional.strip()
         if hasattr(metadata, 'namespace') and metadata.namespace:
             namespace = metadata.namespace.strip()
 
         exclusions = set()
         if hasattr(metadata, 'exclusions') and metadata.exclusions:
             exclusions = set(MetadataExclusion.from_metadata(excl)
-                          for excl in metadata.exclusions.exclusion)
+                             for excl in metadata.exclusions.exclusion)
 
         return cls(groupId, artifactId, extension, classifier,
-                   namespace, requestedVersion, resolvedVersion,
-                   exclusions)
+                   namespace, optional, requestedVersion,
+                   resolvedVersion, exclusions)
 
     @classmethod
     def from_mvn_str(cls, mvn_str):
@@ -149,5 +158,6 @@ class MetadataDependency(object):
         return cls(mvn_dep.groupId, mvn_dep.artifactId,
                    extension=mvn_dep.extension,
                    classifier=mvn_dep.classifier,
+                   optional=mvn_dep.get_optional(),
                    requestedVersion=mvn_dep.version,
                    exclusions=exclusions)
