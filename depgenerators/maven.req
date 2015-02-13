@@ -113,6 +113,10 @@ class TagBuilder(object):
             unknown_deps = self._check_pom_deps()
 
         for dependency in metadata.get_required_artifacts():
+            # skip optional dependencies
+            if dependency.is_optional():
+                continue
+
             if dependency.resolvedVersion == "UNKNOWN":
                 unknown_deps.append(dependency)
                 continue
