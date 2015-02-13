@@ -192,7 +192,7 @@ def write_metadata(metadata_file, artifacts):
             xml = gzip.open(metadata_file, 'rb').read()
         except IOError:
             # Not a gzipped file?
-            xml = open(metadata_file, "r").read()
+            xml = open(metadata_file, "rb").read()
         # FIXME make proper support for multiple model versions
         xml = xml.replace(b'http://fedorahosted.org/xmvn/METADATA/2.0.0',
                           b'http://fedorahosted.org/xmvn/METADATA/2.3.0')
