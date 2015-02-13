@@ -12,7 +12,7 @@ if [ "$1" != "mock" ]; then
     # macro confuses the shell
     . `dirname $0`/../../java-utils/java-functions 2>/dev/null
 
-    JAVACMD="`dirname $0`/`basename -s .sh $0`_mock.sh"
+    JAVACMD="`dirname $0`/`basename $0 ".sh"`_mock.sh"
 
     MAIN_CLASS="com.example.Main"
     CLASSPATH="jars"
