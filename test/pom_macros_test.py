@@ -1,5 +1,6 @@
 import unittest
 import os
+import io
 
 from shutil import copytree
 from shutil import rmtree
@@ -37,11 +38,11 @@ def check_result(pom_path):
     return report, res
 
 def get_result_literally(pom_path):
-    with open(pom_path, 'r') as gotfile:
+    with io.open(pom_path, 'r', encoding='UTF-8') as gotfile:
         got = gotfile.read().split('\n')
 
     wantpath = '{pom}-want'.format(pom=os.path.basename(pom_path))
-    with open(wantpath, 'r') as wantfile:
+    with io.open(wantpath, 'r', encoding='UTF-8') as wantfile:
         want = wantfile.read().split('\n')
     return got, want
 
