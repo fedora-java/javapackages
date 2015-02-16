@@ -149,9 +149,10 @@ class AbstractArtifact(object):
                 if not member.startswith('_'):
                     # copy value from given artifact only if the field is empty,
                     # or if it contains default value (not explicitly specified)
-                    if (not getattr(self, member) or (
-                       hasattr(self, "_default_" + member) and
-                       getattr(self, "_default_" + member))):
+                    if hasattr(self, "_raw_" + member):
+                        if getattr(self, "_raw_" + member) is None:
+                            setattr(self, member, getattr(artifact, member))
+                    elif not getattr(self, member):
                         setattr(self, member, getattr(artifact, member))
 
     def update_from(self, artifact):

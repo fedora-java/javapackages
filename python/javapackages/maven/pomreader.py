@@ -80,3 +80,17 @@ class POMReader(object):
             if node is not None and len(node) > 0 and node[0].text is not None:
                 parts[key] = node[0].text.strip()
         return parts
+
+    @staticmethod
+    def find_raw_parts(doc, parts, xpath=".//"):
+        for key in parts:
+            node = doc.xpath('{0}*[local-name() = "{1}"]'.format(xpath, key))
+            if node is not None and len(node) > 0:
+                if node[0].text is not None:
+                    parts[key] = node[0].text.strip()
+                else:
+                    # node is present, but it has no content
+                    parts[key] = ""
+            else:
+                parts[key] = None
+        return parts

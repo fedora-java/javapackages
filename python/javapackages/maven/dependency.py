@@ -31,7 +31,8 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
-from javapackages.maven.artifact import AbstractArtifact, ArtifactFormatException
+from javapackages.maven.artifact import (AbstractArtifact,
+                                         ArtifactFormatException)
 from javapackages.maven.exclusion import Exclusion
 from javapackages.maven.pomreader import POMReader
 from lxml.etree import Element, SubElement
@@ -41,50 +42,66 @@ class Dependency(AbstractArtifact):
 
     def __init__(self, groupId, artifactId, extension="", classifier="",
                  version="", scope="", optional="", exclusions=set()):
-        self.groupId = groupId.strip()
-        self.artifactId = artifactId.strip()
-        self.extension = extension.strip() or "jar"
-        self.classifier = classifier.strip()
-        self.version = version.strip()
-        self.scope = scope.strip() or "compile"
-        self.optional = optional.strip() or "false"
-        self.exclusions = exclusions
+        # groupId and artifactId are mandatory
+        if groupId is not None:
+            self.groupId = groupId.strip()
+        if artifactId is not None:
+            self.artifactId = artifactId.strip()
 
-        self._default_scope = True
+        if not self.groupId or not self.artifactId:
+            raise ArtifactFormatException("\"{g}:{a}\" is not a valid artifact"
+                                          .format(g=self.groupId,
+                                                  a=self.artifactId))
+
+        # default values
+        self.extension = "jar"
+        self.classifier = ""
+        self.version = ""
+        self.scope = "compile"
+        self.optional = "false"
+        self.exclusions = set()
+
+        # raw values
+        self._raw_scope = scope
+        self._raw_optional = optional
+
+        if extension:
+            self.extension = extension.strip()
+        if classifier:
+            self.classifier = classifier.strip()
+        if version:
+            self.version = version.strip()
         if scope:
-            self._default_scope = False
-        self._default_optional = True
+            self.scope = scope.strip()
         if optional:
-            self._default_optional = False
+            self.optional = optional.strip()
+        if exclusions:
+            self.exclusions = exclusions
 
     def is_optional(self):
         if self.optional and self.optional.lower() == "true":
             return True
         return False
 
-    def get_optional(self):
-        """Return original value of 'optional' node as defined in POM.
+    def get_raw_optional(self):
+        """Return original value for 'optional' element."""
+        return self._raw_optional
 
-        If the 'optional' node is missing in POM file, return None.
-        """
-        if self._default_optional:
-            return None
-        return self.optional
-
+    def get_raw_scope(self):
+        """Return original value for 'scope' element."""
+        return self._raw_scope
 
     def get_xml_element(self, root="dependency"):
-        """
-        Return XML Element node representation of the Artifact
-        """
+        """Return XML Element node representation of this dependency."""
         root = AbstractArtifact.get_xml_element(self, root)
 
-        if self.scope:
+        if self._raw_scope:
             item = SubElement(root, "scope")
-            item.text = self.scope
+            item.text = self._raw_scope
 
-        if self.optional:
+        if self._raw_optional is not None:
             item = SubElement(root, "optional")
-            item.text = self.optional
+            item.text = self._raw_optional
 
         if self.exclusions:
             exc_root = Element("exclusions")
@@ -109,12 +126,7 @@ class Dependency(AbstractArtifact):
                  'scope': '',
                  'optional': ''}
 
-        parts = POMReader.find_parts(xmlnode, parts)
-
-        if not parts['groupId'] or not parts['artifactId']:
-            raise ArtifactFormatException(
-                "Empty groupId or artifactId encountered. "
-                "This is a bug, please report it!")
+        parts = POMReader.find_raw_parts(xmlnode, parts)
 
         # exclusions
         excnodes = xmlnode.findall("{*}exclusions/{*}exclusion")
@@ -135,12 +147,12 @@ class Dependency(AbstractArtifact):
     @classmethod
     def from_mvn_str(cls, mvnstr):
         """
-        Create Dependency from Maven-style definition
+        Create Dependency from Maven-style definition.
 
         The string should be in the format of:
            groupId:artifactId[:extension[:classifier]][:version]
 
-        Where last part is always considered to be version unless empty
+        Where last part is always considered to be version unless empty.
         """
         p = cls.get_parts_from_mvn_str(mvnstr)
         return cls(p['groupId'],
