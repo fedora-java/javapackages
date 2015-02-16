@@ -158,6 +158,6 @@ class MetadataDependency(object):
         return cls(mvn_dep.groupId, mvn_dep.artifactId,
                    extension=mvn_dep.extension,
                    classifier=mvn_dep.classifier,
-                   optional=mvn_dep.get_optional(),
+                   optional=mvn_dep.optional,
                    requestedVersion=mvn_dep.version,
                    exclusions=exclusions)
