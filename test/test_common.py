@@ -5,7 +5,7 @@ import subprocess
 import sys
 import unittest
 
-import javapackages.metadata.pyxbmetadata as m
+from javapackages.metadata.metadata import Metadata
 from os import path
 from test_rpmbuild import Package
 from xml_compare import compare_xml_files
@@ -96,11 +96,7 @@ def prepare_metadata(metadata_dir):
             if filename.endswith("-want.xml"):
                 want_file = os.path.join(dirname, filename)
                 with open(want_file, 'rb') as wfile:
-                    # FIXME make proper support for multiple model versions
-                    data = wfile.read().replace(b'http://fedorahosted.org/xmvn/METADATA/2.0.0',
-                                                b'http://fedorahosted.org/xmvn/METADATA/2.3.0')
-
-                    metadata = m.CreateFromDocument(data)
+                    metadata = Metadata.create_from_doc(wfile.read())
                 for a in metadata.artifacts.artifact:
                     if '%' in a.path:
                         a.path = a.path % (metadata_dir)

@@ -294,7 +294,7 @@ def _main():
 
     if os.path.exists(config):
         xml = open(config).read()
-        metadata = m.CreateFromDocument(xml)
+        metadata = Metadata.create_from_doc(xml)
     else:
         metadata = m.metadata()
 

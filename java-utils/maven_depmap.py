@@ -49,6 +49,7 @@ from time import gmtime, strftime
 from javapackages.maven.pom import POM
 from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.alias import MetadataAlias
+from javapackages.metadata.metadata import Metadata
 
 import javapackages.metadata.pyxbmetadata as m
 import javapackages.common.util as util
@@ -193,10 +194,7 @@ def write_metadata(metadata_file, artifacts):
         except IOError:
             # Not a gzipped file?
             xml = open(metadata_file, "rb").read()
-        # FIXME make proper support for multiple model versions
-        xml = xml.replace(b'http://fedorahosted.org/xmvn/METADATA/2.0.0',
-                          b'http://fedorahosted.org/xmvn/METADATA/2.3.0')
-        root = m.CreateFromDocument(xml)
+        root = Metadata.create_from_doc(xml)
         artifacts += [a for a in root.artifacts.artifact]
     else:
         root = m.metadata()
