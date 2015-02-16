@@ -33,7 +33,7 @@
 from __future__ import print_function
 
 import javapackages.metadata.pyxbmetadata as m
-from javapackages.metadata.metadata import Metadata, MetadataInvalidException
+from javapackages.metadata.metadata import Metadata
 from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.dependency import MetadataDependency
 
@@ -41,27 +41,27 @@ from javapackages.maven.artifact import Artifact, ArtifactFormatException
 from javapackages.maven.pom import POM, PomLoadingException
 from javapackages.ivy.ivyfile import IvyFile
 
-from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionResult, ResolutionRequest, XMvnResolveException
+from javapackages.xmvn.xmvn_resolve import (XMvnResolve, ResolutionRequest,
+                                            XMvnResolveException)
 from javapackages.common.util import args_to_unicode, write_metadata
 from javapackages.common.exception import JavaPackagesToolsException
 
 import sys
 import os
-import traceback
 import pyxb
 import lxml.etree
-from optparse import OptionParser, SUPPRESS_HELP
+from optparse import OptionParser
 
 
-usage="usage: %prog [options] <MVN spec | POM path> [artifact path]"
-epilog="""
+usage = "usage: %prog [options] <MVN spec | POM path> [artifact path]"
+epilog = """
 MVN spec:
 Specification of Maven artifact in following format:
 
     groupId:artifactId[:extension[:classifier]][:version]
 
-Wildcards (*) and empty parts in specifications are allowed (treated as wildcard).
-JAR path must also be specified if this option is used.
+Wildcards (*) and empty parts in specifications are allowed (treated
+as wildcard). JAR path must also be specified if this option is used.
 
 Examples of valid specifications:
 commons-lang:commons-lang:1.2
@@ -126,8 +126,8 @@ def add_artifact_elements(root, art, ppath=None, jpath=None):
                 if not is_it_ivy_file(ppath):
                     art.extension = "pom"
                 else:
-                    art.extension = os.path.splitext(pom_path)[1][1:]
-                    art.properties['type'] = 'ivy'
+                    art.extension = os.path.splitext(ppath)[1][1:]
+                    art.properties["type"] = "ivy"
             else:
                 art.extension = ext_backup
 
@@ -155,11 +155,11 @@ def merge_sections(main, update):
 def get_model_variables(pom):
     props = {}
     if pom.groupId:
-        props['project.groupId'] = pom.groupId
+        props["project.groupId"] = pom.groupId
     if pom.artifactId:
-        props['project.artifactId'] = pom.artifactId
+        props["project.artifactId"] = pom.artifactId
     if pom.version:
-        props['project.version'] = pom.version
+        props["project.version"] = pom.version
     return props
 
 
@@ -307,16 +307,16 @@ def _main():
         if deps:
             art.dependencies = set(deps)
     else:
-        art.properties['xmvn.resolver.disableEffectivePom'] = 'true'
+        art.properties["xmvn.resolver.disableEffectivePom"] = "true"
 
     if options.D:
         for d_opt in options.D:
-            key, value = d_opt.split('=')
+            key, value = d_opt.split("=")
             art.properties[key] = value
 
     add_artifact_elements(metadata, art, pom_path, jar_path)
 
-    with open(config, 'w') as f:
+    with open(config, "w") as f:
         write_metadata(f, metadata)
 
 if __name__ == "__main__":
