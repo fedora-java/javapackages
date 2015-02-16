@@ -546,6 +546,13 @@ class PomMacrosTest(unittest.TestCase):
         got, want = get_result_literally(pom_path)
         self.assertEqual(got, want)
 
+    @exec_macro("pom_xpath_set pom:project/pom:version 2.7", "pom_unicode.xml")
+    def test_unicode(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want = get_result_literally(pom_path)
+        self.assertEqual(got, want)
+
     @exec_macro("pom_remove_parent", "unparsable_xml.pom")
     def test_unparsable_xml(self, stdin, stderr, returncode, pom_path):
         self.assertEqual(returncode, 1, stderr)

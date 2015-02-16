@@ -212,7 +212,7 @@ class XmlFile(object):
         raw_xml = self._preprocess_raw(raw_xml)
         self.xml_declaration = re.match(r'\<\?xml\s[^?]*\?\>', raw_xml)
         tmpfile = self.xmlpath + '.tmp'
-        with io.open(tmpfile, 'w') as prepared:
+        with io.open(tmpfile, 'w', encoding='UTF-8') as prepared:
             prepared.write(raw_xml)
         self.document = etree.parse(tmpfile)
         self.tab = get_indent(self.root)
