@@ -178,12 +178,14 @@ def gather_dependencies(pom_path):
     expand_props(deps, pom_props)
     expand_props(depm, pom_props)
 
+    curr_pom = pom
     parent = pom.parent
     while parent:
         ppom = None
         if parent.relativePath:
             try:
-                ppom_path = os.path.join(os.path.dirname(pom._path), parent.relativePath)
+                ppom_path = os.path.join(os.path.dirname(curr_pom._path),
+                                         parent.relativePath)
                 ppom = POM(ppom_path)
             except PomLoadingException:
                 pass
@@ -205,6 +207,8 @@ def gather_dependencies(pom_path):
         for pkey in pprops:
             if pkey not in props:
                 props[pkey] = pprops[pkey]
+
+        curr_pom = ppom
 
     for d in deps:
         d.interpolate(props)
