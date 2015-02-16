@@ -293,7 +293,7 @@ def _main():
         art.extension = "pom"
 
     if os.path.exists(config):
-        xml = open(config).read()
+        xml = open(config, "rb").read()
         metadata = Metadata.create_from_doc(xml)
     else:
         metadata = m.metadata()
