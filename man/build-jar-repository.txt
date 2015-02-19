@@ -42,6 +42,12 @@ If no option is specified the default action will be to create symbolic links
 *--help*
     Display help text
 
+DEPENDENCIES
+------------
+Using *build-jar-repository* with artifact-coordinates requires
+*xmvn-resolve* command to be available. User of *build-jar-repository*
+is responsible for making it available in the system.
+
 EXAMPLES
 --------
 *build-jar-repository . jndi* - This will create a symbolic link to the jndi JAR

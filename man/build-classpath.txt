@@ -21,6 +21,12 @@ then "jar" is used.  If classifier is omitted then empty classifier is used. For
 more information see XMvn Configuration Reference. The CLASSPATH is returned to
 standard output.
 
+DEPENDENCIES
+------------
+Using *build-classpath* with artifact-coordinates requires
+*xmvn-resolve* command to be available. User of *build-classpath* is
+responsible for making it available in the system.
+
 EXAMPLES
 --------
 *build-classpath junit xerces-j2 wsdl4j* - this will return a string to standard out

@@ -10,7 +10,7 @@ find-jar - find extension JAR or directory
 
 SYNOPSIS
 --------
-*find-jar* element
+*find-jar* JAR|artifact-coordinates
 
 DESCRIPTION
 -----------
@@ -21,6 +21,12 @@ This command is solely intended for testing resolution and should not
 be used in scripts.  Even for single-element classpath building
 *build-classpath* is preferred since single-element searches can
 produce multiple file results when resolving into a directory.
+
+DEPENDENCIES
+------------
+Using *find-jar* with artifact-coordinates requires *xmvn-resolve*
+command to be available. User of *find-jar* is responsible for making
+it available in the system.
 
 EXAMPLES
 --------
