@@ -9,7 +9,8 @@ from test_rpmbuild import Package
 
 WORKDIR = os.path.join(DIRPATH, '.workdir')
 
-unordered = ['artifactGlob', 'alias']
+unordered = ['artifactGlob', 'alias', 'compatVersions']
+
 
 def rpm_test():
     def test_decorator(function):

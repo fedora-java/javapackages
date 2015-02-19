@@ -7,7 +7,7 @@ from test_common import xmvnconfig, get_config_file_list, \
 
 from xml_compare import compare_xml_files
 
-unordered = ['artifactGlob', 'alias']
+unordered = ['artifactGlob', 'alias', 'compatVersions']
 
 class TestMvnAlias(unittest.TestCase):
 
