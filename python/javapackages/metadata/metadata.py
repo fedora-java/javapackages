@@ -36,14 +36,13 @@ from __future__ import print_function
 import gzip
 import logging
 import os.path
-import xml
+
+from lxml import etree
 
 from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.skippedartifact import MetadataSkippedArtifact
 from javapackages.common.exception import JavaPackagesToolsException
-import javapackages.metadata.pyxbmetadata as m
-
-import pyxb
+from javapackages.common.binding import ObjectBinding, from_element, to_element
 
 
 class MetadataLoadingException(JavaPackagesToolsException):
@@ -54,64 +53,24 @@ class MetadataInvalidException(JavaPackagesToolsException):
     pass
 
 
-class Metadata(object):
+class Metadata(ObjectBinding):
+    element_name = 'metadata'
+    fields = ['uuid', 'artifacts', 'skippedArtifacts', 'properties']
+    types = {'artifacts': [MetadataArtifact],
+             'skippedArtifacts': [MetadataSkippedArtifact],
+             'properties': dict}
+    xmlns = 'http://fedorahosted.org/xmvn/METADATA/2.3.0'
 
-    def __init__(self, path):
-        self._path = path
-        self.artifacts = []
-        self.skipped_artifacts = []
-        self.properties = {}
+    def __init__(self, *args, **kwargs):
+        super(Metadata, self).__init__(*args, **kwargs)
+        self._validate_artifacts()
 
-        try:
-            metadata = self._load_metadata(self._path)
-        except (pyxb.UnrecognizedContentError,
-                pyxb.UnrecognizedDOMRootNodeError,
-                xml.sax.SAXParseException) as e:
-            logging.warning("Failed to parse metadata {path}: {e}"
-                            .format(path=path, e=e))
-            raise MetadataLoadingException()
-
-        self.artifacts = self._read_artifacts(metadata)
-        self.skipped_artifacts = self._read_skipped_artifacts(metadata)
-        self.properties = self._read_properties(metadata)
-
-    def _load_metadata(self, metadata_path):
-        with open(metadata_path, 'rb') as f:
-            try:
-                gzf = gzip.GzipFile(os.path.basename(metadata_path),
-                                    'rb', fileobj=f)
-                data = gzf.read()
-            except IOError:
-                # not a compressed metadata, just rewind and read the data
-                f.seek(0)
-                data = f.read()
-
-        return Metadata.create_from_doc(data)
-
-    def _read_artifacts(self, metadata):
-        artifacts = []
-        if metadata.artifacts and metadata.artifacts.artifact:
-            for a in metadata.artifacts.artifact:
-                artifact = MetadataArtifact.from_metadata(a)
-                if not artifact.version:
-                    raise MetadataInvalidException("Artifact {a} does not have version in maven provides".format(a=artifact))
-                artifacts.append(artifact)
-        return artifacts
-
-    def _read_skipped_artifacts(self, metadata):
-        artifacts = []
-        if metadata.skippedArtifacts and metadata.skippedArtifacts.skippedArtifact:
-            for a in metadata.skippedArtifacts.skippedArtifact:
-                artifact = MetadataSkippedArtifact.from_metadata(a)
-                artifacts.append(artifact)
-        return list(artifacts)
-
-    def _read_properties(self, metadata):
-        properties = {}
-        if hasattr(metadata, 'properties') and metadata.properties:
-            properties = dict((prop.tagName, prop.firstChild.value)
-                              for prop in metadata.properties.wildcardElements())
-        return properties
+    def _validate_artifacts(self):
+        for artifact in self.artifacts:
+            if not artifact.version:
+                raise MetadataInvalidException(
+                    "Artifact {a} does not have version in maven provides"
+                    .format(a=artifact))
 
     def get_provided_artifacts(self):
         """Returns list of MetadataArtifact provided by given metadata."""
@@ -119,7 +78,7 @@ class Metadata(object):
 
     def get_skipped_artifacts(self):
         """Returns list of MetadataSkippedArtifact provided by given metadata."""
-        return self.skipped_artifacts
+        return self.skippedArtifacts
 
     def get_required_artifacts(self):
         """Returns list of Dependency required by given metadata."""
@@ -181,13 +140,32 @@ class Metadata(object):
         return None
 
     @staticmethod
-    def create_from_doc(data):
-        """Convert XML data into Python bindings."""
+    def create_from_string(data, path=''):
+        """Creates Metadata object from XML string"""
+        try:
+            xml = etree.fromstring(data)
+            return from_element(Metadata, xml)
+        except etree.XMLSyntaxError as e:
+            logging.warning("Failed to parse metadata {path}: {e}"
+                            .format(path=path, e=e))
+            raise MetadataLoadingException()
 
-        # this is far from perfect, but there seems to be no obvious
-        # (non-hackish) way how to support multiple XSD versions in one object
-        # model generated by PyXB
-        # TODO: find proper solution
-        data = data.replace(b'http://fedorahosted.org/xmvn/METADATA/2.0.0',
-                            b'http://fedorahosted.org/xmvn/METADATA/2.3.0')
-        return m.CreateFromDocument(data)
+
+    @staticmethod
+    def create_from_file(path):
+        """Creates Metadata object from XML file, that can be gzipped"""
+        with open(path, 'rb') as f:
+            try:
+                gzf = gzip.GzipFile(os.path.basename(path),
+                                    'rb', fileobj=f)
+                data = gzf.read()
+            except IOError:
+                # not a compressed metadata, just rewind and read the data
+                f.seek(0)
+                data = f.read()
+
+        return Metadata.create_from_string(data, path)
+
+    def write_to_file(self, path):
+        with open(path, 'wb') as f:
+            f.write(etree.tostring(to_element(self), pretty_print=True))

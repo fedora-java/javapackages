@@ -34,7 +34,7 @@
 
 import sys
 import re
-import pyxb.utils.six as six
+import six
 
 from javapackages.maven.pomreader import POMReader
 from javapackages.maven.printer import Printer

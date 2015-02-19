@@ -1,6 +1,6 @@
 import inspect
 from zipfile import ZipFile
-import pyxb.utils.six as six
+import six
 import os
 import unittest
 import shutil

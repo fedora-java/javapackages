@@ -35,6 +35,7 @@ import javapackages.common.config as config
 from javapackages.metadata.metadata import Metadata, MetadataLoadingException
 from javapackages.cache.cache import Cache
 
+from copy import deepcopy
 
 class MetadataCache(Cache):
     def __init__(self, rpmconf):
@@ -53,7 +54,7 @@ class MetadataCache(Cache):
         metadata_paths = self._find_paths()
         for path in metadata_paths:
             try:
-                metadata = Metadata(path)
+                metadata = Metadata.create_from_file(path)
                 if metadata:
                     cache.update({path: metadata})
             except MetadataLoadingException:
@@ -77,7 +78,7 @@ class MetadataCache(Cache):
 
     def get_metadata_for_path(self, path):
         try:
-            return self._cache[path]
+            return self._cache[path].copy()
         except KeyError:
             pass
         return None
@@ -85,13 +86,13 @@ class MetadataCache(Cache):
     def get_provided_artifacts(self):
         artifacts = []
         for metadata in self._cache.values():
-            artifacts.extend(metadata.artifacts)
+            artifacts.extend(deepcopy(metadata.artifacts))
         return artifacts
 
     def get_skipped_artifacts(self):
         artifacts = []
         for metadata in self._cache.values():
-            artifacts.extend(metadata.skipped_artifacts)
+            artifacts.extend(deepcopy(metadata.skippedArtifacts))
         return artifacts
 
     def get_provided_osgi(self):

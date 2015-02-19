@@ -32,7 +32,6 @@
 
 from __future__ import print_function
 
-import javapackages.metadata.pyxbmetadata as m
 from javapackages.metadata.metadata import Metadata
 from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.dependency import MetadataDependency
@@ -43,12 +42,11 @@ from javapackages.ivy.ivyfile import IvyFile
 
 from javapackages.xmvn.xmvn_resolve import (XMvnResolve, ResolutionRequest,
                                             XMvnResolveException)
-from javapackages.common.util import args_to_unicode, write_metadata
+from javapackages.common.util import args_to_unicode
 from javapackages.common.exception import JavaPackagesToolsException
 
 import sys
 import os
-import pyxb
 import lxml.etree
 from optparse import OptionParser
 
@@ -87,7 +85,7 @@ class ExtensionsDontMatch(JavaPackagesToolsException):
 
 def get_parent_pom(pom):
     try:
-        metadata = Metadata(config)
+        metadata = Metadata.create_from_file(config)
         known_artifacts = metadata.get_provided_artifacts()
         # TODO: implement __hash__() and __cmp__() in MetadataArtifact
         for artifact in known_artifacts:
@@ -117,8 +115,7 @@ def is_it_ivy_file(fpath):
     return doc.tag == "ivy-module"
 
 
-def add_artifact_elements(root, art, ppath=None, jpath=None):
-    artifacts = []
+def add_artifact_elements(metadata, art, ppath=None, jpath=None):
     ext_backup = art.extension
     for path in [ppath, jpath]:
         if path:
@@ -132,14 +129,7 @@ def add_artifact_elements(root, art, ppath=None, jpath=None):
                 art.extension = ext_backup
 
             art.path = os.path.abspath(path)
-            a = art.to_metadata()
-            artifacts.append(a)
-
-    if root.artifacts is None:
-        root.artifacts = pyxb.BIND(*artifacts)
-    else:
-        for a in artifacts:
-            root.artifacts.append(a)
+            metadata.artifacts.append(art.copy())
 
 
 def merge_sections(main, update):
@@ -293,10 +283,9 @@ def _main():
         art.extension = "pom"
 
     if os.path.exists(config):
-        xml = open(config, "rb").read()
-        metadata = Metadata.create_from_doc(xml)
+        metadata = Metadata.create_from_file(config)
     else:
-        metadata = m.metadata()
+        metadata = Metadata()
 
     if (not options.skip_dependencies and pom_path
        and not is_it_ivy_file(pom_path)):
@@ -316,8 +305,7 @@ def _main():
 
     add_artifact_elements(metadata, art, pom_path, jar_path)
 
-    with open(config, "w") as f:
-        write_metadata(f, metadata)
+    metadata.write_to_file(config)
 
 if __name__ == "__main__":
     try:

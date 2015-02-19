@@ -1,27 +1,20 @@
 from javapackages.maven.artifact import Artifact
 from javapackages.maven.printer import Printer
 from javapackages.metadata.exclusion import MetadataExclusion
-import javapackages.metadata.pyxbmetadata as m
 
-import pyxb
-import pyxb.utils.six as six
+from javapackages.common.binding import ObjectBinding
 
+import six
 
-class MetadataDependency(object):
-    def __init__(self, groupId, artifactId, extension="",
-                 classifier="", namespace="", optional="",
-                 requestedVersion="", resolvedVersion="",
-                 exclusions=set()):
-
-        self.groupId = groupId
-        self.artifactId = artifactId
-        self.extension = extension or "jar"
-        self.classifier = classifier
-        self.namespace = namespace
-        self.optional = optional
-        self.requestedVersion = requestedVersion or "SYSTEM"
-        self.resolvedVersion = resolvedVersion
-        self.exclusions = exclusions or set()
+class MetadataDependency(ObjectBinding):
+    element_name = 'dependency'
+    fields = ['groupId', 'artifactId', 'extension', 'classifier',
+              'namespace', 'optional', 'requestedVersion',
+              'resolvedVersion', 'exclusions']
+    defaults = {'extension': 'jar',
+                'requestedVersion': 'SYSTEM'}
+    types = {'optional': str, # todo bool
+             'exclusions': set([MetadataExclusion])}
 
     def is_optional(self):
         if self.optional and self.optional.lower() == "true":
@@ -69,20 +62,6 @@ class MetadataDependency(object):
                 return True
         return False
 
-    def to_metadata(self):
-        d = m.Dependency()
-        d.groupId = self.groupId
-        d.artifactId = self.artifactId
-        d.classifier = self.classifier or None
-        d.extension = self.extension or None
-        d.optional = self.optional or None
-        d.requestedVersion = self.requestedVersion or None
-        d.resolvedVersion = self.resolvedVersion or None
-        if self.exclusions:
-            excl = set(e.to_metadata() for e in self.exclusions)
-            d.exclusions = pyxb.BIND(*excl)
-        return d
-
     def __unicode__(self):
         return six.text_type(self.get_mvn_str())
 
@@ -113,34 +92,6 @@ class MetadataDependency(object):
 
     def __ne__(self, other):
         return not self.__eq__(other)
-
-    @classmethod
-    def from_metadata(cls, metadata):
-        groupId = metadata.groupId.strip()
-        artifactId = metadata.artifactId.strip()
-
-        requestedVersion = resolvedVersion = extension = classifier = optional = namespace = ""
-        if hasattr(metadata, 'requestedVersion') and metadata.requestedVersion:
-            requestedVersion = metadata.requestedVersion.strip()
-        if hasattr(metadata, 'resolvedVersion') and metadata.resolvedVersion:
-            resolvedVersion = metadata.resolvedVersion.strip()
-        if hasattr(metadata, 'extension') and metadata.extension:
-            extension = metadata.extension.strip()
-        if hasattr(metadata, 'classifier') and metadata.classifier:
-            classifier = metadata.classifier.strip()
-        if hasattr(metadata, 'optional'):
-            optional = str(metadata.optional).lower()
-        if hasattr(metadata, 'namespace') and metadata.namespace:
-            namespace = metadata.namespace.strip()
-
-        exclusions = set()
-        if hasattr(metadata, 'exclusions') and metadata.exclusions:
-            exclusions = set(MetadataExclusion.from_metadata(excl)
-                             for excl in metadata.exclusions.exclusion)
-
-        return cls(groupId, artifactId, extension, classifier,
-                   namespace, optional, requestedVersion,
-                   resolvedVersion, exclusions)
 
     @classmethod
     def from_mvn_str(cls, mvn_str):

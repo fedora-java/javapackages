@@ -34,7 +34,7 @@
 import os
 import signal
 import sys
-import pyxb.utils.six as six
+import six
 import subprocess
 import logging
 from optparse import OptionParser
@@ -75,20 +75,7 @@ def execute_command(command, input=None):
 
 
 def init_rpmgen(argv):
-    _init_rpmgen_logging()
     return _parse_rpmgen_args(argv)
-
-
-class _SkipPyXBWarningsFilter(logging.Filter):
-    def filter(self, record):
-        return not record.getMessage().startswith("Unable to convert DOM node")
-
-
-def _init_rpmgen_logging():
-    # Omit PyXB "Unable to convert DOM node to binding" warnings
-    logger = logging.getLogger("pyxb.binding.basis")
-    f = _SkipPyXBWarningsFilter()
-    logger.addFilter(f)
 
 
 def _parse_argv(argv):
@@ -129,17 +116,6 @@ def get_logger(name):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
-
-
-def write_metadata(fileobj, metadata):
-    dom = metadata.toDOM(None)
-
-    # minidom in Python < 2.6 adds unnecessary whitespace
-    # see: http://bugs.python.org/issue4147
-    if sys.version_info < (2, 7):
-        fileobj.write(dom.toxml())
-    else:
-        fileobj.write(dom.toprettyxml(indent="   "))
 
 
 def sanitize_version(version):

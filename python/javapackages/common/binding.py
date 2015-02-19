@@ -89,69 +89,83 @@ def from_element(for_type, element):
     raise TypeError("Unrecognized binding type: {0}".format(for_type))
 
 
-def to_element(obj, name=None, type_spec=None):
+def _make_element(name, ns=None):
+    if ns:
+        name = '{' + ns + '}' + name
+    return etree.Element(name)
+
+def to_element(obj, name=None, type_spec=None, ns=None):
     if isinstance(obj, six.string_types):
-        element = etree.Element(name)
+        element = _make_element(name, ns=ns)
         element.text = obj
         return element
     if isinstance(obj, list) or isinstance(obj, set):
-        element = etree.Element(name)
+        element = _make_element(name, ns=ns)
         for item in obj:
-            element.append(to_element(item, name=_get_item_name(type_spec)))
+            element.append(to_element(item, name=_get_item_name(type_spec),
+                                      ns=ns))
         return element
     if isinstance(obj, dict):
-        element = etree.Element(name)
+        element = _make_element(name, ns=ns)
         for key, value in obj.items():
-            entry = etree.Element(key)
+            # TODO rly?
+            # entry = _make_element(key, ns=ns)
+            entry = _make_element(key)
             entry.text = value
             element.append(entry)
         return element
     if isinstance(obj, ObjectBinding):
         name = obj.element_name
-        if obj.namespace:
-            name = '{' + obj.namespace + '}' + obj.element_name
-        element = etree.Element(name)
+        ns = obj.xmlns or ns
+        element = _make_element(name, ns=ns)
         for item_name in obj.fields:
             value = obj.values.get(item_name)
-            if value and value != obj.defaults.get(item_name):
-                child = to_element(value, item_name, obj.types.get(item_name, str))
+            if value:
+                child = to_element(value, item_name,
+                                   obj.types.get(item_name, str), ns=ns)
                 element.append(child)
         return element
 
 class ObjectBinding(object):
     element_name = None
     fields = []
-    defaults = {}
     types = {}
     equality = None
-    namespace = None
+    defaults = {}
+    xmlns = None
 
     def __init__(self, *args, **kwargs):
         assert self.element_name
         assert self.fields
         self.values = self.defaults.copy()
-        for name, item_type in self.types.items():
+        self._touched = set()
+        for name in self.fields:
+            item_type = self.types.get(name, str)
             if name not in self.values:
                 if type(item_type) in (list, set):
                     self.values[name] = type(item_type)()
                 elif item_type == dict:
                     self.values[name] = {}
-                else:
-                    self.values[name] = None
+                elif item_type == str:
+                    self.values[name] = ''
         values = zip(self.fields, args) + kwargs.items()
         for name, value in values:
             setattr(self, name, value)
 
     def __getattr__(self, name):
         if name in self.fields:
-            return self.values.get(name, self.defaults.get(name))
+            return self.values.get(name)
         return getattr(super(ObjectBinding, self), name)
 
     def __setattr__(self, name, value):
         if name in self.fields:
             self.values[name] = value
+            self._touched.add(name)
         else:
             super(ObjectBinding, self).__setattr__(name, value)
+
+    def __contains__(self, name):
+        return name in self._touched
 
     def __repr__(self):
         return repr(self.values)
