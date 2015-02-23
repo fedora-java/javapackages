@@ -35,6 +35,12 @@ import six
 from lxml import etree
 from copy import deepcopy
 
+from javapackages.common.exception import JavaPackagesToolsException
+
+class XMLBindingException(JavaPackagesToolsException):
+    pass
+
+
 def _get_item_type(spec):
     assert 0 < len(spec) <= 2, spec
     spec = tuple(spec)
@@ -47,6 +53,7 @@ def _get_item_type(spec):
     assert isinstance(ret, type), ret
     return ret
 
+
 def _get_item_name(spec):
     assert 0 < len(spec) <= 2, spec
     spec = tuple(spec)
@@ -58,35 +65,47 @@ def _get_item_name(spec):
     assert isinstance(ret, six.string_types), ret
     return ret
 
+
+def _is_element(node):
+    return isinstance(node.tag, six.string_types)
+
+def _localname(element):
+    return etree.QName(element.tag).localname
+
 def from_element(for_type, element):
     if for_type is str:
         return element.text.strip() if element.text is not None else None
     if isinstance(for_type, list):
         item_type = _get_item_type(for_type)
         return [from_element(item_type, child) for child in element
-                if etree.iselement(child)]
+                if _is_element(child)]
     if isinstance(for_type, set):
         item_type = _get_item_type(for_type)
         return set([from_element(item_type, child) for child in element
-                    if etree.iselement(child)])
+                    if _is_element(child)])
     if for_type is dict:
         new = {}
         for child in element:
             if isinstance(child.tag, six.string_types):
-                name = etree.QName(child.tag).localname
+                name = _localname(child)
                 value = from_element(str, child)
                 new[name] = value
         return new
     if isinstance(for_type, type) and issubclass(for_type, ObjectBinding):
+        name = _localname(element)
+        if name != for_type.element_name:
+            raise XMLBindingException("Unexpected element " + name)
         new = {}
         for child in element:
-            if isinstance(child.tag, six.string_types):
-                name = etree.QName(child.tag).localname
+            if _is_element(child):
+                name = _localname(child)
                 if name in for_type.fields:
                     value = from_element(for_type.types.get(name, str), child)
+                    if name in new:
+                        raise XMLBindingException("More values for element " + name)
                     new[name] = value
         return for_type(**new)
-    raise TypeError("Unrecognized binding type: {0}".format(for_type))
+    raise XMLBindingException("Unrecognized binding type: {0}".format(for_type))
 
 
 def _make_element(name, ns=None):

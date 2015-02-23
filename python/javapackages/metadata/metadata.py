@@ -42,7 +42,8 @@ from lxml import etree
 from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.skippedartifact import MetadataSkippedArtifact
 from javapackages.common.exception import JavaPackagesToolsException
-from javapackages.common.binding import ObjectBinding, from_element, to_element
+from javapackages.common.binding import (ObjectBinding, from_element,
+                                         to_element, XMLBindingException)
 
 
 class MetadataLoadingException(JavaPackagesToolsException):
@@ -145,7 +146,7 @@ class Metadata(ObjectBinding):
         try:
             xml = etree.fromstring(data)
             return from_element(Metadata, xml)
-        except etree.XMLSyntaxError as e:
+        except (etree.XMLSyntaxError, XMLBindingException) as e:
             logging.warning("Failed to parse metadata {path}: {e}"
                             .format(path=path, e=e))
             raise MetadataLoadingException()
