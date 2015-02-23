@@ -83,6 +83,7 @@ class TagBuilder(object):
             if artifact.path:
                 pom_path = os.path.join(get_buildroot(), artifact.path[1:])
                 pom_paths.append(pom_path)
+            # FIXME pom_paths is not callable
             else:
                 pom_paths(None)
 
