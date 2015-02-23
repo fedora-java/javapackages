@@ -167,7 +167,7 @@ class ObjectBinding(object):
                     self.values[name] = {}
                 elif item_type == str:
                     self.values[name] = ''
-        values = zip(self.fields, args) + kwargs.items()
+        values = list(zip(self.fields, args)) + list(kwargs.items())
         for name, value in values:
             setattr(self, name, value)
 
