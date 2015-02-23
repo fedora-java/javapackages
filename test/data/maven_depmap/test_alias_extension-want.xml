@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<ns1:metadata xmlns:ns1="http://fedorahosted.org/xmvn/METADATA/2.0.0">
+<ns1:metadata xmlns:ns1="http://fedorahosted.org/xmvn/METADATA/2.3.0">
    <ns1:artifacts>
       <ns1:artifact>
          <ns1:groupId>alias</ns1:groupId>
@@ -9,6 +9,7 @@
              <ns1:alias>
                  <ns1:groupId>a</ns1:groupId>
                  <ns1:artifactId>b</ns1:artifactId>
+                 <ns1:extension>jar</ns1:extension>
              </ns1:alias>
          </ns1:aliases>
          <ns1:path>%s/usr/share/java/commons-io.jar</ns1:path>

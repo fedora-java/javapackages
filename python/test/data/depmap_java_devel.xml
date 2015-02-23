@@ -1,4 +1,4 @@
-<metadata xmlns="http://fedorahosted.org/xmvn/METADATA/2.0.0">
+<metadata xmlns="http://fedorahosted.org/xmvn/METADATA/2.3.0">
     <uuid>43948343229</uuid>
     <properties>
         <requiresJavaDevel>1.5</requiresJavaDevel>

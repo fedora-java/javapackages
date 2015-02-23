@@ -45,16 +45,15 @@ import gzip
 from os.path import basename
 import zipfile
 from time import gmtime, strftime
+from copy import deepcopy
 
 from javapackages.maven.pom import POM
 from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.alias import MetadataAlias
 from javapackages.metadata.metadata import Metadata
 
-import javapackages.metadata.pyxbmetadata as m
 import javapackages.common.util as util
 from javapackages.common.exception import JavaPackagesToolsException
-import pyxb
 
 
 class PackagingTypeMissingFile(JavaPackagesToolsException):
@@ -189,20 +188,14 @@ def add_aliases(artifact, additions):
 
 def write_metadata(metadata_file, artifacts):
     if os.path.exists(metadata_file):
-        try:
-            xml = gzip.open(metadata_file, 'rb').read()
-        except IOError:
-            # Not a gzipped file?
-            xml = open(metadata_file, "rb").read()
-        root = Metadata.create_from_doc(xml)
-        artifacts += [a for a in root.artifacts.artifact]
+        metadata = Metadata.create_from_file(metadata_file)
     else:
-        root = m.metadata()
+        metadata = Metadata()
 
-    root.artifacts = pyxb.BIND(*artifacts)
+    # pylint:disable=E1103
+    metadata.artifacts += deepcopy(artifacts)
 
-    with open(metadata_file, 'w') as f:
-        util.write_metadata(f, root)
+    metadata.write_to_file(metadata_file)
 
 
 def _main():
@@ -291,7 +284,7 @@ def _main():
         artifact = add_aliases(artifact, append_deps)
         if artifact.extension == "jar":
             artifact.extension = ""
-        am.append(artifact.to_metadata())
+        am.append(artifact.copy())
         # output file path for file list (if it's not versioned)
         if not add_versions:
             print(jar_path)
@@ -301,7 +294,7 @@ def _main():
         artifact.extension = "pom"
         artifact.aliases = None
         artifact = add_aliases(artifact, append_deps)
-        am.append(artifact.to_metadata())
+        am.append(artifact.copy())
         # output file path for file list (if it's not versioned)
         if not add_versions:
             print(pom_path)

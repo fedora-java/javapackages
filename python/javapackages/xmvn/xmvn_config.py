@@ -34,8 +34,8 @@ import codecs
 import errno
 import os
 import re
-import pyxb.utils.six as six
-from pyxb.utils.six import BytesIO
+import six
+from six import BytesIO
 
 from javapackages.maven.artifact import ArtifactValidationException
 from javapackages.common.exception import JavaPackagesToolsException

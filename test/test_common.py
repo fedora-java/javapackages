@@ -6,9 +6,12 @@ import sys
 import unittest
 
 from javapackages.metadata.metadata import Metadata
+from javapackages.common import util
 from os import path
 from test_rpmbuild import Package
 from xml_compare import compare_xml_files
+from functools import wraps
+from lxml import etree
 
 DIRPATH = path.dirname(path.realpath(__file__))
 SCRIPT_ENV = {'PATH':'{mock}:{real}'.format(mock=DIRPATH,
@@ -72,6 +75,7 @@ def get_expected_args(scriptname, testname):
 
 def preload_xmvn_config(name, filename, dstname=None, update_index=False):
     def test_decorator(fun):
+        @wraps(fun)
         def test_decorated(self):
             src = path.join(DIRPATH, 'data', name, filename)
             os.mkdir('.xmvn')
@@ -95,18 +99,16 @@ def prepare_metadata(metadata_dir):
         for filename in filenames:
             if filename.endswith("-want.xml"):
                 want_file = os.path.join(dirname, filename)
-                with open(want_file, 'rb') as wfile:
-                    metadata = Metadata.create_from_doc(wfile.read())
-                for a in metadata.artifacts.artifact:
-                    if '%' in a.path:
-                        a.path = a.path % (metadata_dir)
-                with open(want_file, "w") as f:
-                    dom = metadata.toDOM(None)
-                    f.write(dom.toprettyxml(indent="   "))
+                xml = etree.parse(want_file)
+                for path in xml.xpath('//*[local-name()="path"]'):
+                    if '%' in path.text:
+                        path.text = path.text % (metadata_dir)
+                xml.write(want_file)
 
 
 def xmvnconfig(name, fnargs):
     def test_decorator(fun):
+        @wraps(fun)
         def test_decorated(self):
             scriptpath = path.join(DIRPATH, '..', 'java-utils', name + '.py')
             (stdout, stderr, return_value) = call_script(scriptpath, fnargs)
@@ -155,6 +157,7 @@ def call_rpmgen(rpmgen_name, filelist_prefix, filelist, env=None,
 
 def osgiprov(*args, **kwargs):
     def test_decorator(fun):
+        @wraps(fun)
         def test_decorated(self):
             (stdout, stderr, return_value) = call_rpmgen("osgi.prov",
                                                          "data/osgi/",
@@ -166,6 +169,7 @@ def osgiprov(*args, **kwargs):
 
 def osgireq(*args, **kwargs):
     def test_decorator(fun):
+        @wraps(fun)
         def test_decorated(self):
             (stdout, stderr, return_value) = call_rpmgen("osgi.req",
                                                          "data/osgi/",
@@ -177,6 +181,7 @@ def osgireq(*args, **kwargs):
 
 def mavenprov(*args, **kwargs):
     def test_decorator(fun):
+        @wraps(fun)
         def test_decorated(self):
             (stdout, stderr, return_value) = call_rpmgen("maven.prov",
                                                          "metadata/",
@@ -188,6 +193,7 @@ def mavenprov(*args, **kwargs):
 
 def mavenreq(*args, **kwargs):
     def test_decorator(fun):
+        @wraps(fun)
         def test_decorated(self):
             pargs, pkwargs = rpmgen_process_args(args, kwargs)
             (stdout, stderr, return_value) = call_rpmgen("maven.req",
@@ -201,6 +207,7 @@ def mavenreq(*args, **kwargs):
 
 def javadocreq(*args, **kwargs):
     def test_decorator(fun):
+        @wraps(fun)
         def test_decorated(self):
             pargs, pkwargs = rpmgen_process_args(args, kwargs)
             (stdout, stderr, return_value) = call_rpmgen("javadoc.req",
@@ -243,6 +250,7 @@ def rpmgen_process_args(args, kwargs):
 
 def mvn_depmap(pom, jar=None, fnargs=None):
     def test_decorator(fun):
+        @wraps(fun)
         def test_decorated(self):
             os.chdir(self.workdir)
             buildroot = os.path.join(self.workdir, "builddir/build/BUILDROOT")
@@ -264,6 +272,7 @@ def mvn_depmap(pom, jar=None, fnargs=None):
 
 def mvn_artifact(pom, jar=None):
     def test_decorator(fun):
+        @wraps(fun)
         def test_decorated(self):
             os.chdir(self.datadir)
             scriptpath = path.join(DIRPATH, '..', 'java-utils', 'mvn_artifact.py')

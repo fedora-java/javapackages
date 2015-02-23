@@ -13,7 +13,7 @@ def depmapfile(fname):
     def test_decorator(fn):
         def test_decorated(self, *args, **kwargs):
             main_dir = os.path.dirname(os.path.realpath(__file__))
-            fn(self, Metadata(os.path.join(main_dir, "data", fname)))
+            fn(self, Metadata.create_from_file(os.path.join(main_dir, "data", fname)))
         return test_decorated
     return test_decorator
 
