@@ -261,11 +261,10 @@ set_javacmd()
 # Set flags
 set_flags()
 {
-    local q="'\\''"
     FLAGS=""
     set -- "${@}" ${ADDITIONAL_FLAGS}
     while [ $# -gt 0 ]; do
-	FLAGS="${FLAGS}${FLAGS:+ }'${1//\'/$q}'"
+	FLAGS="${FLAGS}${FLAGS:+ }'$(echo "$1"|sed "s#[']#'\\\\''#g")'"
 	shift
     done
 }
@@ -273,11 +272,10 @@ set_flags()
 # Set options
 set_options()
 {
-    local q="'\\''"
     OPTIONS=""
     set -- "${@}" ${ADDITIONAL_OPTIONS}
     while [ $# -gt 0 ]; do
-	OPTIONS="${OPTIONS}${OPTIONS:+ }'${1//\'/$q}'"
+	OPTIONS="${OPTIONS}${OPTIONS:+ }'$(echo "$1"|sed "s#[']#'\\\\''#g")'"
 	shift
     done
 }
