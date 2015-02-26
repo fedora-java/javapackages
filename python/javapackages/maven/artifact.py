@@ -36,7 +36,7 @@ import sys
 import re
 import six
 
-from javapackages.maven.pomreader import POMReader
+import javapackages.maven.pomreader as POMReader
 from javapackages.maven.printer import Printer
 from javapackages.common.exception import JavaPackagesToolsException
 from lxml.etree import Element, SubElement, tostring

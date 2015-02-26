@@ -34,7 +34,7 @@
 from javapackages.maven.artifact import (AbstractArtifact,
                                          ArtifactFormatException)
 from javapackages.maven.exclusion import Exclusion
-from javapackages.maven.pomreader import POMReader
+import javapackages.maven.pomreader as POMReader
 from lxml.etree import Element, SubElement
 
 

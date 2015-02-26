@@ -1,5 +1,5 @@
-#-
-# Copyright (c) 2014, Red Hat, Inc.
+#
+# Copyright (c) 2015, Red Hat, Inc.
 #
 # All rights reserved.
 #
@@ -39,58 +39,56 @@ class PomLoadingException(JavaPackagesToolsException):
     pass
 
 
-class POMReader(object):
+POM_NAMESPACE = "http://maven.apache.org/POM/4.0.0"
 
-    POM_NAMESPACE = "http://maven.apache.org/POM/4.0.0"
 
-    @staticmethod
-    def load(pom_path):
-        et = ElementTree()
-        parser = XMLParser(remove_comments=True, strip_cdata=True)
-        try:
-            doc = et.parse(pom_path, parser=parser)
-        except IOError:
-            raise PomLoadingException("Cannot read file {0}".format(pom_path))
+def load(pom_path):
+    et = ElementTree()
+    parser = XMLParser(remove_comments=True, strip_cdata=True)
+    try:
+        doc = et.parse(pom_path, parser=parser)
+    except IOError:
+        raise PomLoadingException("Cannot read file {f}".format(f=pom_path))
 
-        if doc is None:
-            raise PomLoadingException("Failed to load pom.xml")
-        return doc
+    if doc is None:
+        raise PomLoadingException("Failed to load {f}".format(f=pom_path))
+    return doc
 
-    @staticmethod
-    def find(doc, xpath, namespace=POM_NAMESPACE):
-        ret = POMReader.xpath(doc, xpath, namespace)
-        if len(ret) > 0:
-            ret = ret[0]
-        else:
-            ret = None
-        return ret
 
-    @staticmethod
-    def xpath(doc, xpath, namespace=POM_NAMESPACE):
-        ret = doc.xpath(xpath, namespaces=dict(pom=namespace))
-        # perhaps there is no namespace?
-        if len(ret) == 0:
-            ret = doc.xpath(xpath.replace('pom:', ''))
-        return ret
+def find(doc, xpath_str, namespace=POM_NAMESPACE):
+    ret = xpath(doc, xpath_str, namespace)
+    if len(ret) > 0:
+        ret = ret[0]
+    else:
+        ret = None
+    return ret
 
-    @staticmethod
-    def find_parts(doc, parts, xpath=".//"):
-        for key in parts:
-            node = doc.xpath('{0}*[local-name() = "{1}"]'.format(xpath, key))
-            if node is not None and len(node) > 0 and node[0].text is not None:
+
+def xpath(doc, xpath_str, namespace=POM_NAMESPACE):
+    ret = doc.xpath(xpath_str, namespaces=dict(pom=namespace))
+    # perhaps there is no namespace?
+    if len(ret) == 0:
+        ret = doc.xpath(xpath_str.replace('pom:', ''))
+    return ret
+
+
+def find_parts(doc, parts, xpath_str=".//"):
+    for key in parts:
+        node = doc.xpath('{0}*[local-name() = "{1}"]'.format(xpath_str, key))
+        if node is not None and len(node) > 0 and node[0].text is not None:
+            parts[key] = node[0].text.strip()
+    return parts
+
+
+def find_raw_parts(doc, parts, xpath_str=".//"):
+    for key in parts:
+        node = doc.xpath('{0}*[local-name() = "{1}"]'.format(xpath_str, key))
+        if node is not None and len(node) > 0:
+            if node[0].text is not None:
                 parts[key] = node[0].text.strip()
-        return parts
-
-    @staticmethod
-    def find_raw_parts(doc, parts, xpath=".//"):
-        for key in parts:
-            node = doc.xpath('{0}*[local-name() = "{1}"]'.format(xpath, key))
-            if node is not None and len(node) > 0:
-                if node[0].text is not None:
-                    parts[key] = node[0].text.strip()
-                else:
-                    # node is present, but it has no content
-                    parts[key] = ""
             else:
-                parts[key] = None
-        return parts
+                # node is present, but it has no content
+                parts[key] = ""
+        else:
+            parts[key] = None
+    return parts

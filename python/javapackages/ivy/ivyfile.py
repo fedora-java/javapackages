@@ -31,7 +31,8 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
-from javapackages.maven.pomreader import POMReader, PomLoadingException
+import javapackages.maven.pomreader as POMReader
+from javapackages.maven.pomreader import PomLoadingException
 
 import os
 
