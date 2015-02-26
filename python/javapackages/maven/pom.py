@@ -73,36 +73,6 @@ class POM(object):
         return ParentPOM(gId, aId, ver, relativePath)
 
     @property
-    def parentGroupId(self):
-        """
-        groupId of the parent artifact or None
-        """
-        gId = POMReader.find(self.__doc, './pom:parent/pom:groupId')
-        if gId is None:
-            return None
-        return gId.text.strip()
-
-    @property
-    def parentArtifactId(self):
-        """
-        artifactId of the parent artifact or None
-        """
-        aId = POMReader.find(self.__doc, './pom:parent/pom:artifactId')
-        if aId is None:
-            return None
-        return aId.text.strip()
-
-    @property
-    def parentVersion(self):
-        """
-        version of the parent artifact or None
-        """
-        ver = POMReader.find(self.__doc, './pom:parent/pom:version')
-        if ver is None:
-            return None
-        return ver.text.strip()
-
-    @property
     def groupId(self):
         """
         Effective groupId of the pom Artifact taking into account parent groupId
