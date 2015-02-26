@@ -1,5 +1,5 @@
-#-
-# Copyright (c) 2014, Red Hat, Inc.
+#
+# Copyright (c) 2015, Red Hat, Inc.
 #
 # All rights reserved.
 #
@@ -33,42 +33,41 @@
 
 from javapackages.common.util import sanitize_version
 
-class Printer(object):
-    @staticmethod
-    def get_mvn_str(gid, aid, ext="", cla="", ver=""):
-        mvnstr = "{gid}:{aid}".format(gid=gid, aid=aid)
 
-        if ext == "jar":
-            ext = ""
+def get_mvn_str(gid, aid, ext="", cla="", ver=""):
+    mvnstr = "{gid}:{aid}".format(gid=gid, aid=aid)
 
-        if ext:
-            mvnstr = mvnstr + ":{ext}".format(ext=ext)
+    if ext == "jar":
+        ext = ""
 
-        if cla:
-            if not ext:
-                mvnstr = mvnstr + ":"
-            mvnstr = mvnstr + ":{cla}".format(cla=cla)
+    if ext:
+        mvnstr = mvnstr + ":{ext}".format(ext=ext)
 
-        if ver:
-            mvnstr = mvnstr + ":{ver}".format(ver=ver)
-        elif cla or ext:
+    if cla:
+        if not ext:
             mvnstr = mvnstr + ":"
+        mvnstr = mvnstr + ":{cla}".format(cla=cla)
 
-        return mvnstr
+    if ver:
+        mvnstr = mvnstr + ":{ver}".format(ver=ver)
+    elif cla or ext:
+        mvnstr = mvnstr + ":"
 
-    @staticmethod
-    def get_rpm_str(gid, aid, ext="", cla="", ver="", namespace="",
-                    compat=None, pkgver=None):
+    return mvnstr
 
-        mvnstr = Printer.get_mvn_str(gid, aid, ext, cla,
-                                     compat if compat is not None else "")
-        rpmstr = "mvn({mvnstr})".format(mvnstr=mvnstr)
 
-        if namespace:
-            rpmstr = "{ns}-{rpmstr}".format(ns=namespace, rpmstr=rpmstr)
+def get_rpm_str(gid, aid, ext="", cla="", ver="", namespace="",
+                compat=None, pkgver=None):
 
-        if pkgver is not None:
-            pkgver = sanitize_version(pkgver)
-            rpmstr = "{rpmstr} = {ver}".format(rpmstr=rpmstr, ver=pkgver)
+    mvnstr = get_mvn_str(gid, aid, ext, cla,
+                         compat if compat is not None else "")
+    rpmstr = "mvn({mvnstr})".format(mvnstr=mvnstr)
 
-        return rpmstr
+    if namespace:
+        rpmstr = "{ns}-{rpmstr}".format(ns=namespace, rpmstr=rpmstr)
+
+    if pkgver is not None:
+        pkgver = sanitize_version(pkgver)
+        rpmstr = "{rpmstr} = {ver}".format(rpmstr=rpmstr, ver=pkgver)
+
+    return rpmstr

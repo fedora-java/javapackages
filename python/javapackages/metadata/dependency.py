@@ -1,5 +1,5 @@
 from javapackages.maven.artifact import Artifact
-from javapackages.maven.printer import Printer
+import javapackages.maven.printer as Printer
 from javapackages.metadata.exclusion import MetadataExclusion
 
 from javapackages.common.binding import ObjectBinding

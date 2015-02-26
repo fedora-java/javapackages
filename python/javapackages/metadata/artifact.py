@@ -2,7 +2,7 @@ import javapackages.common.config as config
 from javapackages.common.osgi import OSGiBundle
 from javapackages.maven.artifact import Artifact
 from javapackages.maven.pom import POM
-from javapackages.maven.printer import Printer
+import javapackages.maven.printer as Printer
 
 from javapackages.metadata.alias import MetadataAlias
 from javapackages.metadata.dependency import MetadataDependency
