@@ -1,5 +1,4 @@
 import unittest
-import shutil
 
 from test_common import mavenreq, assertIn
 
