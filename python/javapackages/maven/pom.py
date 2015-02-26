@@ -53,6 +53,12 @@ class POM(object):
     def __str__(self):
         return ":".join([self.groupId, self.artifactId, self.version])
 
+    def has_parent(self):
+        parent = POMReader.find(self._doc, "./pom:parent")
+        if parent is not None:
+            return True
+        return False
+
     @property
     def parent(self):
         aId = POMReader.find(self._doc, "./pom:parent/pom:artifactId")
