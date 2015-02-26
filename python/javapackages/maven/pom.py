@@ -1,5 +1,5 @@
-#-
-# Copyright (c) 2014, Red Hat, Inc.
+#
+# Copyright (c) 2015, Red Hat, Inc.
 #
 # All rights reserved.
 #
@@ -42,10 +42,12 @@ import os
 
 class POM(object):
     """
-    Class for querying basic information from pom.xml files used by Apache Maven
+    Class for querying basic information from pom.xml files
     """
     def __init__(self, path):
-        self.__doc = POMReader.load(path)
+        if not path:
+            raise PomLoadingException("Path \"{p}\" is invalid".format(p=path))
+        self._doc = POMReader.load(path)
         self._path = os.path.join(path)
 
     def __str__(self):
@@ -53,85 +55,81 @@ class POM(object):
 
     @property
     def parent(self):
-        aId = POMReader.find(self.__doc, './pom:parent/pom:artifactId')
+        aId = POMReader.find(self._doc, "./pom:parent/pom:artifactId")
         if aId is None:
             return None
-        aId = aId.text
+        artifactId = aId.text
 
-        gId = POMReader.find(self.__doc, './pom:parent/pom:groupId')
+        groupId = ""
+        gId = POMReader.find(self._doc, "./pom:parent/pom:groupId")
         if gId is not None:
-            gId = gId.text
+            groupId = gId.text
 
-        ver = POMReader.find(self.__doc, './pom:parent/pom:version')
+        version = ""
+        ver = POMReader.find(self._doc, "./pom:parent/pom:version")
         if ver is not None:
-            ver = ver.text
+            version = ver.text
 
-        relativePath = POMReader.find(self.__doc, './pom:parent/pom:relativePath')
-        if relativePath is not None:
-            relativePath = relativePath.text
+        relativePath = ""
+        relPath = POMReader.find(self._doc, "./pom:parent/pom:relativePath")
+        if relPath is not None:
+            relativePath = relPath.text
 
-        return ParentPOM(gId, aId, ver, relativePath)
+        return ParentPOM(groupId, artifactId, version, relativePath)
 
     @property
     def groupId(self):
         """
-        Effective groupId of the pom Artifact taking into account parent groupId
+        Effective groupId of the pom artifact taking into account parent groupId
         """
-        gId = POMReader.find(self.__doc, './pom:groupId')
+        gId = POMReader.find(self._doc, "./pom:groupId")
         if gId is None:
-            gId = POMReader.find(self.__doc, './pom:parent/pom:groupId')
+            gId = POMReader.find(self._doc, "./pom:parent/pom:groupId")
         if gId is None:
             raise PomLoadingException("Unable to determine groupId")
-        if len(gId) != 0:
-            raise PomLoadingException("Unexpected child nodes under groupId")
         return gId.text.strip()
 
     @property
     def artifactId(self):
         """
-        Effective artifactId of the pom Artifact
+        Effective artifactId of the pom artifact
         """
-        aId = POMReader.find(self.__doc, './pom:artifactId')
+        aId = POMReader.find(self._doc, "./pom:artifactId")
         if aId is None:
             raise PomLoadingException("Unable to determine artifactId")
-        if len(aId) != 0:
-            raise PomLoadingException("Unexpected child nodes under artifactId")
         return aId.text.strip()
 
     @property
     def version(self):
         """
-        Effective version of the pom Artifact taking into account parent
+        Effective version of the pom artifact taking into account parent
         version
         """
-        version = POMReader.find(self.__doc, './pom:version')
+        version = POMReader.find(self._doc, "./pom:version")
         if version is None:
-            version = POMReader.find(self.__doc, './pom:parent/pom:version')
+            version = POMReader.find(self._doc, "./pom:parent/pom:version")
         if version is None:
             raise PomLoadingException("Unable to determine artifact version")
-        if len(version) != 0:
-            raise PomLoadingException("Unexpected child nodes under version")
         return version.text.strip()
 
     @property
     def packaging(self):
         """
-        Packaging type of artifact or None if unspecified
+        Packaging type of artifact or "jar" if unspecified
         """
-        packaging = POMReader.find(self.__doc, './pom:packaging')
+        packaging = POMReader.find(self._doc, "./pom:packaging")
         if packaging is None:
             # use default packaging type
             return "jar"
-        if len(packaging) != 0:
-            raise PomLoadingException("Unexpected child nodes under packaging")
         return packaging.text.strip()
 
     @property
     def dependencies(self):
         """
-        List of artifact's dependencies
+        List of dependencies
         """
-        xmlnodes = POMReader.xpath(self.__doc, './pom:dependencies/pom:dependency')
+        xmlnodes = POMReader.xpath(self._doc,
+                                   "./pom:dependencies/pom:dependency")
         return [Dependency.from_xml_element(x) for x in xmlnodes]
 
     @property
@@ -139,7 +137,9 @@ class POM(object):
         """
         List of dependencies from dependency management section
         """
-        xmlnodes = POMReader.xpath(self.__doc, './pom:dependencyManagement/pom:dependencies/pom:dependency')
+        xmlnodes = POMReader.xpath(self._doc,
+                                   "./pom:dependencyManagement"
+                                   "/pom:dependencies/pom:dependency")
         return [Dependency.from_xml_element(x) for x in xmlnodes]
 
     @property
@@ -147,23 +147,27 @@ class POM(object):
         """
         List of plugins from plugin management section
         """
-        xmlnodes = POMReader.xpath(self.__doc, './pom:pluginManagement/pom:plugins/pom:plugin')
+        xmlnodes = POMReader.xpath(self._doc,
+                                   "./pom:pluginManagement"
+                                   "/pom:plugins/pom:plugin")
         return [Plugin.from_xml_element(x) for x in xmlnodes]
 
     @property
     def plugins(self):
         """
-        List of artifact's plugins
+        List of plugins
         """
-        xmlnodes = POMReader.xpath(self.__doc, './pom:build/pom:plugins/pom:plugin')
+        xmlnodes = POMReader.xpath(self._doc,
+                                   "./pom:build/pom:plugins/pom:plugin")
         return [Plugin.from_xml_element(x) for x in xmlnodes]
 
     @property
     def extensions(self):
         """
-        List of artifact's extensions
+        List of extensions
         """
-        xmlnodes = POMReader.xpath(self.__doc, './pom:build/pom:extensions/pom:extension')
+        xmlnodes = POMReader.xpath(self._doc,
+                                   "./pom:build/pom:extensions/pom:extension")
         return [Extension.from_xml_element(x) for x in xmlnodes]
 
     @property
@@ -172,7 +176,7 @@ class POM(object):
         Dictionary consisting of properties specified in pom.xml
         """
         properties = {}
-        xmlnodes = POMReader.find(self.__doc, './pom:properties')
+        xmlnodes = POMReader.find(self._doc, "./pom:properties")
         if xmlnodes is None:
             return properties
         propnodes = xmlnodes.getchildren()
@@ -188,7 +192,14 @@ class POM(object):
 
 class ParentPOM(object):
     def __init__(self, groupId, artifactId, version="", relativePath=""):
-        self.groupId = groupId.strip()
-        self.artifactId = artifactId.strip()
-        self.version = version
-        self.relativePath = relativePath
+        self.groupId = ""
+        self.artifactId = ""
+
+        if groupId is not None:
+            self.groupId = groupId.strip()
+        if artifactId is not None:
+            self.artifactId = artifactId.strip()
+        if version is not None:
+            self.version = version.strip()
+        if relativePath is not None:
+            self.relativePath = relativePath.strip()
