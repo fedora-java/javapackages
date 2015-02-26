@@ -64,12 +64,6 @@ class TestPOM(unittest.TestCase):
     def test_unparsable_xml(self, p):
         self.fail("Unparsable xml successfully parsed")
 
-    @exception_expected(PomLoadingException)
-    @pomfile("junit-broken-subnode.pom")
-    def test_pom_broken_subnode(self, p):
-        p.version
-        self.fail("Broken POM succesfully loaded")
-
     @pomfile("junit-comments.pom")
     def test_pom_comments(self, p):
         self.assertEqual(p.packaging, "jar")
