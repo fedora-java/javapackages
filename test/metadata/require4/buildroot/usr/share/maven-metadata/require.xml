@@ -1,10 +1,11 @@
+<!-- POM-only metadata -->
 <metadata xmlns="http://fedorahosted.org/xmvn/METADATA/2.3.0">
     <uuid>432048235932</uuid>
     <artifacts>
         <artifact>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-plugins</artifactId>
-            <version>25</version>
+            <groupId>gid</groupId>
+            <artifactId>aid</artifactId>
+            <version>1.1</version>
             <extension>pom</extension>
             <compatVersions>
               <version>1.0</version>

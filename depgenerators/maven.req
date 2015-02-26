@@ -37,10 +37,13 @@ import re
 import sys
 import traceback
 
-from javapackages.common.config import get_config, get_buildroot
-from javapackages.common.util import kill_parent_process, init_rpmgen, get_logger
+from javapackages.common.config import get_config
+from javapackages.common.util import (kill_parent_process,
+                                      init_rpmgen,
+                                      get_logger)
 from javapackages.cache.metadata import MetadataCache
 from javapackages.maven.pom import POM
+from javapackages.maven.dependency import Dependency
 from javapackages.metadata.metadata import Metadata
 from javapackages.metadata.dependency import MetadataDependency
 from javapackages.xmvn.xmvn_resolve import XMvnResolve, ResolutionRequest
@@ -76,22 +79,88 @@ class TagBuilder(object):
 
     def print_pom_requires(self, metadata):
         """
-        Print Requires on plugins and extensions in POM files
+        Print Requires on plugins, extensions and parent POMs from POM files
         """
-        pom_paths = []
+
         for artifact in metadata.artifacts:
             if artifact.path:
-                pom_path = os.path.join(get_buildroot(), artifact.path[1:])
-                pom_paths.append(pom_path)
-            # FIXME pom_paths is not callable
-            else:
-                pom_paths(None)
+                pom = POM(artifact.get_buildroot_path())
+                ppom = pom.parent
 
-        for i, pom_path in enumerate(pom_paths):
-            pom = POM(pom_path)
-            self._generate_requires_from_pom(pom,
-                                             metadata.artifacts[i],
-                                             metadata.artifacts)
+                deps = []
+                reqs = []
+
+                # parent POM
+                if ppom:
+                    if not (ppom.groupId and ppom.artifactId and ppom.version):
+                        raise Exception("Not enough information to resolve "
+                                        "parent POM for artifact {g}:{a},"
+                                        .format(g=pom.groupId,
+                                                a=pom.artifactId),
+                                        "parent POM is: {pg}:{pa}:pom:{pv}"
+                                        .format(pg=ppom.groupId,
+                                                pa=ppom.artifactId,
+                                                pv=ppom.version))
+                    pom_dep = Dependency(ppom.groupId,
+                                         ppom.artifactId,
+                                         version=ppom.version,
+                                         extension="pom")
+                    deps.append(pom_dep)
+                    pom_req = ResolutionRequest(ppom.groupId,
+                                                ppom.artifactId,
+                                                version=ppom.version,
+                                                extension="pom")
+                    reqs.append(pom_req)
+
+                # plugins+extensions
+                deps.extend(pom.plugins + pom.extensions)
+
+                unresolvable = []
+                for d in deps:
+                    reqs.append(ResolutionRequest(d.groupId,
+                                                  d.artifactId,
+                                                  version=d.version))
+                # TODO: check metadata first
+                results = XMvnResolve.process_raw_request(reqs)
+
+                pom_requires = set()
+                for i, r in enumerate(results):
+                    dep = MetadataDependency(deps[i].groupId,
+                                             deps[i].artifactId,
+                                             requestedVersion=deps[i].version,
+                                             namespace=rpmconf.scl or "")
+                    if isinstance(deps[i], Dependency):
+                        dep.extension = deps[i].extension
+
+                    # check if the dependency is provided by any of the
+                    # subpackages
+                    dver = dep.is_provided_by(self.provided_artifacts)[1]
+                    if dver is not None:
+                        # check if dependency is NOT provided by currently
+                        # processed subpackage
+                        if not dep.is_provided_by(metadata.artifacts)[0]:
+                            req_str = dep.get_rpm_str(pkgver=dver,
+                                                      namespace=artifact.namespace)
+                            pom_requires.add(req_str)
+                    elif r:
+                        # it's an external dependency
+                        if r.compatVersion != "SYSTEM":
+                            dep.resolvedVersion = r.compatVersion
+                        if r.namespace:
+                            dep.namespace = r.namespace
+                        pom_requires.add(dep.get_rpm_str())
+                    else:
+                        unresolvable.append(dep)
+                        continue
+
+        _log.info("from POM(s): {reqs}".format(reqs=", ".join(pom_requires)))
+        if pom_requires:
+            print("\n".join(pom_requires))
+
+        if unresolvable:
+            raise Exception("Unable to generate requires on unresolvable artifacts: {reqs}"
+                            .format(reqs=", ".join([x.get_mvn_str() for x in unresolvable])))
+
 
     def print_requires(self, metadata):
         """
@@ -257,73 +326,6 @@ class TagBuilder(object):
                 if not r:
                     unresolvable.append(deps[i])
         return unresolvable
-
-    def _generate_requires_from_pom(self, pom, pom_artifact, pkg_arts):
-        plugins = pom.plugins
-        extensions = pom.extensions
-        pgid = pom.parentGroupId
-        paid = pom.parentArtifactId
-        pver = pom.parentVersion
-
-        deps = plugins + extensions
-        unresolvable = []
-
-        reqs = []
-        for d in deps:
-            reqs.append(ResolutionRequest(d.groupId, d.artifactId, version=d.version))
-        results = XMvnResolve.process_raw_request(reqs)
-        pom_requires = set()
-        for i, r in enumerate(results):
-            dep = MetadataDependency(deps[i].groupId, deps[i].artifactId,
-                                     requestedVersion=deps[i].version,
-                                     namespace=rpmconf.scl or "")
-            dver = dep.is_provided_by(self.provided_artifacts)[1]
-            if dver is not None:
-                if not dep.is_provided_by(pkg_arts)[0]:
-                    pom_requires.add(dep.get_rpm_str(pkgver=dver, namespace=pom_artifact.namespace))
-            elif r:
-                if r.compatVersion != "SYSTEM":
-                    dep.resolvedVersion = r.compatVersion
-                if r.namespace:
-                    dep.namespace = r.namespace
-                if dver is not None:
-                    pom_requires.add(dep.get_rpm_str(pkgver=dver))
-                    continue
-                pom_requires.add(dep.get_rpm_str())
-            else:
-                unresolvable.append(dep)
-                continue
-
-        if paid:
-            if not pver:
-                raise Exception("Unable to generate requires for artifact {}:{},".format(POM.groupId, POM.artifactId),
-                                "because its parent POM {}:{} has unknown version".format(pgid, paid))
-
-            req = ResolutionRequest(pgid, paid, extension="pom")
-            r = XMvnResolve.process_raw_request([req])[0]
-            dep = MetadataDependency(pgid, paid, requestedVersion=pver,
-                                     extension="pom", namespace=rpmconf.scl or "")
-
-            dver = dep.is_provided_by(self.provided_artifacts)[1]
-            if dver is not None:
-                if not dep.is_provided_by(pkg_arts)[0]:
-                    pom_requires.add(dep.get_rpm_str(pkgver=dver, namespace=pom_artifact.namespace))
-            elif r:
-                if r.compatVersion != "SYSTEM":
-                    dep.resolvedVersion = r.compatVersion
-                if r.namespace:
-                    dep.namespace = r.namespace
-                pom_requires.add(dep.get_rpm_str())
-            else:
-                unresolvable.append(dep)
-
-        _log.info("from POM(s): {reqs}".format(reqs=", ".join(pom_requires)))
-        if pom_requires:
-            print("\n".join(pom_requires))
-
-        if unresolvable:
-            raise Exception("Unable to generate requires on unresolvable artifacts: {}"
-                            .format(", ".join([x.get_mvn_str() for x in unresolvable])))
 
     def _find_what_requires(self, artifact):
         """

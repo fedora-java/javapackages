@@ -210,8 +210,8 @@ class TestMavenReq(unittest.TestCase):
     def test_deps_from_pom_with_parent(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        want = ("mvn(org.fedoraproject.xmvn:xmvn-core)", "jpackage-utils",
-                "mvn(org.fedoraproject.xmvn:xmvn-api:pom:)", "java-headless")
+        want = ("mvn(plugin:external)", "jpackage-utils",
+                "mvn(ppom:parent-pom:pom:)", "java-headless")
         self.assertEqual(set(want), set(sout))
 
     @mavenreq(["require4/buildroot/usr/share/maven-metadata/require.xml"],
@@ -219,8 +219,8 @@ class TestMavenReq(unittest.TestCase):
     def test_deps_from_pom_on_subpkg(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         sout = [x for x in stdout.split('\n') if x]
-        want = ("mvn(org.fedoraproject.xmvn:xmvn-core)", "jpackage-utils",
-                "mvn(org.fedoraproject.xmvn:xmvn-api:pom:) = 1.0", "java-headless")
+        want = ("mvn(extension:from-subpackage) = 1.1", "jpackage-utils",
+                "mvn(ppom:parent-pom:pom:)", "java-headless")
         self.assertEqual(set(want), set(sout))
 
     @mavenreq(["require5/buildroot/usr/share/maven-metadata/require.xml"])
