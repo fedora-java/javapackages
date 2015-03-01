@@ -1,5 +1,5 @@
-#-
-# Copyright (c) 2014, Red Hat, Inc.
+#
+# Copyright (c) 2015, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
