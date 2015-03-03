@@ -147,11 +147,19 @@ class AbstractArtifact(object):
         if self.compare_to(artifact):
             for member in self.__dict__:
                 if not member.startswith('_'):
-                    # copy value from given artifact only if the field is empty,
-                    # or if it contains default value (not explicitly specified)
-                    if hasattr(self, "_raw_" + member):
-                        if getattr(self, "_raw_" + member) is None:
-                            setattr(self, member, getattr(artifact, member))
+                    # for "scope" and "optional":
+                    # copy value from parent artifact only if this object
+                    # contains default/implicit value
+                    if (hasattr(self, "_default_" + member) and
+                       getattr(self, "_default_" + member)):
+                        setattr(self, member, getattr(artifact, member))
+                        # if the copied value was not a default value in parent,
+                        # then we have a definitive value and we should never
+                        # override it again
+                        if not getattr(artifact, "_default_" + member):
+                            setattr(self, "_default_" + member, False)
+                    # for fields other than "scope" and "optional":
+                    # copy value from parent artifact, if current value is empty
                     elif not getattr(self, member):
                         setattr(self, member, getattr(artifact, member))
 

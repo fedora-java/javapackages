@@ -61,7 +61,11 @@ class Dependency(AbstractArtifact):
         self.optional = "false"
         self.exclusions = set()
 
+        self._default_scope = True
+        self._default_optional = True
+
         # raw values
+        # TODO: probably not needed anymore
         self._raw_scope = scope
         self._raw_optional = optional
 
@@ -71,10 +75,12 @@ class Dependency(AbstractArtifact):
             self.classifier = classifier.strip()
         if version:
             self.version = version.strip()
-        if scope:
+        if scope is not None:
             self.scope = scope.strip()
-        if optional:
+            self._default_scope = False
+        if optional is not None:
             self.optional = optional.strip()
+            self._default_optional = False
         if exclusions:
             self.exclusions = exclusions
 
