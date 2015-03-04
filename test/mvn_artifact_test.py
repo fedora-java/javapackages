@@ -145,5 +145,11 @@ class TestMvnArtifact(unittest.TestCase):
     #def test_missing_version(self, stdout, stderr, return_value):
     #    self.assertNotEqual(return_value, 0, stderr)
 
+    @mvn_artifact('merge_sections/child/child/pom.xml')
+    def test_merge_sections(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
+
 if __name__ == '__main__':
     unittest.main()

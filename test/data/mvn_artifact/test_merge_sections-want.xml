@@ -1,0 +1,20 @@
+<ns0:metadata xmlns:ns0="http://fedorahosted.org/xmvn/METADATA/2.3.0">
+  <ns0:artifacts>
+    <ns0:artifact>
+      <ns0:groupId>child</ns0:groupId>
+      <ns0:artifactId>child</ns0:artifactId>
+      <ns0:extension>pom</ns0:extension>
+      <ns0:version>3</ns0:version>
+      <ns0:path>%s/merge_sections/child/child/pom.xml</ns0:path>
+      <ns0:dependencies>
+        <ns0:dependency>
+          <ns0:groupId>gdep1</ns0:groupId>
+          <ns0:artifactId>adep1</ns0:artifactId>
+          <ns0:extension>jar</ns0:extension>
+          <ns0:optional>true</ns0:optional>
+          <ns0:requestedVersion>10</ns0:requestedVersion>
+        </ns0:dependency>
+      </ns0:dependencies>
+    </ns0:artifact>
+  </ns0:artifacts>
+</ns0:metadata>
