@@ -37,12 +37,12 @@ def check_result(pom_path):
     res = not report
     return report, res
 
-def get_result_literally(pom_path):
-    with io.open(pom_path, 'r', encoding='UTF-8') as gotfile:
+def get_result_literally(pom_path, encoding='UTF-8'):
+    with io.open(pom_path, 'r', encoding=encoding) as gotfile:
         got = gotfile.read().split('\n')
 
     wantpath = '{pom}-want'.format(pom=os.path.basename(pom_path))
-    with io.open(wantpath, 'r', encoding='UTF-8') as wantfile:
+    with io.open(wantpath, 'r', encoding=encoding) as wantfile:
         want = wantfile.read().split('\n')
     return got, want
 
@@ -552,6 +552,13 @@ class PomMacrosTest(unittest.TestCase):
         self.assertEqual(returncode, 0, stderr)
 
         got, want = get_result_literally(pom_path)
+        self.assertEqual(got, want)
+
+    @exec_macro("pom_xpath_set pom:project/pom:version 2.7", "pom_non_unicode.xml")
+    def test_non_unicode(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want = get_result_literally(pom_path, encoding='ISO-8859-1')
         self.assertEqual(got, want)
 
     @exec_macro("pom_remove_parent", "unparsable_xml.pom")
