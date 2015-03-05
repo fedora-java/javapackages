@@ -1,4 +1,4 @@
-#-
+#
 # Copyright (c) 2013, Red Hat, Inc
 # All rights reserved.
 #
