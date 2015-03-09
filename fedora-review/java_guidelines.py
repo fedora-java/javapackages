@@ -423,9 +423,9 @@ class CheckPomInstalled(JavaCheckBase):
     def __init__(self, base):
         JavaCheckBase.__init__(self, base)
         self.text = "If package contains pom.xml files install it " \
-                    "(including depmaps) even when building with ant"
+                    "(including metadata) even when building with ant"
         self.url = 'https://fedoraproject.org/wiki/Packaging:Java' \
-                   '#Maven_pom.xml_files_and_depmaps'
+                   '#Maven_pom.xml_files'
         self.automatic = False
         self.type = 'MUST'
 
