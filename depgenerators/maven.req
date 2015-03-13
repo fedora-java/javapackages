@@ -116,7 +116,10 @@ class TagBuilder(object):
                 deps.extend(pom.plugins + pom.extensions)
 
                 unresolvable = []
-                for d in deps:
+                # create xmvn-resolve request for plugins and extensions, skip
+                # parent POM, if there is any - we already have request created
+                # for it
+                for d in (deps[1:] if ppom else deps):
                     reqs.append(ResolutionRequest(d.groupId,
                                                   d.artifactId,
                                                   version=d.version))
