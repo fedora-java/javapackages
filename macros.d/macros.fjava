@@ -62,11 +62,14 @@ _filelist=".mfiles%{-f*:-%{-f*}}" \
 install -dm 755 %{buildroot}%{_datadir}/maven-metadata \
 for _dir in %{_jnidir} %{_javadir}; do \
     if [ -f %{buildroot}$_dir/$_jarpart ]; then \
-	_jpath="%{buildroot}$_dir/$_jarpart" \
+	_jbase="%{buildroot}$_dir" \
+	_jpath="$_jbase/$_jarpart" \
     fi \
 done \
 %{pyinterpreter} %{javadir}-utils/maven_depmap.py %{-a} %{-v*:-r %{-v*}} \\\
                  -n "%{?scl}" \\\
+                 --pom-base %{buildroot}%{_mavenpomdir} \\\
+                 --jar-base "$_jbase" \\\
                  %{buildroot}%{_datadir}/maven-metadata/%{?scl:%{pkg_name}}%{!?scl:%{name}}%{-f*:-%{-f*}}.xml \\\
                  %{buildroot}%{_mavenpomdir}/$_pompart \\\
 %if %# == 2 \

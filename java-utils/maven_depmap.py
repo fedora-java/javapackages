@@ -42,7 +42,7 @@ import shutil
 import sys
 import gzip
 
-from os.path import basename
+from os.path import basename, dirname
 import zipfile
 from time import gmtime, strftime
 from copy import deepcopy
@@ -77,7 +77,15 @@ class UnknownFileExtension(JavaPackagesToolsException):
         self.args=("Unknown file extension: %s" % (jar_path),)
 
 
-def _make_files_versioned(versions, pom_path, jar_path):
+def _print_path_with_dirs(path, base):
+    print(path)
+    path = dirname(path)
+    while path != base and path != '/':
+        print("%dir " + path)
+        path = dirname(path)
+
+
+def _make_files_versioned(versions, pom_path, jar_path, pom_base, jar_base):
     """Make pom and jar file versioned"""
     versions = list(set(versions.split(',')))
 
@@ -101,7 +109,7 @@ def _make_files_versioned(versions, pom_path, jar_path):
             else:
                 os.symlink(basename(vpom_path), dest)
             # output file path for file lists
-            print(dest)
+            _print_path_with_dirs(dest, pom_base)
         # remove unversioned pom
         os.remove(pom_path)
 
@@ -119,7 +127,7 @@ def _make_files_versioned(versions, pom_path, jar_path):
             else:
                 os.symlink(basename(vjar_path), dest)
             # output file path for file lists
-            print(dest)
+            _print_path_with_dirs(dest, jar_base)
         # remove unversioned jar
         os.remove(jar_path)
 
@@ -207,6 +215,10 @@ def _main():
                       help='Additional versions to add for each depmap')
     parser.add_option('-n', '--namespace', type="str",
                       help='Namespace to use for generated fragments', default="")
+    parser.add_option('--pom-base', type="str",
+                      help='Base path under which POM files are installed', default="")
+    parser.add_option('--jar-base', type="str",
+                      help='Base path under which JAR files are installed', default="")
 
     parser.set_defaults(append=None)
 
@@ -214,6 +226,8 @@ def _main():
     append_deps = options.append
     add_versions = options.versions
     namespace = options.namespace
+    pom_base = options.pom_base
+    jar_base = options.jar_base
 
     if len(args) < 2:
         parser.error("Incorrect number of arguments")
@@ -259,8 +273,7 @@ def _main():
             if POM(pom_path).packaging != "pom":
                 raise PackagingTypeMissingFile(pom_path)
         else:
-            print("JAR file path must be specified when using artifact coordinates")
-            sys.exit(1)
+            sys.exit("JAR file path must be specified when using artifact coordinates")
 
 
     # output file path for file lists
@@ -268,7 +281,7 @@ def _main():
 
     artifact = add_compat_versions(artifact, add_versions)
     if add_versions:
-        pom_path, jar_path = _make_files_versioned(add_versions, pom_path, jar_path)
+        pom_path, jar_path = _make_files_versioned(add_versions, pom_path, jar_path, pom_base, jar_base)
 
     if namespace:
         artifact.namespace = namespace
@@ -287,7 +300,7 @@ def _main():
         am.append(artifact.copy())
         # output file path for file list (if it's not versioned)
         if not add_versions:
-            print(jar_path)
+            _print_path_with_dirs(jar_path, jar_base)
     if have_pom:
         metadata_pom_path = os.path.abspath(pom_path)
         artifact.path = metadata_pom_path.replace(buildroot, "") if buildroot else metadata_pom_path
@@ -297,7 +310,7 @@ def _main():
         am.append(artifact.copy())
         # output file path for file list (if it's not versioned)
         if not add_versions:
-            print(pom_path)
+            _print_path_with_dirs(pom_path, jar_base)
 
     write_metadata(metadata_path, am)
 
