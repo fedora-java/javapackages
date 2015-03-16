@@ -310,7 +310,7 @@ def _main():
         am.append(artifact.copy())
         # output file path for file list (if it's not versioned)
         if not add_versions:
-            _print_path_with_dirs(pom_path, jar_base)
+            _print_path_with_dirs(pom_path, pom_base)
 
     write_metadata(metadata_path, am)
 
