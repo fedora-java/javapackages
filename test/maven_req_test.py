@@ -49,6 +49,12 @@ class TestMavenReq(unittest.TestCase):
                 "java-headless >= 1:1.8")
         self.assertEqual(set(want), set(sout))
 
+    @mavenreq(["require-java-fail/buildroot/usr/share/maven-metadata/require.xml"])
+    def test_require_java_fail(self, stdout, stderr, return_value):
+        self.assertNotEqual(return_value, 0)
+        self.assertNotEqual(stderr, '')
+        self.assertEqual(True, "ValueError: Unknown Java version 1.4.2" in stderr)
+
     @mavenreq(["require_parent/buildroot/usr/share/maven-metadata/require.xml"])
     def test_require_parent(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
