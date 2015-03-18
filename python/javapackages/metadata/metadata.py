@@ -100,12 +100,8 @@ class Metadata(ObjectBinding):
         return list(requires)
 
     def get_java_devel_requires(self):
-        """Returns JVM development version required by metadata or None"""
-        try:
-            return self.properties[u'requiresJavaDevel']
-        except KeyError:
-            pass
-        return None
+        """Not supported."""
+        return []
 
     def get_osgi_provides(self):
         bundles = []
