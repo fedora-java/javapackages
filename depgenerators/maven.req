@@ -281,9 +281,22 @@ class TagBuilder(object):
         return max([self._normalize_java_requires(x) for x in reqs])
 
     def _normalize_java_requires(self, req):
-        if not req.startswith("1."):
+        version = req.split(".")
+        if len(version) == 1:
             req = "1." + req
+        # sanity check
+        try:
+            float(req)
+        except SyntaxError:
+            raise ValueError("Unknown Java version {0}".format(req))
         return req
+
+    def _process_java_version(self, version_string):
+        version = version_string.split('.')
+        major = int(version[0])
+        minor = int(version[1])
+        return "1:{0}.{1}".format(major, minor)
+
 
     def _filter_requires(self, requires):
         filters = self.config.get('requires_filter', [])
@@ -297,19 +310,6 @@ class TagBuilder(object):
             if not any([regex.search(req) for regex in regexes]):
                 filtered.add(req)
         return filtered
-
-    def _process_java_version(self, version_string):
-        version = version_string.split('.')
-
-        try:
-            if len(version) != 2:
-                raise ValueError
-            major = int(version[0])
-            minor = int(version[1])
-        except (SyntaxError, ValueError):
-            raise ValueError("Unknown Java version {0}".format(v=version_string))
-
-        return "1:{0}.{1}".format(major, minor)
 
     def _get_config(self):
         config = get_config()
