@@ -90,12 +90,14 @@ class Metadata(ObjectBinding):
         return list(dependencies)
 
     def get_java_requires(self):
-        """Returns JVM version required by metadata or None"""
-        try:
-            return self.properties[u'requiresJava']
-        except KeyError:
-            pass
-        return None
+        """Return list of required Java verions."""
+        requires = set()
+        for artifact in self.artifacts:
+            if artifact.properties:
+                req = artifact.properties.get("requiresJava", None)
+                if req:
+                    requires.add(req)
+        return list(requires)
 
     def get_java_devel_requires(self):
         """Returns JVM development version required by metadata or None"""

@@ -264,9 +264,10 @@ class TagBuilder(object):
                               ('java_devel_requires', Metadata.get_java_devel_requires)):
             rules = self.config.get(rule_name, {})
             if not rules.get('skip', False):
-                required_version = fn(metadata)
-                if required_version:
-                    version_string = self._process_java_version(required_version)
+                req_versions = fn(metadata)
+                if req_versions:
+                    max_version = self._get_java_requires(req_versions)
+                    version_string = self._process_java_version(max_version)
                     parts = {'pkg': rules['package_name'],
                              'op': rules.get('cmp_operator', '>='),
                              'version': version_string}
@@ -275,6 +276,14 @@ class TagBuilder(object):
                     if rules.get('package_name'):
                         requires.add(rules.get('package_name'))
         return requires
+
+    def _get_java_requires(self, reqs):
+        return max([self._normalize_java_requires(x) for x in reqs])
+
+    def _normalize_java_requires(self, req):
+        if not req.startswith("1."):
+            req = "1." + req
+        return req
 
     def _filter_requires(self, requires):
         filters = self.config.get('requires_filter', [])
@@ -291,15 +300,16 @@ class TagBuilder(object):
 
     def _process_java_version(self, version_string):
         version = version_string.split('.')
-        if len(version) != 2:
-            # if we don't have major.minor format, just ignore version
-            raise ValueError("Required Java version not in major.minor format")
-        major = int(version[0])
-        minor = int(version[1])
-        if major > 1 or minor > 5:
-            return "1:{0}.{1}".format(major, minor)
-        else:
-            return "{0}.{1}".format(major, minor)
+
+        try:
+            if len(version) != 2:
+                raise ValueError
+            major = int(version[0])
+            minor = int(version[1])
+        except (SyntaxError, ValueError):
+            raise ValueError("Unknown Java version {0}".format(v=version_string))
+
+        return "1:{0}.{1}".format(major, minor)
 
     def _get_config(self):
         config = get_config()
