@@ -33,22 +33,6 @@ class TestMavenReq(unittest.TestCase):
                 "java-headless >= 1:1.6")
         self.assertEqual(set(want), set(sout))
 
-    @mavenreq(["require-java-devel/buildroot/usr/share/maven-metadata/require.xml"])
-    def test_require_java_devel(self, stdout, stderr, return_value):
-        self.assertEqual(return_value, 0, stderr)
-        sout = [x for x in stdout.split('\n') if x]
-        want = ("jpackage-utils", "java-headless",
-                "mvn(org.apache.maven:maven-project)", "java-devel >= 1:1.6")
-        self.assertEqual(set(want), set(sout))
-
-    @mavenreq(["require-java-both/buildroot/usr/share/maven-metadata/require.xml"])
-    def test_require_java_both(self, stdout, stderr, return_value):
-        self.assertEqual(return_value, 0, stderr)
-        sout = [x for x in stdout.split('\n') if x]
-        want = ("jpackage-utils", "mvn(org.apache.maven:maven-project)",
-                "java-headless >= 1:1.6", "java-devel >= 1:1.6")
-        self.assertEqual(set(want), set(sout))
-
     @mavenreq(["require_parent/buildroot/usr/share/maven-metadata/require.xml"])
     def test_require_parent(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
