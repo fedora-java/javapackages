@@ -90,7 +90,7 @@ class Metadata(ObjectBinding):
         return list(dependencies)
 
     def get_java_requires(self):
-        """Return list of required Java verions."""
+        """Return list of required Java versions."""
         requires = set()
         for artifact in self.artifacts:
             if artifact.properties:
