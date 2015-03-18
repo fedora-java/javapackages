@@ -1,8 +1,5 @@
 <metadata xmlns="http://fedorahosted.org/xmvn/METADATA/2.3.0">
     <uuid>43948329</uuid>
-    <properties>
-        <requiresJava>1.5</requiresJava>
-    </properties>
     <artifacts>
         <artifact>
             <groupId>org.apache.maven.plugins</groupId>
@@ -36,6 +33,9 @@
                     <requestedVersion>12</requestedVersion>
                 </dependency>
             </dependencies>
+            <properties>
+                <requiresJava>1.5</requiresJava>
+            </properties>
         </artifact>
         <artifact>
             <groupId>org.apache.maven.plugins</groupId>
