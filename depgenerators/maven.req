@@ -181,11 +181,9 @@ class TagBuilder(object):
         if XMvnResolve.is_available():
             unknown_deps = self._check_pom_deps(metadata)
 
-        for dependency in metadata.get_required_artifacts():
-            # skip optional dependencies
-            if dependency.is_optional():
-                continue
-
+        # process non-optional dependencies
+        for dependency in list(set(x for x in metadata.get_required_artifacts()
+                                   if not x.is_optional())):
             if dependency.resolvedVersion == "UNKNOWN":
                 unknown_deps.append(dependency)
                 continue

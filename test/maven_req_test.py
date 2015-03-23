@@ -279,5 +279,12 @@ class TestMavenReq(unittest.TestCase):
                 "java-headless", "jpackage-utils")
         self.assertEqual(set(want), set(sout))
 
+    @mavenreq(["require_optional/buildroot/usr/share/maven-metadata/require.xml"])
+    def test_optional(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("mvn(dg:da)", "java-headless", "jpackage-utils")
+        self.assertEqual(set(want), set(sout))
+
 if __name__ == '__main__':
     unittest.main()

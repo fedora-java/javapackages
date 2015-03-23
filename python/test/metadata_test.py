@@ -117,25 +117,25 @@ class TestDepmap(unittest.TestCase):
     @depmapfile("depmap_compat_new.xml")
     def test_multiple_requires(self, d):
         reqs = d.get_required_artifacts()
-        self.assertEqual(len(reqs), 4)
+        self.assertEqual(len(reqs), 8)
 
         self.assertTrue(MetadataDependency("org.apache.maven",
-                                   "maven-project",
-                                   requestedVersion="12") in reqs)
+                                           "maven-project",
+                                           requestedVersion="12") in reqs)
 
         self.assertTrue(MetadataDependency("org.codehaus.plexus",
-                                   "plexus-container-default",
-                                   requestedVersion="12") in reqs)
+                                           "plexus-container-default",
+                                           requestedVersion="12") in reqs)
 
         self.assertTrue(MetadataDependency("org.codehaus.plexus",
-                                   "plexus-utils",
-                                   requestedVersion="12",
-                                   extension="war") in reqs)
+                                           "plexus-utils",
+                                           requestedVersion="12",
+                                           extension="war") in reqs)
 
         self.assertTrue(MetadataDependency("org.apache.maven.wagon",
-                                   "wagon-provider-api",
-                                   requestedVersion="12",
-                                   classifier="test-jar") in reqs)
+                                           "wagon-provider-api",
+                                           requestedVersion="12",
+                                           classifier="test-jar") in reqs)
 
     @depmapfile("depmap_namespace.xml")
     def test_namespace(self, d):
@@ -193,7 +193,7 @@ class TestDepmap(unittest.TestCase):
     def test_requires_namespace(self, d):
         reqs = d.get_required_artifacts()
 
-        self.assertEqual(len(reqs), 6)
+        self.assertEqual(len(reqs), 12)
 
         self.assertTrue(MetadataDependency("org.apache.maven",
                                            "maven-project",
