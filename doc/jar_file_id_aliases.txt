@@ -4,4 +4,39 @@ Aliases working in two ways:
 * Additional mappings for artifact specifications
 
 WORK IN PROGRESS
-mizdebsk, 31 Oct 2013
+msimacek, 31 March 2015
+
+In the real world the same project can appear under different names as it was
+evolving or released differently. Therefore other projects may refer to those
+alternative names instead of using the name currently prefered by upstream.
+
+===== Artifact aliases
+XMvn provides a way to attach multiple artifact coordinates to a single
+artifact. Dependent projects that use alternative coordinates can then be built
+without the need to patch their POMs or alter the build by other means. It will
+also generate virtual provides for the alias, so it can be also used in
+Requires and BuildRequires.
+Creating an alias is achieved by `%mvn_alias` macro.
+
+.Example invocation
+[source,shell]
+-------
+# com.example.foo:bar (the actual artifact existing in the project) will also
+# be available as com.example.foo:bar-all
+%mvn_alias com.example.foo:bar com.example.foo:bar-all
+
+# You don't need to repeat the part of coordinates that stays the same
+# (groupID in this case)
+%mvn_alias com.example.foo:bar :bar-all
+
+# You can specify multiple aliases at once
+%mvn_alias com.example.foo:bar :bar-all :bar-lib
+
+# The macro supports several shortcuts to generate multiple alisaes.
+# Braces - {} - capture their content, which can then be referenced in the
+# alias part with @N, where N is the index of the capture group.
+# * acts as a wildcard (matching anything)
+# The following generates aliases ending with shaded for all artifacts in the
+# project
+%mvn_alias 'com.example.foo:{*}' :@1-shaded
+-------
