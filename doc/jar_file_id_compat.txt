@@ -1,5 +1,74 @@
 Handling of compatibility packages, versioned jars etc.
 
 WORK IN PROGRESS
-mizdebsk, 31 Oct 2013
+msimacek, 2015-04-02
 
+In Fedora we prefer to always have only the latest version of a given
+project. Unfortunately, this is not always possible as some projects
+change too much and it would be too hard to port dependent packages to
+the current version.  It's not possible to just update the package and
+keep the old version around as the names, file paths and dependency
+provides would clash.  The recommended practice is to update the current
+package to the new version and create new package representing the old
+version (called compat package). The compat package needs to have the
+version number (usually only the major number, unless further
+distinction is necessary) appended to the name, thus effectivelly having
+different name from RPM's point of view. Such compat package needs to
+perform some additional steps to ensure that it can be installed and
+used along the non-compat one.
+
+[NOTE]
+======
+You should always evaluate whether creating a compat package is really
+necessary. Porting dependent projects to new versions of dependencies
+may be a compicated task, but your effort would be appreciated and it's
+likely that the patch will be accepted upstream at some point in time.
+If the upstream is already inactive and the package is not required by
+anything, you should also consider retiring it.
+======
+
+===== Maven Compat Versions
+XMvn supports marking particular artifact as compat, performing the
+necessary steps to avoid clashes with the non-compat version. An
+artifact can be marked as compat by `%mvn_compat_version`. It accepts an
+artifact argument which will determine which artifact will be compat.
+The format for specifying artifact coordinates is the same as with
+<<mvn_alias,`%mvn_alias`>>. In the common case you will want to mark all
+artifacts as compat. You can specify multiple compat versions at a time.
+
+.Dependency resolution of compat artifacts
+When XMvn performs dependency resolution for a dependency artifact in
+a project, it checks the dependency version and compares it against all
+versions of the artifact installed in the buildroot. If none of the
+compat artifacts matches it will resolve the artifact to the non-compat
+one. This has a few implications:
+
+- The versions are compared for exact match. The compat package should
+  provide all applicable versions that are present in packages that
+  are supposed to be used with this version.
+- The dependent packages need to have correct BuildRequires on the
+  compat package as the virtual provides is also different (see below).
+
+.File names and virtual provides
+In order to prevent file name clashes, compat artifacts have the first
+specified compat version appended to the filename. Virtual provides for
+compat artifacts also contain the version as the last part of the
+coordinates. There are multiple provides for each specified compat
+version. Non-compat artifact don't have any version in the virtual
+provides.
+
+.Example invocation of `%mvn_compat_version`
+[source,shell]
+--------------
+# Assuming the package has name bar and version 3
+# Sets the compat version of foo:bar artifact to 3
+%mvn_compat_version foo:bar 3
+# The installed artifact file (assuming it's jar and there were no
+# %mvn_file calls) will be at %{_javadir}/bar/bar-3.jar
+# The generated provides for foo:bar will be
+# mvn(foo:bar:3) = 3
+# mvn(foo:bar:pom:3) = 3
+
+# Sets the compat versions of all artifacts in the build to 3 and 3.2
+%mvn_compat_version : 3 3.2
+--------------
