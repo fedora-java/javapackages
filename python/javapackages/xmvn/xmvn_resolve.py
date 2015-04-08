@@ -167,5 +167,5 @@ class ResolutionRequest(object):
 
     @classmethod
     def from_artifact(cls, artifact):
-        return cls(artifact.artifactId, artifact.groupId,
+        return cls(artifact.groupId, artifact.artifactId,
                    artifact.extension, artifact.classifier, artifact.version)
