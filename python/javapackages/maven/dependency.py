@@ -67,7 +67,6 @@ class Dependency(AbstractArtifact):
         # raw values
         # TODO: probably not needed anymore
         self._raw_scope = scope
-        self._raw_optional = optional
 
         if extension:
             self.extension = extension.strip()
@@ -80,7 +79,6 @@ class Dependency(AbstractArtifact):
             self._default_scope = False
         if optional is not None:
             self.optional = optional.strip()
-            self._default_optional = False
         if exclusions:
             self.exclusions = exclusions
 
@@ -88,10 +86,6 @@ class Dependency(AbstractArtifact):
         if self.optional and self.optional.lower() == "true":
             return True
         return False
-
-    def get_raw_optional(self):
-        """Return original value for 'optional' element."""
-        return self._raw_optional
 
     def get_raw_scope(self):
         """Return original value for 'scope' element."""

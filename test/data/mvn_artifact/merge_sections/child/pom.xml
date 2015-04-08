@@ -21,6 +21,12 @@
         <version>10</version>
         <optional>true</optional>
       </dependency>
+      <dependency>
+        <groupId>gdep2</groupId>
+        <artifactId>adep2</artifactId>
+        <version>20</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>

@@ -16,4 +16,14 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>gdep3</groupId>
+      <artifactId>adep3</artifactId>
+      <scope>compile</scope>
+      <version>30</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
 </project>

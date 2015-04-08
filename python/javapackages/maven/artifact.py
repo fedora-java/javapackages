@@ -32,7 +32,6 @@
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 #           Michal Srb <msrb@redhat.com>
 
-import sys
 import re
 import six
 
@@ -147,7 +146,7 @@ class AbstractArtifact(object):
         if self.compare_to(artifact):
             for member in self.__dict__:
                 if not member.startswith('_'):
-                    # for "scope" and "optional":
+                    # for "scope":
                     # copy value from parent artifact only if this object
                     # contains default/implicit value
                     if (hasattr(self, "_default_" + member) and
@@ -158,7 +157,7 @@ class AbstractArtifact(object):
                         # override it again
                         if not getattr(artifact, "_default_" + member):
                             setattr(self, "_default_" + member, False)
-                    # for fields other than "scope" and "optional":
+                    # for fields other than "scope":
                     # copy value from parent artifact, if current value is empty
                     elif not getattr(self, member):
                         setattr(self, member, getattr(artifact, member))

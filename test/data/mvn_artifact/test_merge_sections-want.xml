@@ -11,8 +11,22 @@
           <ns0:groupId>gdep1</ns0:groupId>
           <ns0:artifactId>adep1</ns0:artifactId>
           <ns0:extension>jar</ns0:extension>
-          <ns0:optional>true</ns0:optional>
+          <ns0:optional>false</ns0:optional>
           <ns0:requestedVersion>10</ns0:requestedVersion>
+        </ns0:dependency>
+        <ns0:dependency>
+          <ns0:groupId>gdep2</ns0:groupId>
+          <ns0:artifactId>adep2</ns0:artifactId>
+          <ns0:extension>jar</ns0:extension>
+          <ns0:optional>false</ns0:optional>
+          <ns0:requestedVersion>20</ns0:requestedVersion>
+        </ns0:dependency>
+        <ns0:dependency>
+          <ns0:groupId>gdep3</ns0:groupId>
+          <ns0:artifactId>adep3</ns0:artifactId>
+          <ns0:extension>jar</ns0:extension>
+          <ns0:optional>true</ns0:optional>
+          <ns0:requestedVersion>30</ns0:requestedVersion>
         </ns0:dependency>
       </ns0:dependencies>
     </ns0:artifact>
