@@ -46,7 +46,7 @@ class TestMvnArtifact(unittest.TestCase):
         got = etree.parse(".xmvn-reactor").getroot()
         want = etree.parse(os.path.join(self.workdir,
                                         test_name+"-want.xml")).getroot()
-        report = compare_lxml_etree(got, want)
+        report = compare_lxml_etree(got, want, unordered=['dependencies'])
         if report:
             report = '\n' + report
         return report
