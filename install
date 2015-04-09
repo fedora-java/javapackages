@@ -164,12 +164,8 @@ inst_data depgenerators/fileattrs/javadoc.attr "${rpmconfigdir}/fileattrs"
 inst_data etc/javapackages-metadata.xml "${datadir}/maven-metadata"
 
 inst_data configs/configuration.xml "${m2home}"
-inst_data configs/configuration-rpmbuild.xml "${m2home}"
-inst_data configs/configuration-rpmbuild-raw.xml "${m2home}"
 
 link "${m2home}/configuration.xml" "${m2home}/configuration-21.xml"
-link "${m2home}/configuration-rpmbuild.xml" "${m2home}/configuration-21-rpmbuild.xml"
-link "${m2home}/configuration-rpmbuild-raw.xml" "${m2home}/configuration-21-rpmbuild-raw.xml"
 
 inst_config etc/javapackages-config.json "${javaconfdir}"
 
@@ -202,9 +198,6 @@ inst_data java-utils/builddep.py "${javadir}-utils"
 inst_data java-utils/mvn_build.py "${javadir}-utils"
 
 inst_data target/mvn_build.7 "${mandir}/man7"
-
-inst_exec target/mvn-local "${bindir}"
-inst_exec target/mvn-rpmbuild "${bindir}"
 
 
 exec >files-ivy
