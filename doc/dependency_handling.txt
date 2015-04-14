@@ -56,6 +56,23 @@ artifacts belonging to the same project.
 The requires generator also always generates Requires on `java-headless`
 and `javapackages-tools`.
 
+.Dependency handling for non-Maven packages that ship POM files
+If the package is built built using different tool than Apache Maven,
+but still ships Maven POM(s), the you will still get automatic provides
+generation if you install the POM using `%mvn_artifact` and
+`%mvn_install`. The requires generation will also be executed but the
+outcome largely depends on whether the POM contains accurate dependency
+insformation. If it contains dependency information, you should double
+check that it's correct and up-to-date. Otherwise you need to add
+`Requires` tags manually as described in the next section.
+
+.Dependency handling for non-Maven packages that don't ship POM files
+For packages without POMs it's necessary to specify `Requires` tags
+manually. In order to build the package you needed to specify
+`BuildRequires` tags. You `Requires` tags will therefore likely be
+a subset of your `BuildRequires`, excluding build tools and test only
+dependencies.
+
 .Querying Requires and Provides of built packages
 The generated Requires and Provides of built packages can be queried
 using `rpm`:
