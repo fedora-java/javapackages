@@ -11,12 +11,12 @@ running JVM and associated Java code.
 
 The jpackage-utils package contains a convenience `%jpackage_script` macro that
 can be used to create scripts that work for the majority of packages.  See its
-definition and documentation in `/etc/rpm/macros.jpackage`.  One thing to pay
-attention to is the 6th argument to it - whether to prefer a JRE over a full SDK
-when looking up a JVM to invoke - most packages that don't require the full Java
-SDK will want to set that to `true` to avoid unexpected results when looking up
-a JVM when some of the installed JRE's don't have the corresponding SDK (*-devel
-package) installed.
+definition and documentation in `/usr/lib/rpm/macros.d/macros.jpackage`. One
+thing to pay attention to is the 6th argument to it - whether to prefer a JRE
+over a full SDK when looking up a JVM to invoke - most packages that don't
+require the full Java SDK will want to set that to `true` to avoid unexpected
+results when looking up a JVM when some of the installed JRE's don't have the
+corresponding SDK (*-devel package) installed.
 
 [source,spec]
 --------
