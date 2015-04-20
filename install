@@ -213,10 +213,6 @@ exec >files-gradle
 inst_exec target/gradle-local "${bindir}"
 inst_data gradle/init.gradle "${datadir}/gradle-local"
 
-
-exec >files-fedora-review
-inst_data fedora-review/java_guidelines.py "${datadir}/fedora-review/plugins"
-
 exec >files-doc
 inst_doc doc/index.html
 inst_doc doc/images
