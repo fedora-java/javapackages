@@ -40,6 +40,7 @@ import sys
 from javapackages.maven.artifact import Artifact
 from javapackages.xmvn.xmvn_config import XMvnConfig
 from javapackages.common.util import args_to_unicode
+from javapackages.common.mock import socket_path as mock_socket
 
 
 def goal_callback(option, opt_str, value, parser):
@@ -117,6 +118,12 @@ if __name__ == "__main__":
         mvn_args.append("-Dmaven.test.skip=true")
         xc.add_custom_option("buildSettings/skipTests", "true")
         base_goal = "package"
+
+    if mock_socket and os.path.exists(mock_socket):
+        interpreter = sys.executable
+        java_utils = os.path.dirname(os.path.abspath(__file__))
+        cmd = "%s %s/request-artifact.py" % (interpreter, java_utils)
+        mvn_args.append("-Dxmvn.resolver.requestArtifactCmd='%s'" % cmd)
 
     mvn_args.extend(args)
 
