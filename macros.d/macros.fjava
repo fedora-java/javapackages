@@ -31,6 +31,12 @@
 #          Mikolaj Izdebski <mizdebsk@redhat.com>
 
 
+# Support code for pm_request mock plugin
+%{lua: if posix.access(posix.getenv("PM_REQUEST_SOCKET")) then
+  rpm.define("_javapackages_xmvn_env XMVN_REQUEST_ARTIFACT_CMD='%{pyinterpreter} %{javadir}-utils/mvn_build.py'")
+end}
+
+
 # %mvn_package - assign Maven artifact(s) to a subpackage
 #
 # Usage: %mvn_package [gId]:[aId[:ver]] <subpackage name>
@@ -119,7 +125,7 @@
 #
 # Usage: %mvn_artifact <pom> [<artifact-file>]
 #
-%mvn_artifact %{pyinterpreter} %{javadir}-utils/mvn_artifact.py
+%mvn_artifact %{?_javapackages_xmvn_env} %{pyinterpreter} %{javadir}-utils/mvn_artifact.py
 
 
 # %mvn_build - build Maven project
@@ -131,7 +137,7 @@
 #
 # For summary of accepted options execute `mvn-build --help` command.
 #
-%mvn_build %{pyinterpreter} %{javadir}-utils/mvn_build.py %{?xmvn_bootstrap: -b} %{?_without_javadoc: -j $(> .mfiles-javadoc)}%{?_without_tests: -f}
+%mvn_build %{?_javapackages_xmvn_env} %{pyinterpreter} %{javadir}-utils/mvn_build.py %{?xmvn_bootstrap: -b} %{?_without_javadoc: -j $(> .mfiles-javadoc)}%{?_without_tests: -f}
 
 
 # %mvn_install - install Maven project
@@ -142,7 +148,7 @@
 # buildroot. It is intended to be placed in %install section of spec file.
 #
 %mvn_install(J:X) \
-xmvn-install %{?-X} -R .xmvn-reactor -n %{?scl:%{pkg_name}}%{!?scl:%{name}} -d "%{buildroot}" \
+%{?_javapackages_xmvn_env} xmvn-install %{?-X} -R .xmvn-reactor -n %{?scl:%{pkg_name}}%{!?scl:%{name}} -d "%{buildroot}" \
 %{-J*:jdir="%{-J*}"}%{!-J*:jdir=target/site/apidocs; [ -d .xmvn/apidocs ] && jdir=.xmvn/apidocs} \
 if [ -d "${jdir}" ]; then \
    install -dm755 %{buildroot}%{_javadocdir}/%{?scl:%{pkg_name}}%{!?scl:%{name}} \
@@ -187,7 +193,7 @@ for _dir in %{_jnidir} %{_javadir}; do \
 	_jpath="$_jbase/$_jarpart" \
     fi \
 done \
-%{pyinterpreter} %{javadir}-utils/maven_depmap.py %{-a} %{-v*:-r %{-v*}} \\\
+%{?_javapackages_xmvn_env} %{pyinterpreter} %{javadir}-utils/maven_depmap.py %{-a} %{-v*:-r %{-v*}} \\\
                  -n "%{?scl}" \\\
                  --pom-base %{buildroot}%{_mavenpomdir} \\\
                  --jar-base "$_jbase" \\\
