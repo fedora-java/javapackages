@@ -84,7 +84,6 @@ expand bin/xmvn-builddep
 expand etc/java.conf
 expand macros.d/macros.jpackage
 expand macros.d/macros.fjava
-expand macros.d/macros.xmvn
 expand java-utils/java-functions
 expand depgenerators/maven.req
 expand depgenerators/maven.prov
