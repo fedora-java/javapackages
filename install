@@ -128,7 +128,6 @@ inst_data java-utils/pom_editor.py "${javadir}-utils"
 inst_data java-utils/request-artifact.py "${javadir}-utils"
 
 inst_data target/macros.jpackage "${rpmconfigdir}/macros.d"
-inst_data target/macros.fjava "${rpmconfigdir}/macros.d"
 
 inst_data target/build-classpath.1 "${mandir}/man1"
 inst_data target/build-jar-repository.1 "${mandir}/man1"
@@ -171,6 +170,7 @@ link "${m2home}/configuration.xml" "${m2home}/configuration-21.xml"
 inst_config etc/javapackages-config.json "${javaconfdir}"
 
 exec >files-local
+inst_data target/macros.fjava "${rpmconfigdir}/macros.d"
 inst_data target/macros.xmvn "${rpmconfigdir}/macros.d"
 
 inst_data java-utils/mvn_alias.py "${javadir}-utils"
