@@ -82,6 +82,8 @@ class TagBuilder(object):
         Print Requires on plugins, extensions and parent POMs from POM files
         """
 
+        unresolvable = []
+        pom_requires = set()
         for artifact in metadata.artifacts:
             if artifact.path:
                 pom = POM(artifact.get_buildroot_path())
@@ -115,7 +117,6 @@ class TagBuilder(object):
                 # plugins+extensions
                 deps.extend(pom.plugins + pom.extensions)
 
-                unresolvable = []
                 # create xmvn-resolve request for plugins and extensions, skip
                 # parent POM, if there is any - we already have request created
                 # for it
@@ -126,7 +127,6 @@ class TagBuilder(object):
                 # TODO: check metadata first
                 results = XMvnResolve.process_raw_request(reqs)
 
-                pom_requires = set()
                 for i, r in enumerate(results):
                     dep = MetadataDependency(deps[i].groupId,
                                              deps[i].artifactId,

@@ -286,5 +286,12 @@ class TestMavenReq(unittest.TestCase):
         want = ("mvn(dg:da)", "java-headless", "jpackage-utils")
         self.assertEqual(set(want), set(sout))
 
+    @mavenreq(["require-no-artifacts/buildroot/usr/share/maven-metadata/require.xml"])
+    def test_no_artifacts(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("java-headless", "jpackage-utils")
+        self.assertEqual(set(want), set(sout))
+
 if __name__ == '__main__':
     unittest.main()

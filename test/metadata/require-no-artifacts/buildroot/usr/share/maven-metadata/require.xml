@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://fedorahosted.org/xmvn/METADATA/2.3.0">
+  <uuid>0ebc9caa-eb88-4c53-b371-72514294b535</uuid>
+  <skippedArtifacts>
+    <skippedArtifact>
+      <groupId>org.eclipse.gef</groupId>
+      <artifactId>org.eclipse.gef.releng</artifactId>
+      <extension>pom</extension>
+    </skippedArtifact>
+  </skippedArtifacts>
+</metadata>
