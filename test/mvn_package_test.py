@@ -1,7 +1,7 @@
 import unittest
 import shutil
 import os
-from test_common import xmvnconfig, get_config_file_list, \
+from test_common import javautils_script, get_config_file_list, \
         get_actual_config, get_expected_config, DIRPATH
 
 from xml_compare import compare_xml_files
@@ -24,16 +24,16 @@ class TestMvnPackage(unittest.TestCase):
             pass
         os.chdir(self.olddir)
 
-    @xmvnconfig('mvn_package', [])
+    @javautils_script('mvn_package', [])
     def test_run_no_args(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertEqual("Usage:", stderr[:6])
 
-    @xmvnconfig('mvn_package', ['-h'])
+    @javautils_script('mvn_package', ['-h'])
     def test_help(self, stdout, stderr, return_value):
         self.assertTrue(stdout)
 
-    @xmvnconfig('mvn_package',['aaa:bbb', 'pack', ])
+    @javautils_script('mvn_package',['aaa:bbb', 'pack', ])
     def test_simple(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -44,7 +44,7 @@ class TestMvnPackage(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_package',['aaa:bbb:1.2', 'pack', ])
+    @javautils_script('mvn_package',['aaa:bbb:1.2', 'pack', ])
     def test_version(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -55,7 +55,7 @@ class TestMvnPackage(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_package',['aaa:bbb:ccc:', 'pack', ])
+    @javautils_script('mvn_package',['aaa:bbb:ccc:', 'pack', ])
     def test_extension(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -66,7 +66,7 @@ class TestMvnPackage(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_package',['aaa:bbb:ccc:ddd:', 'pack', ])
+    @javautils_script('mvn_package',['aaa:bbb:ccc:ddd:', 'pack', ])
     def test_classifier(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -77,7 +77,7 @@ class TestMvnPackage(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_package',['aaa:bbb:ccc:ddd:21', 'pack', ])
+    @javautils_script('mvn_package',['aaa:bbb:ccc:ddd:21', 'pack', ])
     def test_all(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -88,7 +88,7 @@ class TestMvnPackage(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_package',[':bbb', 'pack', ])
+    @javautils_script('mvn_package',[':bbb', 'pack', ])
     def test_wildcard1(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -99,7 +99,7 @@ class TestMvnPackage(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_package',[':', 'pack', ])
+    @javautils_script('mvn_package',[':', 'pack', ])
     def test_wildcard2(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -110,7 +110,7 @@ class TestMvnPackage(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_package',['*:*', 'pack', ])
+    @javautils_script('mvn_package',['*:*', 'pack', ])
     def test_wildcard3(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -121,7 +121,7 @@ class TestMvnPackage(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_package',[':bbb-{a,b,c}', 'pack', ])
+    @javautils_script('mvn_package',[':bbb-{a,b,c}', 'pack', ])
     def test_braces1(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -132,7 +132,7 @@ class TestMvnPackage(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_package',['a-{b,c}:{x,y}-z', 'pack', ])
+    @javautils_script('mvn_package',['a-{b,c}:{x,y}-z', 'pack', ])
     def test_braces2(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -143,7 +143,7 @@ class TestMvnPackage(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_package',['aaa:bbb', ])
+    @javautils_script('mvn_package',['aaa:bbb', ])
     def test_single(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -154,22 +154,22 @@ class TestMvnPackage(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_package',['aaa:bbb', 'pack', 'evil', ])
+    @javautils_script('mvn_package',['aaa:bbb', 'pack', 'evil', ])
     def test_more(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_package',[':bbb-{a,b', 'pack', ])
+    @javautils_script('mvn_package',[':bbb-{a,b', 'pack', ])
     def test_odd_braces(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_package',[':bb-a,b}', 'pack', ])
+    @javautils_script('mvn_package',[':bb-a,b}', 'pack', ])
     def test_odd_braces1(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_package',['a-{b,c}:{x,y}-z', '@2', ])
+    @javautils_script('mvn_package',['a-{b,c}:{x,y}-z', '@2', ])
     def test_backref1(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -180,7 +180,7 @@ class TestMvnPackage(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_package',['a-{b,c}:{x,y}-z', '@1', ])
+    @javautils_script('mvn_package',['a-{b,c}:{x,y}-z', '@1', ])
     def test_backref2(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -191,17 +191,17 @@ class TestMvnPackage(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_package',['a:b', '@1', ])
+    @javautils_script('mvn_package',['a:b', '@1', ])
     def test_backref3(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_package',['a-{b,c}:x', '@3', ])
+    @javautils_script('mvn_package',['a-{b,c}:x', '@3', ])
     def test_backref4(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_package',['aaa:bbb', '__noinstall', ])
+    @javautils_script('mvn_package',['aaa:bbb', '__noinstall', ])
     def test_noinstall(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()

@@ -1,7 +1,7 @@
 import unittest
 import shutil
 import os
-from test_common import xmvnconfig, get_config_file_list, \
+from test_common import javautils_script, get_config_file_list, \
         get_actual_config, get_expected_config, DIRPATH
 
 from xml_compare import compare_xml_files
@@ -23,16 +23,16 @@ class TestMvnCompatVersion(unittest.TestCase):
             pass
         os.chdir(self.olddir)
 
-    @xmvnconfig('mvn_compat_version', [])
+    @javautils_script('mvn_compat_version', [])
     def test_run_no_args(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertEqual("Usage:", stderr[:6])
 
-    @xmvnconfig('mvn_compat_version', ['-h'])
+    @javautils_script('mvn_compat_version', ['-h'])
     def test_help(self, stdout, stderr, return_value):
         self.assertTrue(stdout)
 
-    @xmvnconfig('mvn_compat_version',['aaa:bbb', '1', ])
+    @javautils_script('mvn_compat_version',['aaa:bbb', '1', ])
     def test_simple(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -43,12 +43,12 @@ class TestMvnCompatVersion(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_compat_version',['aaa:bbb', ])
+    @javautils_script('mvn_compat_version',['aaa:bbb', ])
     def test_single(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_compat_version',['aaa:bbb', '1', '2', '3', ])
+    @javautils_script('mvn_compat_version',['aaa:bbb', '1', '2', '3', ])
     def test_more(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -59,7 +59,7 @@ class TestMvnCompatVersion(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_compat_version',['aaa:bbb:ccc:ddd:1.2', '3.1', ])
+    @javautils_script('mvn_compat_version',['aaa:bbb:ccc:ddd:1.2', '3.1', ])
     def test_version(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -70,7 +70,7 @@ class TestMvnCompatVersion(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_compat_version',[':bbb', '2', ])
+    @javautils_script('mvn_compat_version',[':bbb', '2', ])
     def test_wildcard(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -82,7 +82,7 @@ class TestMvnCompatVersion(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_compat_version',['aa:bb:{1,2}', '@1', ])
+    @javautils_script('mvn_compat_version',['aa:bb:{1,2}', '@1', ])
     def test_backref1(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -94,17 +94,17 @@ class TestMvnCompatVersion(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_compat_version',['aaa:bb:{1,2}', '@3', ])
+    @javautils_script('mvn_compat_version',['aaa:bb:{1,2}', '@3', ])
     def test_backref2(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_compat_version',['aaa:bbb:{1,2', '@1', ])
+    @javautils_script('mvn_compat_version',['aaa:bbb:{1,2', '@1', ])
     def test_odd_braces1(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_compat_version',['aaa:bbb:1,2}', '@3', ])
+    @javautils_script('mvn_compat_version',['aaa:bbb:1,2}', '@3', ])
     def test_odd_braces2(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)

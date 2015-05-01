@@ -1,7 +1,7 @@
 import unittest
 import shutil
 import os
-from test_common import xmvnconfig, get_config_file_list, \
+from test_common import javautils_script, get_config_file_list, \
         get_actual_config, get_expected_config, DIRPATH
 
 from xml_compare import compare_xml_files
@@ -23,26 +23,26 @@ class TestMvnConfig(unittest.TestCase):
             pass
         os.chdir(self.olddir)
 
-    @xmvnconfig('mvn_config', [])
+    @javautils_script('mvn_config', [])
     def test_run_no_args(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertEqual("Usage:", stderr[:6])
 
-    @xmvnconfig('mvn_config', ['-h'])
+    @javautils_script('mvn_config', ['-h'])
     def test_help(self, stdout, stderr, return_value):
         self.assertTrue(stdout)
 
-    @xmvnconfig('mvn_config',['aaa', ])
+    @javautils_script('mvn_config',['aaa', ])
     def test_single(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_config',['a', 'b', 'c', ])
+    @javautils_script('mvn_config',['a', 'b', 'c', ])
     def test_more(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_config',['aaa', 'bbb', ])
+    @javautils_script('mvn_config',['aaa', 'bbb', ])
     def test_simple(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -53,7 +53,7 @@ class TestMvnConfig(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_config',['a/b/c', 'xxx', ])
+    @javautils_script('mvn_config',['a/b/c', 'xxx', ])
     def test_path(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -64,7 +64,7 @@ class TestMvnConfig(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_config',['a', '<b/>', ])
+    @javautils_script('mvn_config',['a', '<b/>', ])
     def test_xml1(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -75,7 +75,7 @@ class TestMvnConfig(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_config',['a', '<b>c</b>', ])
+    @javautils_script('mvn_config',['a', '<b>c</b>', ])
     def test_xml2(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -86,7 +86,7 @@ class TestMvnConfig(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_config',['a', '<b>c</b><d/>', ])
+    @javautils_script('mvn_config',['a', '<b>c</b><d/>', ])
     def test_xml3(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -97,7 +97,7 @@ class TestMvnConfig(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_config',['a', '<b>c</b><d>e</d>', ])
+    @javautils_script('mvn_config',['a', '<b>c</b><d>e</d>', ])
     def test_xml4(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -108,7 +108,7 @@ class TestMvnConfig(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_config',['a', '<b><c>d</c></b>', ])
+    @javautils_script('mvn_config',['a', '<b><c>d</c></b>', ])
     def test_nested_xml1(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -119,7 +119,7 @@ class TestMvnConfig(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_config',['a', '<b><c>d</c>d</b>', ])
+    @javautils_script('mvn_config',['a', '<b><c>d</c>d</b>', ])
     def test_nested_xml2(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -130,27 +130,27 @@ class TestMvnConfig(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_config',['a', '<b', ])
+    @javautils_script('mvn_config',['a', '<b', ])
     def test_invalid_xml1(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_config',['a', '<b>', ])
+    @javautils_script('mvn_config',['a', '<b>', ])
     def test_invalid_xml2(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_config',['a', '<b><c></b>', ])
+    @javautils_script('mvn_config',['a', '<b><c></b>', ])
     def test_invalid_xml3(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_config',['a', '<b></c></b>', ])
+    @javautils_script('mvn_config',['a', '<b></c></b>', ])
     def test_invalid_xml4(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
         self.assertTrue(stderr)
 
-    @xmvnconfig('mvn_config',['a', '<b>c&lt;d</b>', ])
+    @javautils_script('mvn_config',['a', '<b>c&lt;d</b>', ])
     def test_entity(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()
@@ -161,7 +161,7 @@ class TestMvnConfig(unittest.TestCase):
                  ['artifactGlob'])
             self.assertFalse(report, '\n' + report)
 
-    @xmvnconfig('mvn_config',['a', 'f<b>c</b>d', ])
+    @javautils_script('mvn_config',['a', 'f<b>c</b>d', ])
     def test_mixed(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
         filelist = get_config_file_list()

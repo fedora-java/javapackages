@@ -106,7 +106,7 @@ def prepare_metadata(metadata_dir):
                 xml.write(want_file)
 
 
-def xmvnconfig(name, fnargs):
+def javautils_script(name, fnargs):
     def test_decorator(fun):
         @wraps(fun)
         def test_decorated(self):
