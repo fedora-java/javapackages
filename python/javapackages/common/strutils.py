@@ -31,12 +31,23 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
-from javapackages.common.util import sanitize_version
 
+def get_mvn_str(gid, aid, ext=None, cla=None, ver=None):
+    """Construct and return Maven coordinates.
 
-def get_mvn_str(gid, aid, ext="", cla="", ver=""):
+    At least groupId (gid) and artifactId (aid) needs to be provided.
+
+    >>> get_mvn_str("org.example", "artifact")
+    'org.example:artifact'
+    >>> get_mvn_str("org.example", "artifact", ver="1")
+    'org.example:artifact:1'
+    >>> get_mvn_str("org.example", "artifact", cla="test")
+    'org.example:artifact::test:'
+    """
+
     mvnstr = "{gid}:{aid}".format(gid=gid, aid=aid)
 
+    # "jar" is a default extension in Maven world, we can omit it
     if ext == "jar":
         ext = ""
 
@@ -56,19 +67,49 @@ def get_mvn_str(gid, aid, ext="", cla="", ver=""):
     return mvnstr
 
 
-def get_rpm_str(gid, aid, ext="", cla="", ver="", namespace="",
-                compat=None, pkgver=None):
-    # TODO: "ver" is never used, get rid of it?
+def get_rpm_str(gid, aid, ext=None, cla=None, namespace=None,
+                compat_ver=None, pkg_ver=None):
+    """Construct and return string representing RPM's "virtual provide"
+    of a given Maven artifact.
+
+    >>> get_rpm_str("org.example", "artifact")
+    'mvn(org.example:artifact)'
+    >>> get_rpm_str("org.example", "artifact", pkg_ver="1")
+    'mvn(org.example:artifact) = 1'
+    >>> get_rpm_str("org.example", "artifact", namespace="scl", compat_ver="1")
+    'scl-mvn(org.example:artifact:1)'
+    """
 
     mvnstr = get_mvn_str(gid, aid, ext=ext, cla=cla,
-                         ver=compat if compat is not None else "")
+                         ver=compat_ver if compat_ver is not None else None)
     rpmstr = "mvn({mvnstr})".format(mvnstr=mvnstr)
 
     if namespace:
-        rpmstr = "{ns}-{rpmstr}".format(ns=namespace, rpmstr=rpmstr)
+        rpmstr = "{ns}-".format(ns=namespace) + rpmstr
 
-    if pkgver is not None:
-        pkgver = sanitize_version(pkgver)
-        rpmstr = "{rpmstr} = {ver}".format(rpmstr=rpmstr, ver=pkgver)
+    if pkg_ver:
+        pkg_ver = _sanitize_version(pkg_ver)
+        rpmstr = rpmstr + " = {ver}".format(ver=pkg_ver)
 
     return rpmstr
+
+
+def _sanitize_version(ver):
+    """Sanitize version so it can be properly handled by YUM/DNF.
+
+    RPM package managers seem to have a problem with versioned "Provides"
+    containing dashes, e.g. "mvn(g:a) = 1.0-SNAPSHOT".
+
+    >>> _sanitize_version("1.0-SNAPSHOT")
+    '1.0.SNAPSHOT'
+    >>> _sanitize_version("1.0")
+    '1.0'
+    """
+    if ver:
+        return ver.replace("-", ".")
+    return ""
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
