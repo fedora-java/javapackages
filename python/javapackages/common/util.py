@@ -116,9 +116,3 @@ def get_logger(name):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
-
-
-def sanitize_version(version):
-    if version:
-        return version.replace("-", ".")
-    return ""

@@ -36,7 +36,7 @@ import re
 import six
 
 import javapackages.maven.pomreader as POMReader
-import javapackages.maven.printer as Printer
+import javapackages.common.strutils as Printer
 from javapackages.common.exception import JavaPackagesToolsException
 from lxml.etree import Element, SubElement, tostring
 
@@ -63,16 +63,15 @@ class AbstractArtifact(object):
                                    cla=m['classifier'],
                                    ver=m['version'])
 
-    def get_rpm_str(self, namespace="", compat=None, pkgver=None):
+    def get_rpm_str(self, namespace=None, compat_ver=None, pkg_ver=None):
         m = self.__get_members()
         return Printer.get_rpm_str(m['groupId'],
                                    m['artifactId'],
                                    ext=m['extension'],
                                    cla=m['classifier'],
-                                   ver=m['version'],
                                    namespace=namespace,
-                                   compat=compat,
-                                   pkgver=pkgver)
+                                   compat_ver=compat_ver,
+                                   pkg_ver=pkg_ver)
 
     @staticmethod
     def get_parts_from_mvn_str(mvnstr):

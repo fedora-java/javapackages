@@ -32,7 +32,7 @@
 # Authors:  Michal Srb <msrb@redhat.com>
 
 from javapackages.maven.artifact import Artifact
-import javapackages.maven.printer as Printer
+import javapackages.common.strutils as Printer
 
 from javapackages.common.binding import ObjectBinding
 

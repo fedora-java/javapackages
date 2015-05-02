@@ -35,7 +35,7 @@ import javapackages.common.config as config
 from javapackages.common.osgi import OSGiBundle
 from javapackages.maven.artifact import Artifact
 from javapackages.maven.pom import POM
-import javapackages.maven.printer as Printer
+import javapackages.common.strutils as Printer
 
 from javapackages.metadata.alias import MetadataAlias
 from javapackages.metadata.dependency import MetadataDependency
@@ -90,7 +90,7 @@ class MetadataArtifact(ObjectBinding):
                                    cla=self.classifier,
                                    ver=self.version)
 
-    def get_rpm_str(self, namespace="", pkgver=None):
+    def get_rpm_str(self, namespace=None, pkg_ver=None):
         result = []
 
         if not self.is_compat():
@@ -100,7 +100,7 @@ class MetadataArtifact(ObjectBinding):
                                               ext=self.extension,
                                               cla=self.classifier,
                                               namespace=namespace,
-                                              pkgver=pkgver))
+                                              pkg_ver=pkg_ver))
 
             # non-compat rpm string(s) for aliases
             for alias in self.aliases:
@@ -109,7 +109,7 @@ class MetadataArtifact(ObjectBinding):
                                                   ext=alias.extension,
                                                   cla=alias.classifier,
                                                   namespace=namespace,
-                                                  pkgver=pkgver))
+                                                  pkg_ver=pkg_ver))
         else:
             # compat rpm string(s) for main artifact
             for compat_ver in self.compatVersions:
@@ -117,9 +117,9 @@ class MetadataArtifact(ObjectBinding):
                                                   self.artifactId,
                                                   ext=self.extension,
                                                   cla=self.classifier,
-                                                  compat=compat_ver,
+                                                  compat_ver=compat_ver,
                                                   namespace=namespace,
-                                                  pkgver=pkgver))
+                                                  pkg_ver=pkg_ver))
 
                 # compat rpm string(s) for aliases
                 for alias in self.aliases:
@@ -127,9 +127,9 @@ class MetadataArtifact(ObjectBinding):
                                                       alias.artifactId,
                                                       ext=alias.extension,
                                                       cla=alias.classifier,
-                                                      compat=compat_ver,
+                                                      compat_ver=compat_ver,
                                                       namespace=namespace,
-                                                      pkgver=pkgver))
+                                                      pkg_ver=pkg_ver))
         return "\n".join(result)
 
     def __unicode__(self):

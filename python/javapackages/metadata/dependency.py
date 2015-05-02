@@ -32,7 +32,7 @@
 # Authors:  Michal Srb <msrb@redhat.com>
 
 from javapackages.maven.artifact import Artifact
-import javapackages.maven.printer as Printer
+import javapackages.common.strutils as Printer
 from javapackages.metadata.exclusion import MetadataExclusion
 
 from javapackages.common.binding import ObjectBinding
@@ -62,14 +62,14 @@ class MetadataDependency(ObjectBinding):
                                    cla=self.classifier,
                                    ver=self.requestedVersion)
 
-    def get_rpm_str(self, namespace="", compat=None, pkgver=None):
+    def get_rpm_str(self, namespace=None, compat_ver=None, pkg_ver=None):
         return Printer.get_rpm_str(self.groupId,
                                    self.artifactId,
                                    ext=self.extension,
                                    cla=self.classifier,
                                    namespace=namespace or self.namespace,
-                                   compat=compat or self.resolvedVersion,
-                                   pkgver=pkgver)
+                                   compat_ver=compat_ver or self.resolvedVersion,
+                                   pkg_ver=pkg_ver)
 
     def is_provided_by(self, artifacts):
         for provided in artifacts:

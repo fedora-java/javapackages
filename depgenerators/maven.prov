@@ -58,7 +58,7 @@ class TagBuilder:
             provides = set()
             for artifact in metadata.artifacts:
                 provides.add(artifact.get_rpm_str(namespace=artifact.namespace,
-                                                  pkgver=artifact.version))
+                                                  pkg_ver=artifact.version))
             # print OSGi provides from metadata
             osgi_provides = metadata.get_osgi_provides()
             for p in osgi_provides:

@@ -35,7 +35,7 @@
 import re
 
 from javapackages.common.manifest import Manifest, ManifestException
-from javapackages.common.util import sanitize_version
+from javapackages.common.strutils import _sanitize_version
 
 
 class OSGiUtils(object):
@@ -43,7 +43,7 @@ class OSGiUtils(object):
     @staticmethod
     def get_rpm_str(bundle, version="", namespace=""):
         ns = namespace or ""
-        version = sanitize_version(version)
+        version = _sanitize_version(version)
         return "{ns}{d}osgi({bundle}){eq}{version}".format(ns=ns,
                                                            d="-" if ns else "",
                                                            bundle=bundle,

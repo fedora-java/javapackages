@@ -142,7 +142,7 @@ class TagBuilder(object):
                         # check if dependency is NOT provided by currently
                         # processed subpackage
                         if not dep.is_provided_by(metadata.artifacts)[0]:
-                            req_str = dep.get_rpm_str(pkgver=dver,
+                            req_str = dep.get_rpm_str(pkg_ver=dver,
                                                       namespace=artifact.namespace)
                             pom_requires.add(req_str)
                     elif r:
@@ -197,12 +197,12 @@ class TagBuilder(object):
                 if not dependency.is_provided_by(metadata.artifacts)[0]:
                     # requires on subpackages are always versioned
                     rpmstr = dependency.get_rpm_str(namespace=dependency.namespace,
-                                                    compat=dependency.resolvedVersion,
-                                                    pkgver=pkgver)
+                                                    compat_ver=dependency.resolvedVersion,
+                                                    pkg_ver=pkgver)
                     requires.add(rpmstr)
             else:
                 rpmstr = dependency.get_rpm_str(namespace=dependency.namespace,
-                                                compat=dependency.resolvedVersion)
+                                                compat_ver=dependency.resolvedVersion)
                 requires.add(rpmstr)
 
         if unknown_deps:
