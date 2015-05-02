@@ -58,9 +58,10 @@ def get_mvn_str(gid, aid, ext="", cla="", ver=""):
 
 def get_rpm_str(gid, aid, ext="", cla="", ver="", namespace="",
                 compat=None, pkgver=None):
+    # TODO: "ver" is never used, get rid of it?
 
-    mvnstr = get_mvn_str(gid, aid, ext, cla,
-                         compat if compat is not None else "")
+    mvnstr = get_mvn_str(gid, aid, ext=ext, cla=cla,
+                         ver=compat if compat is not None else "")
     rpmstr = "mvn({mvnstr})".format(mvnstr=mvnstr)
 
     if namespace:

@@ -43,8 +43,10 @@ class MetadataAlias(ObjectBinding):
     defaults = {'extension': 'jar'}
 
     def get_mvn_str(self):
-        return Printer.get_mvn_str(self.groupId, self.artifactId,
-                                   self.extension, self.classifier)
+        return Printer.get_mvn_str(self.groupId,
+                                   self.artifactId,
+                                   ext=self.extension,
+                                   cla=self.classifier)
 
     @classmethod
     def from_mvn_str(cls, mvn_str):

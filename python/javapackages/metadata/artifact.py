@@ -60,7 +60,7 @@ class MetadataArtifact(ObjectBinding):
     def __init__(self, *args, **kwargs):
         super(MetadataArtifact, self).__init__(*args, **kwargs)
         for alias in self.aliases:
-            if not 'extension' in alias and 'extension' in self:
+            if 'extension' not in alias and 'extension' in self:
                 alias.extension = self.extension
 
     def is_compat(self):
@@ -84,33 +84,52 @@ class MetadataArtifact(ObjectBinding):
         return os.path.join(prefix, self.path[1:])
 
     def get_mvn_str(self):
-        return Printer.get_mvn_str(self.groupId, self.artifactId,
-                                   self.extension, self.classifier,
-                                   self.version)
+        return Printer.get_mvn_str(self.groupId,
+                                   self.artifactId,
+                                   ext=self.extension,
+                                   cla=self.classifier,
+                                   ver=self.version)
 
     def get_rpm_str(self, namespace="", pkgver=None):
         result = []
 
         if not self.is_compat():
             # non-compat rpm string for main artifact
-            result.append(Printer.get_rpm_str(self.groupId, self.artifactId,
-                          self.extension, self.classifier, namespace=namespace, pkgver=pkgver))
+            result.append(Printer.get_rpm_str(self.groupId,
+                                              self.artifactId,
+                                              ext=self.extension,
+                                              cla=self.classifier,
+                                              namespace=namespace,
+                                              pkgver=pkgver))
 
             # non-compat rpm string(s) for aliases
             for alias in self.aliases:
-                result.append(Printer.get_rpm_str(alias.groupId, alias.artifactId, alias.extension,
-                                                  alias.classifier, namespace=namespace, pkgver=pkgver))
+                result.append(Printer.get_rpm_str(alias.groupId,
+                                                  alias.artifactId,
+                                                  ext=alias.extension,
+                                                  cla=alias.classifier,
+                                                  namespace=namespace,
+                                                  pkgver=pkgver))
         else:
             # compat rpm string(s) for main artifact
             for compat_ver in self.compatVersions:
-                result.append(Printer.get_rpm_str(self.groupId, self.artifactId, self.extension, self.classifier,
-                                                  compat=compat_ver, namespace=namespace, pkgver=pkgver))
+                result.append(Printer.get_rpm_str(self.groupId,
+                                                  self.artifactId,
+                                                  ext=self.extension,
+                                                  cla=self.classifier,
+                                                  compat=compat_ver,
+                                                  namespace=namespace,
+                                                  pkgver=pkgver))
 
                 # compat rpm string(s) for aliases
                 for alias in self.aliases:
-                    result.append(Printer.get_rpm_str(alias.groupId, alias.artifactId, alias.extension,
-                                                      alias.classifier, compat=compat_ver,
-                                                      namespace=namespace, pkgver=pkgver))
+                    result.append(Printer.get_rpm_str(alias.groupId,
+                                                      alias.artifactId,
+                                                      ext=alias.extension,
+                                                      cla=alias.classifier,
+                                                      compat=compat_ver,
+                                                      namespace=namespace,
+                                                      pkgver=pkgver))
         return "\n".join(result)
 
     def __unicode__(self):

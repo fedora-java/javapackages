@@ -39,6 +39,7 @@ from javapackages.common.binding import ObjectBinding
 
 import six
 
+
 class MetadataDependency(ObjectBinding):
     element_name = 'dependency'
     fields = ['groupId', 'artifactId', 'extension', 'classifier',
@@ -46,7 +47,7 @@ class MetadataDependency(ObjectBinding):
               'resolvedVersion', 'exclusions']
     defaults = {'extension': 'jar',
                 'requestedVersion': 'SYSTEM'}
-    types = {'optional': str, # todo bool
+    types = {'optional': str,  # todo bool
              'exclusions': set([MetadataExclusion])}
 
     def is_optional(self):
@@ -55,14 +56,17 @@ class MetadataDependency(ObjectBinding):
         return False
 
     def get_mvn_str(self):
-        return Printer.get_mvn_str(self.groupId, self.artifactId,
-                                   self.extension, self.classifier,
-                                   self.requestedVersion)
+        return Printer.get_mvn_str(self.groupId,
+                                   self.artifactId,
+                                   ext=self.extension,
+                                   cla=self.classifier,
+                                   ver=self.requestedVersion)
 
-    def get_rpm_str(self, namespace="", compat=False, pkgver=None):
-        return Printer.get_rpm_str(self.groupId, self.artifactId,
-                                   self.extension, self.classifier,
-                                   self.requestedVersion,
+    def get_rpm_str(self, namespace="", compat=None, pkgver=None):
+        return Printer.get_rpm_str(self.groupId,
+                                   self.artifactId,
+                                   ext=self.extension,
+                                   cla=self.classifier,
                                    namespace=namespace or self.namespace,
                                    compat=compat or self.resolvedVersion,
                                    pkgver=pkgver)

@@ -57,16 +57,22 @@ class AbstractArtifact(object):
 
     def get_mvn_str(self):
         m = self.__get_members()
-        return Printer.get_mvn_str(m['groupId'], m['artifactId'],
-                                   m['extension'], m['classifier'],
-                                   m['version'])
+        return Printer.get_mvn_str(m['groupId'],
+                                   m['artifactId'],
+                                   ext=m['extension'],
+                                   cla=m['classifier'],
+                                   ver=m['version'])
 
-    def get_rpm_str(self, namespace="", compat=False, pkgver=None):
+    def get_rpm_str(self, namespace="", compat=None, pkgver=None):
         m = self.__get_members()
-        return Printer.get_rpm_str(m['groupId'], m['artifactId'],
-                                   m['extension'], m['classifier'],
-                                   m['version'], namespace=namespace,
-                                   compat=compat, pkgver=pkgver)
+        return Printer.get_rpm_str(m['groupId'],
+                                   m['artifactId'],
+                                   ext=m['extension'],
+                                   cla=m['classifier'],
+                                   ver=m['version'],
+                                   namespace=namespace,
+                                   compat=compat,
+                                   pkgver=pkgver)
 
     @staticmethod
     def get_parts_from_mvn_str(mvnstr):
