@@ -1,0 +1,2 @@
+#!/bin/sh
+exec gradle -I %{datadir}/gradle-local/init.gradle "${@}"

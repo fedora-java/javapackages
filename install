@@ -208,6 +208,12 @@ inst_data configs/ivy-local-classpath "${sysconfdir}/ant.d"
 inst_data configs/ivysettings.xml "${sysconfdir}/ivy"
 
 
+exec >files-gradle
+
+inst_exec target/gradle-local "${bindir}"
+inst_data gradle/init.gradle "${datadir}/gradle-local"
+
+
 exec >files-fedora-review
 inst_data fedora-review/java_guidelines.py "${datadir}/fedora-review/plugins"
 
