@@ -360,7 +360,7 @@ link_jar_repository() {
    while [ $# -gt 0 ] ; do
       case "$1" in
          -h|--hard)
-            _LINK_CMD="ln -f"
+            _LINK_CMD="ln -fL"
             ;;
          -s|--soft|--symbolic)
             _LINK_CMD="ln -fs"
