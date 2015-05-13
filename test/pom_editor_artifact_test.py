@@ -44,6 +44,13 @@ class TestPomArtifact(WorkdirTestCase):
         self.assertEqual(0, return_value, stderr)
         self.assertEqual('', report, report)
 
+    def test_classifier(self):
+        return_value, stderr, report = exec_pom_macro_simple(\
+                "%pom_add_dep org.apache.ant:ant-parent:::cls",
+                'minimal_pom.xml', 'minimal_pom_add_cls.xml')
+        self.assertEqual(0, return_value, stderr)
+        self.assertEqual('', report, report)
+
 class TestPomChange(WorkdirTestCase):
     def test_change_simple(self):
         return_value, stderr, report = exec_pom_macro_simple(\
@@ -77,6 +84,13 @@ class TestPomChange(WorkdirTestCase):
         return_value, stderr, report = exec_pom_macro_simple(\
                 "%pom_change_dep :::test :::-",
                 'simple_pom.xml', 'simple_removed_scope.xml')
+        self.assertEqual(0, return_value, stderr)
+        self.assertEqual('', report, report)
+
+    def test_keep_classifier(self):
+        return_value, stderr, report = exec_pom_macro_simple(\
+                "%pom_change_dep commons-io org.apache.commons.commons-io:",
+                'classifier.xml', 'keep_classifier.xml')
         self.assertEqual(0, return_value, stderr)
         self.assertEqual('', report, report)
 

@@ -392,7 +392,7 @@ class Pom(XmlFile):
                                          version='any',
                                          groupId='org.apache.maven.plugins')
         else:
-            pom_dependency_spec = 'groupId:artifactId:version:scope'
+            pom_dependency_spec = 'groupId:artifactId:version:scope:classifier'
             ArtifactClass = MetaArtifact(pom_dependency_spec,
                                          namespace=cls.NSMAP['pom'],
                                          version='any')
