@@ -38,7 +38,6 @@ import socket
 from javapackages.common.exception import JavaPackagesToolsException
 from javapackages.maven.artifact import Artifact
 
-socket_path = '/var/run/mock/pm-request'
 
 class InstallationException(JavaPackagesToolsException):
     def __init__(self, dep, out):
@@ -50,6 +49,9 @@ class ConnectionException(JavaPackagesToolsException):
     pass
 
 def install_artifact(dep):
+    socket_path = os.environ.get('PM_REQUEST_SOCKET')
+    if not socket_path:
+        raise ConnectionException("PM_REQUEST_SOCKET environment variable not set")
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     try:
         sock.connect(socket_path)
