@@ -70,7 +70,7 @@ def install_artifact(dep):
 def install_maven_artifact(artifact_spec):
     artifact = Artifact.from_mvn_str(artifact_spec)
     try:
-        install_artifact(artifact.get_rpm_str(compat=artifact.version))
+        install_artifact(artifact.get_rpm_str(compat_ver=artifact.version))
     except InstallationException:
         if not artifact.version:
             raise
