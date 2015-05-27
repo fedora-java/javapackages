@@ -151,8 +151,7 @@ class TestMavenReq(unittest.TestCase):
         self.assertNotEqual(stderr, '')
         lines = stderr.split('\n')
         self.assertEqual(True, len(lines) > 1)
-        self.assertEqual(lines[-5], 'org.codehaus.plexus:plexus-ant-factory:1.0 ' \
-                                     'required by org.apache.commons-lang:commons-lang')
+        self.assertEqual(lines[-5], "g:skipped:1.2 required by g:a1")
 
     # rhbz#1017701 comment 2
     @mavenreq(["aether/buildroot/usr/share/maven-metadata/require.xml"])
