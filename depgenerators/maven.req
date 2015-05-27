@@ -164,9 +164,7 @@ class TagBuilder(object):
                             .format(reqs=", ".join([x.get_mvn_str() for x in unresolvable])))
 
     def print_requires(self, metadata):
-        """
-        Print Requires from given metadata file
-        """
+        """Print Requires from given metadata file."""
 
         # dependencies most likely present in the buildroot (in the reactor),
         # but not marked for installation. Therefore requires cannot be
@@ -197,55 +195,43 @@ class TagBuilder(object):
                 skipped_but_required.append(dependency)
                 continue
 
-            # check if dependency is provided by any metadata file in buildroot
-            subpkg_dep, pkgver = dependency.is_provided_by(self.provided_artifacts)
-            if subpkg_dep:
-                # check if dependency isn't provided by same metadata file
-                if not dependency.is_provided_by(metadata.artifacts)[0]:
-                    # requires on subpackages are always versioned
-                    rpmstr = dependency.get_rpm_str(namespace=dependency.namespace,
-                                                    compat_ver=dependency.resolvedVersion,
-                                                    pkg_ver=pkgver)
-                    requires.add(rpmstr)
-            else:
-                rpmstr = dependency.get_rpm_str(namespace=dependency.namespace,
-                                                compat_ver=dependency.resolvedVersion)
-                requires.add(rpmstr)
+            self._generate_require(metadata, requires, dependency)
 
         if unknown_deps:
-            unknown_msg = "Following dependencies were not resolved and " \
-                          "requires cannot be generated. Either remove the " \
-                          "dependencies from pom.xml or add proper packages to " \
-                          "BuildRequires:\n"
-            for unknown in unknown_deps:
-                required_by = self._find_what_requires(unknown)
-                if required_by:
-                    unknown_msg += "{art} required by {req}\n".format(art=unknown,
-                                                                      req=required_by)
-                else:
-                    unknown_msg += "{art}\n".format(art=unknown)
-            raise Exception(unknown_msg)
+            self._handle_unknown_deps(unknown_deps)
 
         if skipped_but_required:
-            skipped_msg = "Following artifacts were built, " \
-                          "but are not being installed. However, other " \
-                          "artifacts require them:\n"
-            for skipped in skipped_but_required:
-                required_by = self._find_what_requires(skipped)
-                if required_by:
-                    skipped_msg += "{art} required by {req}\n".format(art=skipped,
-                                                                      req=required_by)
-                else:
-                    skipped_msg += "{art}\n".format(art=skipped)
-            skipped_msg += "\nEither package these artifacts or do not "\
-                           "build them. To package them call %mvn_package "\
-                           "in %prep.\n"
-            raise Exception(skipped_msg)
+            self._handle_skipped_but_required_deps(skipped_but_required)
 
         requires.update(self._generate_java_requires(metadata))
         requires = self._filter_requires(requires)
 
-        # process also OSGi requires from metadata (from properties)
+        self._get_osgi_requires(metadata, requires)
+
+        _log.info(", ".join(requires))
+
+        # print resulting requires!
+        print('\n'.join(requires))
+
+    def _generate_require(self, metadata, requires, dependency):
+        # check if dependency is provided by any metadata file in buildroot
+        subpkg_dep, pkgver = dependency.is_provided_by(self.provided_artifacts)
+        if subpkg_dep:
+            # check if dependency isn't provided by same metadata file
+            if not dependency.is_provided_by(metadata.artifacts)[0]:
+                # requires on subpackages are always versioned
+                rpmstr = dependency.get_rpm_str(namespace=dependency.namespace,
+                                                compat_ver=dependency.resolvedVersion,
+                                                pkg_ver=pkgver)
+                requires.add(rpmstr)
+        else:
+            rpmstr = dependency.get_rpm_str(namespace=dependency.namespace,
+                                            compat_ver=dependency.resolvedVersion)
+            requires.add(rpmstr)
+
+
+    def _get_osgi_requires(self, metadata, requires):
+        """Read OSGi requires from metadata properties."""
         osgi_reqs = metadata.get_osgi_requires()
         osgi_provs = metadata.get_osgi_provides()
         for req in osgi_reqs:
@@ -258,10 +244,35 @@ class TagBuilder(object):
                                                      namespace=prov.namespace))
                         break
 
-        _log.info(", ".join(requires))
+    def _handle_unknown_deps(self, unknown_deps):
+        unknown_msg = "Following dependencies were not resolved and " \
+                      "requires cannot be generated. Either remove the " \
+                      "dependencies from pom.xml or add proper packages to " \
+                      "BuildRequires:\n"
+        for unknown in unknown_deps:
+            required_by = self._find_what_requires(unknown)
+            if required_by:
+                unknown_msg += "{art} required by {req}\n".format(art=unknown,
+                                                                  req=required_by)
+            else:
+                unknown_msg += "{art}\n".format(art=unknown)
+        raise Exception(unknown_msg)
 
-        # print resulting requires!
-        print('\n'.join(requires))
+    def _handle_skipped_but_required_deps(self, skipped_but_required):
+        skipped_msg = "Following artifacts were built, " \
+                      "but are not being installed. However, other " \
+                      "artifacts require them:\n"
+        for skipped in skipped_but_required:
+            required_by = self._find_what_requires(skipped)
+            if required_by:
+                skipped_msg += "{art} required by {req}\n".format(art=skipped,
+                                                                  req=required_by)
+            else:
+                skipped_msg += "{art}\n".format(art=skipped)
+        skipped_msg += "\nEither package these artifacts or do not "\
+                       "build them. To package them call %mvn_package "\
+                       "in %prep.\n"
+        raise Exception(skipped_msg)
 
     def _generate_java_requires(self, metadata):
         requires = set()
