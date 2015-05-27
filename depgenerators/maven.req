@@ -167,14 +167,22 @@ class TagBuilder(object):
         """
         Print Requires from given metadata file
         """
+
+        # dependencies most likely present in the buildroot (in the reactor),
+        # but not marked for installation. Therefore requires cannot be
+        # generated on them.
         skipped_but_required = []
+
+        # dependencies on unresolvable artifacts
+        unknown_deps = []
+
+        # resulting requires
         requires = set()
 
         # always generate R on packages specified in config file
         always_req = self.config.get('always_generate', ())
         requires.update([x for x in always_req])
 
-        unknown_deps = []
         # check if dependencies on POM files are satisfiable
         if XMvnResolve.is_available():
             unknown_deps = self._check_pom_deps(metadata)
