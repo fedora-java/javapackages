@@ -53,7 +53,7 @@ _log = get_logger("maven.req")
 
 class TagBuilder(object):
     def __init__(self, filelist=None):
-        if filelist == None:
+        if filelist is None:
             filelist = sys.stdin
 
         paths = [line.rstrip() for line in filelist.readlines()]
@@ -75,7 +75,6 @@ class TagBuilder(object):
             if XMvnResolve.is_available():
                 if metadata.contains_only_poms():
                     self.print_pom_requires(metadata)
-
 
     def print_pom_requires(self, metadata):
         """
@@ -163,7 +162,6 @@ class TagBuilder(object):
         if unresolvable:
             raise Exception("Unable to generate requires on unresolvable artifacts: {reqs}"
                             .format(reqs=", ".join([x.get_mvn_str() for x in unresolvable])))
-
 
     def print_requires(self, metadata):
         """
@@ -294,7 +292,6 @@ class TagBuilder(object):
         major = int(version[0])
         minor = int(version[1])
         return "1:{0}.{1}".format(major, minor)
-
 
     def _filter_requires(self, requires):
         filters = self.config.get('requires_filter', [])
