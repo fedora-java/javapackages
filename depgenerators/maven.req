@@ -188,11 +188,11 @@ class TagBuilder(object):
         # process non-optional dependencies
         for dependency in list(set(x for x in metadata.get_required_artifacts()
                                    if not x.is_optional())):
-            if dependency.resolvedVersion == "UNKNOWN":
-                unknown_deps.append(dependency)
-                continue
             if dependency.is_skipped(self.skipped_artifacts):
                 skipped_but_required.append(dependency)
+                continue
+            if dependency.resolvedVersion == "UNKNOWN":
+                unknown_deps.append(dependency)
                 continue
 
             self._generate_require(metadata, requires, dependency)
