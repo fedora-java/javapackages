@@ -208,7 +208,7 @@ class TagBuilder(object):
         if unknown_deps:
             unknown_msg = "Following dependencies were not resolved and " \
                           "requires cannot be generated. Either remove the " \
-                          "dependency from pom.xml or add proper packages to " \
+                          "dependencies from pom.xml or add proper packages to " \
                           "BuildRequires:\n"
             for unknown in unknown_deps:
                 required_by = self._find_what_requires(unknown)
