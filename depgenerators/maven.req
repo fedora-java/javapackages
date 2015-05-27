@@ -195,6 +195,7 @@ class TagBuilder(object):
                 continue
             if dependency.is_skipped(self.skipped_artifacts):
                 skipped_but_required.append(dependency)
+                continue
 
             # check if dependency is provided by any metadata file in buildroot
             subpkg_dep, pkgver = dependency.is_provided_by(self.provided_artifacts)
