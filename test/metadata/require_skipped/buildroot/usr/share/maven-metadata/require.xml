@@ -11,7 +11,7 @@
                 <dependency>
                     <groupId>g</groupId>
                     <artifactId>skipped</artifactId>
-                    <requestedVersion>1.2</requestedVersion>
+                    <requestedVersion>UNKNOWN</requestedVersion>
                 </dependency>
                 <dependency>
                     <groupId>g</groupId>
