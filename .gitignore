@@ -17,3 +17,5 @@ doc/images/xmvn.svg
 
 test/.workdir/
 test/.script.py
+
+.vagrant/
