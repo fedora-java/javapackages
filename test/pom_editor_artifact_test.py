@@ -94,5 +94,12 @@ class TestPomChange(WorkdirTestCase):
         self.assertEqual(0, return_value, stderr)
         self.assertEqual('', report, report)
 
+    def test_keep_optional(self):
+        return_value, stderr, report = exec_pom_macro_simple(\
+                "%pom_change_dep commons-io: org.apache.commons-io:",
+                'optional.xml', 'keep_optional.xml')
+        self.assertEqual(0, return_value, stderr)
+        self.assertEqual('', report, report)
+
 if __name__ == '__main__':
     unittest.main()
