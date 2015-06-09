@@ -60,11 +60,6 @@ def MetaArtifact(specification, attributes=False, namespace=None, **defaults):
                 if value:
                     self[key] = value
 
-        def remove_items(self, fn):
-            for prop, val in six.iteritems(dict(self.values)):
-                if fn(val):
-                    del self.values[prop]
-
         def __getitem__(self, key):
             return self.values.get(key, '')
 
@@ -97,6 +92,20 @@ def MetaArtifact(specification, attributes=False, namespace=None, **defaults):
             xml.append('</{0}>'.format(node))
             return etree.fromstring('\n'.join(xml))
 
+        def merge_into_xml(self, element):
+            for key in parts:
+                value = self.values.get(key, defaults.get(key, ''))
+                if value:
+                    child = element.xpath('ns:' + key,
+                                          namespaces={'ns': namespace})
+                    if child:
+                        if value == '-':
+                            element.remove(child[0])
+                        else:
+                            child[0].text = value
+                    elif value != '-':
+                        element.append(element.makeelement(name=key, text=value))
+
         def get_xpath_condition(self):
             expr = "normalize-space(pom:{0})='{1}'"
             conditions = []
@@ -121,6 +130,14 @@ def MetaArtifact(specification, attributes=False, namespace=None, **defaults):
                     xml.append('{0}="{1}"'.format(key, value))
             return etree.fromstring('<{0} {1}>{2}</{0}>'
                                     .format(node, ' '.join(xml), extra))
+
+        def merge_into_xml(self, element):
+            for key in parts:
+                value = self.values.get(key, defaults.get(key, ''))
+                if value == '-':
+                    del element.attrib[key]
+                elif value:
+                    element.attrib[key] = value
 
         def get_xpath_condition(self):
             expr = "@{0}='{1}'"
@@ -260,15 +277,12 @@ class XmlFile(object):
             parent.insert(idx + i, element)
         self.reformat(parent, parent[idx: idx + items])
 
-    def replace_xml_content(self, parent, content, replace_attrib=False):
+    def replace_xml_content(self, parent, content):
         if hasattr(parent, 'is_attribute'):
             if parent.is_attribute:
                 parent.getparent().attrib[parent.attrname] = content.text
                 return
         parent[:] = content
-        if replace_attrib and hasattr(content, 'attrib'):
-            parent.attrib.clear()
-            parent.attrib.update(content.attrib.iteritems())
         parent.text = content.text
         self.reformat(parent, parent)
 
@@ -610,9 +624,7 @@ def pom_change_dep(old, new, pom=None, xml_string=''):
         for element in elements:
             new_artifact = pom.create_artifact().from_xml(element)
             new_artifact.update(pom.create_artifact().from_mvn_str(new))
-            new_artifact.remove_items(lambda x: x == '-')
-            new_xml = new_artifact.get_xml(extra=xml_string)
-            pom.replace_xml_content(element, new_xml, replace_attrib=True)
+            new_artifact.merge_into_xml(element)
     except PomQueryNoMatch:
         raise PomQueryNoMatch("Dependency '{0}' not found.".format(old))
 
