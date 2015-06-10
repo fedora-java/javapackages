@@ -5,10 +5,11 @@ import os
 import unittest
 import shutil
 from test_common import DIRPATH, mvn_depmap, call_script, prepare_metadata
-
+from test_rpmbuild import Package
 
 from lxml import etree
 from xml_compare import compare_lxml_etree
+
 
 class TestMavenDepmap(unittest.TestCase):
 
@@ -327,6 +328,13 @@ class TestMavenDepmap(unittest.TestCase):
         report = self.check_result(inspect.currentframe().f_code.co_name,
                                            depmap)
         self.assertEqual(report, '', report)
+
+    def test_missing_jar(self):
+        p = Package('test')
+        p.append_to_prep("%add_maven_depmap g:a:1 this/file/doesnt/exist.jar")
+        _, stderr, return_value = p.run_prep()
+        self.assertEqual(1, return_value, 'bad return value')
+        self.assertIn('file not found', stderr)
 
 if __name__ == '__main__':
     unittest.main()
