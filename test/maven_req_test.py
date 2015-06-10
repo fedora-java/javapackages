@@ -152,7 +152,7 @@ class TestMavenReq(unittest.TestCase):
         lines = stderr.split('\n')
         self.assertEqual(True, len(lines) > 1)
         self.assertEqual("g:skipped:UNKNOWN required by g:a1", lines[-5])
-        self.assertIn("%mvn_package", lines[-3])
+        assertIn(self, "%mvn_package", lines[-3])
 
     # rhbz#1017701 comment 2
     @mavenreq(["aether/buildroot/usr/share/maven-metadata/require.xml"])
