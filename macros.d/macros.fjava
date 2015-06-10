@@ -181,12 +181,17 @@ set -e \
 %endif \
 _filelist=".mfiles%{-f*:-%{-f*}}" \
 install -dm 755 %{buildroot}%{_datadir}/maven-metadata \
+_jbase= \
+_jpath= \
 for _dir in %{_jnidir} %{_javadir}; do \
     if [ -f %{buildroot}$_dir/$_jarpart ]; then \
 	_jbase="%{buildroot}$_dir" \
 	_jpath="$_jbase/$_jarpart" \
     fi \
 done \
+%if %# != 1 \
+    [ -z "$_jpath" ] && (echo "%0 error: $_jarpart - file not found" 1>&2; exit 1) \
+%endif \
 %{pyinterpreter} %{javadir}-utils/maven_depmap.py %{-a} %{-v*:-r %{-v*}} \\\
                  -n "%{?scl}" \\\
                  --pom-base %{buildroot}%{_mavenpomdir} \\\
