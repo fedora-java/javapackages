@@ -4,7 +4,8 @@ import six
 import os
 import unittest
 import shutil
-from test_common import DIRPATH, mvn_depmap, call_script, prepare_metadata
+from test_common import (DIRPATH, mvn_depmap, call_script,
+                         prepare_metadata, assertIn)
 from test_rpmbuild import Package
 
 from lxml import etree
@@ -334,7 +335,7 @@ class TestMavenDepmap(unittest.TestCase):
         p.append_to_prep("%add_maven_depmap g:a:1 this/file/doesnt/exist.jar")
         _, stderr, return_value = p.run_prep()
         self.assertEqual(1, return_value, 'bad return value')
-        self.assertIn('file not found', stderr)
+        assertIn(self, 'file not found', stderr)
 
 if __name__ == '__main__':
     unittest.main()
