@@ -8,7 +8,6 @@
     <dependency>
       <groupId>commons-nio</groupId>
       <artifactId>commons-nio</artifactId>
-      <version>any</version>
-    </dependency>
+    <version>any</version></dependency>
   </dependencies>
 </project>
