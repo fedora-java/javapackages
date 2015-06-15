@@ -582,5 +582,13 @@ class PomMacrosTest(unittest.TestCase):
         self.assertEqual(returncode, 1, stderr)
         assertIn(self, "Couldn't locate ", stderr)
 
+    @exec_macro("pom_change_dep : commons-nio:commons-nio", "pom_change_dep_nover.xml")
+    def test_change_dep_nover(self, stdin, stderr, returncode, pom_path):
+        self.assertEqual(returncode, 0, stderr)
+
+        got, want = get_result_literally(pom_path)
+        self.assertEqual(got, want)
+
+
 if __name__ == '__main__':
     unittest.main()
