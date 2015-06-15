@@ -188,8 +188,6 @@ class TagBuilder(object):
         # process non-optional dependencies
         for dependency in list(set(x for x in metadata.get_required_artifacts()
                                    if not x.is_optional())):
-            # TODO: optional dependencies can also be skipped/unresolvable, is
-            # it a problem?
             if dependency.is_skipped(self.skipped_artifacts):
                 skipped_but_required.append(dependency)
                 continue
