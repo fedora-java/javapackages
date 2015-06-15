@@ -104,7 +104,9 @@ def MetaArtifact(specification, attributes=False, namespace=None, **defaults):
                         else:
                             child[0].text = value
                     elif value != '-':
-                        element.append(element.makeelement(name=key, text=value))
+                        child = element.makeelement(key)
+                        child.text = value
+                        element.append(child)
 
         def get_xpath_condition(self):
             expr = "normalize-space(pom:{0})='{1}'"
