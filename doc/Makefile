@@ -20,4 +20,4 @@ upload-fast:
 	scp -r doc fedorahosted.org:javapackages
 
 clean:
-	rm -f *.html images/*.svg
+	rm -Rf *.html images/*.svg doc/
