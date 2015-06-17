@@ -4,10 +4,10 @@ few useful tools which can be used during packaging/development.
 
 [[openjdk]]
 === Java implementation in Fedora
-Fedora ships with reference implementation of Java Standard Edition 7
-called http://openjdk.java.net/OpenJDK[OpenJDK]. OpenJDK provides Java
-Runtime Environment for Java applications and set of development tools
-for Java developers.
+Fedora ships with an open-source reference implementation of Java
+Standard Edition 8 called http://openjdk.java.net/[OpenJDK]. OpenJDK
+provides Java Runtime Environment for Java applications and set of
+development tools for Java developers.
 
 From users point of view, `java` command is probably most interesting.
 It's a Java application launcher which spawns Java Virtual Machine
