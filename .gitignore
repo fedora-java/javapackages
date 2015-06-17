@@ -14,6 +14,7 @@ python/javapackages.egg-info/
 python/javapackages/version.py
 test/nosetests.xml
 doc/images/xmvn.svg
+doc/doc
 
 test/.workdir/
 test/.script.py
