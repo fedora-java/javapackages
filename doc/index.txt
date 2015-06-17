@@ -1,7 +1,10 @@
 Java Packaging HOWTO
 ====================
 
-v4.6.0, 2015-06-15
+v
+include::../VERSION[]
+
+{localdate}
 
 include::preamble.txt[]
 
