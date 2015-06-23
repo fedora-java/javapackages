@@ -42,6 +42,7 @@ class Cache(object):
         self._cachedir = rpmconf.cachedir
         self._rpm_pid = rpmconf.rpm_pid
         self._scl = rpmconf.scl
+        self._fresh = False
 
     def _process_buildroot(self):
         cache = {}
@@ -84,6 +85,11 @@ class Cache(object):
             content = (self._rpm_pid, cache)
             pickle.dump(content, cachefile)
             cachefile.close()
+            self._fresh = True
         except IOError:
             return None
         return cache
+
+    def is_fresh(self):
+        """Returns True if the cache was just created, False otherwise."""
+        return self._fresh
