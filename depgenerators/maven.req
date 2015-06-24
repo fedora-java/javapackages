@@ -40,7 +40,9 @@ import traceback
 from javapackages.common.config import get_config
 from javapackages.common.util import (kill_parent_process,
                                       init_rpmgen,
-                                      get_logger)
+                                      get_logger,
+                                      get_buildroot_files,
+                                      execute_command)
 from javapackages.cache.metadata import MetadataCache
 from javapackages.maven.pom import POM
 from javapackages.maven.dependency import Dependency
@@ -65,6 +67,27 @@ class TagBuilder(object):
         self.skipped_artifacts = cache.get_skipped_artifacts()
         self.provided_osgi = cache.get_provided_osgi()
         self.metadata_dir = os.path.dirname(paths[0])
+
+        if cache.is_fresh():
+            detector = "/usr/bin/bundling-detector-java"
+            if os.path.exists(detector) and os.access(detector, os.X_OK):
+                check_files = get_buildroot_files(regexp="jar$")
+                if len(check_files):
+                    check = " ".join(["'{f}'".format(f=x)
+                                      for x in check_files])
+                    # TODO: do not hardcode these paths
+                    check_against = "/usr/share/java /usr/lib/java"
+                    cmd = "{c} -check {cf} -checkAgainst {ca}".format(c=detector,
+                                                                      cf=check,
+                                                                      ca=check_against)
+                    _log.info("Running bundling detection tool...")
+                    rc, stdout, stderr = execute_command(cmd)
+                    if stderr:
+                        _log.warn(stderr)
+                    if stdout:
+                        _log.info("===== bundling detection report =====")
+                        _log.info(stdout)
+                        _log.info("===== bundling detection report =====")
 
         for path in paths:
             metadata = cache.get_metadata_for_path(path)
