@@ -91,5 +91,8 @@ class Cache(object):
         return cache
 
     def is_fresh(self):
-        """Returns True if the cache was just created, False otherwise."""
+        """
+        Returns True if the cache was created during creation of this object,
+        False otherwise.
+        """
         return self._fresh
