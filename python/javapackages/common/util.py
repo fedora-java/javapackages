@@ -37,8 +37,10 @@ import sys
 import six
 import subprocess
 import logging
+import re
 from optparse import OptionParser
 from javapackages.common.exception import JavaPackagesToolsException
+from javapackages.common.config import get_buildroot
 
 
 def kill_parent_process(rpmconf):
@@ -116,3 +118,30 @@ def get_logger(name):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
+
+
+def get_buildroot_files(regexp=None,
+                        inside_buildroot_only=True,
+                        exclude_broken_symlinks=True,
+                        buildroot_path=None):
+    if not buildroot_path:
+        buildroot_path = get_buildroot()
+    files = set()
+    for dirpath, dirnames, filenames in os.walk(buildroot_path):
+        for filename in filenames:
+            f = os.path.realpath(os.path.join(dirpath, filename))
+
+            if inside_buildroot_only:
+                if not f.startswith(buildroot_path):
+                    continue
+
+            if exclude_broken_symlinks:
+                if not os.path.exists(f):
+                    continue
+
+            if regexp:
+                match = re.search(regexp, f)
+                if not match:
+                    continue
+            files.add(f)
+    return files
