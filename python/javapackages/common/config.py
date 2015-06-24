@@ -35,22 +35,31 @@ import os
 import json
 from javapackages.common.exception import JavaPackagesToolsException
 
+# name of the cache file for metadata
 metadata_cache_f = "metadata.cache"
+# name of the cache file for OSGi stuff
 osgi_cache_f = "osgi.cache"
 
 
 def get_config():
+    """Return dictionary representing configuration file,
+    None if no valid configuration was found.
+
+    Paths specified in JAVACONFDIRS environment variable are searched for
+    configuration file named 'javapackages-config.json'. Only first successfully
+    read configuration file is taken into account, rest is ignored. Paths in
+    JAVACONFDIRS are expected to be separated by 'os.pathsep'.
+
+    If the JAVACONFDIRS is not defined, '/etc/java/' is assumed.
     """
-    Returns list of dictionaries which represent configuration files.
-    """
-    if 'JAVACONFDIRS' in os.environ:
-        config_paths = os.environ['JAVACONFDIRS'].split(os.pathsep)
+    if "JAVACONFDIRS" in os.environ:
+        config_paths = os.environ["JAVACONFDIRS"].split(os.pathsep)
     else:
-        config_paths = ['/etc/java/']
+        config_paths = ["/etc/java/"]
 
     for config_path in config_paths:
         try:
-            file_path = os.path.join(config_path, 'javapackages-config.json')
+            file_path = os.path.join(config_path, "javapackages-config.json")
             with open(file_path) as config_file:
                 return json.load(config_file)
         except (OSError, IOError):
@@ -60,8 +69,12 @@ def get_config():
 
 
 def get_buildroot():
+    """Return buildroot path, raise JavaPackagesToolsException if the path
+    couldn't be determined.
+    """
     try:
-        buildroot = os.environ['RPM_BUILD_ROOT']
+        buildroot = os.environ["RPM_BUILD_ROOT"]
     except KeyError:
-        raise JavaPackagesToolsException("RPM_BUILD_ROOT environment variable is not set")
+        raise JavaPackagesToolsException("RPM_BUILD_ROOT environment "
+                                         "variable is not set")
     return os.path.abspath(buildroot)
