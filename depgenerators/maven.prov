@@ -46,7 +46,7 @@ _log = get_logger("maven.prov")
 
 class TagBuilder:
     def __init__ (self, filelist=None):
-        if filelist == None:
+        if filelist is None:
             filelist = sys.stdin
         paths = [line.rstrip() for line in filelist.readlines()]
         _log.info("input: {fl}".format(fl=paths))

@@ -45,7 +45,7 @@ _log = get_logger("osgi.req")
 class TagBuilder(object):
 
     def __init__(self, filelist=None):
-        if filelist == None:
+        if filelist is None:
             filelist = sys.stdin
         paths = [x.rstrip() for x in filelist.readlines()]
         _log.info("input: {fl}".format(fl=paths))
