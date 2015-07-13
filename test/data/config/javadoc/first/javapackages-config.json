@@ -1,7 +1,7 @@
 {
     "javadoc.req": {
         "always_generate": [
-            "SCL-jpackage-utils"
+            "SCL-javapackages-tools"
         ]
     }
 }
