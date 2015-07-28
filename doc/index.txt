@@ -42,6 +42,10 @@ include::ant.txt[]
 == Maven
 include::maven.txt[]
 
+[[gradle]]
+== Gradle
+include::gradle.txt[]
+
 == Common Errors
 include::common_errors.txt[]
 

@@ -1,0 +1,81 @@
+[quote,,from Gradle package description]
+______
+Gradle combines the power and flexibility of Ant with the dependency
+management and conventions of Maven into a more effective way to
+build.  Powered by a Groovy DSL and packed with innovation, Gradle
+provides a declarative way to describe all kinds of builds through
+sensible defaults.  Gradle is quickly becoming the build system of
+choice for many open source projects, leading edge enterprises and
+legacy automation challenges.
+______
+
+Gradle is quickly gaining popularity as flexible Java build system,
+which can be used in situations requiring writing custom build logic.
+Flexibility means that Gradle build scripts can differ significantly
+across different projects and there is no universal way of packaging
+Gradle projects.  However, in most common situations the following
+steps can are necessary:
+
+1. Add build-dependency on `gradle-local`
+2. In `%build` section of the spec file call `gradle-local` script
+   with `--offline` switch and appropriate build targets as arguments
+3. Mark generated artifacts using `%mvn_artifact` macro
+4. In `%install` section, use `%mvn_install` macro with `-J` argument
+   pointing to directory containing generated Javadoc documentation
+5. Use generated file `.mfiles` lists to populate `%files` section
+   with `-f` switch
+
+.Common spec file sections
+[source,spec]
+--------
+BuildRequires:  gradle-local
+...
+
+%build
+gradle-local -s --offline ...
+%mvn_artifact ...
+
+%install
+%mvn_install -J ...
+
+%files -f .mfiles
+
+%files javadoc -f .mfiles-javadoc
+-------
+
+
+`gradle-local` is a wrapper script for `gradle` command which enables
+so called "local mode" of artifact resolution - artifacts are first
+resolved from local system before trying remote repositories (system
+Maven repositories are used through XMvn).
+
+In most simple cases calling `gradle-local` should be enough to
+resolve all dependencies, but sometimes additional patching of build
+script may be necessary.  The following example patch adds XMvn
+resolver to make Gradle correctly resolve dependencies of build script
+itself.
+
+.Patch enabling local mode
+[source,patch]
+--------
+diff --git a/buildSrc/build.gradle b/buildSrc/build.gradle
+index a3cb553..50dd2a4 100644
+--- a/buildSrc/build.gradle
++++ b/buildSrc/build.gradle
+@@ -21,6 +21,7 @@ apply plugin: 'idea'
+ apply plugin: 'eclipse'
+ 
+ repositories {
++    xmvn()
+     maven { url 'https://repo.gradle.org/gradle/libs' }
+     mavenCentral()
+ }
+-------
+
+
+Once Gradle build completes, all relevant artifacts must be marked
+using `%mvn_artifact` macro for later installation.  `%mvn_install`
+automatically handles installation of all marked artifacts and
+generates of `.mfiles` file lists, which are used to define package
+contents through `%file` sections.
+
