@@ -32,12 +32,6 @@
 """
 Module for handling, manipulating and querying various files related to Java
 packaging in Linux distributions.
-
-Two main file types handled are:
-  - Apache Maven pom.xml files
-  - Depmap files used for mapping between Maven artifacts and local files
-
-See pom and depmap modules for more information
 """
 
 
