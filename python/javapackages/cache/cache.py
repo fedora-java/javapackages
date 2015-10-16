@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014, Red Hat, Inc.
+# Copyright (c) 2015, Red Hat, Inc.
 #
 # All rights reserved.
 #
@@ -43,6 +43,7 @@ class Cache(object):
         self._rpm_pid = rpmconf.rpm_pid
         self._scl = rpmconf.scl
         self._fresh = False
+        self._config_name = "default_cache"
 
     def _process_buildroot(self):
         cache = {}

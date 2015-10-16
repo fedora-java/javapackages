@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014, Red Hat, Inc.
+# Copyright (c) 2015, Red Hat, Inc.
 #
 # All rights reserved.
 #
@@ -114,9 +114,9 @@ class AbstractArtifact(object):
         members = self.__get_members()
 
         for key in members:
-            if (key == "extension" and members[key] == "jar"
-               and hasattr(self, "_default_extension")
-               and getattr(self, "_default_extension") is True):
+            if (key == "extension" and members[key] == "jar" and
+               hasattr(self, "_default_extension") and
+               getattr(self, "_default_extension") is True):
                 continue
             if members[key]:
                 item = SubElement(root, key)
@@ -154,7 +154,8 @@ class AbstractArtifact(object):
                     # for "scope":
                     # copy value from parent artifact only if this object
                     # contains default/implicit value
-                    if (hasattr(self, "_default_" + member) and
+                    if (member == "scope" and
+                       hasattr(self, "_default_" + member) and
                        getattr(self, "_default_" + member)):
                         setattr(self, member, getattr(artifact, member))
                         # if the copied value was not a default value in parent,
@@ -187,16 +188,17 @@ class AbstractArtifact(object):
     def interpolate(self, properties):
         leftovers = []
         for member in self.__dict__:
-            if (not member.startswith('_')
-                and getattr(self, member)
-                and isinstance(getattr(self, member), six.string_types)):
+            if (not member.startswith('_') and
+               getattr(self, member) and
+               isinstance(getattr(self, member), six.string_types)):
                     curr_value = getattr(self, member)
                     prog = re.compile("\$\{([^}]+)\}")
                     props = prog.findall(curr_value)
                     for key in props:
                         try:
                             prop_value = properties[key]
-                            curr_value = curr_value.replace("${{{prop}}}".format(prop=key), prop_value)
+                            curr_value = curr_value.replace("${{{prop}}}"
+                                                            .format(prop=key), prop_value)
                             setattr(self, member, curr_value)
                         except KeyError:
                             leftovers.append(key)
@@ -269,8 +271,8 @@ class Artifact(AbstractArtifact):
     @classmethod
     def merge_artifacts(cls, dominant, recessive):
         """
-        Merge two artifacts into one. Information missing in dominant artifact will
-        be copied from recessive artifact. Returns new merged artifact
+        Merge two artifacts into one. Information missing in dominant artifact
+        will be copied from recessive artifact. Returns new merged artifact.
         """
         ret = cls(dominant.groupId, dominant.artifactId, dominant.extension,
                   dominant.classifier, dominant.version)
@@ -280,7 +282,8 @@ class Artifact(AbstractArtifact):
                 setattr(ret, key, getattr(recessive, key))
         return ret
 
-    def validate(self, allow_empty=True, allow_wildcards=True, allow_backref=True):
+    def validate(self, allow_empty=True, allow_wildcards=True,
+                 allow_backref=True):
         """
         Function to validate current state of artifact with regards to
         wildcards, empty parts and backreference usage
@@ -318,11 +321,11 @@ class Artifact(AbstractArtifact):
         within pom.xml or a dependency map.
         """
 
-        parts = {'groupId':'',
-                 'artifactId':'',
-                 'extension':'',
-                 'classifier':'',
-                 'version':''}
+        parts = {'groupId': '',
+                 'artifactId': '',
+                 'extension': '',
+                 'classifier': '',
+                 'version': ''}
 
         parts = POMReader.find_parts(xmlnode, parts)
 

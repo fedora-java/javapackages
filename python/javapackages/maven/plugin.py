@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014, Red Hat, Inc.
+# Copyright (c) 2015, Red Hat, Inc.
 #
 # All rights reserved.
 #
@@ -31,10 +31,9 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
-import sys
-
 from javapackages.maven.dependency import Dependency
-from javapackages.maven.artifact import AbstractArtifact, ArtifactFormatException
+from javapackages.maven.artifact import (AbstractArtifact,
+                                         ArtifactFormatException)
 import javapackages.maven.pomreader as POMReader
 
 from lxml.etree import Element
@@ -52,15 +51,15 @@ class Plugin(AbstractArtifact):
         """
         Return XML Element node representation of the Plugin
         """
-        root = AbstractArtifact.get_xml_element(self, root)
+        xml_root = AbstractArtifact.get_xml_element(self, root)
 
         if self.dependencies:
             dep_root = Element("dependencies")
             for d in self.dependencies:
                 dep_root.insert(len(dep_root), d.get_xml_element())
-            root.insert(len(root), dep_root)
+            xml_root.insert(len(root), dep_root)
 
-        return root
+        return xml_root
 
     @classmethod
     def from_xml_element(cls, xmlnode):
@@ -84,7 +83,10 @@ class Plugin(AbstractArtifact):
         for d in [Dependency.from_xml_element(x) for x in depnodes]:
             deps.append(d)
 
-        return cls(parts['groupId'], parts['artifactId'], parts['version'], deps)
+        return cls(parts['groupId'],
+                   parts['artifactId'],
+                   parts['version'],
+                   deps)
 
     @classmethod
     def from_mvn_str(cls, mvnstr):

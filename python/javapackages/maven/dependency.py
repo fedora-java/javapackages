@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014, Red Hat, Inc.
+# Copyright (c) 2015, Red Hat, Inc.
 #
 # All rights reserved.
 #
@@ -39,9 +39,10 @@ from lxml.etree import Element, SubElement
 
 
 class Dependency(AbstractArtifact):
+    """Maven dependency."""
 
     def __init__(self, groupId, artifactId, extension="", classifier="",
-                 version="", scope="", optional="", exclusions=set()):
+                 version="", scope="", optional="", exclusions=None):
         # groupId and artifactId are mandatory
         if groupId is not None:
             self.groupId = groupId.strip()
@@ -59,14 +60,10 @@ class Dependency(AbstractArtifact):
         self.version = ""
         self.scope = "compile"
         self.optional = "false"
-        self.exclusions = set()
+        self.exclusions = []
 
         self._default_scope = True
         self._default_optional = True
-
-        # raw values
-        # TODO: probably not needed anymore
-        self._raw_scope = scope
 
         if extension:
             self.extension = extension.strip()
@@ -79,37 +76,35 @@ class Dependency(AbstractArtifact):
             self._default_scope = False
         if optional is not None:
             self.optional = optional.strip()
+            self._default_optional = False
         if exclusions:
             self.exclusions = exclusions
 
     def is_optional(self):
+        """Return True if the dependency is optional, False otherwise."""
         if self.optional and self.optional.lower() == "true":
             return True
         return False
 
-    def get_raw_scope(self):
-        """Return original value for 'scope' element."""
-        return self._raw_scope
-
     def get_xml_element(self, root="dependency"):
         """Return XML Element node representation of this dependency."""
-        root = AbstractArtifact.get_xml_element(self, root)
+        xml_root = AbstractArtifact.get_xml_element(self, root)
 
-        if self._raw_scope:
-            item = SubElement(root, "scope")
-            item.text = self._raw_scope
+        if not self._default_scope:
+            item = SubElement(xml_root, "scope")
+            item.text = self.scope
 
-        if self._raw_optional is not None:
-            item = SubElement(root, "optional")
-            item.text = self._raw_optional
+        if not self._default_optional:
+            item = SubElement(xml_root, "optional")
+            item.text = self.optional
 
         if self.exclusions:
             exc_root = Element("exclusions")
-            for e in self.exclusions:
-                exc_root.insert(len(exc_root), e.get_xml_element())
-            root.insert(len(root), exc_root)
+            for exc in self.exclusions:
+                exc_root.insert(len(exc_root), exc.get_xml_element())
+            xml_root.insert(len(root), exc_root)
 
-        return root
+        return xml_root
 
     @classmethod
     def from_xml_element(cls, xmlnode):
@@ -118,30 +113,30 @@ class Dependency(AbstractArtifact):
         within pom.xml.
         """
 
-        parts = {'groupId': '',
-                 'artifactId': '',
-                 'type': '',
-                 'classifier': '',
-                 'version': '',
-                 'scope': '',
-                 'optional': ''}
+        parts = {"groupId": "",
+                 "artifactId": "",
+                 "type": "",
+                 "classifier": "",
+                 "version": "",
+                 "scope": "",
+                 "optional": ""}
 
         parts = POMReader.find_raw_parts(xmlnode, parts)
 
         # exclusions
         excnodes = xmlnode.findall("{*}exclusions/{*}exclusion")
 
-        exclusions = set()
-        for e in [Exclusion.from_xml_element(x) for x in excnodes]:
-            exclusions.add(e)
+        exclusions = []
+        for exc in [Exclusion.from_xml_element(x) for x in excnodes]:
+            exclusions.append(exc)
 
-        return cls(parts['groupId'],
-                   parts['artifactId'],
-                   extension=parts['type'],
-                   classifier=parts['classifier'],
-                   version=parts['version'],
-                   scope=parts['scope'],
-                   optional=parts['optional'],
+        return cls(parts["groupId"],
+                   parts["artifactId"],
+                   extension=parts["type"],
+                   classifier=parts["classifier"],
+                   version=parts["version"],
+                   scope=parts["scope"],
+                   optional=parts["optional"],
                    exclusions=exclusions)
 
     @classmethod
@@ -154,9 +149,9 @@ class Dependency(AbstractArtifact):
 
         Where last part is always considered to be version unless empty.
         """
-        p = cls.get_parts_from_mvn_str(mvnstr)
-        return cls(p['groupId'],
-                   p['artifactId'],
-                   extension=p['extension'],
-                   classifier=p['classifier'],
-                   version=p['version'])
+        parts = cls.get_parts_from_mvn_str(mvnstr)
+        return cls(parts['groupId'],
+                   parts['artifactId'],
+                   extension=parts['extension'],
+                   classifier=parts['classifier'],
+                   version=parts['version'])
