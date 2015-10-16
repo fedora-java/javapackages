@@ -13,8 +13,6 @@ python/build/
 python/javapackages.egg-info/
 python/javapackages/version.py
 test/nosetests.xml
-test/coverage.xml
-test/.coverage
 doc/images/xmvn.svg
 doc/doc
 

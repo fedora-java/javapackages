@@ -45,7 +45,6 @@ if __name__ == "__main__":
     # generate xunit report, if nose version is at least 1.x.x
     if nose.__versioninfo__[0] > 0:
         args.append("--with-xunit")
-        args.append("--with-xcoverage")
 
     if len(exclude) > 1:
         args += exclude
