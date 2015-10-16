@@ -31,8 +31,6 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
-import sys
-
 from javapackages.maven.artifact import AbstractArtifact, ArtifactFormatException
 import javapackages.maven.pomreader as POMReader
 

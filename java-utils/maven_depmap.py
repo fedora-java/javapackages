@@ -40,7 +40,6 @@ from optparse import OptionParser
 import os
 import shutil
 import sys
-import gzip
 
 from os.path import basename, dirname
 import zipfile
@@ -52,7 +51,6 @@ from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.alias import MetadataAlias
 from javapackages.metadata.metadata import Metadata
 
-import javapackages.common.util as util
 from javapackages.common.exception import JavaPackagesToolsException
 
 
@@ -241,8 +239,6 @@ def _main():
 
     if len(args) == 3:
         jar_path = args[2].strip()
-        local = None
-        fragment = None
         if ':' in pom_path:
             pom_str = pom_path.rsplit('/')[-1]
             artifact = MetadataArtifact.from_mvn_str(pom_str)

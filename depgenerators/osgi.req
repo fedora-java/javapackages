@@ -32,10 +32,8 @@
 #          Michal Srb <msrb@redhat.com>
 
 import sys
-import pickle
 import os
 import traceback
-import logging
 from javapackages.cache.osgi import OSGiCache
 from javapackages.common.util import kill_parent_process, init_rpmgen, get_logger
 
