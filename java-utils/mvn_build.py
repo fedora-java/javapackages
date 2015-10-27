@@ -102,7 +102,7 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
     xc = XMvnConfig()
 
-    if gradle:
+    if options.gradle:
         base_goal = "build"
         mvn_args = ["gradle-local", "--stacktrace", "--no-daemon"]
     else:
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     if options.force:
         mvn_args.append("-Dmaven.test.skip=true")
         xc.add_custom_option("buildSettings/skipTests", "true")
-        if gradle:
+        if options.gradle:
             base_goal = "assemble"
         else:
             base_goal = "package"
@@ -143,19 +143,19 @@ if __name__ == "__main__":
     mvn_args.append(base_goal)
 
     if not options.skip_install:
-        if gradle:
+        if options.gradle:
             mvn_args.append("xmvnInstall")
         else:
             mvn_args.append("org.fedoraproject.xmvn:xmvn-mojo:install")
 
     if not options.skip_javadoc:
-        if gradle:
+        if options.gradle:
             # Automatic javadoc generation for Gradle is not yet implemented in XMvn
             pass
         else:
             mvn_args.append("org.apache.maven.plugins:maven-javadoc-plugin:aggregate")
 
-    if not gradle:
+    if not options.gradle:
         # Build dependency generation for Gradle is not yet implemented in XMvn
         mvn_args.append("org.fedoraproject.xmvn:xmvn-mojo:builddep")
 
