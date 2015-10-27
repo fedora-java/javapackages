@@ -1,1 +1,1 @@
---batch-mode --offline -X -Dorg.slf4j.simpleLogger.log.org.fedoraproject.xmvn=debug -Dmaven.test.skip=true package org.fedoraproject.xmvn:xmvn-mojo:builddep
+--errors --batch-mode --offline --debug -Dorg.slf4j.simpleLogger.log.org.fedoraproject.xmvn=debug -Dmaven.test.skip=true package org.fedoraproject.xmvn:xmvn-mojo:builddep
