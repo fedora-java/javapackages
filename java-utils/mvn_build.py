@@ -104,10 +104,10 @@ if __name__ == "__main__":
 
     if options.gradle:
         base_goal = "build"
-        mvn_args = ["gradle-local", "--stacktrace", "--no-daemon"]
+        mvn_args = ["gradle-local", "--no-daemon"]
     else:
         base_goal = "verify"
-        mvn_args = ["xmvn", "--errors", "--batch-mode"]
+        mvn_args = ["xmvn", "--batch-mode"]
 
     if not options.bootstrap:
         mvn_args.append("--offline")

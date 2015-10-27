@@ -1,1 +1,1 @@
---errors --batch-mode --offline verify org.fedoraproject.xmvn:xmvn-mojo:builddep
+--batch-mode --offline verify org.fedoraproject.xmvn:xmvn-mojo:builddep
