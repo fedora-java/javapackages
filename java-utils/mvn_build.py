@@ -81,6 +81,9 @@ if __name__ == "__main__":
                       action="callback",
                       callback=goal_callback,
                       help="Run Maven goals after default XMvn goals.")
+    parser.add_option("--gradle",
+                      action="store_true",
+                      help="Invoke Gradle instead of Maven.")
     parser.add_option("-i", "--skip-install",
                       action="store_true",
                       help="Skip artifact installation.")
@@ -99,8 +102,12 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
     xc = XMvnConfig()
 
-    base_goal = "verify"
-    mvn_args = ["xmvn", "--batch-mode"]
+    if gradle:
+        base_goal = "build"
+        mvn_args = ["gradle-local", "--no-daemon"]
+    else:
+        base_goal = "verify"
+        mvn_args = ["xmvn", "--batch-mode"]
 
     if not options.bootstrap:
         mvn_args.append("--offline")
@@ -109,7 +116,7 @@ if __name__ == "__main__":
         mvn_args.append("-Dxmvn.compat=20-rpmbuild-raw")
 
     if options.debug:
-        mvn_args.append("-X")
+        mvn_args.append("--debug")
 
     if options.xmvn_debug or options.debug:
         mvn_args.append("-Dorg.slf4j.simpleLogger.log.org.fedoraproject.xmvn=debug")
@@ -117,7 +124,10 @@ if __name__ == "__main__":
     if options.force:
         mvn_args.append("-Dmaven.test.skip=true")
         xc.add_custom_option("buildSettings/skipTests", "true")
-        base_goal = "package"
+        if gradle:
+            base_goal = "assemble"
+        else:
+            base_goal = "package"
 
     if mock_socket and os.path.exists(mock_socket):
         interpreter = sys.executable
@@ -133,12 +143,21 @@ if __name__ == "__main__":
     mvn_args.append(base_goal)
 
     if not options.skip_install:
-        mvn_args.append("org.fedoraproject.xmvn:xmvn-mojo:install")
+        if gradle:
+            mvn_args.append("xmvnInstall")
+        else:
+            mvn_args.append("org.fedoraproject.xmvn:xmvn-mojo:install")
 
     if not options.skip_javadoc:
-        mvn_args.append("org.apache.maven.plugins:maven-javadoc-plugin:aggregate")
+        if gradle:
+            # Automatic javadoc generation for Gradle is not yet implemented in XMvn
+            pass
+        else:
+            mvn_args.append("org.apache.maven.plugins:maven-javadoc-plugin:aggregate")
 
-    mvn_args.append("org.fedoraproject.xmvn:xmvn-mojo:builddep")
+    if not gradle:
+        # Build dependency generation for Gradle is not yet implemented in XMvn
+        mvn_args.append("org.fedoraproject.xmvn:xmvn-mojo:builddep")
 
     if options.goal_after:
         mvn_args.extend(options.goal_after)

@@ -134,6 +134,18 @@
 %mvn_build %{pyinterpreter} %{javadir}-utils/mvn_build.py %{?xmvn_bootstrap: -b} %{?_without_javadoc: -j $(> .mfiles-javadoc)}%{?_without_tests: -f}
 
 
+# %gradle_build - build Gradle project
+#
+# Usage: %mvn_build [options]
+#
+# This macro causes Gradle project to be built (usually compiled and
+# packaged). It is intended to be placed in %build section of spec file.
+#
+# For summary of accepted options execute `mvn-build --help` command.
+#
+%gradle_build %{pyinterpreter} %{javadir}-utils/mvn_build.py --gradle %{?xmvn_bootstrap: -b} %{?_without_javadoc: -j $(> .mfiles-javadoc)}%{?_without_tests: -f}
+
+
 # %mvn_install - install Maven project
 #
 # Usage: %mvn_install
