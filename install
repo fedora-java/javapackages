@@ -165,8 +165,6 @@ inst_data etc/javapackages-metadata.xml "${datadir}/maven-metadata"
 
 inst_data configs/configuration.xml "${m2home}"
 
-link "${m2home}/configuration.xml" "${m2home}/configuration-21.xml"
-
 inst_config etc/javapackages-config.json "${javaconfdir}"
 
 exec >files-local
