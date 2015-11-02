@@ -72,7 +72,6 @@ inst_doc() {
 
 exec >files-common
 
-dir "${datadir}/maven-effective-poms"
 dir "${javaconfdir}"
 dir "${javaconfdir}/security"
 dir "${javaconfdir}/security/security.d"
