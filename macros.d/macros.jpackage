@@ -105,19 +105,6 @@
 
 
 #
-# @Deprecated
-# Directory for Maven depmaps
-#
-%_mavendepmapdir %{_sysconfdir}/maven
-
-#
-# @Deprecated
-# Directory for Maven depmaps
-#
-%_mavendepmapfragdir %{_datadir}/maven-fragments
-
-
-#
 # Current default JVM home.
 #
 %java_home      %(. %{_javadir}-utils/java-functions; set_jvm; echo $JAVA_HOME)

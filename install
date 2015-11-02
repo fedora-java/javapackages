@@ -92,8 +92,6 @@ dir "${jnidir}"
 dir "${jnidir}-ext"
 dir "${javadocdir}"
 dir "${mavenpomdir}"
-dir "${mavendepmapdir}"  # @Deprecated
-dir "${mavendepmapfragdir}"  # @Deprecated
 dir "${datadir}/maven-metadata"
 dir "${rpmconfigdir}"
 dir "${rpmconfigdir}/macros.d"

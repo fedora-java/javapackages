@@ -62,8 +62,6 @@ pyinterpreter
 abrtlibdir
 "
 
-vars="$vars mavendepmapdir mavendepmapfragdir" # @Deprecated
-
 vars_re=$(echo $vars | sed 's/ /\\|/g')
 
 eval $(for _; do echo "$_"; done |
