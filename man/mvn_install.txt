@@ -49,6 +49,7 @@ http://bugzilla.redhat.com/.
 
 SEE ALSO
 --------
+*gradle_build*(7),
 *mvn_alias*(7),
 *mvn_artifact*(7),
 *mvn_build*(7),

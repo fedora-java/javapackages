@@ -1,0 +1,88 @@
+gradle_build(7)
+===============
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+gradle_build - build Gradle project in offline, local mode
+
+SYNOPSIS
+--------
+*%gradle_build* [options] [-- Gradle-arguments]
+
+DESCRIPTION
+-----------
+*gradle_build* macro builds Gradle project and generates reactor
+structure information to be used by *mvn_install*.
+
+By default Gradle goal *build* is executed, as well as some additional
+XMvn-specific tasks.  If *-f* is specified then goal *assemble* is
+executed instead of *build*.
+
+Any arguments after *--* are passed directly to Gradle.  See
+*gradle(1)* for more information on availability of Gradle options.
+
+OPTIONS
+-------
+*-d, --xmvn-debug*::
+    Enable XMvn debugging output.  This option causes XMvn to write
+    verbose debugging information to standard output.  Debugging
+    information includes at least details about artifact resolution
+    from system repositories.
+
+*-f, --force*::
+    Skip compilation and execution of unit and integration tests.  This
+    option causes Gradle goal *assemble* to be executed instead of
+    default goal *build*.
+
+*-i, --skip-install*::
+    Skip artifact installation.  This option disables generation of
+    reactor structure information so that future calls to
+    *mvn_install* will not result in installation of artifacts
+    produced in current Maven reactor.
+
+*-j, --skip-javadoc*::
+    Accepted for compatibility with `%mvn_build`, but otherwise
+    ignored.
+
+*-s, --singleton*::
+    Enable singleton packaging (one artifact per package).  This
+    option causes artifacts with identical *artifactId* to be
+    installed as part of the same subpackage.  This behavior can be
+    further customized by adding more specific packaging rules with
+    *mvn_package*.
+
+*-X, --debug*::
+    Enable Maven debugging output.  Implies *-d*.  This option causes
+    Gradle to write verbose debugging information to standard output.
+
+ENVIRONMENT
+-----------
+*xmvn_bootstrap*::
+    Run XMvn in online mode.  If *xmvn_bootstrap* RPM macro is defined
+    to any value then Gradle is ran in online mode.  Otherwise Gradle
+    is ran in offline mode.  Online mode of Gradle allows missing
+    dependency artifacts to be fetched from remote repositories.  This
+    behavior is mostly useful when bootstrapping new packages, which
+    dependecies have not yet been packaged.
+
+AUTHOR
+------
+Written by Mikolaj Izdebski.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Red Hat Bugzilla at
+http://bugzilla.redhat.com/.
+
+SEE ALSO
+--------
+*mvn_build*(7),
+*mvn_alias*(7),
+*mvn_compat_version*(7),
+*mvn_config*(7),
+*mvn_file*(7),
+*mvn_package*(7),
+*xmvn*(1).

@@ -208,6 +208,7 @@ exec >files-gradle
 
 inst_exec target/gradle-local "${bindir}"
 inst_data gradle/init.gradle "${datadir}/gradle-local"
+inst_data target/gradle_build.7 "${mandir}/man7"
 
 exec >files-doc
 inst_doc doc/index.html
