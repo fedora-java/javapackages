@@ -17,12 +17,11 @@ Gradle projects.  However, in most common situations the following
 steps can are necessary:
 
 1. Add build-dependency on `gradle-local`
-2. In `%build` section of the spec file call `gradle-local` script
-   with `--offline` switch and appropriate build targets as arguments
-3. Mark generated artifacts using `%mvn_artifact` macro
-4. In `%install` section, use `%mvn_install` macro with `-J` argument
-   pointing to directory containing generated Javadoc documentation
-5. Use generated file `.mfiles` lists to populate `%files` section
+2. In the `%build` section of the spec use `%gradle_build` macro to
+   invoke Gradle in local, offline mode to build the project
+3. In the `%install` section, use `%mvn_install` macro to install
+   Maven artifacts produced during build
+4. Use generated file `.mfiles` lists to populate `%files` section
    with `-f` switch
 
 .Common spec file sections
@@ -32,8 +31,7 @@ BuildRequires:  gradle-local
 ...
 
 %build
-gradle-local -s --offline ...
-%mvn_artifact ...
+%gradle_build
 
 %install
 %mvn_install -J ...
@@ -44,12 +42,16 @@ gradle-local -s --offline ...
 -------
 
 
-`gradle-local` is a wrapper script for `gradle` command which enables
-so called "local mode" of artifact resolution - artifacts are first
-resolved from local system before trying remote repositories (system
-Maven repositories are used through XMvn).
+`%gradle_local` macro macro is very simillar to `%mvn_build` and it
+takes the same arguments.  It is a wrapper for `gradle` command which
+enables so called "local mode" of artifact resolution - dependency
+artifacts are resolved from local system before trying other
+repositories (system Maven repositories are used through XMvn).  By
+default `%gradle_local` invokes Gradle with `build` goal, but when
+tests are skipped (option `-f`) then `assemble` goal is invoked
+instead.
 
-In most simple cases calling `gradle-local` should be enough to
+In most simple cases calling `%gradle_local` should be enough to
 resolve all dependencies, but sometimes additional patching of build
 script may be necessary.  The following example patch adds XMvn
 resolver to make Gradle correctly resolve dependencies of build script
@@ -73,9 +75,18 @@ index a3cb553..50dd2a4 100644
 -------
 
 
-Once Gradle build completes, all relevant artifacts must be marked
-using `%mvn_artifact` macro for later installation.  `%mvn_install`
-automatically handles installation of all marked artifacts and
-generates of `.mfiles` file lists, which are used to define package
-contents through `%file` sections.
+Once Gradle build completes, all Maven artifacts produced by the build
+will be marked for installation.  `%mvn_install` macro, which should
+be called from the `%install` section of spec file, automatically
+handles installation of all marked artifacts and generates `.mfiles`
+file lists, which are used to define package contents through `%file`
+sections.  If you are building Javadocs (recommended) then you should
+call `%mvn_install` with `-J` argument pointing to directory
+containing generated Javadoc documentation.
 
+Most of Maven macros starting with `%mvn_` can also be used when
+buliding packages with Gradle.  This includes macros that control
+which artifacts should be installed where and how (`%mvn_package`,
+`%mvn_alias`, `%mvn_file`, `%mvn_compat_version`), `%mvn_artifact`
+that is used to mark additional artifacts as installable and
+`%mvn_config` which can be used to add extra config for XMvn.
