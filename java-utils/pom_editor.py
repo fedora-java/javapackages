@@ -580,7 +580,7 @@ def pom_remove_parent(pom=None):
     """[POM location]"""
     try:
         pom.replace_xml(pom.xpath_query_element("/pom:project/pom:parent"),
-                        etree.Comment(" parent POM reference removed by maintainer --> "))
+                        etree.Comment(" parent POM reference removed by maintainer "))
     except PomQueryNoMatch:
         raise PomQueryNoMatch("POM doesn't specify parent.")
 
