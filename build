@@ -94,6 +94,7 @@ expand depgenerators/javadoc.req
 
 manpage abs2rel
 manpage find-jar
+manpage gradle_build
 manpage mvn_alias
 manpage mvn_artifact
 manpage mvn_build
