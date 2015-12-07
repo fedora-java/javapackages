@@ -7,6 +7,7 @@ dnf install -y \
     asciidoc \
     dia \
     which \
+    xmlto \
     python{,3} \
     python{,3}-lxml \
     python{,3}-six \
