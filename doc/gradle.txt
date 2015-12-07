@@ -42,7 +42,7 @@ BuildRequires:  gradle-local
 -------
 
 
-`%gradle_local` macro macro is very simillar to `%mvn_build` and it
+`%gradle_local` macro is very similar to `%mvn_build` and it
 takes the same arguments.  It is a wrapper for `gradle` command which
 enables so called "local mode" of artifact resolution - dependency
 artifacts are resolved from local system before trying other
@@ -85,7 +85,7 @@ call `%mvn_install` with `-J` argument pointing to directory
 containing generated Javadoc documentation.
 
 Most of Maven macros starting with `%mvn_` can also be used when
-buliding packages with Gradle.  This includes macros that control
+building packages with Gradle.  This includes macros that control
 which artifacts should be installed where and how (`%mvn_package`,
 `%mvn_alias`, `%mvn_file`, `%mvn_compat_version`), `%mvn_artifact`
 that is used to mark additional artifacts as installable and
