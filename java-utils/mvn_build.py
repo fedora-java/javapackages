@@ -39,7 +39,7 @@ import sys
 
 from javapackages.maven.artifact import Artifact
 from javapackages.xmvn.xmvn_config import XMvnConfig
-from javapackages.common.util import args_to_unicode
+from javapackages.common.util import args_to_unicode, command_exists
 from javapackages.common.mock import socket_path as mock_socket
 
 
@@ -108,6 +108,15 @@ if __name__ == "__main__":
     else:
         base_goal = "verify"
         mvn_args = ["xmvn", "--batch-mode"]
+
+    if not command_exists(mvn_args[0]):
+        if options.gradle:
+            print("gradle-local package is not installed, please install it to proceed", file=sys.stderr)
+        else:
+            # xmvn command is provided by xmvn package, but maven-local
+            # pulls in bunch of maven plugins which may come handy
+            print("maven-local package is not installed, please install it to proceed", file=sys.stderr)
+        sys.exit(1)
 
     if not options.bootstrap:
         mvn_args.append("--offline")
