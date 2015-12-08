@@ -33,7 +33,7 @@
 import os
 import lxml.etree
 
-from javapackages.common.util import execute_command
+from javapackages.common.util import execute_command, command_exists
 from javapackages.common.exception import JavaPackagesToolsException
 
 
@@ -51,10 +51,7 @@ class XMvnResolve(object):
         # always return True if running in test environment
         if os.environ.get("JAVAPACKAGES_XMVN_RESOLVE_TEST", None) is not None:
             return True
-
-        command = "type {tool}".format(tool=XMvnResolve.tool)
-        rc, _, _ = execute_command(command)
-        return True if not rc else False
+        return command_exists(XMvnResolve.tool)
 
     @staticmethod
     def process_raw_request(raw_request_list):

@@ -76,6 +76,12 @@ def execute_command(command, input=None):
     return proc.returncode, stdout, stderr
 
 
+def command_exists(cmd):
+    command = "type {cmd}".format(cmd=cmd)
+    rc, _, _ = execute_command(command)
+    return True if not rc else False
+
+
 def init_rpmgen(argv):
     return _parse_rpmgen_args(argv)
 
