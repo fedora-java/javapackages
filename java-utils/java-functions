@@ -308,10 +308,6 @@ set_jvm_dirs()
 
     _set_java_home
 
-    # Jar repository provided by the JVM
-    JVM_LIBDIR="${JVM_ROOT}"-exports/$(echo "${JAVA_HOME}" |\
-        sed -n "s+${JVM_ROOT}/\([-_[:alnum:].]*\)\(.*\)+\1+p")
-
     # Java standard version of the JVM.  -fullversion seems to be lot faster
     # to invoke than -version.  Some examples:
     #   java full version "1.4.2_04-b05"
@@ -447,7 +443,7 @@ find_jar()
 	return ${?}
     fi
 
-    set -- ${JVM_LIBDIR} ${_javaverdirs} ${_javadirs}
+    set -- ${_javaverdirs} ${_javadirs}
 
     _log "JAR search path is:"
     for dir; do

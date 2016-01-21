@@ -52,7 +52,6 @@ short description.
     Directories containing configuration files for Java Virtual
     Machines (JVM).
 
-*`%{_jvmjardir}`* -- `/usr/lib/jvm-exports`::
 *`%{_jvmprivdir}`* -- `/usr/lib/jvm-private`::
 *`%{_jvmlibdir}`* -- `/usr/lib/jvm`::
 *`%{_jvmdatadir}`* -- `/usr/share/jvm`::

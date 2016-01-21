@@ -16,11 +16,6 @@
 %_jvmdir        %{_prefix}/lib/jvm
 
 #
-# Root directory where all Java VMs/SDK/JREs expose their jars
-#
-%_jvmjardir     %{_prefix}/lib/jvm-exports
-
-#
 # Root directory for all Java VM/SDK/JRE's private things.
 #
 %_jvmprivdir    %{_prefix}/lib/jvm-private
@@ -117,26 +112,6 @@
 %java           %(. %{_javadir}-utils/java-functions; set_javacmd; echo $JAVACMD)
 %javac          %{java_home}/bin/javac
 %javadoc        %{java_home}/bin/javadoc
-
-#==============================================================================
-# ---- Java extension handling macros
-
-#
-# add_jvm_extension should be used in %install by extension packages to declare
-# what extension jars they provide.
-#
-# For example a package that provides foo.jar which is the bar extension
-# under java 1.2 and 1.3 should do a:
-#
-#   %install
-#   ... # create foo.jar in %{javadir}-ext
-#   %add_jvm_extension  foo bar 1.2 1.3
-#
-#   %files
-#   %{javadir}-ext/foo.jar
-#   %{javadir}-*/bar.jar
-#
-%add_jvm_extension JAVA_LIBDIR=%{buildroot}%{_javadir} %{_bindir}/jvmjar -l
 
 
 #

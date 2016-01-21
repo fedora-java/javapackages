@@ -78,7 +78,6 @@ expand bin/create-jar-links
 expand bin/diff-jars
 expand bin/find-jar
 expand bin/gradle-local
-expand bin/jvmjar
 expand bin/rebuild-jar-repository
 expand bin/shade-jar
 expand bin/xmvn-builddep
