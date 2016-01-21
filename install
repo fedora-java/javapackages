@@ -188,9 +188,6 @@ exec >files-maven
 
 dir "${m2home}"
 
-inst_data metadata/metadata-org-apache-maven-plugins.xml "${sysconfdir}/maven"
-inst_data metadata/metadata-org-codehaus-mojo.xml "${sysconfdir}/maven"
-
 
 exec >files-ivy
 
