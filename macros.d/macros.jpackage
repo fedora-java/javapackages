@@ -59,27 +59,10 @@
 # Directory where arch and version independent jars are installed.
 # This has already been integrated in RH macros following our request.
 #
-# By extension:
-# %{_javadir}-ext:
-#   - version dependent jars
-# %{_javadir}-x.y.z:
-#   - jars for Java standard x.y.z (usually symlinks to  %{_javadir}-ext)
-# %{_javadir}-utils:
-#   - Java-related scripts
-#
-# To simplify things only %{_javadir} is defined.
-#
 %_javadir       %{_datadir}/java
 
 #
 # Directory where arch-specific (JNI) version-independent jars are installed.
-#
-# By extension:
-# %{_jnidir}-ext:
-#   - version dependent jars
-# %{_jnidir}-x.y.z:
-#   - jars for Java standard x.y.z (usually symlinks to  %{_jnidir}-ext)
-# To simplify things only %{_jnidir} is defined.
 #
 %_jnidir        %{_prefix}/lib/java
 

@@ -301,44 +301,7 @@ run()
 # Set JVM-related directories
 set_jvm_dirs()
 {
-    local IFS
-    local re
-    local option
-    local version
-
     _set_java_home
-
-    # Java standard version of the JVM.  -fullversion seems to be lot faster
-    # to invoke than -version.  Some examples:
-    #   java full version "1.4.2_04-b05"
-    #   java full version "J2RE 1.4.1 IBM build cxia321411-20030930"
-    #   java full version "Blackdown-1.4.1-01"
-    #   java version "1.5.0"
-
-    re='\([[:digit:]]\{1,\}\.[[:digit:]]\{1,\}\(\.[[:digit:]]\{1,\}\)*\)'
-    for option in -fullversion -version; do
-        # Yuck, "grep -o" would be cleaner, but requires GNU grep >= 2.5.
-        # This could be improved/simplified if sed had non-greedy matching.
-        version=$("${JAVACMD}" $option 2>&1 | sed -n \
-            -e '/\(openjdk\|java\) \(full \)*version "/s/'$re'/<<<\1>>>/' \
-            -e '/\(openjdk\|java\) \(full \)*version "/s/.*<<<\([^>]\{1,\}\)>>>.*/\1/p')
-        if [ -n "${version}" ]; then
-	    _log "Determined Java version to be ${version}"
-            break
-        fi
-    done
-
-    if [ -z "${version}" ]; then
-	echo "$0: Unable to determine Java version"
-	return 1
-    fi
-
-    # Jar repository for this Java standard
-    IFS=:
-    _javaverdirs=
-    for dir in ${_javadirs}; do
-	_javaverdirs="${_javaverdirs}${_javaverdirs:+:}${dir}-${version}"
-   done
 
     return 0
 }

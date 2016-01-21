@@ -68,15 +68,3 @@ short description.
 
     Directory containing Java configuration files.  In particular it
     contains main Java configuration file -- `java.conf`.
-
-*`%{_javadir}-ext`* -- `/usr/share/java-ext`::
-*`%{_javadir}-`+_x_._y_._z_+* -- `/usr/share/java-`+_x_._y_._z_+::
-*`%{_jnidir}-ext`* -- `/usr/lib/java-ext`::
-*`%{_jnidir}-`+_x_._y_._z_+* -- `/usr/lib/java-`+_x_._y_._z_+::
-
-    These directories are rarely used and are retained mostly for
-    compatibility with JPackage project.  They are meant to contain
-    JAR files that depend on particular Java standard version.  Note
-    that such JARs can (and usually are) placed in `%{_javadir}` or
-    `%{_jnidir}`.
-

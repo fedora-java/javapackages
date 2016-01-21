@@ -85,20 +85,13 @@ dir "${jvmcommondatadir}"
 dir "${jvmcommonsysconfdir}"
 dir "${javadir}"
 dir "${javadir}-utils"
-dir "${javadir}-ext"
 dir "${jnidir}"
-dir "${jnidir}-ext"
 dir "${javadocdir}"
 dir "${mavenpomdir}"
 dir "${datadir}/maven-metadata"
 dir "${rpmconfigdir}"
 dir "${rpmconfigdir}/macros.d"
 dir "${rpmconfigdir}/fileattrs"
-
-for ver in 1.5.0 1.6.0 1.7.0 1.8.0; do
-    dir "${javadir}-${ver}"
-    dir "${jnidir}-${ver}"
-done
 
 inst_exec target/abs2rel "${bindir}"
 inst_exec target/build-classpath "${bindir}"
