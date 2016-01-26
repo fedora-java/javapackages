@@ -1,6 +1,3 @@
-WORK IN PROGRESS
-mizdebsk, 25 Oct 2013
-
 === Directory Layout
 include::directory_layout.txt[]
 

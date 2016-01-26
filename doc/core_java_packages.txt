@@ -1,6 +1,3 @@
-WORK IN PROGRESS
-mizdebsk, 25 Oct 2013
-
 ==== JVM
 
 Fedora allows multiple Java Virtual Machines (JVMs) to be packaged
@@ -64,11 +61,16 @@ Java Packages Tools are packaged as severas binary RPM packages
     various macros and utlilty tools.  `maven-local` is usually
     declared as build dependency of Maven packages.
 
+*`gradle-local`*::
+
+    Similairly to `maven-local`, this package provides an environment
+    required to build Java packages using Gradle as a build tool.
+
 *`ivy-local`*::
 
-    Analogously to `maven-local`, this package provides an environment
-    required to build Java packages using Apache Ivy as dependency
-    manager.
+    Analogously to `maven-local` and `gradle-local`, this package
+    provides an environment required to build Java packages using
+    Apache Ivy as dependency manager.
 
 *`javapackages-local`*::
 
@@ -80,11 +82,3 @@ Java Packages Tools are packaged as severas binary RPM packages
     Package owning basic Java directories and providing runtime
     support for Java packages.  The great majority of Java packages
     depend on `javapackages-tools`.
-
-
-TODO
-
-* Ant
-** extra tasks and /etc/ant.d
-* Maven
-** XMvn
