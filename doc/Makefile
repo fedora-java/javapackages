@@ -11,13 +11,13 @@ upload-all:
 	mkdir doc
 	cp *.html doc
 	cp -r images/ doc/
-	scp -r doc fedorahosted.org:/srv/web/releases/j/a/javapackages/
+	scp -r doc fedorahosted.org:javapackages
 
 upload-fast:
 	rm -rf doc
 	mkdir doc
 	cp *.html doc
-	scp -r doc fedorahosted.org:/srv/web/releases/j/a/javapackages/
+	scp -r doc fedorahosted.org:javapackages
 
 clean:
 	rm -Rf *.html images/*.svg doc/
