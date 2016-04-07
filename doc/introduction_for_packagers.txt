@@ -80,7 +80,7 @@ compiler can be typically invoked from command line by command `javac`.
 
 [source,shell]
 ------
-$ javac `find . -name *.java`
+$ javac $(find -name '*.java')
 ------
 
 For every `.java` file corresponding `.class` file will be created. The
