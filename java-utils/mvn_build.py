@@ -96,6 +96,9 @@ if __name__ == "__main__":
     parser.add_option("-X", "--debug",
                       action="store_true",
                       help="Enable Maven debugging output (implies -d).")
+    parser.add_option("--xmvn-javadoc",
+                      action="store_true",
+                      help="Use experimental XMvn javadoc MOJO to generate javadocs.")
 
     sys.argv = args_to_unicode(sys.argv)
 
@@ -161,6 +164,8 @@ if __name__ == "__main__":
         if options.gradle:
             # Automatic javadoc generation for Gradle is not yet implemented in XMvn
             pass
+        elif options.xmvn_javadoc:
+            mvn_args.append("org.fedoraproject.xmvn:xmvn-mojo:javadoc")
         else:
             mvn_args.append("org.apache.maven.plugins:maven-javadoc-plugin:aggregate")
 
