@@ -18,20 +18,32 @@ Maven wasn't able to build project `com.example:simplemaven`, because it
 couldn't find some dependencies (in this case
 `commons-io:commons-io:jar:2.4` and `junit:junit:jar:4.11`)
 
-Package maintainer has two options here:
+You have multiple options here:
 
- - find out which packages provide given dependencies and add them to
-   `BuildRequires` in the spec file. Use `dnf repoquery --whatprovides
-   'mvn(commons-io:commons-io)'` to search for package which provides
-   given artifact.
-
- - remove those dependencies from `pom.xml` file. Maven will stop
-   complaining about them and some dependencies don't have to be
-   mandatory for project to build. Maintainer can use wide variety of
+ - If you suspect that a dependecy is not necessary, you can
+   remove it from `pom.xml` file and Maven will stop complaining about it.
+   You can use wide variety of
    <<helper_macros,macros>> for modifying POM files. The one
    for removing dependencies is called
-   <<pom_remove_dep,%pom_remove_dep>>. If removed dependency was
-   actually needed, the build will later fail with compilation failure.
+   <<pom_remove_dep,%pom_remove_dep>>.
+  - There is a mock plugin that can automate installation of missing dependencies.
+    When you're using mock, pass additional `--enable-plugin pm_request` argument
+    and the build process would be able to install missing dependencies by itself.
+    You still need to add the `BuildRequires` later, because you need to build
+    the package in Koji, where the plugin is not allowed. You should do so using
+    `xmvn-builddep build.log`, where `build.log` is the path to mock's build log.
+    It will print a list of `BuildRequires` lines, which you can directly paste
+    into the specfile. To verify that the `BuildRequires` you just added are
+    correct, you can rebuild the package once more without the plugin enabled.
+ - Add the artifacts to `BuildRequires` manually. Maven packages have virtual
+   provides in a format `mvn(artifact coordinates)`, where artifact coordinates
+   are in the format which maven used in the error message, but without version
+   for non-compat packages (most of the packages you encounter). Virtual
+   provides can be used directly in `BuildRequires`, so in this case, it would be:
+------
+BuildRequires:  mvn(commons-io:commons-io)
+BuildRequires:  mvn(junit:junit)
+------
 
 
 [[error_compilation_failure]]
