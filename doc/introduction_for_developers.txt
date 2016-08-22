@@ -117,7 +117,7 @@ $ rpmbuild -bb helloworld.spec
 
 If everything worked OK, this should produce RPM file
 `~/rpmbuild/RPMS/x86_64/helloworld-1.0-1.fc18.x86_64.rpm`. You can use
-`rpm -i` or `yum localinstall` commands to install this package and it
+`rpm -i` or `dnf install` commands to install this package and it
 will add `/usr/share/java/helloworld.jar` and `/usr/bin/helloworld`
 wrapper script to your system. Please note that this specfile is
 simplified and lacks some additional parts, such as license
@@ -146,7 +146,7 @@ See `rpmbuild`'s manual page for all available options.
 Fedora comes with several useful tools which can provide great
 assistance in getting information from RPM repositories.
 
-`repoquery` is a tool for querying information from YUM repositories.
+`dnf repoquery` is a tool for querying information from RPM repositories.
 Maintainer of Java packages might typically query the repository for
 information like "which package contains Maven artifact
 `groupId:artifactId`".
@@ -154,21 +154,21 @@ information like "which package contains Maven artifact
 .Find out which package provides given artifact
 [source,shell]
 ------
-$ repoquery -f 'mvn(commons-io:commons-io)'
+$ dnf repoquery --whatprovides 'mvn(commons-io:commons-io)'
 apache-commons-io-1:2.4-9.fc19.noarch
 ------
 
 The example above shows that one can get to `commons-io:commons-io`
 artifact by installing `apache-commons-io` package.
 
-By default, repoquery uses all enabled repositories in YUM
+By default, `dnf repoquery` uses all enabled repositories in DNF
 configuration, but it is possible to explicitly specify any other
 repository. For example following command will query only Rawhide
 repository:
 
 [source,shell]
 ------
-$ repoquery --repoid rawhide -f 'mvn(commons-io:commons-io)'
+$ dnf repoquery --available --disablerepo \* --enablerepo rawhide --whatprovides 'mvn(commons-io:commons-io)'
 apache-commons-io-1:2.4-10.fc20.noarch
 ------
 
@@ -177,7 +177,7 @@ given package:
 
 [source,shell]
 ------
-$ repoquery --provides apache-commons-io
+$ dnf repoquery --provides apache-commons-io
 apache-commons-io = 1:2.4-9.fc19
 jakarta-commons-io = 1:2.4-9.fc19
 mvn(commons-io:commons-io) = 2.4
@@ -192,7 +192,7 @@ alias for same JAR file. See section about <<aliases,artifact aliases>>
 for more information on this topic.
 
 Another useful tool is `rpm`. It can do a lot of stuff, but most
-importantly it can replace `repoquery` if one only needs to query local
+importantly it can replace `dnf repoquery` if one only needs to query local
 RPM database. Only installed packages, or local `.rpm` files, can be
 queried with this tool.
 

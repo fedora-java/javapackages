@@ -15,6 +15,6 @@ will be created for package `foo`: one named
 
 Craeting virtual packages for Maven artifacts has several advantages.
 It makes it easy to search which package provides given artifact, for
-example `repoquery --whatprovides 'mvn(bar:baz)'` in the previous
+example `dnf repoquery --whatprovides 'mvn(bar:baz)'` in the previous
 example would return `foo`.  Virtual packages also make it easier to
 generate automatic dependencies.

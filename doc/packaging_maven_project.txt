@@ -91,7 +91,7 @@ BuildRequires:  apache-commons-io
 [TIP]
 ======
 One can easily search for package which provides desired artifact. Try
-`repoquery -f 'mvn(commons-io:commons-io)'`, or see how to
+`dnf repoquery --whatprovides 'mvn(commons-io:commons-io)'`, or see how to
 <<querying_repositories,query repositories>>.
 ======
 

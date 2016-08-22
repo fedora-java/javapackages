@@ -21,7 +21,7 @@ couldn't find some dependencies (in this case
 Package maintainer has two options here:
 
  - find out which packages provide given dependencies and add them to
-   `BuildRequires` in the spec file. Use `repoquery -f
+   `BuildRequires` in the spec file. Use `dnf repoquery --whatprovides
    'mvn(commons-io:commons-io)'` to search for package which provides
    given artifact.
 
