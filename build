@@ -121,6 +121,4 @@ manpage build-jar-repository
 manpage rebuild-jar-repository
 manpage shade-jar
 
-make -C doc clean all
-
 (cd ./python && "${pyinterpreter}" setup.py build)
