@@ -131,7 +131,7 @@ if __name__ == "__main__":
         mvn_args.append("--debug")
 
     if options.xmvn_debug or options.debug:
-        mvn_args.append("-Dorg.slf4j.simpleLogger.log.org.fedoraproject.xmvn=debug")
+        mvn_args.append("-Dxmvn.debug")
 
     if options.force:
         mvn_args.append("-Dmaven.test.skip=true")
