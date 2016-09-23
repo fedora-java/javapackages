@@ -151,5 +151,12 @@ class TestMvnArtifact(unittest.TestCase):
         report = self.check_result(inspect.currentframe().f_code.co_name)
         self.assertEqual(report, '', report)
 
+    # fedora-java/javapackages#3
+    @mvn_artifact('test_parent.pom.xml')
+    def test_parent(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
+
 if __name__ == '__main__':
     unittest.main()

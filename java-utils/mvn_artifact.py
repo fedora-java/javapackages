@@ -176,6 +176,8 @@ def gather_dependencies(pom_path):
             try:
                 ppom_path = os.path.join(os.path.dirname(curr_pom._path),
                                          parent.relativePath)
+                if os.path.isdir(ppom_path):
+                    ppom_path = os.path.join(ppom_path, 'pom.xml')
                 ppom = POM(ppom_path)
             except PomLoadingException:
                 pass

@@ -1,0 +1,11 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>aid</artifactId>
+  <packaging>pom</packaging>
+  <parent>
+    <groupId>gid</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.2.3</version>
+    <relativePath>parent</relativePath>
+  </parent>
+</project>
