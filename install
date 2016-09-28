@@ -89,9 +89,7 @@ dir "${jnidir}"
 dir "${javadocdir}"
 dir "${mavenpomdir}"
 dir "${datadir}/maven-metadata"
-dir "${rpmconfigdir}"
-dir "${rpmconfigdir}/macros.d"
-dir "${rpmconfigdir}/fileattrs"
+dir "${m2home}"
 
 inst_exec target/abs2rel "${bindir}"
 inst_exec target/build-classpath "${bindir}"
@@ -112,6 +110,7 @@ inst_config target/java.conf "${javaconfdir}"
 
 inst_data target/java-functions "${javadir}-utils"
 inst_exec java-utils/java-wrapper "${javadir}-utils"
+inst_exec java-utils/scl-enable "${javadir}-utils"
 
 inst_data target/macros.jpackage "${rpmconfigdir}/macros.d"
 
@@ -123,13 +122,20 @@ inst_data target/shade-jar.1 "${mandir}/man1"
 inst_data target/abs2rel.1 "${mandir}/man1"
 inst_data target/find-jar.1 "${mandir}/man1"
 
-inst_data etc/javapackages-metadata.xml "${datadir}/maven-metadata"
+inst_data target/javapackages-metadata.xml "${datadir}/maven-metadata"
+inst_data target/configuration.xml "${m2home}"
 
 if [ -z "$pyinterpreter" ]; then
     exit 0
 fi
 
+
 exec >files-local
+
+dir "${rpmconfigdir}"
+dir "${rpmconfigdir}/macros.d"
+dir "${rpmconfigdir}/fileattrs"
+
 inst_exec target/xmvn-builddep "${bindir}"
 
 inst_data java-utils/maven_depmap.py "${javadir}-utils"
@@ -179,13 +185,12 @@ inst_data depgenerators/fileattrs/maven.attr "${rpmconfigdir}/fileattrs"
 inst_data depgenerators/fileattrs/osgi.attr "${rpmconfigdir}/fileattrs"
 inst_data depgenerators/fileattrs/javadoc.attr "${rpmconfigdir}/fileattrs"
 
-inst_data configs/configuration.xml "${m2home}"
+inst_config target/javapackages-config.json "${javaconfdir}"
 
-inst_config etc/javapackages-config.json "${javaconfdir}"
 
 exec >files-maven
 
-dir "${m2home}"
+# Nothing
 
 
 exec >files-ivy
