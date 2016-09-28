@@ -2,6 +2,9 @@
 # provided pseudo-artifacts: com.sun:tools and sun.jdk:jconsole.
 %global __requires_exclude_from %{?__requires_exclude_from:%__requires_exclude_from|}/maven-metadata/javapackages-metadata.xml$
 
+# %{scl}-runtime requires us, not the other way
+%{?scl:%global __requires_exclude %{?__requires_exclude:%__requires_exclude|}^%{scl}-runtime$}
+
 %bcond_without gradle
 %bcond_without tests
 
@@ -129,11 +132,8 @@ This package provides non-essential macros and scripts to support Java packaging
 %prep
 %setup -q -n %{pkg_name}-%{version}
 
-# Add SCL namespace to generated provides
-%{?scl: sed -i '/<groupId>/{h;s|<.*|<namespace>%{scl}</namespace>|;p;g}' etc/javapackages-metadata.xml}
-
 %build
-sh -x %configure --pyinterpreter=%{python_interpreter}
+%configure --pyinterpreter=%{python_interpreter} %{?scl:--rpmconfigdir=%{_root_prefix}/lib/rpm --scl=%{scl} --scl_root=%{_scl_root}}
 ./build
 
 %install
@@ -142,9 +142,11 @@ sh -x %configure --pyinterpreter=%{python_interpreter}
 sed -i 's|mvn_build.py|& --xmvn-javadoc|' $(find %{buildroot} -name macros.fjava)
 sed -e 's/.[17]$/&.gz/' -e 's/.py$/&*/' -i files-*
 
-%if 0%{?fedora}
-sed -i 's:${rpmconfigdir}/macros.d:%{!?scl:%{_sysconfdir}}%{?scl:%{_root_sysconfdir}}/rpm:' install
-%endif
+%{?scl:
+  mv %{buildroot}%{_root_prefix}/lib/rpm/macros.d/macros{,.%{scl}}.fjava
+  mv %{buildroot}%{_root_prefix}/lib/rpm/macros.d/macros{,.%{scl}}.jpackage
+  sed -i 's:\(macros\.\)\(fjava\|jpackage\):\1%{scl}.\2:' files-*
+}
 
 %if %{without gradle}
 rm -rf %{buildroot}%{_bindir}/gradle-local
@@ -161,7 +163,7 @@ rm -rf %{buildroot}%{_mandir}/man7/gradle_build.7
 
 %files -n %{?scl_prefix}javapackages-local -f files-local
 
-%files -n %{?scl_prefix}maven-local -f files-maven
+%files -n %{?scl_prefix}maven-local
 
 %if %{with gradle}
 %files -n %{?scl_prefix}gradle-local -f files-gradle

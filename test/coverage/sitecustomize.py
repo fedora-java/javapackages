@@ -1,5 +1,7 @@
 try:
     import coverage
     coverage.process_startup()
-except (ImportError, ModuleNotFoundError):
+except ImportError:
+    pass
+except ModuleNotFoundError:
     pass

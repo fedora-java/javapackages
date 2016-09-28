@@ -50,23 +50,41 @@ manpage()
 
 expand()
 {
-    local target=target/$(basename "${1}")
+    local target
+    if [[ -n "${2}" ]]; then
+	target="${2}"
+    else
+	target=$(basename "${1}")
+    fi
 
     sed \
-        -e "s|%{bindir}|${bindir}|" \
-        -e "s|%{datadir}|${datadir}|" \
-        -e "s|%{javaconfdir}|${javaconfdir}|" \
-        -e "s|%{javadir}|${javadir}|" \
-        -e "s|%{jnidir}|${jnidir}|" \
-        -e "s|%{jvmdir}|${jvmdir}|" \
-        -e "s|%{m2home}|${m2home}|" \
-        -e "s|%{prefix}|${prefix}|" \
-        -e "s|%{rundir}|${rundir}|" \
-        -e "s|%{sysconfdir}|${sysconfdir}|" \
-        -e "s|%{pyinterpreter}|${pyinterpreter}|" \
-        -e "s|%{abrtlibdir}|${abrtlibdir}|" \
-        "${1}" >"${target}"
+        -e "s|%{scl}|${scl}|g" \
+        -e "s|%{scl_root}|${scl_root}|g" \
+        -e "s|%{scl_root_relative}|${scl_root_relative}|g" \
+        -e "s|%{bindir}|${bindir}|g" \
+        -e "s|%{datadir}|${datadir}|g" \
+        -e "s|%{javaconfdir}|${javaconfdir}|g" \
+        -e "s|%{javadir}|${javadir}|g" \
+        -e "s|%{jnidir}|${jnidir}|g" \
+        -e "s|%{jvmdir}|${jvmdir}|g" \
+        -e "s|%{m2home}|${m2home}|g" \
+        -e "s|%{prefix}|${prefix}|g" \
+        -e "s|%{rundir}|${rundir}|g" \
+        -e "s|%{sysconfdir}|${sysconfdir}|g" \
+        -e "s|%{pyinterpreter}|${pyinterpreter}|g" \
+        -e "s|%{abrtlibdir}|${abrtlibdir}|g" \
+        "${1}" >target/"${target}"
 }
+
+if [[ -n "${scl}" ]]; then
+    expand configs/configuration-SCL.xml configuration.xml
+    expand etc/javapackages-config-SCL.json javapackages-config.json
+    expand etc/javapackages-metadata-SCL.xml javapackages-metadata.xml
+else
+    cat configs/configuration.xml >target/configuration.xml
+    cat etc/javapackages-config.json >target/javapackages-config.json
+    cat etc/javapackages-metadata.xml >target/javapackages-metadata.xml
+fi
 
 expand bin/abs2rel
 expand bin/build-classpath
@@ -121,6 +139,4 @@ manpage build-jar-repository
 manpage rebuild-jar-repository
 manpage shade-jar
 
-if [ -n "$pyinterpreter" ]; then
-    (cd ./python && "${pyinterpreter}" setup.py build)
-fi
+(cd ./python && "${pyinterpreter}" setup.py build)
