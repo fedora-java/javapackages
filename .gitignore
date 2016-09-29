@@ -20,3 +20,5 @@ test/.workdir/
 test/.script.py
 
 .vagrant/
+.coverage*
+coverage.xml

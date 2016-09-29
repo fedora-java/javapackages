@@ -1,1 +1,1 @@
-[![Build Status](https://travis-ci.org/fedora-java/javapackages.svg?branch=master)](https://travis-ci.org/fedora-java/javapackages)
+[![build status](https://img.shields.io/travis/fedora-java/javapackages/master.svg)](https://travis-ci.org/fedora-java/javapackages) [![test coverage](https://img.shields.io/codecov/c/github/fedora-java/javapackages/master.svg)](https://codecov.io/gh/fedora-java/javapackages)

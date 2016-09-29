@@ -6,10 +6,13 @@ python:
   - 3.4
   - 3.5
 sudo: required
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y rpm
 install:
-  - sudo apt-get update
-  - sudo apt-get install rpm
-  - pip install lxml nose six
+  - pip install -r requirements.txt -r test-requirements.txt codecov
 script:
   - ./configure
   - ./check
+after_success:
+  - codecov -f coverage.xml
