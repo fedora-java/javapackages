@@ -1,0 +1,11 @@
+<ivy-module version="1.0">
+  <info module="args4j" organisation="args4j" revision="2.0.16" status="release"/>
+  <configurations>
+    <conf name="default"/>
+    <conf name="provided"/>
+    <conf name="test"/>
+  </configurations>
+  <publications>
+    <artifact name="args4j" type="jar"/>
+  </publications>
+</ivy-module>
