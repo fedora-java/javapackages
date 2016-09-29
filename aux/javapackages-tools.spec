@@ -130,8 +130,6 @@ This package provides non-essential macros and scripts to support Java packaging
 %prep
 %setup -q -n %{pkg_name}-%{version}
 
-sed -i '/fedora-review/d' install
-
 # Add SCL namespace to generated provides
 %{?scl: sed -i '/<groupId>/{h;s|<.*|<namespace>%{scl}</namespace>|;p;g}' etc/javapackages-metadata.xml}
 
