@@ -69,6 +69,24 @@ class TestMvnArtifact(unittest.TestCase):
         report = self.check_result(inspect.currentframe().f_code.co_name)
         self.assertEqual(report, '', report)
 
+    @mvn_artifact('args4j.ivy')
+    def test_ivy(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
+
+    @mvn_artifact('args4j.ivy', 'maven-artifact.jar')
+    def test_ivy_jar(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
+
+    @mvn_artifact('args4j.ivy', 'webapp.war')
+    def test_ivy_war(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name)
+        self.assertEqual(report, '', report)
+
     @mvn_artifact('a:b:12', 'test.jar')
     def test_mvn_spec_jar(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)

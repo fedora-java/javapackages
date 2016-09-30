@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014, Red Hat, Inc.
+# Copyright (c) 2014-2016, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -115,21 +115,19 @@ def is_it_ivy_file(fpath):
     return doc.tag == "ivy-module"
 
 
-def add_artifact_elements(metadata, art, ppath=None, jpath=None):
-    ext_backup = art.extension
+def add_artifact_elements(metadata, art_template, ppath=None, jpath=None):
     for path in [ppath, jpath]:
         if path:
+            art = art_template.copy()
             if path is ppath:
                 if not is_it_ivy_file(ppath):
                     art.extension = "pom"
                 else:
-                    art.extension = os.path.splitext(ppath)[1][1:]
+                    art.extension = "xml"
                     art.properties["type"] = "ivy"
-            else:
-                art.extension = ext_backup
 
             art.path = os.path.abspath(path)
-            metadata.artifacts.append(art.copy())
+            metadata.artifacts.append(art)
 
 
 def merge_sections(main, update):

@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<ns1:metadata xmlns:ns1="http://fedorahosted.org/xmvn/METADATA/2.3.0">
+   <ns1:artifacts>
+      <ns1:artifact>
+         <ns1:groupId>args4j</ns1:groupId>
+         <ns1:artifactId>args4j</ns1:artifactId>
+         <ns1:extension>xml</ns1:extension>
+         <ns1:version>2.0.16</ns1:version>
+         <ns1:path>%s/args4j.ivy</ns1:path>
+         <ns1:properties>
+           <type>ivy</type>
+           <xmvn.resolver.disableEffectivePom>true</xmvn.resolver.disableEffectivePom>
+         </ns1:properties>
+      </ns1:artifact>
+   </ns1:artifacts>
+</ns1:metadata>
