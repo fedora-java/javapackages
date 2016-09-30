@@ -20,7 +20,7 @@ SCRIPT_ENV = {'PATH':'{mock}:{real}'.format(mock=DIRPATH,
               'COVERAGE_PROCESS_START':os.environ['COVERAGE_PROCESS_START']}
 
 
-def call_script(name, args, stdin=None, extra_env={}):
+def call_script(name, args, stdin=None, extra_env={}, async=False):
     with open("tmpout", 'w') as outfile:
         with open("tmperr", 'w') as errfile:
             procargs = [sys.executable, name]
@@ -32,6 +32,8 @@ def call_script(name, args, stdin=None, extra_env={}):
                                     env=env,
                                     stdin=subprocess.PIPE,
                                     universal_newlines=True)
+            if async:
+                return (outfile, errfile, proc)
             proc.communicate(stdin)
             ret = proc.wait()
     with open("tmpout", 'r') as outfile:
