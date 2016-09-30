@@ -126,7 +126,7 @@ def to_element(obj, name=None, type_spec=None, ns=None):
         return element
     if isinstance(obj, dict):
         element = _make_element(name, ns=ns)
-        for key, value in obj.items():
+        for key, value in sorted(obj.items()):
             # TODO rly?
             # entry = _make_element(key, ns=ns)
             entry = _make_element(key)
