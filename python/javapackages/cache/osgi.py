@@ -61,7 +61,7 @@ class OSGiCache(Cache):
 
     def get_bundle(self, name):
         for bundle in self._cache.values():
-            if bundle == name:
+            if bundle.bundle == name:
                 return bundle
         return None
 
