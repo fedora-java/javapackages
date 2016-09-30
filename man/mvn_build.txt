@@ -80,8 +80,8 @@ Versions 3.0.0 and later were written by Stanislav Ochotnicky.
 
 REPORTING BUGS
 --------------
-Bugs should be reported through Red Hat Bugzilla at
-http://bugzilla.redhat.com/.
+Bugs should be reported through Java Pacakges Tools issue tracker at
+Github: https://github.com/fedora-java/javapackages/issues.
 
 SEE ALSO
 --------
