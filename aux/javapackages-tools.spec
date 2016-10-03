@@ -45,7 +45,7 @@ BuildRequires:  xmlto
 BuildRequires:  scl-utils-build
 %if ! 0%{?bootstrap}
 BuildRequires:  %{?scl_prefix}javapackages-tools >= 4.0.0
-BuildRequires:  %{?scl_prefix}xmvn-resolve >= 2
+BuildRequires:  %{?scl_prefix}xmvn-resolve >= 3.0.0
 %endif
 
 Requires:       coreutils
@@ -63,9 +63,9 @@ This package provides macros and scripts to support Java packaging.
 Summary:        Macros and scripts for Maven packaging support
 Requires:       %{name} = %{version}-%{release}
 Requires:       %{?scl_prefix}javapackages-local = %{version}-%{release}
-Requires:       %{?scl_prefix}xmvn-minimal >= 2
-Requires:       %{?scl_prefix}xmvn-mojo >= 2
-Requires:       %{?scl_prefix}xmvn-connector-aether >= 2
+Requires:       %{?scl_prefix}xmvn-minimal >= 3.0.0
+Requires:       %{?scl_prefix}xmvn-mojo >= 3.0.0
+Requires:       %{?scl_prefix}xmvn-connector-aether >= 3.0.0
 # Common Maven plugins required by almost every build. It wouldn't make
 # sense to explicitly require them in every package built with Maven.
 Requires:       %{?scl_prefix}maven-compiler-plugin
@@ -86,7 +86,7 @@ Summary:        Local mode for Gradle
 Requires:       %{name} = %{version}-%{release}
 Requires:       %{?scl_prefix}javapackages-local = %{version}-%{release}
 Requires:       %{?scl_prefix}gradle >= 2.2.1-2
-Requires:       %{?scl_prefix}xmvn-connector-gradle >= 2
+Requires:       %{?scl_prefix}xmvn-connector-gradle >= 3.0.0
 
 %description -n %{?scl_prefix}gradle-local
 This package implements local mode for Gradle, which allows artifact
@@ -97,7 +97,7 @@ Summary:        Local mode for Apache Ivy
 Requires:       %{name} = %{version}-%{release}
 Requires:       %{?scl_prefix}javapackages-local = %{version}-%{release}
 Requires:       %{?scl_prefix}apache-ivy >= 2.3.0-8
-Requires:       %{?scl_prefix}xmvn-connector-ivy >= 2
+Requires:       %{?scl_prefix}xmvn-connector-ivy >= 3.0.0
 
 %description -n %{?scl_prefix}ivy-local
 This package implements local mode for Apache Ivy, which allows
@@ -117,9 +117,9 @@ packaging in Linux distributions
 Summary:        Non-essential macros and scripts for Java packaging support
 Requires:       %{name} = %{version}-%{release}
 %if ! 0%{?bootstrap}
-Requires:       %{?scl_prefix}xmvn-install >= 2
-Requires:       %{?scl_prefix}xmvn-subst >= 2
-Requires:       %{?scl_prefix}xmvn-resolve >= 2
+Requires:       %{?scl_prefix}xmvn-install >= 3.0.0
+Requires:       %{?scl_prefix}xmvn-subst >= 3.0.0
+Requires:       %{?scl_prefix}xmvn-resolve >= 3.0.0
 %endif
 # Java build systems don't have hard requirement on java-devel, so it should be there
 Requires:       java-devel
