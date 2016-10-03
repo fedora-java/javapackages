@@ -2,7 +2,7 @@ initscript {
     dependencies {
         classpath files('/usr/share/java/xmvn/xmvn-connector-gradle.jar')
         classpath files('/usr/share/java/xmvn/xmvn-api.jar')
-        classpath files('/usr/share/java/xmvn/xmvn-launcher.jar')
+        classpath files('/usr/share/java/xmvn/xmvn-core.jar')
     }
 }
 
