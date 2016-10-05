@@ -15,9 +15,10 @@ from lxml import etree
 
 DIRPATH = path.dirname(path.realpath(__file__))
 SCRIPT_ENV = {'PATH':'{mock}:{real}'.format(mock=DIRPATH,
-                                            real=os.environ['PATH']),
-              'PYTHONPATH':os.environ['PYTHONPATH'],
-              'COVERAGE_PROCESS_START':os.environ['COVERAGE_PROCESS_START']}
+                                            real=os.environ['PATH'])}
+SCRIPT_ENV.update({var: os.environ[var] for var in
+                   ('PYTHONPATH', 'COVERAGE_PROCESS_START')
+                   if var in os.environ})
 
 
 def call_script(name, args, stdin=None, extra_env={}):
