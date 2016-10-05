@@ -79,6 +79,11 @@ class PmRequestTest(unittest.TestCase):
         self.assertEqual(ret, 1)
         self.assertEqual(err.rstrip(), "Unsupported artifact type")
 
+    def test_usage(self):
+        (out, err, ret) = call_script(self.scriptpath, [])
+        self.assertEqual(ret, 1)
+        self.assertEqual(err.rstrip(), "Usage: artifact-type artifact-coordinates")
+
     def tearDown(self):
         try:
             os.unlink(self.sock_path)
