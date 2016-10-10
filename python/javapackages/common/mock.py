@@ -63,7 +63,7 @@ def install_artifact(dep):
         if status != 'ok\n':
             raise InstallationException(dep, out)
     except socket.error as e:
-        raise ConnectionException(e.message)
+        raise ConnectionException(str(e))
     finally:
         sock.close()
 
