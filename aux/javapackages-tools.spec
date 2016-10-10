@@ -62,6 +62,7 @@ This package provides macros and scripts to support Java packaging.
 %package -n %{?scl_prefix}maven-local
 Summary:        Macros and scripts for Maven packaging support
 Requires:       %{name} = %{version}-%{release}
+%if ! 0%{?bootstrap}
 Requires:       %{?scl_prefix}javapackages-local = %{version}-%{release}
 Requires:       %{?scl_prefix}xmvn-minimal >= 3.0.0
 Requires:       %{?scl_prefix}xmvn-mojo >= 3.0.0
@@ -77,6 +78,7 @@ Requires:       %{?scl_prefix}mvn(org.apache.maven.plugins:maven-surefire-plugin
 Requires:       %{?scl_prefix}mvn(org.apache.maven.surefire:surefire-junit4)
 # testng is quite common as well
 Requires:       %{?scl_prefix}mvn(org.apache.maven.surefire:surefire-testng)
+%endif
 
 %description -n %{?scl_prefix}maven-local
 This package provides macros and scripts to support packaging Maven artifacts.
