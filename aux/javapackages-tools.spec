@@ -62,8 +62,8 @@ This package provides macros and scripts to support Java packaging.
 %package -n %{?scl_prefix}maven-local
 Summary:        Macros and scripts for Maven packaging support
 Requires:       %{name} = %{version}-%{release}
-%if ! 0%{?bootstrap}
 Requires:       %{?scl_prefix}javapackages-local = %{version}-%{release}
+%if ! 0%{?bootstrap}
 Requires:       %{?scl_prefix}xmvn-minimal >= 3.0.0
 Requires:       %{?scl_prefix}xmvn-mojo >= 3.0.0
 Requires:       %{?scl_prefix}xmvn-connector-aether >= 3.0.0
