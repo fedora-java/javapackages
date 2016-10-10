@@ -44,7 +44,7 @@
 #
 # Subpackage name can contain backreferences in form @n.
 #
-%mvn_package %{pyinterpreter} %{javadir}-utils/mvn_package.py
+%mvn_package %{?scl:scl enable %{?scl_maven} %{scl} -- }%{pyinterpreter} %{javadir}-utils/mvn_package.py
 
 
 # %mvn_alias - create alias(es) for given Maven artifact(s)
@@ -64,7 +64,7 @@
 # AliasGId, aliasAId and aliasVer can contain backreferences in form @n,
 # which can refer only to respective parts.
 #
-%mvn_alias %{pyinterpreter} %{javadir}-utils/mvn_alias.py
+%mvn_alias %{?scl:scl enable %{?scl_maven} %{scl} -- }%{pyinterpreter} %{javadir}-utils/mvn_alias.py
 
 
 # %mvn_file - specify file name(s) for Maven artifact(s)
@@ -80,7 +80,7 @@
 # are given then the first one will be primary name of the artifact and
 # additional names will be symbolic links pointing to the primary file.
 #
-%mvn_file %{pyinterpreter} %{javadir}-utils/mvn_file.py
+%mvn_file %{?scl:scl enable %{?scl_maven} %{scl} -- }%{pyinterpreter} %{javadir}-utils/mvn_file.py
 
 # %mvn_compat_version - specify file name(s) for Maven artifact(s)
 #
@@ -96,7 +96,7 @@
 # additional versions will be symbolic links pointing to the primary
 # version.
 #
-%mvn_compat_version %{pyinterpreter} %{javadir}-utils/mvn_compat_version.py
+%mvn_compat_version %{?scl:scl enable %{?scl_maven} %{scl} -- }%{pyinterpreter} %{javadir}-utils/mvn_compat_version.py
 
 
 # %mvn_config - set XMvn configuration option
@@ -112,14 +112,14 @@
 # For information about available configuration options, see XMvn
 # configuration reference, available on XMvn website.
 #
-%mvn_config %{pyinterpreter} %{javadir}-utils/mvn_config.py
+%mvn_config %{?scl:scl enable %{?scl_maven} %{scl} -- }%{pyinterpreter} %{javadir}-utils/mvn_config.py
 
 
 # %mvn_artifact - add Maven artifact to be installed
 #
 # Usage: %mvn_artifact <pom> [<artifact-file>]
 #
-%mvn_artifact %{pyinterpreter} %{javadir}-utils/mvn_artifact.py
+%mvn_artifact %{?scl:scl enable %{?scl_maven} %{scl} -- }%{pyinterpreter} %{javadir}-utils/mvn_artifact.py
 
 
 # %mvn_build - build Maven project
@@ -131,7 +131,7 @@
 #
 # For summary of accepted options execute `mvn-build --help` command.
 #
-%mvn_build %{pyinterpreter} %{javadir}-utils/mvn_build.py %{?xmvn_bootstrap: -b} %{?_without_javadoc: -j $(> .mfiles-javadoc)}%{?_without_tests: -f}
+%mvn_build %{?scl:scl enable %{?scl_maven} %{scl} -- }%{pyinterpreter} %{javadir}-utils/mvn_build.py %{?xmvn_bootstrap: -b} %{?_without_javadoc: -j $(> .mfiles-javadoc)}%{?_without_tests: -f}
 
 
 # %gradle_build - build Gradle project
@@ -143,7 +143,7 @@
 #
 # For summary of accepted options execute `mvn-build --help` command.
 #
-%gradle_build %{pyinterpreter} %{javadir}-utils/mvn_build.py --gradle %{?xmvn_bootstrap: -b} %{?_without_javadoc: -j $(> .mfiles-javadoc)}%{?_without_tests: -f}
+%gradle_build %{?scl:scl enable %{?scl_maven} %{scl} -- }%{pyinterpreter} %{javadir}-utils/mvn_build.py --gradle %{?xmvn_bootstrap: -b} %{?_without_javadoc: -j $(> .mfiles-javadoc)}%{?_without_tests: -f}
 
 
 # %mvn_install - install Maven project
@@ -153,7 +153,7 @@
 # This macro causes previously built Maven project to be installed into
 # buildroot. It is intended to be placed in %install section of spec file.
 #
-%mvn_install(J:X) xmvn-install %{?-X} -R .xmvn-reactor -n %{?scl:%{pkg_name}}%{!?scl:%{name}} -d "%{buildroot}" \
+%mvn_install(J:X) %{?scl:scl enable %{?scl_maven} %{scl} -- }xmvn-install %{?-X} -R .xmvn-reactor -n %{?scl:%{pkg_name}}%{!?scl:%{name}} -d "%{buildroot}" \
 %{-J*:jdir="%{-J*}"}%{!-J*:jdir=target/site/apidocs; [ -d .xmvn/apidocs ] && jdir=.xmvn/apidocs} \
 if [ -d "${jdir}" ]; then \
    install -dm755 %{buildroot}%{_javadocdir}/%{?scl:%{pkg_name}}%{!?scl:%{name}} \
@@ -235,7 +235,7 @@ sort -u -o ${_filelist} ${_filelist} \
 #
 
 # Private macro, shouldn't be used directly
-%__pom_call           %{pyinterpreter} %{javadir}-utils/pom_editor.py pom_
+%__pom_call           %{?scl:scl enable %{?scl_maven} %{scl} -- }%{pyinterpreter} %{javadir}-utils/pom_editor.py pom_
 
 
 # %pom_remove_dep - remove dependency on Maven artifact from POM file
