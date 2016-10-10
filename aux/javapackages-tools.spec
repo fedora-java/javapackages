@@ -68,15 +68,15 @@ Requires:       %{?scl_prefix}xmvn-mojo >= 3.0.0
 Requires:       %{?scl_prefix}xmvn-connector-aether >= 3.0.0
 # Common Maven plugins required by almost every build. It wouldn't make
 # sense to explicitly require them in every package built with Maven.
-Requires:       %{?scl_prefix}maven-compiler-plugin
-Requires:       %{?scl_prefix}maven-jar-plugin
-Requires:       %{?scl_prefix}maven-resources-plugin
-Requires:       %{?scl_prefix}maven-surefire-plugin
+Requires:       %{?scl_prefix}mvn(org.apache.maven.plugins:maven-compiler-plugin)
+Requires:       %{?scl_prefix}mvn(org.apache.maven.plugins:maven-jar-plugin)
+Requires:       %{?scl_prefix}mvn(org.apache.maven.plugins:maven-resources-plugin)
+Requires:       %{?scl_prefix}mvn(org.apache.maven.plugins:maven-surefire-plugin)
 # Tests based on JUnit are very common and JUnit itself is small.
 # Include JUnit provider for Surefire just for convenience.
-Requires:       %{?scl_prefix}maven-surefire-provider-junit
+Requires:       %{?scl_prefix}mvn(org.apache.maven.surefire:surefire-junit4)
 # testng is quite common as well
-Requires:       %{?scl_prefix}maven-surefire-provider-testng
+Requires:       %{?scl_prefix}mvn(org.apache.maven.surefire:surefire-testng)
 
 %description -n %{?scl_prefix}maven-local
 This package provides macros and scripts to support packaging Maven artifacts.
