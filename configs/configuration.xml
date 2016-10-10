@@ -7,24 +7,6 @@
     <prefixes>
       <prefix>/</prefix>
     </prefixes>
-    <blacklist>
-      <artifact>
-        <groupId>javax.activation</groupId>
-        <artifactId>activation</artifactId>
-      </artifact>
-      <artifact>
-        <groupId>org.eclipse.jetty.orbit</groupId>
-        <artifactId>javax.activation</artifactId>
-      </artifact>
-      <artifact>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-webdav</artifactId>
-      </artifact>
-      <artifact>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-webdav-jackrabbit</artifactId>
-      </artifact>
-    </blacklist>
   </resolverSettings>
   <installerSettings>
     <metadataDir>usr/share/maven-metadata</metadataDir>
@@ -44,32 +26,6 @@
       <type>jpp</type>
       <properties>
         <root>usr/share/maven-poms</root>
-      </properties>
-      <filter>
-        <equals>
-          <extension/>
-          <string>pom</string>
-        </equals>
-      </filter>
-    </repository>
-    <repository>
-      <id>base-raw-pom-flat</id>
-      <type>flat</type>
-      <properties>
-        <root>usr/share/maven-poms</root>
-      </properties>
-      <filter>
-        <equals>
-          <extension/>
-          <string>pom</string>
-        </equals>
-      </filter>
-    </repository>
-    <repository>
-      <id>base-effective-pom</id>
-      <type>flat</type>
-      <properties>
-        <root>usr/share/maven-effective-poms</root>
       </properties>
       <filter>
         <equals>
@@ -161,20 +117,6 @@
       </filter>
     </repository>
     <repository>
-      <id>base-resolve</id>
-      <type>compound</type>
-      <configuration>
-        <repositories>
-          <repository>base-effective-pom</repository>
-          <repository>base-raw-pom-flat</repository>
-          <repository>base-jar</repository>
-          <repository>base-jni</repository>
-          <repository>base-jenkins-plugin</repository>
-          <repository>base-ivy-xml</repository>
-        </repositories>
-      </configuration>
-    </repository>
-    <repository>
       <id>base-install</id>
       <type>compound</type>
       <configuration>
@@ -186,42 +128,6 @@
           <repository>base-ivy-xml</repository>
         </repositories>
       </configuration>
-    </repository>
-    <repository>
-      <id>resolve-system</id>
-      <type>compound</type>
-      <properties>
-        <prefix>/</prefix>
-      </properties>
-      <configuration>
-        <repositories>
-          <repository>base-resolve</repository>
-        </repositories>
-      </configuration>
-    </repository>
-    <repository>
-      <id>resolve-local</id>
-      <type>maven</type>
-      <properties>
-        <root>.m2</root>
-      </properties>
-    </repository>
-    <repository>
-      <id>resolve</id>
-      <type>compound</type>
-      <configuration>
-        <repositories>
-          <repository>resolve-local</repository>
-          <repository>resolve-system</repository>
-        </repositories>
-      </configuration>
-    </repository>
-    <repository>
-      <id>bisect</id>
-      <type>maven</type>
-      <properties>
-        <root>.m2-bisect</root>
-      </properties>
     </repository>
     <repository>
       <id>install</id>
