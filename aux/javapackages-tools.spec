@@ -50,6 +50,7 @@ BuildRequires:  %{?scl_prefix}xmvn-resolve >= 3.0.0
 
 Requires:       coreutils
 Requires:       findutils
+Requires:       which
 Requires:       lua
 Requires:       %{?scl_prefix}%{python_prefix}-javapackages = %{version}-%{release}
 Requires:       %{python_prefix}
