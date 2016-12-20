@@ -60,7 +60,7 @@ class Manifest(object):
             try:
                 jarfile = ZipFile(self._path)
                 if "META-INF/MANIFEST.MF" in jarfile.namelist():
-                    mf = jarfile.open("META-INF/MANIFEST.MF", "rU")
+                    mf = jarfile.open("META-INF/MANIFEST.MF", "r")
             except IOError:
                 pass
         if mf is None:
@@ -93,7 +93,7 @@ class Manifest(object):
 
     def _normalize_manifest(self):
         lines = []
-        manifest = self._manifest.split(u'\n')
+        manifest = self._manifest.splitlines()
         for line in manifest:
             if line.startswith(' '):
                 lines[-1] += line.strip()
