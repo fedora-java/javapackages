@@ -193,6 +193,5 @@ def _prepare_macros():
                             line = re.sub(r'%\{javadir\}-utils',
                                           java_utils, line)
                         if '%{pyinterpreter}' in line:
-                            line = re.sub(r'%\{pyinterpreter\}',
-                                          sys.executable.split('/')[-1], line)
+                            line = re.sub(r'%\{pyinterpreter\}', sys.executable, line)
                         rpmmacros.write(line)
