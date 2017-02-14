@@ -5,6 +5,7 @@
 # Avoid circular dependency on itself when bootstrapping
 %{!?_with_bootstrap: %global bootstrap 0}
 
+%bcond_without gradle
 %bcond_without tests
 
 %global pkg_name javapackages-tools
@@ -84,6 +85,7 @@ Requires:       %{?scl_prefix}mvn(org.apache.maven.surefire:surefire-testng)
 %description -n %{?scl_prefix}maven-local
 This package provides macros and scripts to support packaging Maven artifacts.
 
+%if %{with gradle}
 %package -n %{?scl_prefix}gradle-local
 Summary:        Local mode for Gradle
 Requires:       %{name} = %{version}-%{release}
@@ -94,6 +96,7 @@ Requires:       %{?scl_prefix}xmvn-connector-gradle >= 3.0.0
 %description -n %{?scl_prefix}gradle-local
 This package implements local mode for Gradle, which allows artifact
 resolution using XMvn resolver.
+%endif
 
 %package -n %{?scl_prefix}ivy-local
 Summary:        Local mode for Apache Ivy
@@ -151,6 +154,12 @@ sed -e 's/.[17]$/&.gz/' -e 's/.py$/&*/' -i files-*
 
 %{?scl: sed -i 's:${rpmconfigdir}/macros.d:%{_root_sysconfdir}/rpm:' install}
 
+%if %{without gradle}
+rm -rf %{buildroot}%{_bindir}/gradle-local
+rm -rf %{buildroot}%{_datadir}/gradle-local
+rm -rf %{buildroot}%{_mandir}/man7/gradle_build.7
+%endif
+
 %if %{with tests}
 %check
 %{?scl:scl enable %{scl} - << "EOF"}
@@ -165,7 +174,9 @@ set -e -x
 
 %files -n %{?scl_prefix}maven-local -f files-maven
 
+%if %{with gradle}
 %files -n %{?scl_prefix}gradle-local -f files-gradle
+%endif
 
 %files -n %{?scl_prefix}ivy-local -f files-ivy
 
