@@ -76,7 +76,8 @@ Requires:       %{?scl_prefix}mvn(org.apache.maven.plugins:maven-jar-plugin)
 Requires:       %{?scl_prefix}mvn(org.apache.maven.plugins:maven-resources-plugin)
 Requires:       %{?scl_prefix}mvn(org.apache.maven.plugins:maven-surefire-plugin)
 # Tests based on JUnit are very common and JUnit itself is small.
-# Include JUnit provider for Surefire just for convenience.
+# Include JUnit and JUnit provider for Surefire just for convenience.
+Requires:       %{?scl_prefix}mvn(junit:junit)
 Requires:       %{?scl_prefix}mvn(org.apache.maven.surefire:surefire-junit4)
 # testng is quite common as well
 Requires:       %{?scl_prefix}mvn(org.apache.maven.surefire:surefire-testng)
