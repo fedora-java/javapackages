@@ -43,6 +43,10 @@ for test in test/java-functions/*_test.sh; do
     sh $test || exit 1
 done
 
+if ! coverage --version >/dev/null 2>&1; then
+    alias coverage=:
+fi
+
 cat >.coveragerc <<EOF
 [run]
 parallel = True
