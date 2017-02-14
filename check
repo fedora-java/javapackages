@@ -44,7 +44,7 @@ for test in test/java-functions/*_test.sh; do
 done
 
 if ! coverage --version >/dev/null 2>&1; then
-    alias coverage=:
+    coverage(){ :;}
 fi
 
 cat >.coveragerc <<EOF
