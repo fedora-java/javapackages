@@ -30,6 +30,8 @@
 #
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
+set -e
+
 if ! test -f config.status; then
     echo config.status does not exist. Run configure first. >&2
     exit 1
