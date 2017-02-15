@@ -151,7 +151,9 @@ sed -i 's|mvn_build.py|& --xmvn-javadoc|' $(find %{buildroot} -name macros.fjava
 %endif
 sed -e 's/.[17]$/&.gz/' -e 's/.py$/&*/' -i files-*
 
-%{?scl: sed -i 's:${rpmconfigdir}/macros.d:%{_root_sysconfdir}/rpm:' install}
+%if 0%{?fedora}
+sed -i 's:${rpmconfigdir}/macros.d:%{!?scl:%{_sysconfdir}}%{?scl:%{_root_sysconfdir}}/rpm:' install
+%endif
 
 %if %{without gradle}
 rm -rf %{buildroot}%{_bindir}/gradle-local
