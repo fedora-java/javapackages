@@ -56,6 +56,10 @@ Requires:       which
 Requires:       lua
 
 Provides:       %{?scl_prefix}jpackage-utils = %{version}-%{release}
+# These could be generated automatically, but then we would need to
+# depend on javapackages-local for dependency generator.
+Provides:       %{?scl_prefix}mvn(com.sun:tools) = SYSTEM
+Provides:       %{?scl_prefix}mvn(sun.jdk:jconsole) = SYSTEM
 
 %description
 This package provides macros and scripts to support Java packaging.
