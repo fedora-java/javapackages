@@ -2,24 +2,23 @@
 # provided pseudo-artifacts: com.sun:tools and sun.jdk:jconsole.
 %global __requires_exclude_from %{?__requires_exclude_from:%__requires_exclude_from|}/maven-metadata/javapackages-metadata.xml$
 
-# Avoid circular dependency on itself when bootstrapping
-%{!?_with_bootstrap: %global bootstrap 0}
-
+%bcond_without python
 %bcond_without gradle
 %bcond_without tests
 
 %global pkg_name javapackages-tools
 %{?scl:%scl_package javapackages-tools}
-%if ! 0%{?bootstrap}
-%{?sclraw_find_provides_and_requires}
-%endif
 
+%if %{without python}
+%global python_interpreter %{nil}
+%else
 %if 0%{?fedora}
 %global python_prefix python3
 %global python_interpreter %{__python3}
 %else
 %global python_prefix python
 %global python_interpreter %{__python2}
+%endif
 %endif
 
 
@@ -35,16 +34,18 @@ Source0:        javapackages-%{version}.tar.gz
 
 BuildArch:      noarch
 
+BuildRequires:  coreutils
+BuildRequires:  which
+BuildRequires:  make
+BuildRequires:  asciidoc
+BuildRequires:  xmlto
+BuildRequires:  scl-utils-build
+%if %{with python}
 BuildRequires:  %{python_prefix}-devel
 BuildRequires:  %{python_prefix}-lxml
 BuildRequires:  %{python_prefix}-setuptools
 BuildRequires:  %{python_prefix}-nose
 BuildRequires:  %{python_prefix}-six
-BuildRequires:  make
-BuildRequires:  asciidoc
-BuildRequires:  xmlto
-BuildRequires:  scl-utils-build
-%if ! 0%{?bootstrap}
 BuildRequires:  %{?scl_prefix}javapackages-tools >= 4.0.0
 BuildRequires:  %{?scl_prefix}xmvn-resolve >= 3.0.0
 %endif
@@ -53,19 +54,17 @@ Requires:       coreutils
 Requires:       findutils
 Requires:       which
 Requires:       lua
-Requires:       %{?scl_prefix}%{python_prefix}-javapackages = %{version}-%{release}
-Requires:       %{python_prefix}
 
 Provides:       %{?scl_prefix}jpackage-utils = %{version}-%{release}
 
 %description
 This package provides macros and scripts to support Java packaging.
 
+%if %{with python}
 %package -n %{?scl_prefix}maven-local
 Summary:        Macros and scripts for Maven packaging support
 Requires:       %{name} = %{version}-%{release}
 Requires:       %{?scl_prefix}javapackages-local = %{version}-%{release}
-%if ! 0%{?bootstrap}
 Requires:       %{?scl_prefix}xmvn-minimal >= 3.0.0
 Requires:       %{?scl_prefix}xmvn-mojo >= 3.0.0
 Requires:       %{?scl_prefix}xmvn-connector-aether >= 3.0.0
@@ -81,7 +80,6 @@ Requires:       %{?scl_prefix}mvn(junit:junit)
 Requires:       %{?scl_prefix}mvn(org.apache.maven.surefire:surefire-junit4)
 # testng is quite common as well
 Requires:       %{?scl_prefix}mvn(org.apache.maven.surefire:surefire-testng)
-%endif
 
 %description -n %{?scl_prefix}maven-local
 This package provides macros and scripts to support packaging Maven artifacts.
@@ -123,16 +121,17 @@ packaging in Linux distributions
 %package -n %{?scl_prefix}javapackages-local
 Summary:        Non-essential macros and scripts for Java packaging support
 Requires:       %{name} = %{version}-%{release}
-%if ! 0%{?bootstrap}
 Requires:       %{?scl_prefix}xmvn-install >= 3.0.0
 Requires:       %{?scl_prefix}xmvn-subst >= 3.0.0
 Requires:       %{?scl_prefix}xmvn-resolve >= 3.0.0
-%endif
 # Java build systems don't have hard requirement on java-devel, so it should be there
 Requires:       java-devel
+Requires:       %{?scl_prefix}%{python_prefix}-javapackages = %{version}-%{release}
+Requires:       %{python_prefix}
 
 %description -n %{?scl_prefix}javapackages-local
 This package provides non-essential macros and scripts to support Java packaging.
+%endif
 
 %prep
 %setup -q -n %{pkg_name}-%{version}
@@ -141,16 +140,15 @@ This package provides non-essential macros and scripts to support Java packaging
 %{?scl: sed -i '/<groupId>/{h;s|<.*|<namespace>%{scl}</namespace>|;p;g}' etc/javapackages-metadata.xml}
 
 %build
-%{?scl:scl enable %{scl} - << "EOF"}
-set -e -x
-%configure --pyinterpreter=%{python_interpreter}
+sh -x %configure --pyinterpreter=%{python_interpreter}
 ./build
-%{?scl:EOF}
 
 %install
 ./install
 
+%if %{with python}
 sed -i 's|mvn_build.py|& --xmvn-javadoc|' $(find %{buildroot} -name macros.fjava)
+%endif
 sed -e 's/.[17]$/&.gz/' -e 's/.py$/&*/' -i files-*
 
 %{?scl: sed -i 's:${rpmconfigdir}/macros.d:%{_root_sysconfdir}/rpm:' install}
@@ -163,14 +161,12 @@ rm -rf %{buildroot}%{_mandir}/man7/gradle_build.7
 
 %if %{with tests}
 %check
-%{?scl:scl enable %{scl} - << "EOF"}
-set -e -x
 ./check
-%{?scl:EOF}
 %endif
 
 %files -f files-common
 
+%if %{with python}
 %files -n %{?scl_prefix}javapackages-local -f files-local
 
 %files -n %{?scl_prefix}maven-local -f files-maven
@@ -183,5 +179,6 @@ set -e -x
 
 %files -n %{?scl_prefix}%{python_prefix}-javapackages -f files-python
 %license LICENSE
+%endif
 
 %changelog

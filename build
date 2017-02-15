@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2013-2014 Red Hat, Inc.
+# Copyright (c) 2013-2017 Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -121,4 +121,6 @@ manpage build-jar-repository
 manpage rebuild-jar-repository
 manpage shade-jar
 
-(cd ./python && "${pyinterpreter}" setup.py build)
+if [ -n "$pyinterpreter" ]; then
+    (cd ./python && "${pyinterpreter}" setup.py build)
+fi

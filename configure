@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2013 Red Hat, Inc.
+# Copyright (c) 2013-2017 Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -61,11 +61,6 @@ pyinterpreter
 abrtlibdir
 "
 
-vars_re=$(echo $vars | sed 's/ /\\|/g')
-
-eval $(for _; do echo "$_"; done |
-    sed -n 's/^--\('"$vars_re"'\)=\(.*\)$/\1="\2"/;T;p')
-
 test -z "${prefix}" && prefix="/usr/local"
 test -z "${bindir}" && bindir="${prefix}/bin"
 test -z "${datadir}" && datadir="${prefix}/share"
@@ -79,7 +74,11 @@ test -z "${m2home}" && m2home="${datadir}/xmvn"
 test -z "${pyinterpreter}" && pyinterpreter=$(which python)
 test -z "${abrtlibdir}" && abrtlibdir="${prefix}/lib/abrt-java-connector"
 
+vars_re=$(echo $vars | sed 's/ /\\|/g')
+
+eval $(for _; do echo "$_"; done |
+    sed -n 's/^--\('"$vars_re"'\)=\(.*\)$/\1="\2"/;T;p')
+
 eval $(sed -n 's/^%_\('"$vars_re"'\)\ *\(.*\)$/\1="\2"/;T;s/%{_\(.*}\)/${\1/;p' macros.d/macros.jpackage)
 
 set | sed -n 's/^\('"$vars_re"'\)=/&/;T;p' >config.status
-

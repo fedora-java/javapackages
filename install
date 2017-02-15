@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2013-2014 Red Hat, Inc.
+# Copyright (c) 2013-2017 Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -104,7 +104,6 @@ inst_exec target/diff-jars "${bindir}"
 inst_exec target/find-jar "${bindir}"
 inst_exec target/rebuild-jar-repository "${bindir}"
 inst_exec target/shade-jar "${bindir}"
-inst_exec target/xmvn-builddep "${bindir}"
 
 link "${bindir}/abs2rel" "${javadir}-utils/abs2rel.sh"
 
@@ -113,12 +112,8 @@ inst_config target/java.conf "${javaconfdir}"
 
 inst_data target/java-functions "${javadir}-utils"
 inst_exec java-utils/java-wrapper "${javadir}-utils"
-inst_data java-utils/maven_depmap.py "${javadir}-utils"
-inst_data java-utils/pom_editor.py "${javadir}-utils"
-inst_data java-utils/request-artifact.py "${javadir}-utils"
 
 inst_data target/macros.jpackage "${rpmconfigdir}/macros.d"
-inst_data target/macros.fjava "${rpmconfigdir}/macros.d"
 
 inst_data target/build-classpath.1 "${mandir}/man1"
 inst_data target/build-jar-repository.1 "${mandir}/man1"
@@ -127,6 +122,36 @@ inst_data target/rebuild-jar-repository.1 "${mandir}/man1"
 inst_data target/shade-jar.1 "${mandir}/man1"
 inst_data target/abs2rel.1 "${mandir}/man1"
 inst_data target/find-jar.1 "${mandir}/man1"
+
+if [ -z "$pyinterpreter" ]; then
+    exit 0
+fi
+
+exec >files-local
+inst_exec target/xmvn-builddep "${bindir}"
+
+inst_data java-utils/maven_depmap.py "${javadir}-utils"
+inst_data java-utils/pom_editor.py "${javadir}-utils"
+inst_data java-utils/request-artifact.py "${javadir}-utils"
+inst_data java-utils/builddep.py "${javadir}-utils"
+inst_data java-utils/mvn_alias.py "${javadir}-utils"
+inst_data java-utils/mvn_artifact.py "${javadir}-utils"
+inst_data java-utils/mvn_build.py "${javadir}-utils"
+inst_data java-utils/mvn_compat_version.py "${javadir}-utils"
+inst_data java-utils/mvn_config.py "${javadir}-utils"
+inst_data java-utils/mvn_file.py "${javadir}-utils"
+inst_data java-utils/mvn_package.py "${javadir}-utils"
+
+inst_data target/macros.fjava "${rpmconfigdir}/macros.d"
+
+inst_data target/mvn_alias.7 "${mandir}/man7"
+inst_data target/mvn_artifact.7 "${mandir}/man7"
+inst_data target/mvn_build.7 "${mandir}/man7"
+inst_data target/mvn_compat_version.7 "${mandir}/man7"
+inst_data target/mvn_config.7 "${mandir}/man7"
+inst_data target/mvn_file.7 "${mandir}/man7"
+inst_data target/mvn_install.7 "${mandir}/man7"
+inst_data target/mvn_package.7 "${mandir}/man7"
 inst_data target/pom_add_dep.7 "${mandir}/man7"
 inst_data target/pom_add_parent.7 "${mandir}/man7"
 inst_data target/pom_add_plugin.7 "${mandir}/man7"
@@ -157,25 +182,6 @@ inst_data etc/javapackages-metadata.xml "${datadir}/maven-metadata"
 inst_data configs/configuration.xml "${m2home}"
 
 inst_config etc/javapackages-config.json "${javaconfdir}"
-
-exec >files-local
-inst_data java-utils/builddep.py "${javadir}-utils"
-inst_data java-utils/mvn_alias.py "${javadir}-utils"
-inst_data java-utils/mvn_artifact.py "${javadir}-utils"
-inst_data java-utils/mvn_build.py "${javadir}-utils"
-inst_data java-utils/mvn_compat_version.py "${javadir}-utils"
-inst_data java-utils/mvn_config.py "${javadir}-utils"
-inst_data java-utils/mvn_file.py "${javadir}-utils"
-inst_data java-utils/mvn_package.py "${javadir}-utils"
-
-inst_data target/mvn_alias.7 "${mandir}/man7"
-inst_data target/mvn_artifact.7 "${mandir}/man7"
-inst_data target/mvn_build.7 "${mandir}/man7"
-inst_data target/mvn_compat_version.7 "${mandir}/man7"
-inst_data target/mvn_config.7 "${mandir}/man7"
-inst_data target/mvn_file.7 "${mandir}/man7"
-inst_data target/mvn_install.7 "${mandir}/man7"
-inst_data target/mvn_package.7 "${mandir}/man7"
 
 exec >files-maven
 

@@ -43,6 +43,10 @@ for test in test/java-functions/*_test.sh; do
     sh $test || exit 1
 done
 
+if [ -z "$pyinterpreter" ]; then
+    exit 0
+fi
+
 if ! coverage --version >/dev/null 2>&1; then
     coverage(){ :;}
 fi
