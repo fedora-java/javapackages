@@ -389,20 +389,20 @@ find_jar()
 {
     local IFS=:
     local artifact="${1}"
-    local m2home="${M2_HOME:-%{m2home}}"
+    local cmd=$(which xmvn-resolve 2>/dev/null || :)
 
     # If artifact contains semicolon then assume it specifies Maven
     # artifact coordinates.
     set -- ${artifact}
     if [ ${#} -gt 1 ]; then
-	_log "Using XMvn location: ${m2home}"
-	if ! [ -x "${m2home}/bin/xmvn-resolve" ]; then
-            echo "${0}: Unable to execute xmvn-resolve." >&2
-            echo "${0}: Make sure that XMvn is installed and M2_HOME is set correctly." >&2
+	if [ -z "${cmd}" ]; then
+            echo "${0}: Unable to find xmvn-resolve." >&2
+            echo "${0}: Make sure that xmvn-resolve package is installed." >&2
             return 1
 	fi
+	_log "Using xmvn-resolve: ${cmd}"
 
-	"${m2home}/bin/xmvn-resolve" -c "${artifact}"
+	"${cmd}" -c "${artifact}"
 	return ${?}
     fi
 
