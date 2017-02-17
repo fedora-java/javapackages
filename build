@@ -100,6 +100,7 @@ expand bin/rebuild-jar-repository
 expand bin/shade-jar
 expand bin/xmvn-builddep
 expand etc/java.conf
+expand etc/eclipse.conf
 expand macros.d/macros.jpackage
 expand macros.d/macros.fjava
 expand java-utils/java-functions
