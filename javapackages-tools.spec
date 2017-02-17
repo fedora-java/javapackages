@@ -47,7 +47,6 @@ BuildRequires:  %{python_prefix}-six
 Requires:       coreutils
 Requires:       findutils
 Requires:       which
-Requires:       lua
 
 Provides:       %{?scl_prefix}jpackage-utils = %{version}-%{release}
 # These could be generated automatically, but then we would need to

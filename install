@@ -91,7 +91,6 @@ dir "${mavenpomdir}"
 dir "${datadir}/maven-metadata"
 dir "${m2home}"
 
-inst_exec target/abs2rel "${bindir}"
 inst_exec target/build-classpath "${bindir}"
 inst_exec target/build-classpath-directory "${bindir}"
 inst_exec target/build-jar-repository "${bindir}"
@@ -102,8 +101,6 @@ inst_exec target/diff-jars "${bindir}"
 inst_exec target/find-jar "${bindir}"
 inst_exec target/rebuild-jar-repository "${bindir}"
 inst_exec target/shade-jar "${bindir}"
-
-link "${bindir}/abs2rel" "${javadir}-utils/abs2rel.sh"
 
 inst_config etc/font.properties "${javaconfdir}"
 inst_config target/java.conf "${javaconfdir}"
@@ -119,7 +116,6 @@ inst_data target/build-jar-repository.1 "${mandir}/man1"
 inst_data man/diff-jars.1 "${mandir}/man1"
 inst_data target/rebuild-jar-repository.1 "${mandir}/man1"
 inst_data target/shade-jar.1 "${mandir}/man1"
-inst_data target/abs2rel.1 "${mandir}/man1"
 inst_data target/find-jar.1 "${mandir}/man1"
 
 inst_data target/javapackages-metadata.xml "${datadir}/maven-metadata"
@@ -136,7 +132,10 @@ dir "${rpmconfigdir}"
 dir "${rpmconfigdir}/macros.d"
 dir "${rpmconfigdir}/fileattrs"
 
+inst_exec target/abs2rel "${bindir}"
 inst_exec target/xmvn-builddep "${bindir}"
+
+link "${bindir}/abs2rel" "${javadir}-utils/abs2rel.sh"
 
 inst_data java-utils/maven_depmap.py "${javadir}-utils"
 inst_data java-utils/pom_editor.py "${javadir}-utils"
@@ -152,6 +151,7 @@ inst_data java-utils/mvn_package.py "${javadir}-utils"
 
 inst_data target/macros.fjava "${rpmconfigdir}/macros.d"
 
+inst_data target/abs2rel.1 "${mandir}/man1"
 inst_data target/mvn_alias.7 "${mandir}/man7"
 inst_data target/mvn_artifact.7 "${mandir}/man7"
 inst_data target/mvn_build.7 "${mandir}/man7"

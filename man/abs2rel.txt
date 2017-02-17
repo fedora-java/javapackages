@@ -24,6 +24,10 @@ EXAMPLES
 
 *abs2rel foo/bar foo/baz* will print *../bar* on standard output.
 
+AUTHOR
+------
+Written by Mikolaj Izdebski.
+
 REPORTING BUGS
 --------------
 Bugs should be reported through Java Pacakges Tools issue tracker at
