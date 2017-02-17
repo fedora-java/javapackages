@@ -2,23 +2,18 @@
 # provided pseudo-artifacts: com.sun:tools and sun.jdk:jconsole.
 %global __requires_exclude_from %{?__requires_exclude_from:%__requires_exclude_from|}/maven-metadata/javapackages-metadata.xml$
 
-%bcond_without python
 %bcond_without gradle
 %bcond_without tests
 
 %global pkg_name javapackages-tools
 %{?scl:%scl_package javapackages-tools}
 
-%if %{without python}
-%global python_interpreter %{nil}
-%else
 %if 0%{?fedora}
 %global python_prefix python3
 %global python_interpreter %{__python3}
 %else
 %global python_prefix python
 %global python_interpreter %{__python2}
-%endif
 %endif
 
 
@@ -40,15 +35,11 @@ BuildRequires:  make
 BuildRequires:  asciidoc
 BuildRequires:  xmlto
 BuildRequires:  scl-utils-build
-%if %{with python}
 BuildRequires:  %{python_prefix}-devel
 BuildRequires:  %{python_prefix}-lxml
 BuildRequires:  %{python_prefix}-setuptools
 BuildRequires:  %{python_prefix}-nose
 BuildRequires:  %{python_prefix}-six
-BuildRequires:  %{?scl_prefix}javapackages-tools >= 4.0.0
-BuildRequires:  %{?scl_prefix}xmvn-resolve >= 3.0.0
-%endif
 
 Requires:       coreutils
 Requires:       findutils
@@ -64,7 +55,6 @@ Provides:       %{?scl_prefix}mvn(sun.jdk:jconsole) = SYSTEM
 %description
 This package provides macros and scripts to support Java packaging.
 
-%if %{with python}
 %package -n %{?scl_prefix}maven-local
 Summary:        Macros and scripts for Maven packaging support
 Requires:       %{name} = %{version}-%{release}
@@ -135,7 +125,6 @@ Requires:       %{python_prefix}
 
 %description -n %{?scl_prefix}javapackages-local
 This package provides non-essential macros and scripts to support Java packaging.
-%endif
 
 %prep
 %setup -q -n %{pkg_name}-%{version}
@@ -150,9 +139,7 @@ sh -x %configure --pyinterpreter=%{python_interpreter}
 %install
 ./install
 
-%if %{with python}
 sed -i 's|mvn_build.py|& --xmvn-javadoc|' $(find %{buildroot} -name macros.fjava)
-%endif
 sed -e 's/.[17]$/&.gz/' -e 's/.py$/&*/' -i files-*
 
 %if 0%{?fedora}
@@ -172,7 +159,6 @@ rm -rf %{buildroot}%{_mandir}/man7/gradle_build.7
 
 %files -f files-common
 
-%if %{with python}
 %files -n %{?scl_prefix}javapackages-local -f files-local
 
 %files -n %{?scl_prefix}maven-local -f files-maven
@@ -185,6 +171,5 @@ rm -rf %{buildroot}%{_mandir}/man7/gradle_build.7
 
 %files -n %{?scl_prefix}%{python_prefix}-javapackages -f files-python
 %license LICENSE
-%endif
 
 %changelog
