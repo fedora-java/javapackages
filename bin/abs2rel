@@ -1,76 +1,51 @@
-#!/usr/bin/lua
+#!%{pyinterpreter}
+# Copyright (c) 2017, Red Hat, Inc.
+#
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Red Hat nor the names of its
+#    contributors may be used to endorse or promote products derived
+#    from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# Authors:  Mikolaj Izdebski <mizdebsk@redhat.com>
 
---[[
-abs2rel for Lua
+from __future__ import print_function
 
-split and split_path taken from "Split a string with a pattern, Take Two"
-  http://lua-users.org/wiki/SplitJoin
---]]
+import os
+import sys
 
-function split(str, pat)
-   local t = {}  -- NOTE: use {n = 0} in Lua-5.0
-   local fpat = "(.-)" .. pat
-   local last_end = 1
-   local s, e, cap = str:find(fpat, 1)
-   while s do
-      if s ~= 1 or cap ~= "" then
-	 table.insert(t,cap)
-      end
-      last_end = e+1
-      s, e, cap = str:find(fpat, last_end)
-   end
-   if last_end <= #str then
-      cap = str:sub(last_end)
-      table.insert(t, cap)
-   end
-   return t
-end
+if len(sys.argv) != 3:
+    print("Usage: {0} <PATH> <BASE>"
+          .format(os.path.basename(sys.argv[0])),
+          file=sys.stderr)
+    sys.exit(1)
 
-function split_path(str)
-   return split(str,'[\\/]+')
-end
+print(os.path.relpath(*sys.argv[1:]))
 
--- parts = split_path("/usr/local/bin")
---> {'usr','local','bin'}
 
-function join(words, sep)
-   local s = ""
-   for i,v in ipairs(words) do
-      s = s .. sep .. v
-   end
-   return string.sub (s, string.len(sep)+1)
-end
-
-function abs2rel(path, base)
-   if path == base then return "." end
-   local pathdirs = split_path(path)
-   local basedirs = split_path(base)
-   local i = 1
-   local rem_i = math.min(#pathdirs, #basedirs)
-
-   -- remove common parts of both paths
-   while (rem_i > 0) and (pathdirs[i] == basedirs[i]) do
-      rem_i = rem_i - 1
-      table.remove(pathdirs, 1)
-      table.remove(basedirs, 1)
-   end
-
-   -- now for each remaining basedirs, replace them with ..
-   if #basedirs > 0 then
-      for i, v in ipairs(basedirs) do
-	 basedirs[i] = ".."
-      end
-   end
-   for i, v in ipairs(pathdirs) do
-      basedirs[#basedirs+1] = v
-   end
-   return join(basedirs, "/")
-end
-
-if #arg ~= 2 then
-   io.stderr:write("usage: " .. arg[0] .. " <PATH> <BASE>\n")
-   os.exit(1)
-end
-
-print(abs2rel(arg[1], arg[2]))
-
+# Local Variables:
+# mode: Python
+# End:
+# vi: ft=python

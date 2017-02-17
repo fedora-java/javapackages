@@ -121,6 +121,17 @@ def javautils_script(name, fnargs):
     return test_decorator
 
 
+def bindir_script(name, fnargs):
+    def test_decorator(fun):
+        @wraps(fun)
+        def test_decorated(self):
+            scriptpath = path.join(DIRPATH, '..', 'bin', name)
+            (stdout, stderr, return_value) = call_script(scriptpath, fnargs)
+            fun(self, stdout, stderr, return_value)
+        return test_decorated
+    return test_decorator
+
+
 def call_rpmgen(rpmgen_name, filelist_prefix, filelist, env=None,
                 config=''):
     scriptpath = path.join(DIRPATH, '..', 'depgenerators', rpmgen_name)
