@@ -108,6 +108,9 @@ expand depgenerators/maven.prov
 expand depgenerators/osgi.req
 expand depgenerators/osgi.prov
 expand depgenerators/javadoc.req
+expand depgenerators/fileattrs/osgi.attr
+expand depgenerators/fileattrs/maven.attr
+expand depgenerators/fileattrs/javadoc.attr
 
 manpage abs2rel
 manpage find-jar

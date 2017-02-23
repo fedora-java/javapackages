@@ -1,4 +1,4 @@
-%__osgi_provides	%{?scl:%{javadir}-utils/scl-enable %{?scl_maven} %{scl} -- }%{_rpmconfigdir}/osgi.prov
+%__osgi_provides	%{?scl:@{javadir}-utils/scl-enable %{?scl_maven} @{scl} -- }%{_rpmconfigdir}/osgi.prov
 %__osgi_provides_opts	--cachedir %{_builddir}/%{?buildsubdir} --rpm-pid %{lua:print(math.floor(posix.getprocessid("pid")))} %{?scl:--scl %{?scl}}
 %__osgi_requires	%{!?scl:%{_rpmconfigdir}/osgi.req}%{?scl:%{_root_bindir}/true}
 %__osgi_requires_opts	--cachedir %{_builddir}/%{?buildsubdir} --rpm-pid %{lua:print(math.floor(posix.getprocessid("pid")))} %{?scl:--scl %{?scl}}
