@@ -7,14 +7,14 @@
             <artifactId>tools</artifactId>
             <version>SYSTEM</version>
             <path>${JAVA_HOME}/../lib/tools.jar</path>
-            <namespace>%{scl}</namespace>
+            <namespace>@{scl}</namespace>
         </artifact>
         <artifact>
             <groupId>sun.jdk</groupId>
             <artifactId>jconsole</artifactId>
             <version>SYSTEM</version>
             <path>${JAVA_HOME}/../lib/jconsole.jar</path>
-            <namespace>%{scl}</namespace>
+            <namespace>@{scl}</namespace>
         </artifact>
     </artifacts>
 </metadata>

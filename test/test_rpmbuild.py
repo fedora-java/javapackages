@@ -189,9 +189,9 @@ def _prepare_macros():
                         if '/usr/share/java-utils' in line:
                             line = re.sub(r'/usr/share/java-utils',
                                           java_utils, line)
-                        if '%{javadir}-utils' in line:
-                            line = re.sub(r'%\{javadir\}-utils',
+                        if '@{javadir}-utils' in line:
+                            line = re.sub(r'@\{javadir\}-utils',
                                           java_utils, line)
-                        if '%{pyinterpreter}' in line:
-                            line = re.sub(r'%\{pyinterpreter\}', sys.executable, line)
+                        if '@{pyinterpreter}' in line:
+                            line = re.sub(r'@\{pyinterpreter\}', sys.executable, line)
                         rpmmacros.write(line)

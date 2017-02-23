@@ -2,15 +2,15 @@
 <configuration xmlns="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
   <resolverSettings>
     <metadataRepositories>
-      <repository>%{scl_root}/usr/share/maven-metadata</repository>
+      <repository>@{scl_root}/usr/share/maven-metadata</repository>
     </metadataRepositories>
     <ignoreDuplicateMetadata>false</ignoreDuplicateMetadata>
     <prefixes>
-      <prefix>%{scl_root}/</prefix>
+      <prefix>@{scl_root}/</prefix>
     </prefixes>
   </resolverSettings>
   <installerSettings>
-    <metadataDir>%{scl_root_relative}/usr/share/maven-metadata</metadataDir>
+    <metadataDir>@{scl_root_relative}/usr/share/maven-metadata</metadataDir>
   </installerSettings>
   <artifactManagement>
     <rule>
@@ -134,8 +134,8 @@
       <id>install</id>
       <type>compound</type>
       <properties>
-        <prefix>%{scl_root_relative}</prefix>
-        <namespace>%{scl}</namespace>
+        <prefix>@{scl_root_relative}</prefix>
+        <namespace>@{scl}</namespace>
       </properties>
       <configuration>
         <repositories>

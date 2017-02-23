@@ -82,7 +82,7 @@ _load_java_conf()
     unset _javadirs
     unset _jvmdirs
 
-    set -- ${JAVACONFDIRS:-%{javaconfdir}}
+    set -- ${JAVACONFDIRS:-@{javaconfdir}}
 
     _log "Java config directories are:"
     for javaconfdir; do
@@ -100,8 +100,8 @@ _load_java_conf()
 
     _load_java_conf_file "${HOME}/.java/java.conf"
 
-    _javadirs=${_javadirs:-%{javadir}:%{jnidir}}
-    _jvmdirs=${_jvmdirs:-%{jvmdir}}
+    _javadirs=${_javadirs:-@{javadir}:@{jnidir}}
+    _jvmdirs=${_jvmdirs:-@{jvmdir}}
 
     if [ -d "${java_home_save}" ]; then
 	JAVA_HOME="${java_home_save}"
@@ -110,10 +110,10 @@ _load_java_conf()
 	JAVACMD_OPTS="${java_opts_save}"
     fi
 
-    if [ "_${JAVA_ABRT}" != "_off" -a -f "%{abrtlibdir}/libabrt-java-connector.so" -a -f "%{rundir}/abrt/abrtd.pid" ]; then
+    if [ "_${JAVA_ABRT}" != "_off" -a -f "@{abrtlibdir}/libabrt-java-connector.so" -a -f "@{rundir}/abrt/abrtd.pid" ]; then
 	_log "ABRT Java connector was enabled"
-	_log "Using ABRT Java agent: %{abrtlibdir}/libabrt-java-connector.so"
-	JAVACMD_OPTS="${JAVACMD_OPTS} -agentpath:%{abrtlibdir}/libabrt-java-connector.so=abrt=on"
+	_log "Using ABRT Java agent: @{abrtlibdir}/libabrt-java-connector.so"
+	JAVACMD_OPTS="${JAVACMD_OPTS} -agentpath:@{abrtlibdir}/libabrt-java-connector.so=abrt=on"
     else
 	_log "ABRT Java connector is disabled"
     fi
@@ -210,7 +210,7 @@ set_classpath()
 
     # get local classpath first
     set -- "${@}" ${ADDITIONAL_JARS}
-    LOCAL_CLASSPATH=$("%{bindir}/build-classpath" "${@}")
+    LOCAL_CLASSPATH=$("@{bindir}/build-classpath" "${@}")
 
     # append original classpath if defined
     CLASSPATH="${LOCAL_CLASSPATH}${CLASSPATH:+:}${CLASSPATH}"
@@ -236,7 +236,7 @@ set_javacmd()
 		_log "Using java-wrapper with extra options: ${JAVACMD_OPTS}"
 		export _JP_JAVACMD="${JAVACMD}"
 		export _JP_JAVACMD_OPTS="${JAVACMD_OPTS}"
-		JAVACMD="%{javadir}-utils/java-wrapper"
+		JAVACMD="@{javadir}-utils/java-wrapper"
 	    fi
 	    return 0
 	fi
@@ -249,7 +249,7 @@ set_javacmd()
 	    _log "Using java-wrapper with extra options: ${JAVACMD_OPTS}"
 	    export _JP_JAVACMD="${JAVACMD}"
 	    export _JP_JAVACMD_OPTS="${JAVACMD_OPTS}"
-	    JAVACMD="%{javadir}-utils/java-wrapper"
+	    JAVACMD="@{javadir}-utils/java-wrapper"
 	fi
 	return 0
     fi

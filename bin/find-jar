@@ -5,8 +5,8 @@
 #
 
 # Import java functions
-[ -r "%{javadir}-utils/java-functions" ] \
- &&  . "%{javadir}-utils/java-functions" || exit 1
+[ -r "@{javadir}-utils/java-functions" ] \
+ &&  . "@{javadir}-utils/java-functions" || exit 1
 
 # Prints help message
 usage() {

@@ -51,7 +51,7 @@ $cmd "${1}" \
     | tail -1 \
     | base64 -d \
     | zcat \
-    | %{pyinterpreter} %{javadir}-utils/builddep.py /dev/stdin \
+    | @{pyinterpreter} @{javadir}-utils/builddep.py /dev/stdin \
     | sort -u \
     | (echo maven-local && cat) \
     | sed 's/./BuildRequires:  &/' \

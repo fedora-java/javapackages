@@ -6,8 +6,8 @@
 #
 
 # Import java functions
-[ -r "%{javadir}-utils/java-functions" ] \
- &&  . "%{javadir}-utils/java-functions" || exit 1
+[ -r "@{javadir}-utils/java-functions" ] \
+ &&  . "@{javadir}-utils/java-functions" || exit 1
 
 # Prints help message
 usage() {
@@ -43,7 +43,7 @@ set_jvm_dirs || exit 5
 _WORKING_DIR=`pwd`
 
 # Default jar map
-_JAR_MAP_FILE="%{javadir}-utils/jarname-jpp-map"
+_JAR_MAP_FILE="@{javadir}-utils/jarname-jpp-map"
 
 # Variables used for comparing file lists
 _TEMP_COMPARISON_FILE=/tmp/_temp_comparison_file.$$
