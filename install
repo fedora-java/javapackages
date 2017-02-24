@@ -181,9 +181,9 @@ inst_exec target/osgi.prov "${rpmconfigdir}"
 inst_exec target/osgi.req "${rpmconfigdir}"
 inst_exec target/javadoc.req "${rpmconfigdir}"
 
-inst_data depgenerators/fileattrs/maven.attr "${rpmconfigdir}/fileattrs"
-inst_data depgenerators/fileattrs/osgi.attr "${rpmconfigdir}/fileattrs"
-inst_data depgenerators/fileattrs/javadoc.attr "${rpmconfigdir}/fileattrs"
+inst_data target/maven.attr "${rpmconfigdir}/fileattrs"
+inst_data target/osgi.attr "${rpmconfigdir}/fileattrs"
+inst_data target/javadoc.attr "${rpmconfigdir}/fileattrs"
 
 inst_config target/javapackages-config.json "${javaconfdir}"
 
