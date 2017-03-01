@@ -90,6 +90,8 @@ dir "${javadocdir}"
 dir "${mavenpomdir}"
 dir "${datadir}/maven-metadata"
 dir "${m2home}"
+dir "${rpmconfigdir}"
+dir "${rpmconfigdir}/macros.d"
 
 inst_exec target/build-classpath "${bindir}"
 inst_exec target/build-classpath-directory "${bindir}"
@@ -128,8 +130,6 @@ fi
 
 exec >files-local
 
-dir "${rpmconfigdir}"
-dir "${rpmconfigdir}/macros.d"
 dir "${rpmconfigdir}/fileattrs"
 
 inst_exec target/abs2rel "${bindir}"
