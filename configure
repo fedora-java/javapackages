@@ -61,6 +61,7 @@ jvmlibdir
 jvmprivdir
 jvmsysconfdir
 mavenpomdir
+ivyxmldir
 pyinterpreter
 abrtlibdir
 "
