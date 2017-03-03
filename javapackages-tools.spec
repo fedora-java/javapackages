@@ -144,11 +144,17 @@ sed -e 's/.[17]$/&.gz/' -e 's/.py$/&*/' -i files-*
 %{?scl:
   mv %{buildroot}%{_root_prefix}/lib/rpm/macros.d/macros{,.%{scl}}.fjava
   mv %{buildroot}%{_root_prefix}/lib/rpm/macros.d/macros{,.%{scl}}.jpackage
+  mv %{buildroot}%{_root_prefix}/lib/rpm/maven{,.%{scl}}.req
+  mv %{buildroot}%{_root_prefix}/lib/rpm/maven{,.%{scl}}.prov
+  mv %{buildroot}%{_root_prefix}/lib/rpm/osgi{,.%{scl}}.req
+  mv %{buildroot}%{_root_prefix}/lib/rpm/osgi{,.%{scl}}.prov
+  mv %{buildroot}%{_root_prefix}/lib/rpm/javadoc{,.%{scl}}.req
   mv %{buildroot}%{_root_prefix}/lib/rpm/fileattrs/maven{,.%{scl}}.attr
   mv %{buildroot}%{_root_prefix}/lib/rpm/fileattrs/osgi{,.%{scl}}.attr
   mv %{buildroot}%{_root_prefix}/lib/rpm/fileattrs/javadoc{,.%{scl}}.attr
   sed -i 's:\(macros\.\)\(fjava\|jpackage\):\1%{scl}.\2:' files-*
-  sed -i 's:\(maven\|osgi\|javadoc\)\(\.attr\):\1.%{scl}\2:' files-*
+  sed -i 's:\(maven\|osgi\|javadoc\)\.\(req\|prov\|attr\):\1.%{scl}.\2:' \
+      files-* %{buildroot}%{_root_prefix}/lib/rpm/*.{req,prov}
 }
 
 %if %{without gradle}
