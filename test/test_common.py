@@ -14,8 +14,11 @@ from functools import wraps
 from lxml import etree
 
 DIRPATH = path.dirname(path.realpath(__file__))
-SCRIPT_ENV = {'PATH':'{mock}:{real}'.format(mock=DIRPATH,
-                                            real=os.environ['PATH'])}
+SCRIPT_ENV = {
+    'PATH': '{mock}:{real}'.format(mock=DIRPATH, real=os.environ['PATH']),
+    'LC_ALL': 'C.UTF-8',
+}
+
 for var in ('PYTHONPATH', 'COVERAGE_PROCESS_START'):
     if var in os.environ:
         SCRIPT_ENV[var] = os.environ[var]
