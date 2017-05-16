@@ -155,6 +155,7 @@
 #
 %mvn_install(J:X) %{?scl:@{javadir}-utils/scl-enable %{?scl_maven} %{scl} -- }xmvn-install %{?-X} -R .xmvn-reactor -n %{?scl:%{pkg_name}}%{!?scl:%{name}} -d "%{buildroot}" \
 %{-J*:jdir="%{-J*}"}%{!-J*:jdir=target/site/apidocs; [ -d .xmvn/apidocs ] && jdir=.xmvn/apidocs} \
+%{__mkdir_p} %{buildroot}%{_licensedir} \
 if [ -d "${jdir}" ]; then \
    install -dm755 %{buildroot}%{_javadocdir}/%{?scl:%{pkg_name}}%{!?scl:%{name}} \
    cp -pr "${jdir}"/* %{buildroot}%{_javadocdir}/%{?scl:%{pkg_name}}%{!?scl:%{name}} \
@@ -491,3 +492,32 @@ sort -u -o ${_filelist} ${_filelist} \
 
 %pom_change_dep(rf)     %{expand: %{__pom_call}change_dep    %**
 }
+
+# %javadoc_package - generate javadoc subpackage definition
+#
+# Usage: %javadoc_package [options]
+
+# This macro generates %package and %files definitions for a javadoc subpackage.
+# Use on top-level only, preferably just before %prep.
+# Prerequisites:
+# - javadoc package must not already exist
+# - package must use %mvn_install to install javadoc (default when using %mvn_build)
+# - package should install license files using %license macro, or specify
+#   license for javadoc package manually (see below)
+#
+# Manually specifying license files:
+# Use -L option to suppress automatic license installation and specify %license
+# directive on the next line after the macro invocation. Example:
+# %javadoc_package -L
+# %license LICENSE
+%javadoc_package(L) %if 0%{!?_without_javadoc:1} \
+%package javadoc \
+Summary:        API documentation for %{?scl:%{pkg_name}}%{!?scl:%{name}} \
+%description javadoc \
+API documentation for %{?scl:%{pkg_name}}%{!?scl:%{name}}. \
+%files javadoc -f .mfiles-javadoc \
+%if 0%{!?-L:1} \
+%%license %{_licensedir} \
+%exclude %dir %{_licensedir} \
+%endif \
+%endif
