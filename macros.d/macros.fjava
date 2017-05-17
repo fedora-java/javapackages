@@ -163,6 +163,15 @@ fi \
 %{nil}
 
 
+# %mvn_subst - replace all JAR files in given directory with symlinks
+#
+# Usage: %mvn_subst [options] path
+#
+# Substitutes Java archives in given directory with symlinks to system-wide or
+# just installed versions.
+%mvn_subst %{?scl:@{javadir}-utils/scl-enable %{?scl_maven} %{scl} -- }xmvn-subst -R %{buildroot}
+
+
 #==============================================================================
 #
 # add_maven_depmap is simplified version of jpackage-style add_to_maven_depmap
