@@ -1,4 +1,3 @@
-#!/bin/bash
 # Copyright (c) 2013-2017 Red Hat, Inc.
 # All rights reserved.
 #
@@ -30,8 +29,30 @@
 #
 # Authors: Mikolaj Izdebski <mizdebsk@redhat.com>
 
-set -e
+expand()
+{
+    local target
+    if [[ -n "${2}" ]]; then
+        target="${2}"
+    else
+        target=target/$(basename "${1}")
+    fi
 
-. ./configure-base.sh
-
-set | sed -n 's/^\('"$vars_re"'\)=/&/;T;p' >config.status
+    sed \
+        -e "s|@{scl}|${scl}|g" \
+        -e "s|@{scl_root}|${scl_root}|g" \
+        -e "s|@{scl_root_relative}|${scl_root_relative}|g" \
+        -e "s|@{bindir}|${bindir}|g" \
+        -e "s|@{datadir}|${datadir}|g" \
+        -e "s|@{javaconfdir}|${javaconfdir}|g" \
+        -e "s|@{javadir}|${javadir}|g" \
+        -e "s|@{jnidir}|${jnidir}|g" \
+        -e "s|@{jvmdir}|${jvmdir}|g" \
+        -e "s|@{m2home}|${m2home}|g" \
+        -e "s|@{prefix}|${prefix}|g" \
+        -e "s|@{rundir}|${rundir}|g" \
+        -e "s|@{sysconfdir}|${sysconfdir}|g" \
+        -e "s|@{pyinterpreter}|${pyinterpreter}|g" \
+        -e "s|@{abrtlibdir}|${abrtlibdir}|g" \
+        "${1}" >"${target}"
+}

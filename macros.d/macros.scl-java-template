@@ -1,0 +1,68 @@
+# Copyright (c) 2017, Red Hat, Inc
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of Red Hat nor the names of its
+#    contributors may be used to endorse or promote products derived
+#    from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# Authors: Michael Simacek <msimacek@redhat.com>
+
+%scl_install_java \
+( \
+    . @{javadir}-utils/scl-template/configure-base.sh --scl=%{scl} --scl_root=%{_scl_root} \\\
+        --rpmconfigdir=%{_root_prefix}/lib/rpm \\\
+        --prefix=%{_prefix} --sysconfdir=%{_sysconfdir} \
+    . @{javadir}-utils/scl-template/expand.sh \
+    template_config () { \
+        expand "@{javadir}-utils/scl-template/$1" "%{buildroot}$2" \
+        echo "%config(noreplace) $2" >> .java-filelist \
+    } \
+    dir () { \
+        mkdir -p "%{buildroot}/$1"; echo "%dir $1" >> .java-filelist \
+    } \
+    dir "%{_javaconfdir}" \
+    dir "%{_javadir}" \
+    dir "%{_jnidir}" \
+    dir "%{_javadocdir}" \
+    dir "%{_mavenpomdir}" \
+    dir "%{_ivyxmldir}" \
+    dir "%{_sysconfdir}/ivy" \
+    dir "%{_datadir}/maven-metadata" \
+    dir "%{_prefix}/lib/eclipse" \
+    dir "%{_prefix}/lib/eclipse/features" \
+    dir "%{_prefix}/lib/eclipse/plugins" \
+    dir "%{_prefix}/lib/eclipse/dropins" \
+    dir "%{_prefix}/lib/eclipse/droplets" \
+    dir "%{_datadir}/eclipse" \
+    dir "%{_datadir}/eclipse/dropins" \
+    dir "%{_datadir}/eclipse/droplets" \
+    dir "%{_sysconfdir}/xdg" \
+    dir "%{_sysconfdir}/xdg/xmvn" \
+    template_config javapackages-config-SCL.json %{_javaconfdir}/javapackages-config.json \
+    template_config configuration-SCL.xml %{_sysconfdir}/xdg/xmvn/configuration.xml \
+    template_config java.conf %{_javaconfdir}/java.conf \
+    template_config eclipse.conf %{_javaconfdir}/eclipse.conf \
+) \
+%{nil}
