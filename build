@@ -37,6 +37,7 @@ if ! test -f config.status; then
     exit 1
 fi
 . ./config.status
+. ./expand.sh
 
 rm -rf target
 mkdir target
@@ -48,38 +49,12 @@ manpage()
     (cd ./target && xmlto man --skip-validation "${1}.xml")
 }
 
-expand()
-{
-    local target
-    if [[ -n "${2}" ]]; then
-	target="${2}"
-    else
-	target=$(basename "${1}")
-    fi
-
-    sed \
-        -e "s|@{scl}|${scl}|g" \
-        -e "s|@{scl_root}|${scl_root}|g" \
-        -e "s|@{scl_root_relative}|${scl_root_relative}|g" \
-        -e "s|@{bindir}|${bindir}|g" \
-        -e "s|@{datadir}|${datadir}|g" \
-        -e "s|@{javaconfdir}|${javaconfdir}|g" \
-        -e "s|@{javadir}|${javadir}|g" \
-        -e "s|@{jnidir}|${jnidir}|g" \
-        -e "s|@{jvmdir}|${jvmdir}|g" \
-        -e "s|@{m2home}|${m2home}|g" \
-        -e "s|@{prefix}|${prefix}|g" \
-        -e "s|@{rundir}|${rundir}|g" \
-        -e "s|@{sysconfdir}|${sysconfdir}|g" \
-        -e "s|@{pyinterpreter}|${pyinterpreter}|g" \
-        -e "s|@{abrtlibdir}|${abrtlibdir}|g" \
-        "${1}" >target/"${target}"
-}
-
 if [[ -n "${scl}" ]]; then
-    expand configs/configuration-SCL.xml configuration.xml
-    expand etc/javapackages-config-SCL.json javapackages-config.json
-    expand etc/javapackages-metadata-SCL.xml javapackages-metadata.xml
+    expand configs/configuration-SCL.xml target/configuration.xml
+    expand etc/javapackages-config-SCL.json target/javapackages-config.json
+    expand etc/javapackages-metadata-SCL.xml target/javapackages-metadata.xml
+    sed "s:macros\.d/macros\.jpackage:${root_sysconfdir}/rpm/macros.x-${scl}.jpackage:" configure-base.sh > target/configure-base.sh
+    expand macros.d/macros.scl-java-template
 else
     cat configs/configuration.xml >target/configuration.xml
     cat etc/javapackages-config.json >target/javapackages-config.json
@@ -112,6 +87,8 @@ expand depgenerators/javadoc.req
 expand depgenerators/fileattrs/osgi.attr
 expand depgenerators/fileattrs/maven.attr
 expand depgenerators/fileattrs/javadoc.attr
+
+sed "s:macros\.d/macros\.jpackage:${rpmconfigdir}/&:" configure-base.sh > target/configure-base.sh
 
 manpage abs2rel
 manpage find-jar
