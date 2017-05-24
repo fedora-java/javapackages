@@ -156,7 +156,7 @@ sed -e 's/.[17]$/&.gz/' -e 's/.py$/&*/' -i files-*
   mv %{buildroot}%{_root_prefix}/lib/rpm/fileattrs/javadoc{,.%{scl}}.attr
   sed -i 's:\(macros\.\)\(fjava\|jpackage\):\1%{scl}.\2:' files-*
   sed -i 's:\(maven\|osgi\|javadoc\)\.\(req\|prov\|attr\):\1.%{scl}.\2:' \
-      files-* %{buildroot}%{_root_prefix}/lib/rpm/*.{req,prov}
+      files-* %{buildroot}%{_root_prefix}/lib/rpm/*{.req,.prov,fileattrs/*}
 }
 
 %if %{without gradle}
