@@ -17,6 +17,7 @@
 %else
 %global python_prefix python
 %global python_interpreter %{__python2}
+%global rpmmacrodir /etc/rpm
 %endif
 
 
@@ -134,30 +135,14 @@ This package provides non-essential macros and scripts to support Java packaging
 %setup -q -n %{pkg_name}-%{version}
 
 %build
-%configure --pyinterpreter=%{python_interpreter} %{?scl:--rpmconfigdir=%{_root_prefix}/lib/rpm --scl=%{scl} --scl_root=%{_scl_root}}
+%configure --pyinterpreter=%{python_interpreter} --rpmmacrodir=%{rpmmacrodir} %{?scl:--rpmconfigdir=%{_root_prefix}/lib/rpm --scl=%{scl} --scl_root=%{_scl_root}}
 ./build
 
 %install
 ./install
 
-sed -i 's|mvn_build.py|& --xmvn-javadoc|' $(find %{buildroot} -name macros.fjava)
+sed -i 's|mvn_build.py|& --xmvn-javadoc|' $(find %{buildroot} -name 'macros*.fjava')
 sed -e 's/.[17]$/&.gz/' -e 's/.py$/&*/' -i files-*
-
-%{?scl:
-  mv %{buildroot}%{_root_prefix}/lib/rpm/macros.d/macros{,.%{scl}}.fjava
-  mv %{buildroot}%{_root_prefix}/lib/rpm/macros.d/macros{,.%{scl}}.jpackage
-  mv %{buildroot}%{_root_prefix}/lib/rpm/maven{,.%{scl}}.req
-  mv %{buildroot}%{_root_prefix}/lib/rpm/maven{,.%{scl}}.prov
-  mv %{buildroot}%{_root_prefix}/lib/rpm/osgi{,.%{scl}}.req
-  mv %{buildroot}%{_root_prefix}/lib/rpm/osgi{,.%{scl}}.prov
-  mv %{buildroot}%{_root_prefix}/lib/rpm/javadoc{,.%{scl}}.req
-  mv %{buildroot}%{_root_prefix}/lib/rpm/fileattrs/maven{,.%{scl}}.attr
-  mv %{buildroot}%{_root_prefix}/lib/rpm/fileattrs/osgi{,.%{scl}}.attr
-  mv %{buildroot}%{_root_prefix}/lib/rpm/fileattrs/javadoc{,.%{scl}}.attr
-  sed -i 's:\(macros\.\)\(fjava\|jpackage\):\1%{scl}.\2:' files-*
-  sed -i 's:\(maven\|osgi\|javadoc\)\.\(req\|prov\|attr\):\1.%{scl}.\2:' \
-      files-* %{buildroot}%{_root_prefix}/lib/rpm/fileattrs/*
-}
 
 %if %{without gradle}
 rm -rf %{buildroot}%{_bindir}/gradle-local

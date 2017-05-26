@@ -53,7 +53,7 @@ if [[ -n "${scl}" ]]; then
     expand configs/configuration-SCL.xml target/configuration.xml
     expand etc/javapackages-config-SCL.json target/javapackages-config.json
     expand etc/javapackages-metadata-SCL.xml target/javapackages-metadata.xml
-    sed "s:macros\.d/macros\.jpackage:${root_sysconfdir}/rpm/macros.x-${scl}.jpackage:" configure-base.sh > target/configure-base.sh
+    sed "s:macros\.d/macros\.jpackage:${rpmmacrodir}/macros.x-${scl}.jpackage:" configure-base.sh > target/configure-base.sh
     expand macros.d/macros.scl-java-template
 else
     cat configs/configuration.xml >target/configuration.xml
@@ -87,8 +87,6 @@ expand depgenerators/javadoc.req
 expand depgenerators/fileattrs/osgi.attr
 expand depgenerators/fileattrs/maven.attr
 expand depgenerators/fileattrs/javadoc.attr
-
-sed "s:macros\.d/macros\.jpackage:${rpmconfigdir}/&:" configure-base.sh > target/configure-base.sh
 
 manpage abs2rel
 manpage find-jar

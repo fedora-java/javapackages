@@ -58,8 +58,8 @@ link()
 inst()
 {
     install -d -m 755 "${DEST}/${3}"
-    install -p -m 644 "${2}" "${DEST}/${3}/"
-    echo "${1} ${3}/"$(basename "${2}")
+    install -p -m 644 "${2}" "${DEST}/${3}/${4}"
+    echo "${1} ${3}/${4:-$(basename "${2}")}"
 }
 
 inst_data() { inst "%attr(0644,root,root)" "${@}"; }
@@ -100,9 +100,9 @@ dir "${datadir}/eclipse"
 dir "${datadir}/eclipse/dropins"
 dir "${datadir}/eclipse/droplets"
 dir "${rpmconfigdir}"
-dir "${rpmconfigdir}/macros.d"
+dir "${rpmconfigdir}"
 if [[ -n "${scl}" ]]; then
-dir "${javadir}-utils/scl-template"
+    dir "${javadir}-utils/scl-template"
 fi
 
 inst_exec target/build-classpath "${bindir}"
@@ -124,7 +124,10 @@ inst_data target/java-functions "${javadir}-utils"
 inst_exec java-utils/java-wrapper "${javadir}-utils"
 inst_exec java-utils/scl-enable "${javadir}-utils"
 
-inst_data target/macros.jpackage "${rpmconfigdir}/macros.d"
+if [[ -z "${scl}" ]]; then
+    # in scl, macros.jpackage is installed in javapackages-local
+    inst_data target/macros.jpackage "${rpmmacrodir}"
+fi
 
 inst_data target/build-classpath.1 "${mandir}/man1"
 inst_data target/build-jar-repository.1 "${mandir}/man1"
@@ -138,14 +141,12 @@ inst_data target/configuration.xml "${m2home}"
 
 
 if [[ -n "${scl}" ]]; then
-inst_data target/configure-base.sh "${javadir}-utils/scl-template"
-inst_data expand.sh "${javadir}-utils/scl-template"
-inst_data configs/configuration-SCL.xml "${javadir}-utils/scl-template"
-inst_data etc/javapackages-config-SCL.json "${javadir}-utils/scl-template"
-inst_data etc/java.conf "${javadir}-utils/scl-template"
-inst_data etc/eclipse.conf "${javadir}-utils/scl-template"
-
-inst_data macros.d/macros.scl-java-template "${rpmconfigdir}/macros.d"
+    inst_data target/configure-base.sh "${javadir}-utils/scl-template"
+    inst_data expand.sh "${javadir}-utils/scl-template"
+    inst_data configs/configuration-SCL.xml "${javadir}-utils/scl-template"
+    inst_data etc/javapackages-config-SCL.json "${javadir}-utils/scl-template"
+    inst_data etc/java.conf "${javadir}-utils/scl-template"
+    inst_data etc/eclipse.conf "${javadir}-utils/scl-template"
 fi
 
 if [ -z "$pyinterpreter" ]; then
@@ -175,15 +176,15 @@ inst_data java-utils/mvn_file.py "${javadir}-utils"
 inst_data java-utils/mvn_package.py "${javadir}-utils"
 
 if [[ -n "${scl}" ]]; then
-# Base RHEL contains macros in /etc/ that would override ours.
-# We need to place ours there alphabetically after to prevent that.
-# Additionally we move macros.jpackage to javapackages-local, so they don't
-# interfere with base RHEL if only javapackages-tools is installed.
-inst_data target/macros.fjava "${root_sysconfdir}/rpm" "macros.x-${scl}.fjava"
-inst_data target/macros.jpackage "${root_sysconfdir}/rpm" "macros.x-${scl}.jpackage"
-inst_data target/macros.scl-java-template "${rpmconfigdir}/macros.d" "macros.${scl}.scl-java-template"
+    # Base RHEL contains macros in /etc/ that would override ours.
+    # We need to place ours there alphabetically after to prevent that.
+    # Additionally we move macros.jpackage to javapackages-local, so they don't
+    # interfere with base RHEL if only javapackages-tools is installed.
+    inst_data target/macros.fjava "${rpmmacrodir}" "macros.x-${scl}.fjava"
+    inst_data target/macros.jpackage "${rpmmacrodir}" "macros.x-${scl}.jpackage"
+    inst_data target/macros.scl-java-template "${rpmmacrodir}" "macros.${scl}.scl-java-template"
 else
-inst_data target/macros.fjava "${rpmconfigdir}/macros.d"
+    inst_data target/macros.fjava "${rpmmacrodir}"
 fi
 
 inst_data target/abs2rel.1 "${mandir}/man1"
@@ -210,15 +211,15 @@ inst_data target/pom_xpath_remove.7 "${mandir}/man7"
 inst_data target/pom_xpath_replace.7 "${mandir}/man7"
 inst_data target/pom_xpath_set.7 "${mandir}/man7"
 
-inst_exec target/maven.prov "${rpmconfigdir}"
-inst_exec target/maven.req "${rpmconfigdir}"
-inst_exec target/osgi.prov "${rpmconfigdir}"
-inst_exec target/osgi.req "${rpmconfigdir}"
-inst_exec target/javadoc.req "${rpmconfigdir}"
+inst_exec target/maven.prov "${rpmconfigdir}" "maven${scl_suffix}.prov"
+inst_exec target/maven.req "${rpmconfigdir}" "maven${scl_suffix}.req"
+inst_exec target/osgi.prov "${rpmconfigdir}" "osgi${scl_suffix}.prov"
+inst_exec target/osgi.req "${rpmconfigdir}" "osgi${scl_suffix}.req"
+inst_exec target/javadoc.req "${rpmconfigdir}" "javadoc${scl_suffix}.req"
 
-inst_data target/maven.attr "${rpmconfigdir}/fileattrs"
-inst_data target/osgi.attr "${rpmconfigdir}/fileattrs"
-inst_data target/javadoc.attr "${rpmconfigdir}/fileattrs"
+inst_data target/maven.attr "${rpmconfigdir}/fileattrs" "maven${scl_suffix}.attr"
+inst_data target/osgi.attr "${rpmconfigdir}/fileattrs" "osgi${scl_suffix}.attr"
+inst_data target/javadoc.attr "${rpmconfigdir}/fileattrs" "javadoc${scl_suffix}.attr"
 
 inst_config target/javapackages-config.json "${javaconfdir}"
 
