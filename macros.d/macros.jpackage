@@ -85,14 +85,14 @@
 #
 # Current default JVM home.
 #
-%java_home      %(. %{_javadir}-utils/java-functions; set_jvm; echo $JAVA_HOME)
+%java_home      %(. @{javadir}-utils/java-functions; set_jvm; echo $JAVA_HOME)
 
 #==============================================================================
 # ---- default Java commands
 
 %ant            JAVA_HOME=%{java_home} %{?scl:@{javadir}-utils/scl-enable %{?scl_maven} %{scl} -- }ant
 %jar            %{java_home}/bin/jar
-%java           %(. %{_javadir}-utils/java-functions; set_javacmd; echo $JAVACMD)
+%java           %(. @{javadir}-utils/java-functions; set_javacmd; echo $JAVACMD)
 %javac          %{java_home}/bin/javac
 %javadoc        %{java_home}/bin/javadoc
 
@@ -119,7 +119,7 @@ cat > %{buildroot}%{_bindir}/%5 << EOF \
 \
 # Source functions library\
 _prefer_jre="%{?6}"\
-. %{_javadir}-utils/java-functions\
+. @{javadir}-utils/java-functions\
 \
 # Source system prefs\
 if [ -f %{_sysconfdir}/java/%{name}.conf ] ; then\
