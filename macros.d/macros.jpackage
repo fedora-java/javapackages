@@ -99,6 +99,7 @@
 
 #
 # Standard JPackage script
+# IMPORTANT: JPackage script has been marked as deprecated and shoud not be used.
 #
 # This is kind of tasteless and should be moved to an external template
 #
@@ -110,6 +111,7 @@
 # %6    whether to prefer a jre over a sdk when finding a jvm
 #
 %jpackage_script() \
+%{lua:io.stderr:write("[WARNING] Deprecated \%jpackage_script() macro is used.\n")} \
 install -d -m 755 %{buildroot}%{_bindir} \
 cat > %{buildroot}%{_bindir}/%5 << EOF \
 #!/bin/bash\
