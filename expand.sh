@@ -55,5 +55,7 @@ expand()
         -e "s|@{sysconfdir}|${sysconfdir}|g" \
         -e "s|@{pyinterpreter}|${pyinterpreter}|g" \
         -e "s|@{abrtlibdir}|${abrtlibdir}|g" \
+        -e "s|@{default_jdk}|${default_jdk}|g" \
+        -e "s|@{default_jre}|${default_jre}|g" \
         "${1}" >"${target}"
 }
