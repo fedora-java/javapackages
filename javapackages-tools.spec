@@ -20,6 +20,8 @@
 %global rpmmacrodir /etc/rpm
 %endif
 
+%global default_jdk %{?_root_prefix}%{!?_root_prefix:%{_prefix}}/lib/jvm/java-1.8.0-openjdk
+%global default_jre %{default_jdk}/jre
 
 Name:           %{?scl_prefix}%{pkg_name}
 Version:        5.0.0
@@ -48,6 +50,8 @@ BuildRequires:  %{python_prefix}-six
 Requires:       coreutils
 Requires:       findutils
 Requires:       which
+# default JRE
+Requires:       java-1.8.0-openjdk-headless
 
 Obsoletes:      %{?scl_prefix}eclipse-filesystem < 2
 Provides:       %{?scl_prefix}eclipse-filesystem = %{version}-%{release}
@@ -124,7 +128,7 @@ Requires:       %{?scl_prefix}xmvn-install >= 3.0.0
 Requires:       %{?scl_prefix}xmvn-subst >= 3.0.0
 Requires:       %{?scl_prefix}xmvn-resolve >= 3.0.0
 # Java build systems don't have hard requirement on java-devel, so it should be there
-Requires:       java-devel
+Requires:       java-1.8.0-openjdk-devel
 Requires:       %{?scl_prefix}%{python_prefix}-javapackages = %{version}-%{release}
 Requires:       %{python_prefix}
 
@@ -135,7 +139,10 @@ This package provides non-essential macros and scripts to support Java packaging
 %setup -q -n %{pkg_name}-%{version}
 
 %build
-%configure --pyinterpreter=%{python_interpreter} --rpmmacrodir=%{rpmmacrodir} %{?scl:--rpmconfigdir=%{_root_prefix}/lib/rpm --scl=%{scl} --scl_root=%{_scl_root}}
+%configure --pyinterpreter=%{python_interpreter} \
+    --default_jdk=%{default_jdk} --default_jre=%{default_jre} \
+    --rpmmacrodir=%{rpmmacrodir} \
+    %{?scl:--rpmconfigdir=%{_root_prefix}/lib/rpm --scl=%{scl} --scl_root=%{_scl_root}}
 ./build
 
 %install

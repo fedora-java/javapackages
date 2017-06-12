@@ -57,14 +57,12 @@ _load_java_conf_file()
     local IFS
     local JAVA_LIBDIR
     local JNI_LIBDIR
-    local JVM_ROOT
 
     if [ -f "${1}" ]; then
 	_log "Loading config file: ${1}"
 	. "${1}"
 
 	_javadirs="${_javadirs}${_javadirs:+:}${JAVA_LIBDIR}:${JNI_LIBDIR}"
-	_jvmdirs="${_jvmdirs}${_jvmdirs:+:}${JVM_ROOT}"
     else
 	_log "Skipping config file ${1}: file does not exist"
     fi
@@ -80,7 +78,6 @@ _load_java_conf()
     local conf
 
     unset _javadirs
-    unset _jvmdirs
 
     set -- ${JAVACONFDIRS:-@{javaconfdir}}
 
@@ -101,7 +98,6 @@ _load_java_conf()
     _load_java_conf_file "${HOME}/.java/java.conf"
 
     _javadirs=${_javadirs:-@{javadir}:@{jnidir}}
-    _jvmdirs=${_jvmdirs:-@{jvmdir}}
 
     if [ -d "${java_home_save}" ]; then
 	JAVA_HOME="${java_home_save}"
@@ -125,38 +121,27 @@ _set_java_home()
 {
     local IFS=:
     local jvmdir
-    local subdir
-    local subdirs
 
     if [ -n "${JAVA_HOME}" ]; then
-	if [ -z "${JVM_ROOT}" ]; then
-	    JVM_ROOT=$(readlink -f "${JAVA_HOME}"/.. || :)
-	fi
-	return
+        return
     fi
 
     case "${_prefer_jre}" in
-	1|[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee])
-	    subdirs=jre:java
-	    ;;
-	*)
-            subdirs=java:jre
-	    ;;
+        1|[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee])
+            dirs="@{default_jre}:@{default_jdk}"
+            ;;
+        *)
+            dirs="@{default_jdk}:@{default_jre}"
+            ;;
     esac
 
-    for subdir in $subdirs; do
-	for jvmdir in $_jvmdirs; do
-	    JVM_ROOT="${jvmdir}"
-	    JAVA_HOME="${jvmdir}/${subdir}"
-	    if [ -d "${JVM_ROOT}" -a -d "${JAVA_HOME}" ]; then
-		_log "Using configured JVM_ROOT: ${JVM_ROOT}"
-		_log "Using configured JAVA_HOME: ${JAVA_HOME}"
-		return
-	    fi
-	done
+    for JAVA_HOME in $dirs; do
+        if [ -d "${JAVA_HOME}" ]; then
+            _log "Using configured JAVA_HOME: ${JAVA_HOME}"
+            return
+        fi
     done
 
-    unset JVM_ROOT
     unset JAVA_HOME
 }
 
@@ -164,41 +149,17 @@ _set_java_home()
 set_jvm()
 {
     local IFS=:
-    local cmd
-    local cmds
+    local javaconfdirs
 
     _set_java_home
 
-    # use $JAVA_HOME if defined
-    if [ -n "${JAVA_HOME}" ]; then
-	return
+    if [ -z "${JAVA_HOME}" ]; then
+        javaconfdirs="${JAVACONFDIRS:-@{javaconfdir}}"
+        _err "JAVA_HOME is not set and default java installation was not found. JAVA_HOME for system applications can be set in java.conf in ${javaconfdirs}"
+        exit 1
     fi
 
-    # try to find it from java command
-
-    # try javac first, or we might get the location of the jre instead - djw
-    # if JRE is prefered then don't try javac - mizdebsk
-    case "${_prefer_jre}" in
-	1|[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee])
-	    cmds=java
-	    ;;
-	*)
-	    cmds=javac:java
-	    ;;
-    esac
-
-    for cmd in $cmds; do
-	cmd=$(which "${cmd}" 2>/dev/null || :)
-
-	if [ -n "${cmd}" ]; then
-	    cmd=$(readlink -f "${cmd}")
-	    export JAVA_HOME=$(readlink -f "${cmd%/*}"/.. || :)
-	    return
-	fi
-    done
-
-    echo "Can't find Java virtual machine, aborting."
-    exit 1
+    return 0
 }
 
 # Set the classpath
