@@ -36,6 +36,8 @@ import os
 import optparse
 import subprocess
 import sys
+import gzip
+import base64
 
 from javapackages.maven.artifact import Artifact
 from javapackages.xmvn.xmvn_config import XMvnConfig
@@ -188,12 +190,15 @@ if __name__ == "__main__":
     p = subprocess.Popen(" ".join(mvn_args), shell=True, env=os.environ)
     p.wait()
 
-    subprocess.Popen("""
-        if [ -f .xmvn-builddep ]; then
-            echo -----BEGIN MAVEN BUILD DEPENDENCIES-----
-            gzip -9nc <.xmvn-builddep | base64
-            echo -----END MAVEN BUILD DEPENDENCIES-----
-        fi
-        """, shell=True, env=os.environ).wait()
+    fname = ".xmvn-builddep"
+    if (os.path.isfile(fname)):
+        output = getattr(sys.stdout, 'buffer', sys.stdout)
+        output.write(b"\n-----BEGIN MAVEN BUILD DEPENDENCIES-----\n")
+        with open(fname, mode="rb") as f:
+            data = f.read()
+            data = gzip.compress(data, 9)
+            data = base64.b64encode(data)
+            output.write(data)
+        output.write(b"\n-----END MAVEN BUILD DEPENDENCIES-----\n")
 
-    sys.exit(p.returncode)
+    sys.exit(0)
