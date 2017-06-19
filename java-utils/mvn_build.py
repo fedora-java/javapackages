@@ -196,9 +196,10 @@ if __name__ == "__main__":
         output.write(b"\n-----BEGIN MAVEN BUILD DEPENDENCIES-----\n")
         with open(fname, mode="rb") as f:
             data = f.read()
-            data = gzip.compress(data, 9)
             data = base64.b64encode(data)
-            output.write(data)
+            zipClass = gzip.GzipFile("", "ab", 9, output)
+            zipClass.write(data)
         output.write(b"\n-----END MAVEN BUILD DEPENDENCIES-----\n")
+
 
     sys.exit(0)
