@@ -21,7 +21,7 @@
 %endif
 
 %global default_jdk %{?_root_prefix}%{!?_root_prefix:%{_prefix}}/lib/jvm/java-1.8.0-openjdk
-%global default_jre %{default_jdk}/jre
+%global default_jre %{?_root_prefix}%{!?_root_prefix:%{_prefix}}/lib/jvm/jre-1.8.0-openjdk
 
 Name:           %{?scl_prefix}%{pkg_name}
 Version:        5.0.0
