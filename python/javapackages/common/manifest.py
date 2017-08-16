@@ -33,7 +33,7 @@
 #           Michal Srb <msrb@redhat.com>
 
 import zipfile
-from zipfile import ZipFile
+from zipfile import ZipFile, BadZipfile
 from javapackages.common.exception import JavaPackagesToolsException
 
 
@@ -61,7 +61,7 @@ class Manifest(object):
                 jarfile = ZipFile(self._path)
                 if "META-INF/MANIFEST.MF" in jarfile.namelist():
                     mf = jarfile.open("META-INF/MANIFEST.MF", "r")
-            except IOError:
+            except (IOError, BadZipfile):
                 pass
         if mf is None:
             return None
