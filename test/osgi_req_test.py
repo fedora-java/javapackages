@@ -56,5 +56,11 @@ class TestOSGiReq(unittest.TestCase):
         assertIn(self, "osgi(bar) = 4.5.6", sout)
         self.assertEqual(len(sout), 1, sout)
 
+    @osgireq(["corrupt/buildroot/usr/share/java/corrupt.jar"])
+    def test_corrupt(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        self.assertEqual(len(sout), 0, sout)
+
 if __name__ == '__main__':
     unittest.main()
