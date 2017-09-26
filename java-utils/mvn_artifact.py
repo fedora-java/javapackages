@@ -246,24 +246,31 @@ def _main():
     if len(args) < 1:
         parser.error("At least 1 argument is required")
 
-    try:
-        uart = Artifact.from_mvn_str(args[0])
-        uart.validate(allow_backref=False)
-        if len(args) == 1:
-            parser.error("When using artifact specification artifact path must be "
-                         "provided")
-        if not (uart.groupId and uart.artifactId and uart.version):
-            parser.error("Defined artifact has to include at least groupId, "
-                         "artifactId and version")
-    except (ArtifactFormatException):
-        if is_it_ivy_file(args[0]):
-            uart = IvyFile(args[0])
+    pom_path = None
+    if os.path.exists(args[0]):
+        pom_path = args[0]
+        if is_it_ivy_file(pom_path):
+            uart = IvyFile(pom_path)
         else:
             # it should be good old POM file
-            uart = POM(args[0])
-        pom_path = args[0]
+            uart = POM(pom_path)
+    elif ':' in args[0]:
+        try:
+            uart = Artifact.from_mvn_str(args[0])
+            uart.validate(allow_backref=False)
+            if len(args) == 1:
+                parser.error("When using artifact specification artifact path must be "
+                             "provided")
+            if not (uart.groupId and uart.artifactId and uart.version):
+                parser.error("Defined artifact has to include at least groupId, "
+                             "artifactId and version")
+        except ArtifactFormatException as e:
+            parser.error("Failed to parse artifact string: {0}".format(e))
     else:
-        pom_path = None
+        message = ("The first argument '{0}' doesn't point to an existing file "
+                   "nor it looks like an artifact string").format(args[0])
+        parser.error(message)
+
 
     art = MetadataArtifact(uart.groupId, uart.artifactId, version=uart.version)
     if hasattr(uart, "extension") and uart.extension:

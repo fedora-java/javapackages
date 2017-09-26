@@ -57,6 +57,18 @@ class TestMvnArtifact(unittest.TestCase):
         report = self.check_result(inspect.currentframe().f_code.co_name)
         self.assertEqual(report, '', report)
 
+    @mvn_artifact('nonexistent.pom', 'maven-artifact.jar')
+    def test_nonexistent(self, stdout, stderr, return_value):
+        self.assertNotEqual(0, return_value)
+        self.assertFalse("Traceback" in stderr)
+        self.assertTrue("existing file" in stderr)
+
+    @mvn_artifact('invalid::artifact', 'maven-artifact.jar')
+    def test_invalid_artifact_string(self, stdout, stderr, return_value):
+        self.assertNotEqual(0, return_value)
+        self.assertFalse("Traceback" in stderr)
+        self.assertTrue("artifactId" in stderr)
+
     @mvn_artifact('args4j.pom', 'maven-artifact.jar')
     def test_basic_jar(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
