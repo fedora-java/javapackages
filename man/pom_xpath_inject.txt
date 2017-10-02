@@ -10,7 +10,7 @@ pom_xpath_inject - inject code into XML file
 
 SYNOPSIS
 --------
-*%pom_xpath_inject* XPath [XML-code] [XML-file-location]...
+*%pom_xpath_inject* XPath XML-code [XML-file-location]...
 
 DESCRIPTION
 -----------

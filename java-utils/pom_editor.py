@@ -490,7 +490,7 @@ def disable_module(pom, module):
 
 @macro()
 def pom_xpath_inject(where, xml_string, pom=None):
-    """<XPath> [XML code] [POM location]"""
+    """<XPath> <XML code> [POM location]"""
     for element in pom.xpath_query(where):
         pom.inject_xml(element, annotate(pom.subtree_from_string(xml_string)))
 
