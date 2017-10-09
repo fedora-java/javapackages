@@ -2,8 +2,10 @@ import unittest
 import shutil
 import os
 from test_common import javautils_script, get_actual_args, get_expected_args, \
-        get_config_file_list, get_actual_config, get_expected_config, DIRPATH
+        get_config_file_list, get_actual_config, get_expected_config, DIRPATH, \
+        get_actual_env
 from xml_compare import compare_xml_files
+from textwrap import dedent
 
 class TestMvnBuild(unittest.TestCase):
 
@@ -12,8 +14,16 @@ class TestMvnBuild(unittest.TestCase):
     def setUp(self):
         self.olddir = os.getcwd()
         self.workdir = os.path.join(DIRPATH, 'workdir')
+        shutil.rmtree(self.workdir, ignore_errors=True)
         os.mkdir(self.workdir)
         os.chdir(self.workdir)
+        with open('gradle.properties', 'w') as props:
+            props.write(dedent('''
+                groovyVersion=2.4.8
+                org.gradle.jvmargs=-Xmx1G -XX:asf \\
+                        -XX:+\\\\asdf
+            '''))
+
 
     def tearDown(self):
         try:
@@ -137,6 +147,14 @@ class TestMvnBuild(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         self.assertEqual(get_actual_args(),
                 get_expected_args('mvn_build', 'more_goals'))
+
+    @javautils_script('mvn_build',['--gradle'])
+    def test_gradle(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        self.assertEqual('--no-daemon --offline build xmvnInstall',
+                         get_actual_args().strip())
+        self.assertEqual('-Xmx1G -XX:asf -XX:+\\asdf',
+                         get_actual_env('GRADLE_OPTS'))
 
 if __name__ == '__main__':
     unittest.main()

@@ -36,6 +36,7 @@ import os
 import optparse
 import subprocess
 import sys
+import re
 
 from javapackages.maven.artifact import Artifact
 from javapackages.xmvn.xmvn_config import XMvnConfig
@@ -181,6 +182,22 @@ if __name__ == "__main__":
         xc.add_package_mapping(Artifact.from_mvn_str(":::*?:"), "__noinstall",
                                optional=True)
         xc.add_package_mapping(Artifact.from_mvn_str(":{*}"), "@1")
+
+    if (options.gradle and 'GRADLE_OPTS' not in os.environ
+            and os.path.exists('gradle.properties')):
+        jvmargs = None
+        with open('gradle.properties') as gradle_properties:
+            jvmargs_re = re.compile(r'^org\.gradle\.jvmargs\s*[=:]\s*')
+            iterator = iter(gradle_properties)
+            for line in iterator:
+                if re.match(jvmargs_re, line):
+                    line = re.sub(jvmargs_re, '', line)
+                    while line.endswith('\\\n'):
+                        line = line[:-2] + next(iterator).lstrip()
+                    jvmargs = line.replace('\\\\', '\\').rstrip('\n')
+        if jvmargs:
+            print("Setting GRADLE_OPTS='{0}'".format(jvmargs), file=sys.stderr)
+            os.environ['GRADLE_OPTS'] = jvmargs
 
     print("Executing:", " ".join(mvn_args), file=sys.stderr)
     print(mvn_args, file=sys.stderr)
