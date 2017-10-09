@@ -73,6 +73,14 @@ def get_actual_args():
     return args
 
 
+def get_actual_env(var_name):
+    with open('.xmvn/env', 'r') as f:
+        env = f.read().split('\n')
+    for line in env:
+        if line.startswith(var_name + '='):
+            return line.split('=')[1]
+
+
 def get_expected_args(scriptname, testname):
     fpath = path.join(DIRPATH, 'data', scriptname, "{name}_out".format(name=testname))
     with open(fpath, 'r') as f:
