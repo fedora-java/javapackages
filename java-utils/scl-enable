@@ -1,6 +1,6 @@
 #!/bin/bash
 #-
-# Copyright (c) 2016, Red Hat, Inc.
+# Copyright (c) 2016-2017, Red Hat, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,8 @@
 #
 # Authors:  Mikolaj Izdebski <mizdebsk@redhat.com>
 
-set -e
+# Not all enable scripts are designed to work with -e
+set +e
 
 while [[ "$1" != -- ]]; do
     [[ -f "/etc/scl/conf/$1" ]]
