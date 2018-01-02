@@ -59,7 +59,7 @@ check_java_env || exit 4
 set_jvm_dirs || exit 5
 
 extension_list=$(find $repository -name '\[*\]*.jar' -not -type d | \
-sed 's+\]\[+/+g' | sed 's+.*\[++g' | sed 's+\].*++g' | sort | uniq)
+sed 's+\]\[+/+g' | sed 's+.*\[++g' | sed 's+\].*++g' | sed 's+@+:+g' | sort | uniq)
 
 rm -f $(find $repository -name '\[*\]*.jar' -not -type d)
 
