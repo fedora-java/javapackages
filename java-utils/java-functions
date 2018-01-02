@@ -322,6 +322,7 @@ link_jar_repository() {
          [ -z "$_PRESERVE_NAMING" ] \
             && extension=[$(echo $extension | sed 's+/+][+g')] \
             || extension=$(echo $extension | sed 's+/+_+g')
+        extension=$(echo "$extension" | sed 's+:+@+')
          if [ $found -eq 0 ] ; then
             if [ -d "$found_extension" ] ; then
                for jar in $(find "$found_extension" -follow -name "*.jar") ; do
