@@ -153,7 +153,7 @@
 # This macro causes previously built Maven project to be installed into
 # buildroot. It is intended to be placed in %install section of spec file.
 #
-%mvn_install(J:X) %{?scl:@{javadir}-utils/scl-enable %{?scl_maven} %{scl} -- }xmvn-install %{?-X} -R .xmvn-reactor -n %{?scl:%{pkg_name}}%{!?scl:%{name}} -d "%{buildroot}" \
+%mvn_install(J:X) %{?scl:@{javadir}-utils/scl-enable %{?scl_maven} %{scl} -- }xmvn-install %{?-X} -R .xmvn-reactor -n %{?scl:%{pkg_name}}%{!?scl:%{name}} %{?xmvn_install_repo:-i %{xmvn_install_repo}} -d "%{buildroot}" \
 %{-J*:jdir="%{-J*}"}%{!-J*:jdir=target/site/apidocs; [ -d .xmvn/apidocs ] && jdir=.xmvn/apidocs} \
 %{__mkdir_p} %{buildroot}%{_licensedir} \
 if [ -d "${jdir}" ]; then \
