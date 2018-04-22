@@ -24,7 +24,7 @@
 %global default_jre %{?_root_prefix}%{!?_root_prefix:%{_prefix}}/lib/jvm/jre-1.8.0-openjdk
 
 Name:           %{?scl_prefix}%{pkg_name}
-Version:        5.0.0
+Version:        5.1.0
 Release:        0.git.%(date +%%Y%%m%%d.%%H%%M%%S)
 
 Summary:        Macros and scripts for Java packaging support
