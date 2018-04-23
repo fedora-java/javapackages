@@ -4,9 +4,6 @@
     <metadataRepositories>
       <repository>/usr/share/maven-metadata</repository>
     </metadataRepositories>
-    <prefixes>
-      <prefix>/</prefix>
-    </prefixes>
   </resolverSettings>
   <installerSettings>
     <metadataDir>usr/share/maven-metadata</metadataDir>

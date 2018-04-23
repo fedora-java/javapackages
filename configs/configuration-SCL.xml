@@ -5,9 +5,6 @@
       <repository>@{scl_root}/usr/share/maven-metadata</repository>
     </metadataRepositories>
     <ignoreDuplicateMetadata>false</ignoreDuplicateMetadata>
-    <prefixes>
-      <prefix>@{scl_root}/</prefix>
-    </prefixes>
   </resolverSettings>
   <installerSettings>
     <metadataDir>@{scl_root_relative}/usr/share/maven-metadata</metadataDir>
