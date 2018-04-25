@@ -47,14 +47,13 @@ BuildRequires:  %{python_prefix}-setuptools
 BuildRequires:  %{python_prefix}-nose
 BuildRequires:  %{python_prefix}-six
 
+Requires:       %{?scl_prefix}javapackages-filesystem = %{version}-%{release}
 Requires:       coreutils
 Requires:       findutils
 Requires:       which
 # default JRE
 Requires:       java-1.8.0-openjdk-headless
 
-Obsoletes:      %{?scl_prefix}eclipse-filesystem < 2
-Provides:       %{?scl_prefix}eclipse-filesystem = %{version}-%{release}
 Provides:       %{?scl_prefix}jpackage-utils = %{version}-%{release}
 # These could be generated automatically, but then we would need to
 # depend on javapackages-local for dependency generator.
@@ -63,6 +62,15 @@ Provides:       %{?scl_prefix}mvn(sun.jdk:jconsole) = SYSTEM
 
 %description
 This package provides macros and scripts to support Java packaging.
+
+%package -n %{?scl_prefix}javapackages-filesystem
+Summary:        Java packages filesystem layout
+Obsoletes:      %{?scl_prefix}eclipse-filesystem < 2
+Provides:       %{?scl_prefix}eclipse-filesystem = %{version}-%{release}
+
+%description -n %{?scl_prefix}javapackages-filesystem
+This package provides some basic directories into which Java packages
+install their content.
 
 %package -n %{?scl_prefix}maven-local
 Summary:        Macros and scripts for Maven packaging support
@@ -162,7 +170,9 @@ rm -rf %{buildroot}%{_mandir}/man7/gradle_build.7
 ./check
 %endif
 
-%files -f files-common
+%files -f files-tools
+
+%files -n %{?scl_prefix}javapackages-filesystem -f files-filesystem
 
 %files -n %{?scl_prefix}javapackages-local -f files-local
 
