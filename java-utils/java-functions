@@ -106,12 +106,20 @@ _load_java_conf()
 	JAVACMD_OPTS="${java_opts_save}"
     fi
 
-    if [ "_${JAVA_ABRT}" != "_off" -a -f "@{abrtlibdir}/libabrt-java-connector.so" -a -f "@{rundir}/abrt/abrtd.pid" ]; then
-	_log "ABRT Java connector was enabled"
-	_log "Using ABRT Java agent: @{abrtlibdir}/libabrt-java-connector.so"
-	JAVACMD_OPTS="${JAVACMD_OPTS} -agentpath:@{abrtlibdir}/libabrt-java-connector.so=abrt=on"
+    if [ "_${JAVA_ABRT}" != "_off" -a -f "@{abrtlibdir}/libabrt-java-connector.so" ]; then
+        if [ -f "@{rundir}/abrt/abrtd.pid" ]; then
+            ABRT_JAVA_CONNECTOR_OPTS="abrt=on,"
+        fi
+        if [ -f "@{bindir}/container-exception-logger" ]; then
+            ABRT_JAVA_CONNECTOR_OPTS+="cel=on"
+        fi
+        if [ ! -z ${ABRT_JAVA_CONNECTOR_OPTS} ]; then
+            _log "ABRT Java connector was enabled"
+            _log "Using ABRT Java agent: @{abrtlibdir}/libabrt-java-connector.so=${ABRT_JAVA_CONNECTOR_OPTS}"
+            JAVACMD_OPTS="${JAVACMD_OPTS} -agentpath:@{abrtlibdir}/libabrt-java-connector.so=${ABRT_JAVA_CONNECTOR_OPTS}"
+        fi
     else
-	_log "ABRT Java connector is disabled"
+        _log "ABRT Java connector is disabled"
     fi
 }
 
