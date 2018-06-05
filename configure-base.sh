@@ -58,7 +58,7 @@ test -z "${m2home}" && m2home="${datadir}/xmvn"
 test -z "${pyinterpreter}" && pyinterpreter=$(which python)
 test -z "${abrtlibdir}" && abrtlibdir="${prefix}/lib/abrt-java-connector"
 
-eval $(sed -n 's/^%_\('"$vars_re"'\)\ *\(.*\)$/\1="\2"/;T;s/%{_\(.*}\)/${\1/;p' macros.d/macros.jpackage)
+eval $(sed -n 's/^%_\('"$vars_re"'\)\ *\(.*\)$/\1="\2"/;T;s/%{_\(.*}\)/${\1/;p' macros.d/macros.javapackages-filesystem)
 
 test -z "${default_jdk}" && default_jdk="${jvmdir}/java"
 test -z "${default_jre}" && default_jre="${jvmdir}/jre"
