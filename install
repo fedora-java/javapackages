@@ -99,6 +99,11 @@ dir "${datadir}/eclipse"
 dir "${datadir}/eclipse/dropins"
 dir "${datadir}/eclipse/droplets"
 
+if [[ -z "${scl}" ]]; then
+    # in scl, macros.javapackages-filesystem is installed in javapackages-local
+    inst_data macros.d/macros.javapackages-filesystem "${rpmmacrodir}"
+fi
+
 
 exec >files-tools
 
@@ -180,10 +185,12 @@ inst_data java-utils/mvn_file.py "${javadir}-utils"
 inst_data java-utils/mvn_package.py "${javadir}-utils"
 
 if [[ -n "${scl}" ]]; then
-    # Base RHEL contains macros in /etc/ that would override ours.
-    # We need to place ours there alphabetically after to prevent that.
-    # Additionally we move macros.jpackage to javapackages-local, so they don't
-    # interfere with base RHEL if only javapackages-tools is installed.
+    # Base RHEL contains macros in /etc/ that would override ours.  We need to
+    # place ours there alphabetically after to prevent that.  Additionally we
+    # move macros.{jpackage,javapackages-filesystem} to javapackages-local, so
+    # they don't interfere with base RHEL if only javapackages-tools is
+    # installed.
+    inst_data macros.d/macros.javapackages-filesystem "${rpmmacrodir}" "macros.x-${scl}.javapackages-filesystem"
     inst_data target/macros.fjava "${rpmmacrodir}" "macros.x-${scl}.fjava"
     inst_data target/macros.jpackage "${rpmmacrodir}" "macros.x-${scl}.jpackage"
     inst_data target/macros.scl-java-template "${rpmmacrodir}" "macros.${scl}.scl-java-template"
