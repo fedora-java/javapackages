@@ -65,7 +65,7 @@ Originally written by Nicholas Mailhot and David Walluck.
 
 REPORTING BUGS
 --------------
-Bugs should be reported through Java Pacakges Tools issue tracker at
+Bugs should be reported through Java Packages Tools issue tracker at
 Github: https://github.com/fedora-java/javapackages/issues.
 
 SEE ALSO
