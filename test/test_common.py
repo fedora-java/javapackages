@@ -24,7 +24,7 @@ for var in ('PYTHONPATH', 'COVERAGE_PROCESS_START'):
         SCRIPT_ENV[var] = os.environ[var]
 
 
-def call_script(name, args, stdin=None, extra_env={}, async=False):
+def call_script(name, args, stdin=None, extra_env={}, wait=True):
     with open("tmpout", 'w') as outfile:
         with open("tmperr", 'w') as errfile:
             procargs = [sys.executable, name]
@@ -36,7 +36,7 @@ def call_script(name, args, stdin=None, extra_env={}, async=False):
                                     env=env,
                                     stdin=subprocess.PIPE,
                                     universal_newlines=True)
-            if async:
+            if not wait:
                 return (outfile, errfile, proc)
             proc.communicate(stdin)
             ret = proc.wait()

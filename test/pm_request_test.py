@@ -19,7 +19,7 @@ class PmRequestTest(unittest.TestCase):
     def test_ok(self):
         (out, err, proc) = call_script(self.scriptpath,
                                        ['maven', 'junit:junit'],
-                                       extra_env=self.env, async=True)
+                                       extra_env=self.env, wait=False)
         conn, _ = self.sock.accept()
         request = conn.makefile().readline().rstrip()
         self.assertEqual(request, "install 'mvn(junit:junit)'")
@@ -31,7 +31,7 @@ class PmRequestTest(unittest.TestCase):
     def test_nok(self):
         (out, err, proc) = call_script(self.scriptpath,
                                        ['maven', 'junit:junit'],
-                                       extra_env=self.env, async=True)
+                                       extra_env=self.env, wait=False)
         conn, _ = self.sock.accept()
         request = conn.makefile().readline().rstrip()
         self.assertEqual(request, "install 'mvn(junit:junit)'")
@@ -43,7 +43,7 @@ class PmRequestTest(unittest.TestCase):
     def test_jar(self):
         (out, err, proc) = call_script(self.scriptpath,
                                        ['maven', 'gid:aid:jar::'],
-                                       extra_env=self.env, async=True)
+                                       extra_env=self.env, wait=False)
         conn, _ = self.sock.accept()
         request = conn.makefile().readline().rstrip()
         self.assertEqual(request, "install 'mvn(gid:aid)'")
@@ -55,7 +55,7 @@ class PmRequestTest(unittest.TestCase):
     def test_full_coords(self):
         (out, err, proc) = call_script(self.scriptpath,
                                        ['maven', 'gid:aid:ext:cla:ver'],
-                                       extra_env=self.env, async=True)
+                                       extra_env=self.env, wait=False)
         conn, _ = self.sock.accept()
         request = conn.makefile().readline().rstrip()
         self.assertEqual(request, "install 'mvn(gid:aid:ext:cla:ver)'")
@@ -67,7 +67,7 @@ class PmRequestTest(unittest.TestCase):
     def test_connection_error(self):
         (out, err, proc) = call_script(self.scriptpath,
                                        ['maven', 'junit:junit'],
-                                       extra_env=self.env, async=True)
+                                       extra_env=self.env, wait=False)
         conn, _ = self.sock.accept()
         conn.close()
         ret = proc.wait()
