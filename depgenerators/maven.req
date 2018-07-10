@@ -299,7 +299,11 @@ class TagBuilder(object):
     def _normalize_java_requires(self, req):
         version = req.split(".")
         if len(version) == 1:
-            req = "1." + req
+            try:
+                if int(req) < 9:
+                    req = "1." + req
+            except ValueError:
+                raise ValueError("Unknown Java version {0}".format(req))
         # sanity check
         try:
             float(req)
@@ -308,10 +312,7 @@ class TagBuilder(object):
         return req
 
     def _process_java_version(self, version_string):
-        version = version_string.split('.')
-        major = int(version[0])
-        minor = int(version[1])
-        return "1:{0}.{1}".format(major, minor)
+        return "1:{0}".format(version_string)
 
     def _filter_requires(self, requires):
         filters = self.config.get('requires_filter', [])
