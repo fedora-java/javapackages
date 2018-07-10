@@ -49,6 +49,22 @@ class TestMavenReq(unittest.TestCase):
                 "java-headless >= 1:1.8")
         self.assertEqual(set(want), set(sout))
 
+    @mavenreq(["require-java9/buildroot/usr/share/maven-metadata/require.xml"])
+    def test_require_java9(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("javapackages-filesystem", "mvn(org.apache.maven:maven-project)",
+                "java-headless >= 1:9")
+        self.assertEqual(set(want), set(sout))
+
+    @mavenreq(["require-java10/buildroot/usr/share/maven-metadata/require.xml"])
+    def test_require_java10(self, stdout, stderr, return_value):
+        self.assertEqual(return_value, 0, stderr)
+        sout = [x for x in stdout.split('\n') if x]
+        want = ("javapackages-filesystem", "mvn(org.apache.maven:maven-project)",
+                "java-headless >= 1:10")
+        self.assertEqual(set(want), set(sout))
+
     @mavenreq(["require-java-fail/buildroot/usr/share/maven-metadata/require.xml"])
     def test_require_java_fail(self, stdout, stderr, return_value):
         self.assertNotEqual(return_value, 0)
