@@ -1,7 +1,6 @@
 #
 from __future__ import print_function
 
-import inspect
 import re
 import shutil
 import sys
@@ -199,25 +198,24 @@ def print_usage(function):
     print("Usage: %{name} {doc}".format(name=function.__name__, doc=function.__doc__),
           file=sys.stderr)
 
-def parse_args(function, args):
-    (arglist, _, _, defaults) = inspect.getargspec(function)
+def parse_args(function, args, nargs, last_xml_string=False):
     option_parser = optparse.OptionParser()
     option_parser.add_option('-r', '--recursive', action="store_true")
     option_parser.add_option('-f', '--force', action="store_true")
     options, arguments = option_parser.parse_args(list(args))
-    min_arg_count = len(arglist) - len(defaults)
-    if len(arguments) < min_arg_count:
+    if len(arguments) < nargs:
         raise PomException('Too few arguments given to {0}'.format(function.__name__))
-    fnargs = dict(zip(arglist, arguments[:min_arg_count]))
-    poms = arguments[min_arg_count:]
-    if len(defaults or [] > 1) and poms:
+    fnargs = arguments[:nargs]
+    fnkwargs = {}
+    poms = arguments[nargs:]
+    if last_xml_string and poms:
         last = poms[-1]
         if '<' in last:
             del poms[-1]
-            fnargs[arglist[-1]] = last
+            fnkwargs['xml_string'] = last
     if not poms:
         poms = ['.']
-    return options, fnargs, poms
+    return options, fnargs, fnkwargs, poms
 
 class XmlFile(object):
     default_name = None
@@ -251,11 +249,11 @@ class XmlFile(object):
         with io.open(filename, 'ab') as xmlfile:
             xmlfile.write(b'\n')
 
-    def patch(self, function, fnargs):
+    def patch(self, function, fnargs, fnkwargs):
         xmldir = path.dirname(self.xmlpath)
         xmlfile = path.basename(self.xmlpath)
         self.write(path.join(xmldir, xmlfile + '.tmp'))
-        function(**fnargs)
+        function(*fnargs, **fnkwargs)
         origfile = path.join(xmldir, xmlfile + '.orig')
         shutil.move(self.xmlpath, origfile)
         self.write(self.xmlpath)
@@ -441,12 +439,14 @@ def create_xml_object(filepath):
         return Ivy(filepath)
     return XmlFile(filepath)
 
-def macro(types=(XmlFile,)):
+def macro(types=(XmlFile,), nargs=1, last_xml_string=False):
     def decorator(function):
         def decorated(*args):
             try:
                 xmlpath = None
-                options, fnargs, xmls = parse_args(function, args)
+                options, fnargs, fnkwargs, xmls = parse_args(
+                    function, args, nargs, last_xml_string
+                )
 
                 stored_exception = None
                 for xmlspec in xmls:
@@ -462,8 +462,8 @@ def macro(types=(XmlFile,)):
                             if not any([isinstance(xml, allowed) for allowed in types]):
                                 raise PomException('Operation not supported on '
                                                    'given file type.')
-                            fnargs['pom'] = xml
-                            xml.patch(function, fnargs)
+                            fnkwargs['pom'] = xml
+                            xml.patch(function, fnargs, fnkwargs)
                             matches += 1
                         except PomQueryNoMatch as exception:
                             stored_exception = exception
@@ -488,19 +488,19 @@ def disable_module(pom, module):
     for element in elements:
         pom.replace_xml(element, etree.Comment(" module removed by maintainer: {0} ".format(module)))
 
-@macro()
+@macro(nargs=2)
 def pom_xpath_inject(where, xml_string, pom=None):
     """<XPath> <XML code> [POM location]"""
     for element in pom.xpath_query(where):
         pom.inject_xml(element, annotate(pom.subtree_from_string(xml_string)))
 
-@macro()
+@macro(nargs=2)
 def pom_xpath_replace(where, xml_string, pom=None):
     """<XPath> <XML code> [POM location]"""
     for element in pom.xpath_query(where):
         pom.replace_xml(element, annotate(pom.subtree_from_string(xml_string)))
 
-@macro()
+@macro(nargs=1)
 def pom_xpath_remove(where, pom=None):
     """<XPath> [POM location]"""
     for element in pom.xpath_query(where):
@@ -509,13 +509,13 @@ def pom_xpath_remove(where, pom=None):
         else:
             pom.replace_xml(element, etree.Comment(" element removed by maintainer: {0} ".format(where)))
 
-@macro()
+@macro(nargs=2)
 def pom_xpath_set(where, content, pom=None):
     """<XPath> <new contents> [POM location]"""
     for element in pom.xpath_query(where):
         pom.replace_xml_content(element, pom.subtree_from_string(content))
 
-@macro(types=(Pom,))
+@macro(types=(Pom,), nargs=1)
 def pom_xpath_disable(when, pom=None):
     """<XPath> [POM location]"""
     to_disable = []
@@ -533,9 +533,9 @@ def pom_xpath_disable(when, pom=None):
     if not to_disable:
         raise PomQueryNoMatch("Condition didn't match any module")
     for pom, module in to_disable:
-        pom.patch(disable_module, {'pom': pom, 'module': module})
+        pom.patch(disable_module, [pom, module], {})
 
-@macro(types=(Pom, Ivy))
+@macro(types=(Pom, Ivy), nargs=1)
 def pom_remove_dep(dep, pom=None):
     """[groupId]:[artifactId] [POM location]"""
     try:
@@ -547,7 +547,7 @@ def pom_remove_dep(dep, pom=None):
     except PomQueryNoMatch:
         raise PomQueryNoMatch("Dependency '{0}' not found.".format(dep))
 
-@macro(types=(Pom,))
+@macro(types=(Pom,), nargs=1)
 def pom_remove_plugin(plugin, pom=None):
     """[groupId]:[artifactId] [POM location]"""
     try:
@@ -559,7 +559,7 @@ def pom_remove_plugin(plugin, pom=None):
     except PomQueryNoMatch:
         raise PomQueryNoMatch("Plugin '{0}' not found.".format(plugin))
 
-@macro(types=(Pom,))
+@macro(types=(Pom,), nargs=1)
 def pom_disable_module(module, pom=None):
     """<module name> [POM location]"""
     try:
@@ -567,7 +567,7 @@ def pom_disable_module(module, pom=None):
     except PomQueryNoMatch:
         raise PomQueryNoMatch("Module '{0}' not found.".format(module))
 
-@macro(types=(Pom,))
+@macro(types=(Pom,), nargs=1)
 def pom_add_parent(parent, pom=None):
     """groupId:artifactId[:version] [POM location]"""
     if pom.xpath_query('/pom:parent', boolean=True):
@@ -575,7 +575,7 @@ def pom_add_parent(parent, pom=None):
     artifact = pom.create_artifact().from_mvn_str(parent)
     pom.inject_artifact('', 'parent', artifact)
 
-@macro(types=(Pom,))
+@macro(types=(Pom,), nargs=0)
 def pom_remove_parent(pom=None):
     """[POM location]"""
     try:
@@ -584,7 +584,7 @@ def pom_remove_parent(pom=None):
     except PomQueryNoMatch:
         raise PomQueryNoMatch("POM doesn't specify parent.")
 
-@macro(types=(Pom,))
+@macro(types=(Pom,), nargs=1)
 def pom_set_parent(parent, pom=None):
     """groupId:artifactId[:version] [POM location]"""
     try:
@@ -594,28 +594,28 @@ def pom_set_parent(parent, pom=None):
     except PomQueryNoMatch:
         raise PomQueryNoMatch("POM doesn't specify parent.")
 
-@macro(types=(Pom, Ivy))
+@macro(types=(Pom, Ivy), nargs=1, last_xml_string=True)
 def pom_add_dep(dep, pom=None, xml_string=''):
     """groupId:artifactId[:version[:scope]] [POM location] [extra XML]"""
     artifact = pom.create_artifact().from_mvn_str(dep)
     pom.inject_artifact(pom.DEPENDENCIES_NODE, 'dependency', artifact,
                         xml_string)
 
-@macro(types=(Pom,))
+@macro(types=(Pom,), nargs=1, last_xml_string=True)
 def pom_add_dep_mgmt(dep, pom=None, xml_string=''):
     """groupId:artifactId[:version[:scope]] [POM location] [extra XML]"""
     artifact = pom.create_artifact().from_mvn_str(dep)
     pom.inject_artifact('pom:dependencyManagement/pom:dependencies',
                         'dependency', artifact, xml_string)
 
-@macro(types=(Pom,))
+@macro(types=(Pom,), nargs=1, last_xml_string=True)
 def pom_add_plugin(plugin, pom=None, xml_string=''):
     """groupId:artifactId[:version] [POM location] [extra XML]"""
     artifact = pom.create_artifact(plugin=True).from_mvn_str(plugin)
     pom.inject_artifact('pom:build/pom:plugins', 'plugin', artifact,
                         xml_string)
 
-@macro()
+@macro(nargs=2, last_xml_string=True)
 def pom_change_dep(old, new, pom=None, xml_string=''):
     """groupId:artifactId[:version] groupId:artifactId[:version[:scope]]
        [POM location] [extra XML]"""
