@@ -283,7 +283,7 @@ class TagBuilder(object):
                 req_versions = fn(metadata)
                 if req_versions:
                     max_version = self._get_java_requires(req_versions)
-                    version_string = self._process_java_version(max_version)
+                    version_string = "1:{0}".format(max_version)
                     parts = {'pkg': rules['package_name'],
                              'op': rules.get('cmp_operator', '>='),
                              'version': version_string}
@@ -310,9 +310,6 @@ class TagBuilder(object):
         except ValueError:
             raise ValueError("Unknown Java version {0}".format(req))
         return req
-
-    def _process_java_version(self, version_string):
-        return "1:{0}".format(version_string)
 
     def _filter_requires(self, requires):
         filters = self.config.get('requires_filter', [])
