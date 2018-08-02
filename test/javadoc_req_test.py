@@ -8,7 +8,7 @@ class TestJavadocReq(unittest.TestCase):
     @javadocreq(["something", "that's ignored anyway"])
     def test_javadoc(self, stdout, stderr, return_value):
         self.assertEqual(return_value, 0, stderr)
-        self.assertEqual("javapackages-tools\n", stdout)
+        self.assertEqual("javapackages-filesystem\n", stdout)
 
     @javadocreq([], javaconfdirs=["javadoc/first", "javadoc/second"])
     def test_configuration(self, stdout, stderr, return_value):

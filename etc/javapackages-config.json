@@ -1,7 +1,7 @@
 {
     "maven.req": {
         "always_generate": [
-            "javapackages-tools"
+            "javapackages-filesystem"
         ],
         "java_requires": {
             "package_name": "java-headless",
@@ -16,7 +16,7 @@
     },
     "javadoc.req": {
         "always_generate": [
-            "javapackages-tools"
+            "javapackages-filesystem"
         ]
     }
 }
