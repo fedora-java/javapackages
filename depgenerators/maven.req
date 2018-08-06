@@ -282,8 +282,7 @@ class TagBuilder(object):
             if not rules.get('skip', False):
                 req_versions = fn(metadata)
                 if req_versions:
-                    max_version = self._get_java_requires(req_versions)
-                    version_string = "1:{0}".format(max_version)
+                    version_string = self._get_java_requires(req_versions)
                     parts = {'pkg': rules['package_name'],
                              'op': rules.get('cmp_operator', '>='),
                              'version': version_string}
@@ -294,22 +293,25 @@ class TagBuilder(object):
         return requires
 
     def _get_java_requires(self, reqs):
-        return max([self._normalize_java_requires(x) for x in reqs])
+        major, minor = max([self._parse_java_requires(x) for x in reqs])
+        if minor:
+            return "1:{0}.{1}".format(major, minor)
+        else:
+            return "1:{0}".format(major)
 
-    def _normalize_java_requires(self, req):
-        version = req.split(".")
-        if len(version) == 1:
-            try:
-                if int(req) < 9:
-                    req = "1." + req
-            except ValueError:
-                raise ValueError("Unknown Java version {0}".format(req))
-        # sanity check
-        try:
-            float(req)
-        except ValueError:
+    def _parse_java_requires(self, req):
+        match = re.match(r'^(\d+)(?:\.(\d+))?$', req)
+        if not match:
             raise ValueError("Unknown Java version {0}".format(req))
-        return req
+
+        major = int(match.group(1))
+        minor = int(match.group(2) or 0)
+
+        if not minor and major < 9:
+            minor = major
+            major = 1
+
+        return major, minor
 
     def _filter_requires(self, requires):
         filters = self.config.get('requires_filter', [])
