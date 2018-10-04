@@ -138,7 +138,7 @@ Requires:       %{?scl_prefix}xmvn-resolve >= 3.0.0
 # Java build systems don't have hard requirement on java-devel, so it should be there
 Requires:       java-1.8.0-openjdk-devel
 Requires:       %{?scl_prefix}%{python_prefix}-javapackages = %{version}-%{release}
-Requires:       %{python_prefix}
+Requires:       %{python_interpreter}
 
 %description -n %{?scl_prefix}javapackages-local
 This package provides non-essential macros and scripts to support Java packaging.
