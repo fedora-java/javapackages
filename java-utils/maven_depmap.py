@@ -85,7 +85,7 @@ def _print_path_with_dirs(path, base):
 
 def _make_files_versioned(versions, pom_path, jar_path, pom_base, jar_base):
     """Make pom and jar file versioned"""
-    versions = list(set(versions.split(',')))
+    versions = sorted(set(versions.split(',')))
 
     vpom_path = pom_path
     vjar_path = jar_path
@@ -179,11 +179,11 @@ def add_aliases(artifact, additions):
         return artifact
 
     aliases = additions.split(',')
-    result = set()
+    result = list()
     for a in aliases:
         alias = MetadataAlias.from_mvn_str(a)
         alias.extension = artifact.extension
-        result.add(alias)
+        result.append(alias)
 
     artifact.aliases = result
     return artifact
