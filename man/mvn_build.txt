@@ -73,6 +73,12 @@ ENVIRONMENT
     behavior is mostly useful when bootstrapping new packages, which
     dependecies have not yet been packaged.
 
+*_without_tests*::
+	Defining this macro to any value is equivalent to *-f* option.
+
+*_without_javadoc*::
+	Defining this macro to any value is equivalent to *-j* option.
+
 AUTHOR
 ------
 Originally written by Mikolaj Izdebski.
