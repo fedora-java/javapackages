@@ -38,17 +38,17 @@
 #
 # Root directory for all common architecture dependent parts of Java VM/SDK/JRE's
 #
-%_jvmcommonlibdir %{_prefix}/lib/jvm-commmon
+%_jvmcommonlibdir %{_prefix}/lib/jvm-common
 
 #
 # Root directory for all common architecture independent parts of Java VM/SDK/JRE's
 #
-%_jvmcommondatadir %{_datadir}/jvm-commmon
+%_jvmcommondatadir %{_datadir}/jvm-common
 
 #
 # Root directory for all common configurations parts of Java VM/SDK/JRE's
 #
-%_jvmcommonsysconfdir %{_sysconfdir}/jvm-commmon
+%_jvmcommonsysconfdir %{_sysconfdir}/jvm-common
 
 #
 # Directory containing Java configuration file (java.conf)
