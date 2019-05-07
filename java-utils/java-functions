@@ -197,7 +197,7 @@ set_javacmd()
     set_jvm
 
     # Add all sorts of jvm layouts here
-    for cmd in jre/sh/java bin/java; do
+    for cmd in jre/sh/java jre/bin/java bin/java; do
 	JAVACMD="${JAVA_HOME}/${cmd}"
 	if [ -x "${JAVACMD}" ]; then
 	    _log "Using configured JAVACMD: $JAVACMD"
