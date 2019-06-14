@@ -21,6 +21,7 @@ class Package(object):
     """
     def __init__(self, name):
         self.__name = name
+        self.__macros = [u'%topdir {cwd}/rpmbuild'.format(cwd=os.getcwd())]
         self.__sources = []
         self.__begin = ''
         self.__prep = ''
@@ -83,9 +84,8 @@ class Package(object):
     def __invoke_rpmbuild(self, args):
         outfile = open("tmpout", 'w')
         errfile = open("tmperr", 'w')
-        topdir = '--define=_topdir {cwd}/rpmbuild'.format(cwd=os.getcwd())
-        scl_undef = '--eval=%undefine scl'
-        proc = subprocess.Popen(['rpmbuild', topdir, scl_undef,
+        proc = subprocess.Popen(['rpmbuild',
+                                 '--macros', '/usr/lib/rpm/macros:rpmmacros',
                                  os.path.join('rpmbuild', 'SPECS',
                                               self.__name + '.spec')]
                                 + args, shell=False, env=self.__env,
@@ -113,7 +113,7 @@ class Package(object):
             os.mkdir('rpmbuild/BUILDROOT')
         except OSError:
             pass
-        _prepare_macros()
+        self.__prepare_macros()
         self.__prepare_spec()
         self.__prepare_sources()
 
@@ -177,21 +177,23 @@ class Package(object):
             shutil.copy(sourcepath, '{0}{1}'.format(target, index))
 
 
-def _prepare_macros():
-    macropath = os.path.join(DIRPATH, '..', 'macros.d')
-    java_utils = os.path.abspath(os.path.join(DIRPATH, '..', 'java-utils'))
+    def __prepare_macros(self):
+        macropath = os.path.join(DIRPATH, '..', 'macros.d')
+        java_utils = os.path.abspath(os.path.join(DIRPATH, '..', 'java-utils'))
 
-    with io.open('.rpmmacros', 'wt', encoding='utf-8') as rpmmacros:
-        for filepath in os.listdir(macropath):
-            if filepath.startswith('macros'):
-                with io.open(os.path.join(macropath, filepath), encoding='utf-8') as macrofile:
-                    for line in macrofile.readlines():
-                        if '/usr/share/java-utils' in line:
-                            line = re.sub(r'/usr/share/java-utils',
-                                          java_utils, line)
-                        if '@{javadir}-utils' in line:
-                            line = re.sub(r'@\{javadir\}-utils',
-                                          java_utils, line)
-                        if '@{pyinterpreter}' in line:
-                            line = re.sub(r'@\{pyinterpreter\}', sys.executable, line)
-                        rpmmacros.write(line)
+        with io.open('rpmmacros', 'wt', encoding='utf-8') as rpmmacros:
+            for filepath in os.listdir(macropath):
+                if filepath.startswith('macros'):
+                    with io.open(os.path.join(macropath, filepath), encoding='utf-8') as macrofile:
+                        for line in macrofile.readlines():
+                            if '/usr/share/java-utils' in line:
+                                line = re.sub(r'/usr/share/java-utils',
+                                              java_utils, line)
+                            if '@{javadir}-utils' in line:
+                                line = re.sub(r'@\{javadir\}-utils',
+                                              java_utils, line)
+                            if '@{pyinterpreter}' in line:
+                                line = re.sub(r'@\{pyinterpreter\}', sys.executable, line)
+                            rpmmacros.write(line)
+            for line in self.__macros:
+                rpmmacros.write(line + '\n')
