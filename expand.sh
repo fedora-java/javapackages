@@ -39,10 +39,6 @@ expand()
     fi
 
     sed \
-        -e "s|@{scl}|${scl}|g" \
-        -e "s|@{scl_root}|${scl_root}|g" \
-        -e "s|@{scl_root_relative}|${scl_root_relative}|g" \
-        -e "s|@{scl_suffix}|${scl_suffix}|g" \
         -e "s|@{bindir}|${bindir}|g" \
         -e "s|@{datadir}|${datadir}|g" \
         -e "s|@{javaconfdir}|${javaconfdir}|g" \

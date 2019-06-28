@@ -76,9 +76,6 @@ class OSGiCache(Cache):
                 bundle = artifact.get_osgi_bundle()
             else:
                 bundle = OSGiBundle.from_manifest(path)
-                if bundle:
-                    if not bundle.namespace and self._scl:
-                        bundle.namespace = self._scl
             if bundle:
                 cache.update({path: bundle})
 

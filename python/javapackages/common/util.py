@@ -82,7 +82,7 @@ def _parse_argv(argv):
     parser = OptionParser()
     parser.add_option("--cachedir", dest="cachedir")
     parser.add_option("--rpm-pid", dest="rpm_pid")
-    parser.add_option("--scl", dest="scl", default=None)
+    parser.add_option("--namespace", dest="namespace", default=None)
 
     return parser.parse_args()
 
