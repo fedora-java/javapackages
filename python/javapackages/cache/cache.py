@@ -41,7 +41,6 @@ class Cache(object):
     def __init__(self, rpmconf):
         self._cachedir = rpmconf.cachedir
         self._rpm_pid = rpmconf.rpm_pid
-        self._scl = rpmconf.scl
         self._fresh = False
         self._config_name = "default_cache"
 

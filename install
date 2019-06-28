@@ -99,10 +99,7 @@ dir "${datadir}/eclipse"
 dir "${datadir}/eclipse/dropins"
 dir "${datadir}/eclipse/droplets"
 
-if [[ -z "${scl}" ]]; then
-    # in scl, macros.javapackages-filesystem is installed in javapackages-local
-    inst_data macros.d/macros.javapackages-filesystem "${rpmmacrodir}"
-fi
+inst_data macros.d/macros.javapackages-filesystem "${rpmmacrodir}"
 
 
 exec >files-tools
@@ -110,9 +107,6 @@ exec >files-tools
 dir "${m2home}"
 dir "${javadir}-utils"
 dir "${rpmconfigdir}"
-if [[ -n "${scl}" ]]; then
-    dir "${javadir}-utils/scl-template"
-fi
 
 inst_exec target/build-classpath "${bindir}"
 inst_exec target/build-classpath-directory "${bindir}"
@@ -131,12 +125,8 @@ inst_config target/eclipse.conf "${javaconfdir}"
 
 inst_data target/java-functions "${javadir}-utils"
 inst_exec java-utils/java-wrapper "${javadir}-utils"
-inst_exec java-utils/scl-enable "${javadir}-utils"
 
-if [[ -z "${scl}" ]]; then
-    # in scl, macros.jpackage is installed in javapackages-local
-    inst_data target/macros.jpackage "${rpmmacrodir}"
-fi
+inst_data target/macros.jpackage "${rpmmacrodir}"
 
 inst_data target/build-classpath.1 "${mandir}/man1"
 inst_data target/build-jar-repository.1 "${mandir}/man1"
@@ -145,18 +135,8 @@ inst_data target/rebuild-jar-repository.1 "${mandir}/man1"
 inst_data target/shade-jar.1 "${mandir}/man1"
 inst_data target/find-jar.1 "${mandir}/man1"
 
-inst_data target/javapackages-metadata.xml "${datadir}/maven-metadata"
-inst_data target/configuration.xml "${m2home}"
-
-
-if [[ -n "${scl}" ]]; then
-    inst_data target/configure-base.sh "${javadir}-utils/scl-template"
-    inst_data expand.sh "${javadir}-utils/scl-template"
-    inst_data configs/configuration-SCL.xml "${javadir}-utils/scl-template"
-    inst_data etc/javapackages-config-SCL.json "${javadir}-utils/scl-template"
-    inst_data etc/java.conf "${javadir}-utils/scl-template"
-    inst_data etc/eclipse.conf "${javadir}-utils/scl-template"
-fi
+inst_data etc/javapackages-metadata.xml "${datadir}/maven-metadata"
+inst_data configs/configuration.xml "${m2home}"
 
 if [ -z "$pyinterpreter" ]; then
     exit 0
@@ -182,19 +162,7 @@ inst_data java-utils/mvn_config.py "${javadir}-utils"
 inst_data java-utils/mvn_file.py "${javadir}-utils"
 inst_data java-utils/mvn_package.py "${javadir}-utils"
 
-if [[ -n "${scl}" ]]; then
-    # Base RHEL contains macros in /etc/ that would override ours.  We need to
-    # place ours there alphabetically after to prevent that.  Additionally we
-    # move macros.{jpackage,javapackages-filesystem} to javapackages-local, so
-    # they don't interfere with base RHEL if only javapackages-tools is
-    # installed.
-    inst_data macros.d/macros.javapackages-filesystem "${rpmmacrodir}" "macros.x-${scl}.javapackages-filesystem"
-    inst_data target/macros.fjava "${rpmmacrodir}" "macros.x-${scl}.fjava"
-    inst_data target/macros.jpackage "${rpmmacrodir}" "macros.x-${scl}.jpackage"
-    inst_data target/macros.scl-java-template "${rpmmacrodir}" "macros.${scl}.scl-java-template"
-else
-    inst_data target/macros.fjava "${rpmmacrodir}"
-fi
+inst_data target/macros.fjava "${rpmmacrodir}"
 
 inst_data target/abs2rel.1 "${mandir}/man1"
 inst_data target/mvn_alias.7 "${mandir}/man7"
@@ -225,17 +193,17 @@ exec >files-generators
 
 dir "${rpmconfigdir}/fileattrs"
 
-inst_exec target/maven.prov "${rpmconfigdir}" "maven${scl_suffix}.prov"
-inst_exec target/maven.req "${rpmconfigdir}" "maven${scl_suffix}.req"
-inst_exec target/osgi.prov "${rpmconfigdir}" "osgi${scl_suffix}.prov"
-inst_exec target/osgi.req "${rpmconfigdir}" "osgi${scl_suffix}.req"
-inst_exec target/javadoc.req "${rpmconfigdir}" "javadoc${scl_suffix}.req"
+inst_exec target/maven.prov "${rpmconfigdir}" maven.prov
+inst_exec target/maven.req "${rpmconfigdir}" maven.req
+inst_exec target/osgi.prov "${rpmconfigdir}" osgi.prov
+inst_exec target/osgi.req "${rpmconfigdir}" osgi.req
+inst_exec target/javadoc.req "${rpmconfigdir}" javadoc.req
 
-inst_data target/maven.attr "${rpmconfigdir}/fileattrs" "maven${scl_suffix}.attr"
-inst_data target/osgi.attr "${rpmconfigdir}/fileattrs" "osgi${scl_suffix}.attr"
-inst_data target/javadoc.attr "${rpmconfigdir}/fileattrs" "javadoc${scl_suffix}.attr"
+inst_data target/maven.attr "${rpmconfigdir}/fileattrs" maven.attr
+inst_data target/osgi.attr "${rpmconfigdir}/fileattrs" osgi.attr
+inst_data target/javadoc.attr "${rpmconfigdir}/fileattrs" javadoc.attr
 
-inst_config target/javapackages-config.json "${javaconfdir}"
+inst_config etc/javapackages-config.json "${javaconfdir}"
 
 
 exec >files-maven

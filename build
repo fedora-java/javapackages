@@ -49,18 +49,6 @@ manpage()
     (cd ./target && xmlto man --skip-validation "${1}.xml")
 }
 
-if [[ -n "${scl}" ]]; then
-    expand configs/configuration-SCL.xml target/configuration.xml
-    expand etc/javapackages-config-SCL.json target/javapackages-config.json
-    expand etc/javapackages-metadata-SCL.xml target/javapackages-metadata.xml
-    sed "s:macros\.d/macros\.jpackage:${rpmmacrodir}/macros.x-${scl}.jpackage:" configure-base.sh > target/configure-base.sh
-    expand macros.d/macros.scl-java-template
-else
-    cat configs/configuration.xml >target/configuration.xml
-    cat etc/javapackages-config.json >target/javapackages-config.json
-    cat etc/javapackages-metadata.xml >target/javapackages-metadata.xml
-fi
-
 expand bin/abs2rel
 expand bin/build-classpath
 expand bin/build-classpath-directory

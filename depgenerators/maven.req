@@ -129,8 +129,7 @@ class TagBuilder(object):
                 for i, r in enumerate(results):
                     dep = MetadataDependency(deps[i].groupId,
                                              deps[i].artifactId,
-                                             requestedVersion=deps[i].version,
-                                             namespace=rpmconf.scl or "")
+                                             requestedVersion=deps[i].version)
                     if isinstance(deps[i], Dependency):
                         dep.extension = deps[i].extension
 

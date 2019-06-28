@@ -76,8 +76,8 @@ def get_rpm_str(gid, aid, ext=None, cla=None, namespace=None,
     'mvn(org.example:artifact)'
     >>> get_rpm_str("org.example", "artifact", pkg_ver="1")
     'mvn(org.example:artifact) = 1'
-    >>> get_rpm_str("org.example", "artifact", namespace="scl", compat_ver="1")
-    'scl-mvn(org.example:artifact:1)'
+    >>> get_rpm_str("org.example", "artifact", namespace="myns", compat_ver="1")
+    'myns-mvn(org.example:artifact:1)'
     """
 
     mvnstr = get_mvn_str(gid, aid, ext=ext, cla=cla,
