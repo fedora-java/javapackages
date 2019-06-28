@@ -517,7 +517,8 @@ sort -u -o ${_filelist} ${_filelist} \
 # %license LICENSE
 %javadoc_package(L) %if 0%{!?_without_javadoc:1} \
 %package javadoc \
-Summary:        API documentation for %{?scl:%{pkg_name}}%{!?scl:%{name}} \
+BuildArch: noarch \
+Summary: API documentation for %{?scl:%{pkg_name}}%{!?scl:%{name}} \
 %description javadoc \
 API documentation for %{?scl:%{pkg_name}}%{!?scl:%{name}}. \
 %files javadoc -f .mfiles-javadoc \
