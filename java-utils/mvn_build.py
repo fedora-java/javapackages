@@ -32,6 +32,8 @@
 
 from __future__ import print_function
 
+import base64
+import gzip
 import os
 import optparse
 import subprocess
@@ -188,12 +190,17 @@ if __name__ == "__main__":
     p = subprocess.Popen(" ".join(mvn_args), shell=True, env=os.environ)
     p.wait()
 
-    subprocess.Popen("""
-        if [ -f .xmvn-builddep ]; then
-            echo -----BEGIN MAVEN BUILD DEPENDENCIES-----
-            gzip -9nc <.xmvn-builddep | base64
-            echo -----END MAVEN BUILD DEPENDENCIES-----
-        fi
-        """, shell=True, env=os.environ).wait()
+    builddep_file = ".xmvn-builddep"
+    if os.path.isfile(builddep_file):
+        with open(builddep_file, "b") as file:
+            contents = file.read()
+
+        output = "\n".join([
+            "-----BEGIN MAVEN BUILD DEPENDENCIES-----",
+            base64.b64encode(gzip.compress(contents)).decode(),
+            "-----END MAVEN BUILD DEPENDENCIES-----",
+        ])
+
+        print(output, flush=True)
 
     sys.exit(p.returncode)
