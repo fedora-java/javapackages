@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="US-ASCII"?>
 <configuration xmlns="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
-  <resolverSettings>
-    <metadataRepositories>
-      <repository>/usr/share/maven-metadata</repository>
-    </metadataRepositories>
+  <buildSettings>
     <skippedPlugins>
       <!-- Version of Java and bytecode level is always fixed in distro -->
       <plugin>
@@ -60,6 +57,11 @@
         <artifactId>nexus-staging-maven-plugin</artifactId>
       </plugin>
     </skippedPlugins>
+  </buildSettings>
+  <resolverSettings>
+    <metadataRepositories>
+      <repository>/usr/share/maven-metadata</repository>
+    </metadataRepositories>
   </resolverSettings>
   <installerSettings>
     <metadataDir>usr/share/maven-metadata</metadataDir>
