@@ -21,7 +21,8 @@ class Package(object):
     """
     def __init__(self, name):
         self.__name = name
-        self.__macros = [u'%topdir {cwd}/rpmbuild'.format(cwd=os.getcwd())]
+        self.__macros = [u'%topdir {cwd}/rpmbuild'.format(cwd=os.getcwd()),
+                         u'%_buildhost testhost']
         self.__sources = []
         self.__begin = ''
         self.__prep = ''
