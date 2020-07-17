@@ -165,8 +165,6 @@ fi
 
 exec >files-local
 
-dir "${rpmconfigdir}/fileattrs"
-
 inst_exec target/abs2rel "${bindir}"
 inst_exec target/xmvn-builddep "${bindir}"
 
@@ -221,6 +219,11 @@ inst_data target/pom_xpath_inject.7 "${mandir}/man7"
 inst_data target/pom_xpath_remove.7 "${mandir}/man7"
 inst_data target/pom_xpath_replace.7 "${mandir}/man7"
 inst_data target/pom_xpath_set.7 "${mandir}/man7"
+
+
+exec >files-generators
+
+dir "${rpmconfigdir}/fileattrs"
 
 inst_exec target/maven.prov "${rpmconfigdir}" "maven${scl_suffix}.prov"
 inst_exec target/maven.req "${rpmconfigdir}" "maven${scl_suffix}.req"
