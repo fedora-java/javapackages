@@ -31,8 +31,6 @@
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 #           Michal Srb <msrb@redhat.com>
 
-from __future__ import print_function
-
 import gzip
 import logging
 import os.path
