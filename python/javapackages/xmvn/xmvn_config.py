@@ -34,8 +34,7 @@ import codecs
 import errno
 import os
 import re
-import six
-from six import BytesIO
+from io import BytesIO
 
 from javapackages.maven.artifact import ArtifactValidationException
 from javapackages.common.exception import JavaPackagesToolsException
@@ -131,7 +130,7 @@ class XMvnConfig(object):
         if level3:
             cont_level = SubElement(level2, level3)
 
-        if isinstance(content, six.string_types):
+        if isinstance(content, str):
             cont_level.text = content
         elif isinstance(content, list):
             for elem in content:

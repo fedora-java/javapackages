@@ -12,7 +12,6 @@ dnf install -y \
     xmlto \
     python{,3} \
     python{,3}-lxml \
-    python{,3}-six \
     python{,3}-nose \
     python{,3}-coverage
 SCRIPT

@@ -41,7 +41,7 @@ import sys
 
 from javapackages.maven.artifact import Artifact
 from javapackages.xmvn.xmvn_config import XMvnConfig
-from javapackages.common.util import args_to_unicode, command_exists
+from javapackages.common.util import command_exists
 from javapackages.common.mock import socket_path as mock_socket
 
 
@@ -101,8 +101,6 @@ if __name__ == "__main__":
     parser.add_option("--xmvn-javadoc",
                       action="store_true",
                       help="Use experimental XMvn javadoc MOJO to generate javadocs.")
-
-    sys.argv = args_to_unicode(sys.argv)
 
     (options, args) = parser.parse_args()
     xc = XMvnConfig()

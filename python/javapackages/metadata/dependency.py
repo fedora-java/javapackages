@@ -37,8 +37,6 @@ from javapackages.metadata.exclusion import MetadataExclusion
 
 from javapackages.common.binding import ObjectBinding
 
-import six
-
 
 class MetadataDependency(ObjectBinding):
     element_name = 'dependency'
@@ -100,7 +98,7 @@ class MetadataDependency(ObjectBinding):
         return False
 
     def __unicode__(self):
-        return six.text_type(self.get_mvn_str())
+        return self.get_mvn_str()
 
     def __str__(self):
         return self.__unicode__()

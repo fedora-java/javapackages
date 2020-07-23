@@ -30,8 +30,6 @@
 #
 # Authors:  Michael Simacek <msimacek@redhat.com>
 
-import six
-
 from lxml import etree
 from copy import deepcopy
 
@@ -46,9 +44,9 @@ def _get_item_type(spec):
     spec = tuple(spec)
     ret = spec[0]
     if len(spec) == 1:
-        if isinstance(spec[0], six.string_types):
+        if isinstance(spec[0], str):
             ret = str
-    elif isinstance(spec[0], six.string_types):
+    elif isinstance(spec[0], str):
         ret = spec[1]
     assert isinstance(ret, type), ret
     return ret
@@ -62,12 +60,12 @@ def _get_item_name(spec):
         ret = spec[0].element_name
     elif len(spec) == 2 and isinstance(spec[0], type):
         ret = spec[1]
-    assert isinstance(ret, six.string_types), ret
+    assert isinstance(ret, str), ret
     return ret
 
 
 def _is_element(node):
-    return isinstance(node.tag, six.string_types)
+    return isinstance(node.tag, str)
 
 def _localname(element):
     return etree.QName(element.tag).localname
@@ -86,7 +84,7 @@ def from_element(for_type, element):
     if for_type is dict:
         new = {}
         for child in element:
-            if isinstance(child.tag, six.string_types):
+            if isinstance(child.tag, str):
                 name = _localname(child)
                 value = from_element(str, child)
                 new[name] = value
@@ -114,7 +112,7 @@ def _make_element(name, ns=None):
     return etree.Element(name)
 
 def to_element(obj, name=None, type_spec=None, ns=None):
-    if isinstance(obj, six.string_types):
+    if isinstance(obj, str):
         element = _make_element(name, ns=ns)
         element.text = obj
         return element

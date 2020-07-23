@@ -34,7 +34,6 @@ import sys
 import optparse
 
 from javapackages.xmvn.xmvn_config import XMvnConfig
-from javapackages.common.util import args_to_unicode
 from javapackages.common.exception import JavaPackagesToolsException
 
 
@@ -60,7 +59,6 @@ content -- XML content to be added to specified node. Can be just text, XML node
 if __name__ == "__main__":
     parser = SaneParser(usage=usage,
                         epilog=epilog)
-    sys.argv = args_to_unicode(sys.argv)
 
     (options, args) = parser.parse_args()
     if len(args) != 2:

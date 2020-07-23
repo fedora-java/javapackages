@@ -34,7 +34,6 @@
 import os
 import signal
 import sys
-import six
 import subprocess
 import logging
 import re
@@ -58,13 +57,6 @@ def kill_parent_process(rpmconf):
     except OSError:
         pass
     sys.exit(1)
-
-
-def args_to_unicode(args):
-    if six.PY2:
-        for index, arg in enumerate(args):
-            args[index] = arg.decode(sys.getfilesystemencoding())
-    return args
 
 
 def execute_command(command, input=None):
