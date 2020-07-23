@@ -1,8 +1,7 @@
 language: python
 python:
-  - 2.7  # RHEL 7
   - 3.6  # RHEL 8
-#  - 3.7  # Fedora 29+
+  - 3.8  # Fedora
 sudo: required
 before_install:
   - sudo apt-get -qq update
