@@ -131,7 +131,7 @@
 #
 # For summary of accepted options execute `mvn-build --help` command.
 #
-%mvn_build %{?scl:@{javadir}-utils/scl-enable %{?scl_maven} %{scl} -- }@{pyinterpreter} @{javadir}-utils/mvn_build.py %{?base_xmvn_opts} %{?xmvn_opts} %{?xmvn_bootstrap: -b} %{?_without_javadoc: -j $(> .mfiles-javadoc)}%{?_without_tests: -f}
+%mvn_build %{?scl:@{javadir}-utils/scl-enable %{?scl_maven} %{scl} -- }@{pyinterpreter} @{javadir}-utils/mvn_build.py --xmvn-javadoc %{?base_xmvn_opts} %{?xmvn_opts} %{?xmvn_bootstrap: -b} %{?_without_javadoc: -j $(> .mfiles-javadoc)}%{?_without_tests: -f}
 
 
 # %gradle_build - build Gradle project

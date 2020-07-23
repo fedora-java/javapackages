@@ -98,7 +98,7 @@ if __name__ == "__main__":
                       help="Enable Maven debugging output (implies -d).")
     parser.add_option("--xmvn-javadoc",
                       action="store_true",
-                      help="Use experimental XMvn javadoc MOJO to generate javadocs.")
+                      help="Use XMvn Javadoc MOJO to generate javadocs.")
 
     (options, args) = parser.parse_args()
     xc = XMvnConfig()

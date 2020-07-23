@@ -275,7 +275,7 @@ class MvnMacrosTest(unittest.TestCase):
         with open(argspath, 'r') as argsfile:
             exp = '--batch-mode --offline ' + \
                   'verify org.fedoraproject.xmvn:xmvn-mojo:install ' + \
-                  'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
+                  'org.fedoraproject.xmvn:xmvn-mojo:javadoc ' + \
                   'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
             self.assertEqual(argsfile.read(), exp)
 
@@ -296,7 +296,7 @@ class MvnMacrosTest(unittest.TestCase):
 
         expfile = os.path.join(pack.buildpath, '.xmvn', 'out')
         actfile = os.path.join(DIRPATH, 'data', 'mvn_build',
-                                   'singleton_out')
+                                   'singleton_out_rpm')
         with open(actfile, 'r') as act:
             with open(expfile, 'r') as exp:
                 self.assertEqual(act.read(), exp.read())
@@ -324,7 +324,7 @@ class MvnMacrosTest(unittest.TestCase):
         with open(argspath, 'r') as argsfile:
             exp = '--batch-mode --offline --log-file /var/log/xmvn ' + \
                   'verify org.fedoraproject.xmvn:xmvn-mojo:install ' + \
-                  'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
+                  'org.fedoraproject.xmvn:xmvn-mojo:javadoc ' + \
                   'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
             self.assertEqual(argsfile.read(), exp)
 
@@ -339,7 +339,7 @@ class MvnMacrosTest(unittest.TestCase):
         with open(argspath, 'r') as argsfile:
             exp = '--batch-mode ' + \
                   'verify org.fedoraproject.xmvn:xmvn-mojo:install ' + \
-                  'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
+                  'org.fedoraproject.xmvn:xmvn-mojo:javadoc ' + \
                   'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
             self.assertEqual(argsfile.read(), exp)
 
@@ -368,7 +368,7 @@ class MvnMacrosTest(unittest.TestCase):
         with open(argspath, 'r') as argsfile:
             exp = '--batch-mode --offline -Dmaven.test.skip=true ' + \
                   'package org.fedoraproject.xmvn:xmvn-mojo:install ' + \
-                  'org.apache.maven.plugins:maven-javadoc-plugin:aggregate ' + \
+                  'org.fedoraproject.xmvn:xmvn-mojo:javadoc ' + \
                   'org.fedoraproject.xmvn:xmvn-mojo:builddep\n'
             self.assertEqual(argsfile.read(), exp)
 
