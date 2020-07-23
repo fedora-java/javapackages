@@ -42,7 +42,6 @@ from javapackages.metadata.dependency import MetadataDependency
 
 from javapackages.common.binding import ObjectBinding
 
-import six
 import os
 
 
@@ -133,7 +132,7 @@ class MetadataArtifact(ObjectBinding):
         return "\n".join(result)
 
     def __unicode__(self):
-        return six.text_type(self.get_mvn_str())
+        return self.get_mvn_str()
 
     def __str__(self):
         return self.__unicode__()

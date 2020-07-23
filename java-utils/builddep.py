@@ -35,7 +35,6 @@ import sys
 
 from javapackages.maven.artifact import (Artifact, ArtifactFormatException,
                                          ArtifactValidationException)
-from javapackages.common.util import args_to_unicode
 from javapackages.common.exception import JavaPackagesToolsException
 
 from lxml import etree
@@ -53,7 +52,6 @@ epilog = """
 if __name__ == "__main__":
     parser = SaneParser(usage=usage,
                         epilog=epilog)
-    sys.argv = args_to_unicode(sys.argv)
 
     (options, args) = parser.parse_args()
     if len(args) != 1:

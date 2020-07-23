@@ -36,7 +36,6 @@ import sys
 from javapackages.maven.artifact import (Artifact, ArtifactFormatException,
                                          ArtifactValidationException)
 from javapackages.xmvn.xmvn_config import XMvnConfig
-from javapackages.common.util import args_to_unicode
 from javapackages.common.exception import JavaPackagesToolsException
 
 
@@ -64,7 +63,6 @@ commons-lang:commons-lang:war:test-jar:3.1
 if __name__ == "__main__":
     parser = SaneParser(usage=usage,
                         epilog=epilog)
-    sys.argv = args_to_unicode(sys.argv)
 
     (options, args) = parser.parse_args()
 

@@ -33,7 +33,6 @@
 #           Michal Srb <msrb@redhat.com>
 
 import re
-import six
 
 import javapackages.maven.pomreader as POMReader
 import javapackages.common.strutils as Printer
@@ -190,7 +189,7 @@ class AbstractArtifact(object):
         for member in self.__dict__:
             if (not member.startswith('_') and
                getattr(self, member) and
-               isinstance(getattr(self, member), six.string_types)):
+               isinstance(getattr(self, member), str)):
                     curr_value = getattr(self, member)
                     prog = re.compile("\$\{([^}]+)\}")
                     props = prog.findall(curr_value)
@@ -205,7 +204,7 @@ class AbstractArtifact(object):
         return leftovers
 
     def __unicode__(self):
-        return six.text_type(self.get_mvn_str())
+        return self.get_mvn_str()
 
     def __str__(self):
         return self.__unicode__()

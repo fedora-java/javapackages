@@ -45,7 +45,6 @@ BuildRequires:  %{python_prefix}-devel
 BuildRequires:  %{python_prefix}-lxml
 BuildRequires:  %{python_prefix}-setuptools
 BuildRequires:  %{python_prefix}-nose
-BuildRequires:  %{python_prefix}-six
 
 Requires:       %{?scl_prefix}javapackages-filesystem = %{version}-%{release}
 Requires:       coreutils
@@ -122,7 +121,6 @@ artifact resolution using XMvn resolver.
 %package -n %{?scl_prefix}%{python_prefix}-javapackages
 Summary:        Module for handling various files for Java packaging
 Requires:       %{python_prefix}-lxml
-Requires:       %{python_prefix}-six
 Obsoletes:      %{?scl_prefix}python-javapackages < %{version}-%{release}
 
 %description -n %{?scl_prefix}%{python_prefix}-javapackages

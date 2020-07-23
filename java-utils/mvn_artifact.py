@@ -42,7 +42,6 @@ from javapackages.ivy.ivyfile import IvyFile
 
 from javapackages.xmvn.xmvn_resolve import (XMvnResolve, ResolutionRequest,
                                             XMvnResolveException)
-from javapackages.common.util import args_to_unicode
 from javapackages.common.exception import JavaPackagesToolsException
 
 import sys
@@ -239,8 +238,6 @@ def _main():
                       help="skip dependencies section in resulting metadata")
     parser.add_option("-D", action="append", type="str",
                       help="add artifact property", metavar="property=value")
-
-    sys.argv = args_to_unicode(sys.argv)
 
     (options, args) = parser.parse_args()
     if len(args) < 1:
