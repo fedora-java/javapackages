@@ -125,7 +125,7 @@ class TestMavenReq(unittest.TestCase):
                 "ns-mvn(org.codehaus.plexus:plexus-ant-factory)",
                 "ns-mvn(codehaus:plexus-utils) = 1.2",
                 "mvn(org.apache.maven.wagon:wagon-provider-api::test-jar:)",
-                "mvn(org.apache.maven.plugins:maven-idea-plugin)")
+                "mvn(org.apache.maven.plugins:some-maven-plugin)")
         self.assertEqual(set(want), set(sout))
 
     @mavenreq(["requires_simple_subpackages/buildroot/usr/share/maven-metadata/require.xml"])

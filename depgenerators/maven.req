@@ -136,13 +136,13 @@ class TagBuilder(object):
 
                     # check if the dependency is provided by any of the
                     # subpackages
-                    dver = dep.is_provided_by(self.provided_artifacts)[1]
-                    if dver is not None:
+                    prov = dep.is_provided_by(self.provided_artifacts)
+                    if prov:
                         # check if dependency is NOT provided by currently
                         # processed subpackage
-                        if not dep.is_provided_by(metadata.artifacts)[0]:
-                            req_str = dep.get_rpm_str(pkg_ver=dver,
-                                                      namespace=artifact.namespace)
+                        if not dep.is_provided_by(metadata.artifacts):
+                            req_str = dep.get_rpm_str(pkg_ver=prov.version,
+                                                      namespace=prov.namespace)
                             pom_requires.add(req_str)
                     elif r:
                         # it's an external dependency
@@ -215,14 +215,14 @@ class TagBuilder(object):
 
     def _generate_require(self, metadata, requires, dependency):
         # check if dependency is provided by any metadata file in buildroot
-        subpkg_dep, pkgver = dependency.is_provided_by(self.provided_artifacts)
-        if subpkg_dep:
+        prov = dependency.is_provided_by(self.provided_artifacts)
+        if prov:
             # check if dependency isn't provided by same metadata file
-            if not dependency.is_provided_by(metadata.artifacts)[0]:
+            if not dependency.is_provided_by(metadata.artifacts):
                 # requires on subpackages are always versioned
-                rpmstr = dependency.get_rpm_str(namespace=dependency.namespace,
+                rpmstr = dependency.get_rpm_str(namespace=prov.namespace,
                                                 compat_ver=dependency.resolvedVersion,
-                                                pkg_ver=pkgver)
+                                                pkg_ver=prov.version)
                 requires.add(rpmstr)
         else:
             rpmstr = dependency.get_rpm_str(namespace=dependency.namespace,
@@ -339,7 +339,7 @@ class TagBuilder(object):
             for dep in provided.dependencies:
                 if dep.extension != "pom":
                     continue
-                if dep.is_provided_by(self.provided_artifacts)[0]:
+                if dep.is_provided_by(self.provided_artifacts):
                     continue
                 else:
                     deps.append(dep)

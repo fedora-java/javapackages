@@ -31,7 +31,7 @@
                 </dependency>
                 <dependency>
                   <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-idea-plugin</artifactId>
+                  <artifactId>some-maven-plugin</artifactId>
                   <requestedVersion>1.5</requestedVersion>
                 </dependency>
             </dependencies>
@@ -67,7 +67,7 @@
                 </dependency>
                 <dependency>
                   <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-idea-plugin</artifactId>
+                  <artifactId>some-maven-plugin</artifactId>
                   <requestedVersion>1.5</requestedVersion>
                 </dependency>
             </dependencies>
