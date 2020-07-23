@@ -30,8 +30,6 @@
 #
 # Authors:  Stanislav Ochotnicky <sochotnicky@redhat.com>
 
-from __future__ import print_function
-
 import base64
 import gzip
 import os

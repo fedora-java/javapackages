@@ -31,8 +31,6 @@
 #
 # Authors:  Michael Simacek <msimacek@redhat.com>
 
-from __future__ import print_function
-
 import os
 import socket
 

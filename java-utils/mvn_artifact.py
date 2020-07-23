@@ -30,8 +30,6 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
-from __future__ import print_function
-
 from javapackages.metadata.metadata import Metadata
 from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.dependency import MetadataDependency
