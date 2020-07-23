@@ -74,19 +74,18 @@ class MetadataDependency(ObjectBinding):
             if (provided.groupId == self.groupId and
                provided.artifactId == self.artifactId and
                provided.classifier == self.classifier and
-               provided.extension == self.extension and
-               provided.namespace == self.namespace):
+               provided.extension == self.extension):
 
                 if self.resolvedVersion and provided.is_compat():
                     # does it match one of provided compat?
                     for compatVer in provided.compatVersions:
                         if self.resolvedVersion == compatVer:
-                            return True, provided.version
+                            return provided
                 elif (not self.resolvedVersion and
                       not provided.is_compat()):
-                    return True, provided.version
+                    return provided
                 break
-        return False, None
+        return None
 
     def is_skipped(self, skipped_artifacts):
         for skipped in skipped_artifacts:
