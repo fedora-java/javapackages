@@ -32,6 +32,7 @@
 
 import base64
 import gzip
+import io
 import os
 import optparse
 import subprocess
@@ -188,15 +189,19 @@ if __name__ == "__main__":
 
     builddep_file = ".xmvn-builddep"
     if os.path.isfile(builddep_file):
-        with open(builddep_file, "b") as file:
-            contents = file.read()
-
-        output = "\n".join([
-            "-----BEGIN MAVEN BUILD DEPENDENCIES-----",
-            base64.b64encode(gzip.compress(contents)).decode(),
-            "-----END MAVEN BUILD DEPENDENCIES-----",
-        ])
-
+        with open(builddep_file, "rb") as file:
+            builddep_data = file.read()
+        #compressed = gzip.compress(builddep_data, mtime=0)
+        buf = io.BytesIO()
+        with gzip.GzipFile(fileobj=buf, mode='wb', mtime=0) as f:
+            f.write(builddep_data)
+        compressed = buf.getvalue()
+        encoded = base64.b64encode(compressed).decode()
+        output = "\n".join(
+            ["-----BEGIN MAVEN BUILD DEPENDENCIES-----"] +
+            [encoded[i:i+76] for i in range(0, len(encoded), 76)] +
+            ["-----END MAVEN BUILD DEPENDENCIES-----"]
+        )
         print(output, flush=True)
 
     sys.exit(p.returncode)
