@@ -2,7 +2,8 @@ import unittest
 import shutil
 import os
 from test_common import javautils_script, get_actual_args, get_expected_args, \
-        get_config_file_list, get_actual_config, get_expected_config, DIRPATH
+        get_config_file_list, get_actual_config, get_expected_config, DIRPATH, \
+        call_script
 from xml_compare import compare_xml_files
 
 class TestMvnBuild(unittest.TestCase):
@@ -137,6 +138,21 @@ class TestMvnBuild(unittest.TestCase):
         self.assertEqual(return_value, 0, stderr)
         self.assertEqual(get_actual_args(),
                 get_expected_args('mvn_build', 'more_goals'))
+
+    def test_builddep(self):
+        with open('.xmvn-builddep', 'w') as f:
+            print('Lorem ipsum dolor sit amet, consectetur adipiscing elit,', file=f)
+            print('sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', file=f)
+            print('[...]', file=f)
+        scriptpath = os.path.join(DIRPATH, '..', 'java-utils', 'mvn_build.py')
+        (stdout, stderr, return_value) = call_script(scriptpath, [])
+        self.assertEqual(return_value, 0, stderr)
+        lines = stdout.splitlines()
+        self.assertEqual(lines[0], '-----BEGIN MAVEN BUILD DEPENDENCIES-----')
+        self.assertEqual(lines[1], 'H4sIAAAAAAAC/yXMwQ0DIQwEwD9VbAEnKkkHUR4+bJ0sYSDY7j9IKWDmNbcYdHkaePa54Rogk7jQ')
+        self.assertEqual(lines[2], '5nBpIZEbxLrUm44H0jWu4sIHQDTdJiPE1sE6mrJyjkAGOt2nh8S/Fhg9g0Bdv0m1vGutn/IDOadj')
+        self.assertEqual(lines[3], 'dIIAAAA=')
+        self.assertEqual(lines[4], '-----END MAVEN BUILD DEPENDENCIES-----')
 
 if __name__ == '__main__':
     unittest.main()
