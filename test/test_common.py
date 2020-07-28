@@ -266,28 +266,6 @@ def rpmgen_process_args(args, kwargs):
     return args, kwargs
 
 
-def mvn_depmap(pom, jar=None, fnargs=None):
-    def test_decorator(fun):
-        @wraps(fun)
-        def test_decorated(self):
-            os.chdir(self.workdir)
-            buildroot = os.path.join(self.workdir, "builddir/build/BUILDROOT")
-            env = {'RPM_BUILD_ROOT': buildroot}
-            scriptpath = path.join(DIRPATH, '..', 'java-utils', 'maven_depmap.py')
-            args = ['.fragment_data', pom]
-            if jar:
-                args.append(path.join(os.getcwd(), jar))
-            args.extend(fnargs or [])
-            (stdout, stderr, return_value) = call_script(scriptpath, args, extra_env=env)
-            frag = None
-            if return_value == 0:
-                with open('.fragment_data','r') as frag_file:
-                    frag = frag_file.read()
-                os.remove('.fragment_data')
-            fun(self, stdout, stderr, return_value, depmap=frag)
-        return test_decorated
-    return test_decorator
-
 def mvn_artifact(pom, jar=None):
     def test_decorator(fun):
         @wraps(fun)
