@@ -13,3 +13,6 @@ script:
   - ./check
 after_success:
   - codecov -f coverage.xml
+arch:
+ - amd64
+ - ppc64le
