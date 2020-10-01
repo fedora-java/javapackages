@@ -11,7 +11,7 @@ This software comes with ABSOLUTELY NO WARRANTY.
 Contact
 -------
 
-Java Packages Tools is a community project, new contributors are
+This amazing Java Packages Tools is a community project, new contributors are
 welcome. The most straightforward way to introduce new features is
 writing them yourself. The preferred way to request features and
 report bugs is through GitHub.
