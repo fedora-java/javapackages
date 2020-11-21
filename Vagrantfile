@@ -12,8 +12,9 @@ dnf install -y \
     xmlto \
     python{,3} \
     python{,3}-lxml \
-    python{,3}-nose \
-    python{,3}-coverage
+    python{,3}-coverage \
+    python{,3}-pytest \
+    python{,3}-pytest-cov \
 SCRIPT
 
 Vagrant.configure(2) do |config|

@@ -65,9 +65,9 @@ export COVERAGE_PROCESS_START="${PWD}/.coveragerc"
 export PYTHONPATH="${PWD}/test/coverage${PYTHONPATH:+:}${PYTHONPATH:-}"
 
 echo "Running Python tests with ${pyinterpreter}..."
-(cd ./python && "${pyinterpreter}" setup.py test)
+(cd ./python && "${pyinterpreter}" -m pytest -v --cov-config=../.coveragerc)
 r1=$?
-(cd ./test && PYTHONPATH="${PWD}/../python${PYTHONPATH:+:}${PYTHONPATH:-}" NOSE_VERBOSE="${NOSE_VERBOSE:-2}" "${pyinterpreter}" run_tests.py)
+(cd ./test && PYTHONPATH="${PWD}/../python${PYTHONPATH:+:}${PYTHONPATH:-}" "${pyinterpreter}" -m pytest -v --cov-config=../.coveragerc)
 r2=$?
 
 if [ ${r1} -lt ${r2} ]; then
