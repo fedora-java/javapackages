@@ -18,7 +18,6 @@ setup(
     download_url="https://github.com/fedora-java/javapackages/releases",
     url="https://github.com/fedora-java/javapackages",
     packages=find_packages(exclude=["test"]),
-    test_suite="test",
     maintainer="javapackages maintainers",
     maintainer_email="javapackages-tools-owner@fedoraproject.org"
 )

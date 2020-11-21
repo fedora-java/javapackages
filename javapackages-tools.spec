@@ -44,7 +44,8 @@ BuildRequires:  scl-utils-build
 BuildRequires:  %{python_prefix}-devel
 BuildRequires:  %{python_prefix}-lxml
 BuildRequires:  %{python_prefix}-setuptools
-BuildRequires:  %{python_prefix}-nose
+BuildRequires:  %{python_prefix}-pytest
+BuildRequires:  %{python_prefix}-pytest-cov
 
 Requires:       %{?scl_prefix}javapackages-filesystem = %{version}-%{release}
 Requires:       coreutils
