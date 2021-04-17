@@ -1,5 +1,5 @@
-%__osgi_provides	%{_rpmconfigdir}/osgi.prov
-%__osgi_provides_opts	--cachedir %{_builddir}/%{?buildsubdir} --rpm-pid %{lua:print(math.floor(posix.getprocessid("pid")))}
-%__osgi_requires	%{_rpmconfigdir}/osgi.req
-%__osgi_requires_opts	--cachedir %{_builddir}/%{?buildsubdir} --rpm-pid %{lua:print(math.floor(posix.getprocessid("pid")))}
+%__osgi_provides	%{_buildshell}
+%__osgi_provides_opts	-c '%{?jpb_env} %{_rpmconfigdir}/osgi.prov --cachedir %{_builddir}/%{?buildsubdir} --rpm-pid %{lua:print(math.floor(posix.getprocessid("pid")))}'
+%__osgi_requires	%{_buildshell}
+%__osgi_requires_opts	-c '%{?jpb_env} %{_rpmconfigdir}/osgi.req --cachedir %{_builddir}/%{?buildsubdir} --rpm-pid %{lua:print(math.floor(posix.getprocessid("pid")))}'
 %__osgi_path	^(.*\\.jar|((%{_prefix}/lib(64)?|%{_datadir})/.*/META-INF/MANIFEST.MF))$

@@ -15,7 +15,7 @@
 #==============================================================================
 # ---- default Java commands
 
-%ant            JAVA_HOME=%{java_home} ant
+%ant            %{?jpb_env} JAVA_HOME=%{java_home} ant
 %jar            %{java_home}/bin/jar
 %java           %(. @{javadir}-utils/java-functions; set_javacmd; echo $JAVACMD)
 %javac          %{java_home}/bin/javac
