@@ -1,3 +1,3 @@
-%__javadoc_requires	%{_rpmconfigdir}/javadoc.req
-%__javadoc_requires_opts %{nil}
+%__javadoc_requires	%{_buildshell}
+%__javadoc_requires_opts -c '%{?jpb_env} %{_rpmconfigdir}/javadoc.req'
 %__javadoc_path	^%{_javadocdir}/.[^/]*$
