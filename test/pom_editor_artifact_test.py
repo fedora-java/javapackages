@@ -101,5 +101,12 @@ class TestPomChange(WorkdirTestCase):
         self.assertEqual(0, return_value, stderr)
         self.assertEqual('', report, report)
 
+    def test_extra_xml(self):
+        return_value, stderr, report = exec_pom_macro_simple(\
+                "%pom_change_dep :junit : '<exclusions/>'",
+                'simple_pom.xml', 'simple_added_exclusions.xml')
+        self.assertEqual(0, return_value, stderr)
+        self.assertEqual('', report, report)
+
 if __name__ == '__main__':
     unittest.main()
