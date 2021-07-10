@@ -624,6 +624,8 @@ def pom_change_dep(old, new, pom=None, xml_string=''):
             new_artifact = pom.create_artifact().from_xml(element)
             new_artifact.update(pom.create_artifact().from_mvn_str(new))
             new_artifact.merge_into_xml(element)
+            if xml_string:
+                pom.inject_xml(element, annotate(pom.subtree_from_string(xml_string)))
     except PomQueryNoMatch:
         raise PomQueryNoMatch("Dependency '{0}' not found.".format(old))
 
