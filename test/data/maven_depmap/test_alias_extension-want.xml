@@ -13,9 +13,6 @@
              </ns1:alias>
          </ns1:aliases>
          <ns1:path>%s/usr/share/java/commons-io.jar</ns1:path>
-         <ns1:properties>
-            <xmvn.resolver.disableEffectivePom>true</xmvn.resolver.disableEffectivePom>
-         </ns1:properties>
       </ns1:artifact>
       <ns1:artifact>
          <ns1:groupId>alias</ns1:groupId>
@@ -30,9 +27,6 @@
              </ns1:alias>
          </ns1:aliases>
          <ns1:path>%s/JPP-alias.pom</ns1:path>
-         <ns1:properties>
-            <xmvn.resolver.disableEffectivePom>true</xmvn.resolver.disableEffectivePom>
-         </ns1:properties>
       </ns1:artifact>
    </ns1:artifacts>
 </ns1:metadata>
