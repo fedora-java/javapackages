@@ -49,6 +49,7 @@ from copy import deepcopy
 from javapackages.maven.pom import POM
 from javapackages.metadata.artifact import MetadataArtifact
 from javapackages.metadata.alias import MetadataAlias
+from javapackages.metadata.dependency import MetadataDependency
 from javapackages.metadata.metadata import Metadata
 
 from javapackages.common.exception import JavaPackagesToolsException
@@ -132,6 +133,38 @@ def _make_files_versioned(versions, pom_path, jar_path, pom_base, jar_base):
     # return paths to versioned, but regular files (not symlinks)
     return ret_pom_path, ret_jar_path
 
+def _resolve_deps(pom):
+    deps = []
+    depm = []
+    props = {}
+
+    deps.extend([x for x in pom.dependencies])
+    depm.extend([x for x in pom.dependencyManagement])
+    props = pom.properties
+    if pom.groupId:
+        props["project.groupId"] = pom.groupId
+    if pom.artifactId:
+        props["project.artifactId"] = pom.artifactId
+    if pom.version:
+        props["project.version"] = pom.version
+
+    for d in deps:
+        d.interpolate(props)
+
+    for dm in depm:
+        dm.interpolate(props)
+
+    # apply dependencyManagement on deps
+    for d in deps:
+        for dm in depm:
+            if d.compare_to(dm):
+                d.merge_with(dm)
+                break
+
+    # only deps with scope "compile" or "runtime" are interesting
+    deps = [x for x in deps if x.scope in ["", "compile", "runtime"]]
+
+    return deps
 
 # Add a file to a ZIP archive (or JAR, WAR, ...) unless the file
 # already exists in the archive.  Provided by Tomas Radej.
@@ -279,7 +312,15 @@ def _main():
     if namespace:
         artifact.namespace = namespace
 
-    artifact.properties["xmvn.resolver.disableEffectivePom"] = "true"
+    pom = POM(pom_path)
+    if pom.parent or pom.packaging == "pom":
+        artifact.properties["xmvn.resolver.disableEffectivePom"] = "true"
+    else:
+        deps = []
+        for d in _resolve_deps(pom):
+            deps.append(MetadataDependency.from_mvn_dependency(d))
+        if deps:
+            artifact.dependencies = set(deps)
 
 
     buildroot = os.environ.get('RPM_BUILD_ROOT')
