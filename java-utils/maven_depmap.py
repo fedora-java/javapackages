@@ -312,8 +312,10 @@ def _main():
     if namespace:
         artifact.namespace = namespace
 
-    pom = POM(pom_path)
-    if pom.parent or pom.packaging == "pom":
+    pom = None
+    if have_pom:
+        pom = POM(pom_path)
+    if not pom or pom.parent or pom.packaging == "pom":
         artifact.properties["xmvn.resolver.disableEffectivePom"] = "true"
     else:
         deps = []
