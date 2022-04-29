@@ -175,64 +175,6 @@ fi \
 
 #==============================================================================
 #
-# add_maven_depmap is simplified version of jpackage-style add_to_maven_depmap
-# -f addition to fragment name
-# -a is "g1:a1,g2:a2" formatted string with additional depmaps (groupId:artifactId,...)
-# -v is "v1,v2" formatted string with additional compatibility versions
-#    supposed to be provided (jar,pom will be renamed to -%{version} variants
-#    and additional symlinks optionally created)
-# %1 is the pom filename relative to mavenpomdir
-# %2 is the path to jar file (when omitted we deal with parent pom file without jar)
-#
-# add_maven_depmap automatically parses pom file and it will fail with incorrect pom
-# or jar filename
-#
-# in the end add_maven_depmap optionally moves jar and pom file to
-# -%{version} variant and can create additional versioned symlinks
-
-%add_maven_depmap(f:a:v:) \
-set -e \
-# default values \
-%if %# == 0 \
-   _pompart="JPP-%{name}.pom" \
-   _jarpart="%{name}.jar" \
-%else \
-   _pompart="%1" \
-   _jarpart="%2" \
-%endif \
-_filelist=".mfiles%{-f*:-%{-f*}}" \
-install -dm 755 %{buildroot}%{_datadir}/maven-metadata \
-_jbase= \
-_jpath= \
-for _dir in %{_jnidir} %{_javadir}; do \
-    if [ -f %{buildroot}$_dir/$_jarpart ]; then \
-	_jbase="%{buildroot}$_dir" \
-	_jpath="$_jbase/$_jarpart" \
-    fi \
-done \
-%if %# != 1 \
-    [ -z "$_jpath" ] && (echo "%0 error: $_jarpart - file not found" 1>&2; exit 1) \
-%endif \
-@{pyinterpreter} @{javadir}-utils/maven_depmap.py %{-a} %{-v*:-r %{-v*}} \\\
-                 --pom-base %{buildroot}%{_mavenpomdir} \\\
-                 --jar-base "$_jbase" \\\
-                 %{buildroot}%{_datadir}/maven-metadata/%{name}%{-f*:-%{-f*}}.xml \\\
-                 %{buildroot}%{_mavenpomdir}/$_pompart \\\
-%if %# == 2 \
-          "${_jpath}" \\\
-%endif \
-%if %# == 0 \
-          "${_jpath}" \\\
-%endif \
-        >> ${_filelist} \
-sed -i 's:%{buildroot}::' ${_filelist} \
-sort -u -o ${_filelist} ${_filelist} \
-\
-%{nil}
-
-
-#==============================================================================
-#
 # %pom_* -- macros for batch editing of POM files
 #
 # These macros can be used to edit Maven POM files directly from RPM spec
