@@ -176,9 +176,6 @@ fi \
 #==============================================================================
 #
 # add_maven_depmap is simplified version of jpackage-style add_to_maven_depmap
-#
-# IMPORTANT: This macro is obsolete. Use mvn_artifact macro instead.
-#
 # -f addition to fragment name
 # -a is "g1:a1,g2:a2" formatted string with additional depmaps (groupId:artifactId,...)
 # -v is "v1,v2" formatted string with additional compatibility versions
@@ -195,8 +192,6 @@ fi \
 
 %add_maven_depmap(f:a:v:) \
 set -e \
-%{lua:io.stderr:write("[WARNING] Deprecated \%add_maven_depmap macro is used. ", \
-"Please use \%mvn_artifact and %mvn_install instead.\\n")} \
 # default values \
 %if %# == 0 \
    _pompart="JPP-%{name}.pom" \
