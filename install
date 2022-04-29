@@ -150,7 +150,6 @@ inst_exec target/xmvn-builddep "${bindir}"
 
 link "${bindir}/abs2rel" "${javadir}-utils/abs2rel.sh"
 
-inst_data java-utils/maven_depmap.py "${javadir}-utils"
 inst_data java-utils/pom_editor.py "${javadir}-utils"
 inst_data java-utils/request-artifact.py "${javadir}-utils"
 inst_data java-utils/builddep.py "${javadir}-utils"
@@ -188,6 +187,11 @@ inst_data target/pom_xpath_remove.7 "${mandir}/man7"
 inst_data target/pom_xpath_replace.7 "${mandir}/man7"
 inst_data target/pom_xpath_set.7 "${mandir}/man7"
 
+exec >files-compat
+
+inst_data java-utils/maven_depmap.py "${javadir}-utils"
+
+inst_data target/macros.javapackages-compat "${rpmmacrodir}"
 
 exec >files-extra
 
