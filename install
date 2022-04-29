@@ -189,6 +189,7 @@ inst_data target/pom_xpath_set.7 "${mandir}/man7"
 
 exec >files-compat
 
+inst_data java-utils/install_pom.py "${javadir}-utils"
 inst_data java-utils/maven_depmap.py "${javadir}-utils"
 
 inst_data target/macros.javapackages-compat "${rpmmacrodir}"
