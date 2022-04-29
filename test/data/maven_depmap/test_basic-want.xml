@@ -6,9 +6,6 @@
          <ns1:artifactId>bndlib</ns1:artifactId>
          <ns1:version>1.50.0</ns1:version>
          <ns1:path>%s/usr/share/java/bndlib.jar</ns1:path>
-         <ns1:properties>
-            <xmvn.resolver.disableEffectivePom>true</xmvn.resolver.disableEffectivePom>
-         </ns1:properties>
       </ns1:artifact>
       <ns1:artifact>
          <ns1:groupId>biz.aQute</ns1:groupId>
@@ -16,9 +13,6 @@
          <ns1:extension>pom</ns1:extension>
          <ns1:version>1.50.0</ns1:version>
          <ns1:path>%s/JPP-bndlib.pom</ns1:path>
-         <ns1:properties>
-            <xmvn.resolver.disableEffectivePom>true</xmvn.resolver.disableEffectivePom>
-         </ns1:properties>
       </ns1:artifact>
    </ns1:artifacts>
 </ns1:metadata>
