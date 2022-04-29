@@ -312,17 +312,16 @@ def _main():
     if namespace:
         artifact.namespace = namespace
 
-    pom = None
     if have_pom:
         pom = POM(pom_path)
-    if not pom or pom.parent or pom.packaging == "pom":
-        artifact.properties["xmvn.resolver.disableEffectivePom"] = "true"
-    else:
-        deps = []
-        for d in _resolve_deps(pom):
-            deps.append(MetadataDependency.from_mvn_dependency(d))
-        if deps:
-            artifact.dependencies = set(deps)
+        if pom.parent or pom.packaging == "pom":
+            artifact.properties["xmvn.resolver.disableEffectivePom"] = "true"
+        else:
+            deps = []
+            for d in _resolve_deps(pom):
+                deps.append(MetadataDependency.from_mvn_dependency(d))
+            if deps:
+                artifact.dependencies = set(deps)
 
 
     buildroot = os.environ.get('RPM_BUILD_ROOT')

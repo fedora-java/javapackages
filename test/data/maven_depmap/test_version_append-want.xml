@@ -17,9 +17,6 @@
                <ns1:artifactId>b</ns1:artifactId>
             </ns1:alias>
          </ns1:aliases>
-         <ns1:properties>
-            <xmvn.resolver.disableEffectivePom>true</xmvn.resolver.disableEffectivePom>
-         </ns1:properties>
       </ns1:artifact>
    </ns1:artifacts>
 </ns1:metadata>
