@@ -72,6 +72,14 @@ Provides:       %{?scl_prefix}eclipse-filesystem = %{version}-%{release}
 This package provides some basic directories into which Java packages
 install their content.
 
+%package -n %{?scl_prefix}javapackages-compat
+Summary:        Previously deprecated macros and scripts for Java packaging support
+Requires:       %{?scl_prefix}javapackages-local = %{version}-%{release}
+
+%description -n %{?scl_prefix}javapackages-compat
+This package provides previously deprecated macros and scripts to
+support Java packaging as well as some additions to them.
+
 %package -n %{?scl_prefix}maven-local
 Summary:        Macros and scripts for Maven packaging support
 Requires:       %{name} = %{version}-%{release}
@@ -172,6 +180,8 @@ rm -rf %{buildroot}%{_mandir}/man7/gradle_build.7
 %files -f files-tools
 
 %files -n %{?scl_prefix}javapackages-filesystem -f files-filesystem
+
+%files -n %{?scl_prefix}javapackages-compat -f files-compat
 
 %files -n %{?scl_prefix}javapackages-local -f files-local
 
