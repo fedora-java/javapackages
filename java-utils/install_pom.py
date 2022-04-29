@@ -212,9 +212,9 @@ def _main():
     else:
         message = ("The first argument '{0}' doesn't point to an existing file ").format(args[0])
         parser.error(message)
-    
+
     print("<?xml version='1.0' encoding='UTF-8'?>")
-    print("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">")    
+    print("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">")
     print("  <groupId>"+uart.groupId+"</groupId>" )
     print("  <artifactId>"+uart.artifactId+"</artifactId>" )
     print("  <version>"+uart.version+"</version>" )
