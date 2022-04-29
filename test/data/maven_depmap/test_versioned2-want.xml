@@ -9,9 +9,6 @@
             <ns1:version>1.2</ns1:version>
         </ns1:compatVersions>
          <ns1:path>%s/usr/share/java/versioned2-1.2.jar</ns1:path>
-         <ns1:properties>
-            <xmvn.resolver.disableEffectivePom>true</xmvn.resolver.disableEffectivePom>
-         </ns1:properties>
       </ns1:artifact>
    </ns1:artifacts>
 </ns1:metadata>

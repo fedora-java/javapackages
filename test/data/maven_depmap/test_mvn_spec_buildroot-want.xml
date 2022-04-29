@@ -7,9 +7,6 @@
          <ns1:version>1</ns1:version>
          <ns1:extension>war</ns1:extension>
          <ns1:path>%s/usr/share/java/commons-war.war</ns1:path>
-         <ns1:properties>
-            <xmvn.resolver.disableEffectivePom>true</xmvn.resolver.disableEffectivePom>
-         </ns1:properties>
       </ns1:artifact>
    </ns1:artifacts>
 </ns1:metadata>
