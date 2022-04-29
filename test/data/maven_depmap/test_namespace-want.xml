@@ -7,9 +7,6 @@
          <ns1:version>12</ns1:version>
          <ns1:path>%s/usr/share/java/commons-io.jar</ns1:path>
          <ns1:namespace>myns</ns1:namespace>
-         <ns1:properties>
-            <xmvn.resolver.disableEffectivePom>true</xmvn.resolver.disableEffectivePom>
-         </ns1:properties>
       </ns1:artifact>
    </ns1:artifacts>
 </ns1:metadata>
