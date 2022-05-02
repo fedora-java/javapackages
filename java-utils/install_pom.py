@@ -30,8 +30,6 @@
 #
 # Authors:  Michal Srb <msrb@redhat.com>
 
-from __future__ import print_function
-
 from javapackages.maven.pom import POM, PomLoadingException
 
 from javapackages.xmvn.xmvn_resolve import (XMvnResolve, ResolutionRequest,
@@ -41,7 +39,7 @@ from javapackages.common.exception import JavaPackagesToolsException
 
 import sys
 import os
-import lxml.etree
+from xml.etree import ElementTree
 from optparse import OptionParser
 
 
@@ -201,50 +199,68 @@ def _main():
     sys.argv = args_to_unicode(sys.argv)
 
     (options, args) = parser.parse_args()
-    if len(args) < 1:
-        parser.error("At least 1 argument is required")
+    if len(args) != 2:
+        parser.error("2 argument2 are required")
 
-    pom_path = None
-    if os.path.exists(args[0]):
-        pom_path = args[0]
-        # it should be good old POM file
-        uart = POM(pom_path)
-    else:
+    if not os.path.exists(args[0]):
         message = ("The first argument '{0}' doesn't point to an existing file ").format(args[0])
         parser.error(message)
 
-    print("<?xml version='1.0' encoding='UTF-8'?>")
-    print("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">")
-    print("  <groupId>"+uart.groupId+"</groupId>" )
-    print("  <artifactId>"+uart.artifactId+"</artifactId>" )
-    print("  <version>"+uart.version+"</version>" )
+    if not os.path.exists(os.path.dirname(os.path.abspath(args[1]))):
+        message = ("The path '{0}' doesn't exist ").format(os.path.dirname(args[1]))
+        parser.error(message)
 
+    if not os.path.isdir(os.path.dirname(os.path.abspath(args[1]))):
+        message = ("The path '{0}' is not a directory ").format(os.path.dirname(args[1]))
+        parser.error(message)
 
-    if hasattr(uart, "extension") and uart.extension and uart.extension != 'jar':
-        print("  <packaging>"+uart.extension+"</packaging>")
-    if hasattr(uart, "classifier") and uart.classifier:
-        print("  <classifier>"+uart.classifier+"</classifier>")
+    if os.path.exists(args[1]):
+        message = ("The path '{0}' exists. Refusing to overwrite ").format(args[1])
+        parser.error(message)
+    
+    pom_path = args[0]
+    uart = POM(pom_path)
 
-    jar_path = None
+    tree = None
+    if uart.packaging and uart.packaging.lower() == 'pom':
+        tree = ElementTree.parse(args[0])
+    else:
+        result_pom = "<?xml version='1.0' encoding='UTF-8'?>\n"
+        result_pom += "<project xmlns=\"http://maven.apache.org/POM/4.0.0\">\n"
+        result_pom += ("  <groupId>{0}</groupId>\n" ).format(uart.groupId)
+        result_pom += ("  <artifactId>{0}</artifactId>\n" ).format(uart.artifactId)
+        result_pom += ("  <version>{0}</version>\n").format(uart.version)
 
-    mvn_deps = gather_dependencies(pom_path)
-    if mvn_deps:
-        print("  <dependencies>")
-        for d in mvn_deps:
-            print("    <dependency>")
-            print("      <groupId>"+d.groupId+"</groupId>" )
-            print("      <artifactId>"+d.artifactId+"</artifactId>" )
-            print("      <version>"+d.version+"</version>" )
-            if hasattr(d, "extension") and d.extension and d.extension != 'jar':
-                print("      <packaging>"+d.extension+"</packaging>")
-            if hasattr(d, "classifier") and d.classifier:
-                print("      <classifier>"+d.classifier+"</classifier>")
-            if hasattr(d, "optional") and d.optional and d.optional.lower() == "true":
-                print("      <optional>"+d.optional.lower()+"</optional>")
-            print("    </dependency>")
-        print("  </dependencies>")
+        if hasattr(uart, "packaging") and uart.packaging and uart.packaging != 'jar':
+            result_pom += ("  <packaging>{0}</packaging>\n").format(uart.extension)
+        if hasattr(uart, "extension") and uart.extension and uart.extension != 'jar':
+            result_pom += ("  <extension>{0}</extension>\n").format(uart.extension)
+        if hasattr(uart, "classifier") and uart.classifier:
+            result_pom += ("  <classifier>{0}</classifier>\n").format(uart.classifier)
 
-    print("</project>")
+        jar_path = None
+
+        mvn_deps = gather_dependencies(pom_path)
+        if mvn_deps:
+            result_pom += "  <dependencies>\n"
+            for d in mvn_deps:
+                result_pom += "    <dependency>\n"
+                result_pom += ("      <groupId>{0}</groupId>\n").format(d.groupId)
+                result_pom += ("      <artifactId>{0}</artifactId>\n" ).format(d.artifactId)
+                result_pom += ("      <version>{0}</version>\n" ).format(d.version)
+                if hasattr(d, "extension") and d.extension and d.extension != 'jar':
+                    result_pom += ("      <extension>{0}</extension>\n").format(d.extension)
+                if hasattr(d, "classifier") and d.classifier:
+                    result_pom += ("      <classifier>{0}</classifier>\n").format(d.classifier)
+                if hasattr(d, "optional") and d.optional and d.optional.lower() == "true":
+                    result_pom += ("      <optional>{0}</optional>\n").format(d.optional.lower())
+                result_pom += "    </dependency>\n"
+            result_pom += "  </dependencies>\n"
+
+        result_pom += "</project>\n"
+        tree = ElementTree.ElementTree(ElementTree.XML(result_pom))
+    tree.write(args[1],encoding="UTF-8",xml_declaration=True,default_namespace="http://maven.apache.org/POM/4.0.0")
+    os.chmod(args[1], 0o0644)
 
 if __name__ == "__main__":
     try:
