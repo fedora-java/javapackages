@@ -31,6 +31,12 @@
 #          Mikolaj Izdebski <mizdebsk@redhat.com>
 
 
+# %mvn_install_pom - Resolve the pom as much as possible and install it
+#
+# Usage: %mvn_install_pom <source pom> <output pom>
+#
+%mvn_install_pom @{pyinterpreter} @{javadir}-utils/install_pom.py
+
 #==============================================================================
 #
 # add_maven_depmap is simplified version of jpackage-style add_to_maven_depmap
