@@ -227,7 +227,7 @@ def _main():
     else:
         result_pom = "<?xml version='1.0' encoding='UTF-8'?>\n"
         result_pom += "<project xmlns=\"http://maven.apache.org/POM/4.0.0\">\n"
-        result_pom += "<modelVersion>4.0.0</modelVersion>\n"
+        result_pom += "  <modelVersion>4.0.0</modelVersion>\n"
         result_pom += ("  <groupId>{0}</groupId>\n" ).format(uart.groupId)
         result_pom += ("  <artifactId>{0}</artifactId>\n" ).format(uart.artifactId)
         result_pom += ("  <version>{0}</version>\n").format(uart.version)
