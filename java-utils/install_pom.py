@@ -34,7 +34,6 @@ from javapackages.maven.pom import POM, PomLoadingException
 
 from javapackages.xmvn.xmvn_resolve import (XMvnResolve, ResolutionRequest,
                                             XMvnResolveException)
-from javapackages.common.util import args_to_unicode
 from javapackages.common.exception import JavaPackagesToolsException
 
 import sys
@@ -195,8 +194,6 @@ def _main():
     OptionParser.format_epilog = lambda self, formatter: self.epilog
     parser = OptionParser(usage=usage,
                         epilog=epilog)
-
-    sys.argv = args_to_unicode(sys.argv)
 
     (options, args) = parser.parse_args()
     if len(args) != 2:
