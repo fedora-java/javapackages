@@ -230,7 +230,7 @@ def _main():
         result_pom += ("  <version>{0}</version>\n").format(uart.version)
 
         if hasattr(uart, "packaging") and uart.packaging and uart.packaging != 'jar':
-            result_pom += ("  <packaging>{0}</packaging>\n").format(uart.extension)
+            result_pom += ("  <packaging>{0}</packaging>\n").format(uart.packaging)
         if hasattr(uart, "extension") and uart.extension and uart.extension != 'jar':
             result_pom += ("  <extension>{0}</extension>\n").format(uart.extension)
         if hasattr(uart, "classifier") and uart.classifier:
