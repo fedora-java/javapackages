@@ -219,6 +219,7 @@ def _main():
     uart = POM(pom_path)
 
     tree = None
+    ElementTree.register_namespace('',"http://maven.apache.org/POM/4.0.0")
     if uart.packaging and uart.packaging.lower() == 'pom':
         tree = ElementTree.parse(args[0])
     else:
@@ -257,7 +258,7 @@ def _main():
 
         result_pom += "</project>\n"
         tree = ElementTree.ElementTree(ElementTree.XML(result_pom))
-    tree.write(args[1],encoding="UTF-8",xml_declaration=True,default_namespace="http://maven.apache.org/POM/4.0.0")
+    tree.write(args[1],encoding="UTF-8",xml_declaration=True)
     os.chmod(args[1], 0o0644)
 
 if __name__ == "__main__":
