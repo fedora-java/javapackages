@@ -117,7 +117,7 @@ def gather_dependencies(pom_path):
     parent = pom.parent
     while parent:
         ppom = None
-        if parent.relativePath:
+        if hasattr(parent, "relativePath") and parent.relativePath and parent.relativePath != "":
             try:
                 ppom_path = os.path.join(os.path.dirname(curr_pom._path),
                                          parent.relativePath)
