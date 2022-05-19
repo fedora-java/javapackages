@@ -246,7 +246,8 @@ def _main():
                 result_pom += "    <dependency>\n"
                 result_pom += ("      <groupId>{0}</groupId>\n").format(d.groupId)
                 result_pom += ("      <artifactId>{0}</artifactId>\n" ).format(d.artifactId)
-                result_pom += ("      <version>{0}</version>\n" ).format(d.version)
+                if hasattr(d, "version") and d.version:
+                    result_pom += ("      <version>{0}</version>\n" ).format(d.version)
                 if hasattr(d, "extension") and d.extension and d.extension != 'jar':
                     result_pom += ("      <extension>{0}</extension>\n").format(d.extension)
                 if hasattr(d, "classifier") and d.classifier:
