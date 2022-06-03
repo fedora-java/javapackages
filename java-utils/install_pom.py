@@ -183,7 +183,10 @@ def _get_dependencies(pom):
     depm = []
     props = {}
 
-    deps.extend([x for x in pom.dependencies])
+    for x in pom.dependencies:
+        if hasattr(x, "version") and x.version == "any":
+            delattr(x, "version")
+        deps.append(x)
     depm.extend([x for x in pom.dependencyManagement])
     props = pom.properties
 
@@ -214,7 +217,7 @@ def _main():
     if os.path.exists(args[1]):
         message = ("The path '{0}' exists. Refusing to overwrite ").format(args[1])
         parser.error(message)
-    
+
     pom_path = args[0]
     uart = POM(pom_path)
 
@@ -230,11 +233,11 @@ def _main():
         result_pom += ("  <artifactId>{0}</artifactId>\n" ).format(uart.artifactId)
         result_pom += ("  <version>{0}</version>\n").format(uart.version)
 
-        if hasattr(uart, "packaging") and uart.packaging and uart.packaging != 'jar':
+        if hasattr(uart, "packaging") and uart.packaging != 'jar':
             result_pom += ("  <packaging>{0}</packaging>\n").format(uart.packaging)
-        if hasattr(uart, "extension") and uart.extension and uart.extension != 'jar':
+        if hasattr(uart, "extension") and uart.extension != 'jar':
             result_pom += ("  <extension>{0}</extension>\n").format(uart.extension)
-        if hasattr(uart, "classifier") and uart.classifier:
+        if hasattr(uart, "classifier"):
             result_pom += ("  <classifier>{0}</classifier>\n").format(uart.classifier)
 
         jar_path = None
@@ -246,13 +249,13 @@ def _main():
                 result_pom += "    <dependency>\n"
                 result_pom += ("      <groupId>{0}</groupId>\n").format(d.groupId)
                 result_pom += ("      <artifactId>{0}</artifactId>\n" ).format(d.artifactId)
-                if hasattr(d, "version") and d.version:
+                if hasattr(d, "version"):
                     result_pom += ("      <version>{0}</version>\n" ).format(d.version)
-                if hasattr(d, "extension") and d.extension and d.extension != 'jar':
+                if hasattr(d, "extension") and d.extension != 'jar':
                     result_pom += ("      <extension>{0}</extension>\n").format(d.extension)
-                if hasattr(d, "classifier") and d.classifier:
+                if hasattr(d, "classifier"):
                     result_pom += ("      <classifier>{0}</classifier>\n").format(d.classifier)
-                if hasattr(d, "optional") and d.optional and d.optional.lower() == "true":
+                if hasattr(d, "optional") and d.optional.lower() == "true":
                     result_pom += ("      <optional>{0}</optional>\n").format(d.optional.lower())
                 result_pom += "    </dependency>\n"
             result_pom += "  </dependencies>\n"
