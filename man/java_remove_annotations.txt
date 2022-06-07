@@ -1,0 +1,69 @@
+java_remove_annotations(7)
+==========================
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+java_remove_annotations - remove imports and annotations from Java source files
+
+SYNOPSIS
+--------
+*%java_remove_annotations* [list of file paths]... -p <list of patterns>...
+
+DESCRIPTION
+-----------
+This macro removes import statements as well as usage of annotations from Java
+source files. The does the same as *java_remove_imports* and on top of that
+finds all uses of annotations and matches the content between the '@' symbol and
+either ending with whitespace or with an opening parethesis '('.
+
+In case of match, the script also removes the block of paretheses that follows
+the matched annotation, if it is present.
+
+If the file path is a directory, recursively finds all Java source files inside.
+If not specified, runs in the current working directory.
+
+*-p*::
+List of patterns to be matched against found annotations. The script uses the
+*string.find* function from Lua to match each found annotation against every
+pattern.
+
+EXAMPLES
+--------
+Example of usage:
+
+*%java_remove_annotations -p Nullable*
+
+Examples of patterns:
+
+- Annotations present in Java source file:
+
+    1) @SuppressWarnings
+    2) @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
+    3) @org.junit.Test
+    4) @org.junit.jupiter.api.Test
+
+- Patterns used to match:
+
+    Pattern 'SuppressWarnings' matches 1).
+    Pattern 'Suppress' matches 1), 2).
+    Pattern 'org[.]junit[.]Test' matches 3).
+    Pattern 'Test' matches 3), 4).
+
+    Pattern '@SuppressWarnings' does not match anything.
+    Pattern 'EI_EXPOSE_REP' does not match anything.
+
+AUTHOR
+------
+Written by Marián Konček.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Java Packages Tools issue tracker at
+Github: https://github.com/fedora-java/javapackages/issues.
+
+SEE ALSO
+--------
+*java_remove_imports*(7).

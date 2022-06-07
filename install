@@ -160,10 +160,13 @@ inst_data java-utils/mvn_compat_version.py "${javadir}-utils"
 inst_data java-utils/mvn_config.py "${javadir}-utils"
 inst_data java-utils/mvn_file.py "${javadir}-utils"
 inst_data java-utils/mvn_package.py "${javadir}-utils"
+inst_data java-utils/java_remove_symbols.lua "${javadir}-utils"
 
 inst_data target/macros.fjava "${rpmmacrodir}"
 
 inst_data target/abs2rel.1 "${mandir}/man1"
+inst_data target/java_remove_annotations.7 "${mandir}/man7"
+inst_data target/java_remove_imports.7 "${mandir}/man7"
 inst_data target/mvn_alias.7 "${mandir}/man7"
 inst_data target/mvn_artifact.7 "${mandir}/man7"
 inst_data target/mvn_build.7 "${mandir}/man7"

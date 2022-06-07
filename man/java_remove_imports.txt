@@ -1,0 +1,66 @@
+java_remove_imports(7)
+======================
+:doctype:	manpage
+:man source:	JAVAPACKAGES
+:man manual:	Java Packages Tools
+
+NAME
+----
+java_remove_imports - remove import statements from Java source files
+
+SYNOPSIS
+--------
+*%java_remove_imports* [list of file paths]... -p <list of patterns>
+
+DESCRIPTION
+-----------
+This macro removes import statements from Java source files. The script matches
+all non-whitespace content following the 'import [static]' statement against all
+patterns listed after the *-p* flag.
+
+If the file path is a directory, recursively finds all Java source files inside.
+If not specified, runs in the current working directory.
+
+*-p*::
+List of patterns to be matched against imported symbols. The script uses the
+*string.find* function from Lua to match each imported symbol against every
+pattern.
+
+EXAMPLES
+--------
+Example of usage:
+
+*%java_remove_imports -p Nullable*
+
+Examples of patterns:
+
+- Import statements present in Java source file:
+
+    1) import java.lang.Runnable;
+    2) import java.util.List;
+    3) import static java.util.*;
+    4) import static java.lang.String.valueOf;
+    5) import com.google.common.util.concurrent.Service;
+
+- Patterns used to match:
+
+    Pattern 'Runnable' matches 1).
+    Pattern '[*]' matches 3).
+    Pattern 'java[.]util' matches 2), 3).
+    Pattern 'util' matches 2), 3), 5).
+    Patterns 'java', 'java.*' match 1) - 4).
+    
+    Pattern 'static' does not match anything.
+
+AUTHOR
+------
+Written by Marián Konček.
+
+REPORTING BUGS
+--------------
+Bugs should be reported through Java Packages Tools issue tracker at
+Github: https://github.com/fedora-java/javapackages/issues.
+
+SEE ALSO
+--------
+*java_remove_annotations*(7).

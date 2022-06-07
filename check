@@ -82,4 +82,10 @@ coverage combine
 coverage xml
 coverage report
 
+echo "Running Lua tests..."
+for test_file in ./test/*_test.lua; do
+    echo "${test_file##*/}"
+    LUA_PATH="$(echo java-utils/*.lua)" ./"${test_file}"
+done
+
 exit ${r1}
