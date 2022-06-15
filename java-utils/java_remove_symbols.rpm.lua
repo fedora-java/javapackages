@@ -1,4 +1,3 @@
-#!/usr/bin/lua
 --
 -- Copyright (c) 2022, Red Hat, Inc.
 -- All rights reserved.
@@ -34,13 +33,7 @@
 
 local lib = require("java_symbols_lib")
 
-local help_usage = [[
-Usage: java_remove_symbols.lua [-a] [list of filepaths]... -p <list of patterns>...
-    -a      Also remove annotations used in code]]
-
-if #arg == 0 or arg[1] == "-h" or arg[1] == "--help" then
-    print(help_usage)
-    return
-end
+-- rpmlua passes CLI arguments shifted by one
+table.remove(arg, 0)
 
 lib.main(arg)

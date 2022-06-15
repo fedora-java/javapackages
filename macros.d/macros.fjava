@@ -472,7 +472,7 @@ API documentation for %{name}. \
 # 
 # Removes import statements from Java source files by matching them against the
 # list of provided patterns.
-%java_remove_imports /usr/bin/rpmlua @{javadir}-utils/java_remove_symbols.lua
+%java_remove_imports LUA_PATH=@{javadir}-utils/java_symbols_lib.lua /usr/bin/lua @{javadir}-utils/java_remove_symbols.lua
 
 
 # java_remove_annotations - remove imports and annotations from Java source
@@ -482,4 +482,4 @@ API documentation for %{name}. \
 # 
 # Removes import statements as well as usage of annotations from Java source
 # files by matching them against the list of provided patterns.
-%java_remove_annotations /usr/bin/rpmlua @{javadir}-utils/java_remove_symbols.lua -a
+%java_remove_annotations LUA_PATH=@{javadir}-utils/java_symbols_lib.lua /usr/bin/lua @{javadir}-utils/java_remove_symbols.lua -a

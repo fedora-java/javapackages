@@ -160,7 +160,9 @@ inst_data java-utils/mvn_compat_version.py "${javadir}-utils"
 inst_data java-utils/mvn_config.py "${javadir}-utils"
 inst_data java-utils/mvn_file.py "${javadir}-utils"
 inst_data java-utils/mvn_package.py "${javadir}-utils"
-inst_data java-utils/java_remove_symbols.lua "${javadir}-utils"
+inst_exec java-utils/java_remove_symbols.lua "${javadir}-utils"
+inst_data java-utils/java_remove_symbols.rpm.lua "${javadir}-utils"
+inst_data java-utils/java_symbols_lib.lua "${javadir}-utils"
 
 inst_data target/macros.fjava "${rpmmacrodir}"
 
