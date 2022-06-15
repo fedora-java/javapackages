@@ -10,7 +10,7 @@ java_remove_annotations - remove imports and annotations from Java source files
 
 SYNOPSIS
 --------
-*%java_remove_annotations* [list of file paths]... -p <list of patterns>...
+*%java_remove_annotations* [list of file paths]... [-n <list of class names>...] [-p <list of patterns>...]
 
 DESCRIPTION
 -----------
@@ -25,6 +25,10 @@ the matched annotation, if it is present.
 If the file path is a directory, recursively finds all Java source files inside.
 If not specified, runs in the current working directory.
 
+*-n*::
+List of simple class names to be matched against the simple names of imported
+symbols. Names are matched for exact equality.
+
 *-p*::
 List of patterns to be matched against found annotations. The script uses the
 *string.find* function from Lua to match each found annotation against every
@@ -34,7 +38,7 @@ EXAMPLES
 --------
 Example of usage:
 
-*%java_remove_annotations -p Nullable*
+*%java_remove_annotations -n Nullable*
 
 Examples of patterns:
 
@@ -45,12 +49,19 @@ Examples of patterns:
     3) @org.junit.Test
     4) @org.junit.jupiter.api.Test
 
+- Names used to match:
+
+    Name '@SuppressWarnings' matches 1)
+    Name 'Test' matches 3), 4).
+
+    Name 'junit' does not match anything.
+
 - Patterns used to match:
 
     Pattern 'SuppressWarnings' matches 1).
     Pattern 'Suppress' matches 1), 2).
     Pattern 'org[.]junit[.]Test' matches 3).
-    Pattern 'Test' matches 3), 4).
+    Pattern 'junit' matches 3), 4).
 
     Pattern '@SuppressWarnings' does not match anything.
     Pattern 'EI_EXPOSE_REP' does not match anything.

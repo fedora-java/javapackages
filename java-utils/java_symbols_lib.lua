@@ -169,7 +169,28 @@ local function next_annotation(string, position)
     return position, end_pos, result
 end
 
-local function remove_imports(content, patterns)
+--! @param name Class name found in code, may be fully-qualified or simple.
+--! @param patterns A table of patterns.
+--! @return The simple class name.
+local function name_matches(name, patterns, ...)
+    local class_name = select(3, string.find(name, ".*[.](.*)")) or name
+    
+    for _, names in ipairs({...}) do
+        if names[class_name] then
+            return class_name
+        end
+    end
+    
+    for _, pattern in ipairs(patterns) do
+        if string.find(name, pattern) then
+            return class_name
+        end
+    end
+    
+    return nil
+end
+
+local function remove_imports(content, patterns, names)
     local position = 1
     local result = ""
     local removed_classes = {}
@@ -182,8 +203,10 @@ local function remove_imports(content, patterns)
             local import_name = ""
             local symbol, end_pos
             symbol, end_pos = next_symbol(content, next_position + 6)
+            local names_passed = names
             
             if symbol == "static" then
+                names_passed = {}
                 symbol, end_pos = next_symbol(content, end_pos)
             end
             while symbol ~= ";" do
@@ -192,14 +215,13 @@ local function remove_imports(content, patterns)
             end
             _, end_pos = string.find(content, "%s-\n?", end_pos)
             copy_end = end_pos + 1
-            for _, pattern in ipairs(patterns) do
-                if string.find(import_name, pattern) then
-                    copy_end = next_position
-                    local class_name = select(3, string.find(import_name, ".*[.](.*)")) or import_name
-                    if class_name ~= "*" then
-                        removed_classes[class_name] = true
-                    end
-                    break
+            
+            local class_name = name_matches(import_name, patterns, names_passed)
+            
+            if class_name then
+                copy_end = next_position
+                if class_name ~= "*" then
+                    removed_classes[class_name] = true
                 end
             end
             
@@ -213,7 +235,7 @@ local function remove_imports(content, patterns)
     return result, removed_classes
 end
 
-local function remove_annotations(content, patterns)
+local function remove_annotations(content, patterns, ...)
     local position = 1
     local result = ""
     
@@ -225,12 +247,9 @@ local function remove_annotations(content, patterns)
         if an_pos <= #content then
             copy_end = an_end
             next_position = an_end
-            for _, pattern in ipairs(patterns) do
-                if string.find(annotation_name, pattern) then
-                    copy_end = an_pos
-                    next_position = string.find(content, "[^%s]", next_position) or next_position
-                    break
-                end
+            if name_matches(annotation_name, patterns, ...) then
+                copy_end = an_pos
+                next_position = string.find(content, "[^%s]", next_position) or next_position
             end
         end
         
@@ -241,22 +260,18 @@ local function remove_annotations(content, patterns)
     return result
 end
 
-local function handle_file(filename, patterns, opt_args)
-    opt_args = opt_args or {}
-    
+local function handle_file(filename, parameters)
+    local patterns = parameters["patterns"]
+    local names = parameters["names"]
     local file = io.open(filename, "r")
     local original_content = file:read("*a")
     file:close()
     local content = original_content
     local content, removed_classes = remove_imports(content, patterns)
-    if opt_args["-a"] then
+    if parameters["-a"] then
         -- a new table of patterns + class names of fully-qualified imports
         -- which were removed
-        local removed_annotations = table.move(patterns, 1, #patterns, 1, {})
-        for class_name in pairs(removed_classes) do
-            table.insert(removed_annotations, "^"..class_name.."$")
-        end
-        content = remove_annotations(content, removed_annotations)
+        content = remove_annotations(content, patterns, names, removed_classes)
     end
     if #content < #original_content then
         print("Removing symbols from file: "..filename)
@@ -290,13 +305,16 @@ local function parse_arguments(args, no_argument_flags)
     return result
 end
 
-local function interpret_flags(args_table)
-    local patterns = args_table["-p"] or {}
+--! The patterns table is used in two ways simultaneously:
+--! 1. as a list of patterns
+--! 2. as a dictionary of simple class names
+local function interpret_args(args_table)
     local files = {}
-    local opt_args = {}
+    local names = {}
+    local patterns = args_table["-p"] or {}
     
-    if args_table["-a"] then
-        opt_args["-a"] = true
+    for _, class_name in ipairs(args_table["-n"] or {}) do
+        names[class_name] = true
     end
     
     if #args_table == 0 then
@@ -311,14 +329,18 @@ local function interpret_flags(args_table)
         popen:close()
     end
     
-    return patterns, files, opt_args
+    return files, {
+        patterns = patterns,
+        names = names,
+        ["-a"] = args_table["-a"],
+    }
 end
 
 local function main(args)
-    local patterns, files, opt_args = interpret_flags(parse_arguments(args, {["-a"] = true}))
+    local files, parameters = interpret_args(parse_arguments(args, {["-a"] = true}))
     
     for _, filename in ipairs(files) do
-        handle_file(filename, patterns, opt_args)
+        handle_file(filename, parameters)
     end
 end
 
