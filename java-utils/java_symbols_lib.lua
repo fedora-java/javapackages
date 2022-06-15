@@ -195,10 +195,7 @@ local function remove_imports(content, patterns)
             for _, pattern in ipairs(patterns) do
                 if string.find(import_name, pattern) then
                     copy_end = next_position
-                    local class_name = select(3, string.find(import_name, ".*[.](.*)"))
-                    if class_name == nil then
-                        class_name = import_name
-                    end
+                    local class_name = select(3, string.find(import_name, ".*[.](.*)")) or import_name
                     if class_name ~= "*" then
                         removed_classes[class_name] = true
                     end
@@ -244,13 +241,15 @@ local function remove_annotations(content, patterns)
     return result
 end
 
-local function handle_file(filename, patterns)
+local function handle_file(filename, patterns, opt_args)
+    opt_args = opt_args or {}
+    
     local file = io.open(filename, "r")
     local original_content = file:read("*a")
     file:close()
     local content = original_content
     local content, removed_classes = remove_imports(content, patterns)
-    if patterns["-a"] then
+    if opt_args["-a"] then
         -- a new table of patterns + class names of fully-qualified imports
         -- which were removed
         local removed_annotations = table.move(patterns, 1, #patterns, 1, {})
@@ -291,19 +290,20 @@ local function parse_arguments(args, no_argument_flags)
     return result
 end
 
-local function interpret_flags(args_dict)
-    local patterns = args_dict["-p"]
+local function interpret_flags(args_table)
+    local patterns = args_table["-p"] or {}
     local files = {}
+    local opt_args = {}
     
-    if args_dict["-a"] then
-        patterns["-a"] = true
+    if args_table["-a"] then
+        opt_args["-a"] = true
     end
     
-    if #args_dict == 0 then
-        table.insert(args_dict, ".")
+    if #args_table == 0 then
+        table.insert(args_table, ".")
     end
     
-    for _, root in ipairs(args_dict) do
+    for _, root in ipairs(args_table) do
         local popen = io.popen("find '"..root.."' -type f -name '*.java'")
         for line in popen:lines() do
             table.insert(files, line)
@@ -311,14 +311,14 @@ local function interpret_flags(args_dict)
         popen:close()
     end
     
-    return patterns, files
+    return patterns, files, opt_args
 end
 
 local function main(args)
-    local patterns, files = interpret_flags(parse_arguments(args, {["-a"] = true}))
+    local patterns, files, opt_args = interpret_flags(parse_arguments(args, {["-a"] = true}))
     
     for _, filename in ipairs(files) do
-        handle_file(filename, patterns)
+        handle_file(filename, patterns, opt_args)
     end
 end
 
