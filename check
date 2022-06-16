@@ -85,7 +85,7 @@ coverage report
 echo "Running Lua tests..."
 for test_file in ./test/*_test.lua; do
     echo "${test_file##*/}"
-    LUA_PATH=java-utils/java_symbols_lib.lua ./"${test_file}"
+    LUA_PATH=java-utils/java_symbols_lib.lua lua ./"${test_file}"
 done
 
 exit ${r1}
