@@ -81,13 +81,13 @@ local function next_symbol(string, position)
     return string.sub(string, next_position, word_end), word_end + 1
 end
 
---! Searches within @param string starting from @param position to find a string
+--! Searches within @p string starting from @p position to find a string
 --! @param token which is present in the source code neither inside a comment
 --! nor inside a string nor inside a character literal. Special case when
---! @param token == ')', this function counts opening and closing parentheses
+--! @p token == ')', this function counts opening and closing parentheses
 --! and returns the first parethesis outside.
 --! @param alphanumeric If true, considers only tokens that are surrounded by
---! whitespace, comments or are at the boundaries of @param string
+--! whitespace, comments or are at the boundaries of @p string
 --! @return The starting index or #string + 1.
 local function find_token(string, token, position, alphanumeric, stack)
     position = position or 1
@@ -106,7 +106,7 @@ local function find_token(string, token, position, alphanumeric, stack)
                     position = position + 1
                 end
             end
-        elseif stack == 0 and string.sub(string, position, position + #token - 1) == token
+        elseif (token ~= ")" or stack == 0) and string.sub(string, position, position + #token - 1) == token
             and not (alphanumeric
             --  NOTE string.sub outsde of valid range returns an empty string
                 and (string.find(string.sub(string, position - 1, position - 1), "[%w_]")
@@ -172,13 +172,15 @@ end
 --! @param name Class name found in code, may be fully-qualified or simple.
 --! @param patterns A table of patterns.
 --! @return The simple class name.
-local function name_matches(name, patterns, ...)
+local function name_matches(name, patterns, names, imported_names)
     local class_name = select(3, string.find(name, ".*[.](.*)")) or name
     
-    for _, names in ipairs({...}) do
-        if names[class_name] then
-            return class_name
-        end
+    if names[class_name] then
+        return class_name
+    end
+    
+    if imported_names[name] then
+        return class_name
     end
     
     for _, pattern in ipairs(patterns) do
@@ -194,6 +196,7 @@ local function remove_imports(content, patterns, names)
     local position = 1
     local result = ""
     local removed_classes = {}
+    names = names or {}
     
     while position <= #content do
         local next_position = find_token(content, "import", position, true)
@@ -216,7 +219,7 @@ local function remove_imports(content, patterns, names)
             _, end_pos = string.find(content, "%s-\n?", end_pos)
             copy_end = end_pos + 1
             
-            local class_name = name_matches(import_name, patterns, names_passed)
+            local class_name = name_matches(import_name, patterns, names_passed, {})
             
             if class_name then
                 copy_end = next_position
@@ -235,9 +238,11 @@ local function remove_imports(content, patterns, names)
     return result, removed_classes
 end
 
-local function remove_annotations(content, patterns, ...)
+local function remove_annotations(content, patterns, names, imported_names)
     local position = 1
     local result = ""
+    names = names or {}
+    imported_names = imported_names or {}
     
     while position <= #content do
         local an_pos, an_end, annotation_name = next_annotation(content, position)
@@ -247,7 +252,7 @@ local function remove_annotations(content, patterns, ...)
         if an_pos <= #content then
             copy_end = an_end
             next_position = an_end
-            if name_matches(annotation_name, patterns, ...) then
+            if name_matches(annotation_name, patterns, names, imported_names) then
                 copy_end = an_pos
                 next_position = string.find(content, "[^%s]", next_position) or next_position
             end
@@ -267,19 +272,23 @@ local function handle_file(filename, parameters)
     local original_content = file:read("*a")
     file:close()
     local content = original_content
-    local content, removed_classes = remove_imports(content, patterns)
+    local content, removed_classes = remove_imports(content, patterns, names)
+    
     if parameters["-a"] then
         -- a new table of patterns + class names of fully-qualified imports
         -- which were removed
         content = remove_annotations(content, patterns, names, removed_classes)
     end
-    if #content < #original_content then
+    
+    if not parameters["--dry-run"] and #content < #original_content then
         print("Removing symbols from file: "..filename)
         local file = io.open(filename, "w")
         file:write(content)
         file:flush()
         file:close()
     end
+    
+    return content
 end
 
 local function parse_arguments(args, no_argument_flags)
@@ -287,7 +296,7 @@ local function parse_arguments(args, no_argument_flags)
     local last_flag = nil
     
     for _, value in ipairs(args) do
-        if string.find(value, "^-[%w]$") then
+        if string.find(value, "^[-][%w]$") or string.find(value, "^[-][-].+$") then
             result[value] = {}
             last_flag = value
             if no_argument_flags[value] then
@@ -333,15 +342,23 @@ local function interpret_args(args_table)
         patterns = patterns,
         names = names,
         ["-a"] = args_table["-a"],
+        ["--dry-run"] = args_table["--dry-run"],
     }
 end
 
 local function main(args)
-    local files, parameters = interpret_args(parse_arguments(args, {["-a"] = true}))
+    local files, parameters = interpret_args(parse_arguments(args, {["-a"] = true, ["--dry-run"] = true}))
+    local is_dry_run = (parameters["--dry-run"] ~= nil)
+    local result = ""
     
     for _, filename in ipairs(files) do
-        handle_file(filename, parameters)
+        single_result = handle_file(filename, parameters)
+        if is_dry_run then
+            result = result..single_result
+        end
     end
+    
+    return result
 end
 
 return {

@@ -44,6 +44,7 @@ function()
     
     assert(lib.find_token([[@]], "@") == 1)
     assert(lib.find_token([[ @]], "@") == 2)
+    assert(lib.find_token([[(@)]], "@") == 2)
     assert(lib.find_token([[//
 @]], "@") == 4)
     assert(lib.find_token([[/*
@@ -110,6 +111,7 @@ function()
     assert(eq({lib.next_annotation([[@A(a = ")")]])}, {1, 12, [[A]]}))
     assert(eq({lib.next_annotation([[@A(a = ")))" /*)))*/) class B {}]])}, {1, 22, [[A]]}))
     assert(eq({lib.next_annotation([[@A(/* ) */)]])}, {1, 12, [[A]]}))
+    assert(eq({lib.next_annotation([[method(@A Object o)]])}, {8, 10, [[A]]}))
     
     assert(eq({lib.next_annotation([[@A(
 value = ")" /* ) */
@@ -239,6 +241,172 @@ function()
     assert(lib.remove_annotations([[@//
 A]], {"A"}) == [[]])
     assert(lib.remove_annotations([[@A/*(B)*/]], {"B"}) == [[@A/*(B)*/]])
+end,
+
+function()
+    print("test_main...")
+    
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class1.java", "-n", "D"}) == [[
+import a.b.D.A;
+import static a.b.C.D;
+
+@D
+class Class1 {
+}
+]])
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class1.java", "-a", "-n", "D"}) == [[
+import a.b.D.A;
+import static a.b.C.D;
+
+class Class1 {
+}
+]])
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class2.java", "-n", "Runnable"}) == [[
+import java.util.List;
+import static java.util.*;
+import static java.lang.String.valueOf;
+import com.google.common.util.concurrent.Service;
+
+class Class2 {
+}
+]])
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class2.java", "-n", "*"}) == [[
+import java.lang.Runnable;
+import java.util.List;
+import static java.util.*;
+import static java.lang.String.valueOf;
+import com.google.common.util.concurrent.Service;
+
+class Class2 {
+}
+]])
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class2.java", "-n", "valueOf"}) == [[
+import java.lang.Runnable;
+import java.util.List;
+import static java.util.*;
+import static java.lang.String.valueOf;
+import com.google.common.util.concurrent.Service;
+
+class Class2 {
+}
+]])
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class2.java", "-p", "java"}) == [[
+import com.google.common.util.concurrent.Service;
+
+class Class2 {
+}
+]])
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class2.java", "-p", "util", "-n", "Runnable"}) == [[
+import static java.lang.String.valueOf;
+
+class Class2 {
+}
+]])
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class2.java", "-p", "static"}) == [[
+import java.lang.Runnable;
+import java.util.List;
+import static java.util.*;
+import static java.lang.String.valueOf;
+import com.google.common.util.concurrent.Service;
+
+class Class2 {
+}
+]])
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class3.java", "-a", "-p", "Test"}) == [[
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressWarnings
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
+class Class3 {
+    public void test1() {
+    }
+    
+    public void test2() {
+    }
+    
+    public void test3() {
+    }
+}
+]])
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class3.java", "-a", "-n", "Test"}) == [[
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressWarnings
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
+class Class3 {
+    public void test1() {
+    }
+    
+    public void test2() {
+    }
+    
+    public void test3() {
+    }
+}
+]])
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class3.java", "-a", "-p", "api[.]Test"}) == [[
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressWarnings
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
+class Class3 {
+    public void test1() {
+    }
+    
+    @org.junit.Test
+    public void test2() {
+    }
+    
+    public void test3() {
+    }
+}
+]])
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class3.java", "-a", "-p", "Suppress"}) == [[
+import org.junit.jupiter.api.Test;
+
+class Class3 {
+    @Test
+    public void test1() {
+    }
+    
+    @org.junit.Test
+    public void test2() {
+    }
+    
+    @org.junit.jupiter.api.Test
+    public void test3() {
+    }
+}
+]])
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class3.java", "-a", "-p", "EI_EXPOSE_REP"}) == [[
+import org.junit.jupiter.api.Test;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressWarnings
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
+class Class3 {
+    @Test
+    public void test1() {
+    }
+    
+    @org.junit.Test
+    public void test2() {
+    }
+    
+    @org.junit.jupiter.api.Test
+    public void test3() {
+    }
+}
+]])
+    assert(lib.main({"--dry-run", "./test/data/java_remove_symbols/Class4.java", "-a", "-n", "Nullable"}) == [[
+ /*;*/ // ;
+
+class Class4 {
+    <T extends Object> T method(Object o) {
+        new Object();
+    }
+}
+]])
 end,
 }
 
