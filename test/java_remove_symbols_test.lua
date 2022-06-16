@@ -1,5 +1,3 @@
-#!/usr/bin/lua
-
 local lib = require("java_symbols_lib")
 
 local function eq(lt, rt)
