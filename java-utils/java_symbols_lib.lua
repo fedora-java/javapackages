@@ -31,7 +31,7 @@
 -- Author:  Marián Konček <mkoncek@redhat.com>
 --------------------------------------------------------------------------------
 
---! Iterates over @param string starting from @param position until a character
+--! Iterates over @p string starting from @p position until a character
 --! is found which is neither a whitespace nor a Java comment
 --! @return The position of the first non-whitespace non-comment charater or
 --! #string + 1 if none is found
@@ -171,6 +171,13 @@ end
 
 --! @param name Class name found in code, may be fully-qualified or simple.
 --! @param patterns A table of patterns.
+--! @param names A table of names, these are matched exactly by the simple class
+--! names.
+--! @param imported_names Names that have their import declarations removed. In
+--! this case, we match the full name and this will only remove names that are
+--! used in their simple form in code (therefore they refer to the removed
+--! import declaration. If a name is used in its fully-qualified form in the
+--! code, it will be catched by the other matchers.
 --! @return The simple class name.
 local function name_matches(name, patterns, names, imported_names)
     local class_name = select(3, string.find(name, ".*[.](.*)")) or name
