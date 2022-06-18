@@ -1,4 +1,4 @@
-[![build status](https://img.shields.io/travis/fedora-java/javapackages/master.svg)](https://travis-ci.org/fedora-java/javapackages) [![test coverage](https://img.shields.io/codecov/c/github/fedora-java/javapackages/master.svg)](https://codecov.io/gh/fedora-java/javapackages)
+[![build status](https://img.shields.io/github/workflow/status/fedora-java/javapackages/CI/master.svg)](https://github.com/fedora-java/javapackages/actions/workflows/ci.yml?query=branch%3Amaster) [![test coverage](https://img.shields.io/codecov/c/github/fedora-java/javapackages/master.svg)](https://codecov.io/gh/fedora-java/javapackages)
 
 Java Packages Tools is a collection of tools that make it easier to
 build RPM packages containing software running on the Java platform.

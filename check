@@ -47,8 +47,11 @@ if [ -z "$pyinterpreter" ]; then
     exit 0
 fi
 
+cov_config=--cov-config=../.coveragerc
+
 if ! coverage --version >/dev/null 2>&1; then
     coverage(){ :;}
+    cov_config=
 fi
 
 cat >.coveragerc <<EOF
@@ -65,9 +68,9 @@ export COVERAGE_PROCESS_START="${PWD}/.coveragerc"
 export PYTHONPATH="${PWD}/test/coverage${PYTHONPATH:+:}${PYTHONPATH:-}"
 
 echo "Running Python tests with ${pyinterpreter}..."
-(cd ./python && "${pyinterpreter}" -m pytest -v --cov-config=../.coveragerc)
+(cd ./python && "${pyinterpreter}" -m pytest -v ${cov_config})
 r1=$?
-(cd ./test && PYTHONPATH="${PWD}/../python${PYTHONPATH:+:}${PYTHONPATH:-}" "${pyinterpreter}" -m pytest -v --cov-config=../.coveragerc)
+(cd ./test && PYTHONPATH="${PWD}/../python${PYTHONPATH:+:}${PYTHONPATH:-}" "${pyinterpreter}" -m pytest -v ${cov_config})
 r2=$?
 
 if [ ${r1} -lt ${r2} ]; then
