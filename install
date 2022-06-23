@@ -143,7 +143,7 @@ if [ -z "$pyinterpreter" ]; then
 fi
 
 
-exec >files-local
+exec >files-common
 
 inst_exec target/abs2rel "${bindir}"
 inst_exec target/xmvn-builddep "${bindir}"
@@ -193,6 +193,16 @@ inst_data java-utils/install_pom.py "${javadir}-utils"
 inst_data java-utils/maven_depmap.py "${javadir}-utils"
 
 inst_data target/macros.javapackages-compat "${rpmmacrodir}"
+
+exec >files-extra
+
+inst_exec java-utils/java_remove_symbols.lua "${javadir}-utils"
+inst_data java-utils/java_remove_symbols.rpm.lua "${javadir}-utils"
+inst_data java-utils/java_symbols_lib.lua "${javadir}-utils"
+
+inst_data target/java_remove_annotations.7 "${mandir}/man7"
+inst_data target/java_remove_imports.7 "${mandir}/man7"
+
 
 exec >files-generators
 
