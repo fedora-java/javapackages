@@ -94,18 +94,7 @@ def expand_props(deps, props):
     for d in deps:
         d.interpolate(props)
 
-
-def add_artifact_elements(metadata, art_template, ppath=None, jpath=None):
-    for path in [ppath, jpath]:
-        if path:
-            art = art_template.copy()
-            art.path = os.path.abspath(path)
-            metadata.artifacts.append(art)
-
-
 def gather_dependencies(pom_path):
-    if not pom_path:
-        return []
     pom = POM(pom_path)
     pom_props = get_model_variables(pom)
     deps, depm, props = _get_dependencies(pom)
@@ -237,10 +226,8 @@ def _main():
             result_pom += ("  <packaging>{0}</packaging>\n").format(uart.packaging)
         if hasattr(uart, "extension") and uart.extension != 'jar':
             result_pom += ("  <extension>{0}</extension>\n").format(uart.extension)
-        if hasattr(uart, "classifier"):
+        if hasattr(uart, "classifier") and uart.classifiler != '':
             result_pom += ("  <classifier>{0}</classifier>\n").format(uart.classifier)
-
-        jar_path = None
 
         mvn_deps = gather_dependencies(pom_path)
         if mvn_deps:
@@ -253,8 +240,10 @@ def _main():
                     result_pom += ("      <version>{0}</version>\n" ).format(d.version)
                 if hasattr(d, "extension") and d.extension != 'jar':
                     result_pom += ("      <extension>{0}</extension>\n").format(d.extension)
-                if hasattr(d, "classifier"):
+                if hasattr(d, "classifier") and d.classifier != '':
                     result_pom += ("      <classifier>{0}</classifier>\n").format(d.classifier)
+                if hasattr(d, "type") and d.type != '':
+                    result_pom += ("      <type>{0}</type>\n").format(d.type)
                 if hasattr(d, "optional") and d.optional.lower() == "true":
                     result_pom += ("      <optional>{0}</optional>\n").format(d.optional.lower())
                 result_pom += "    </dependency>\n"
