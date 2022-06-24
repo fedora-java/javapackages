@@ -51,7 +51,7 @@ Examples of patterns:
 
 - Names used to match:
 
-    Name '@SuppressWarnings' matches 1)
+    Name 'SuppressWarnings' matches 1)
     Name 'Test' matches 3), 4).
 
     Name 'junit' does not match anything.
