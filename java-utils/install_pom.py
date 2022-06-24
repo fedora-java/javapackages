@@ -174,7 +174,7 @@ def _get_dependencies(pom):
 
     for x in pom.dependencies:
         if hasattr(x, "version") and x.version == "any":
-            delattr(x, "version")
+            x.version = None
         deps.append(x)
     depm.extend([x for x in pom.dependencyManagement])
     props = pom.properties
