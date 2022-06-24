@@ -266,6 +266,25 @@ def rpmgen_process_args(args, kwargs):
     return args, kwargs
 
 
+def install_pom(pom):
+    def test_decorator(fun):
+        @wraps(fun)
+        def test_decorated(self):
+            os.chdir(self.workdir)
+            buildroot = os.path.join(self.workdir, "builddir/build/BUILDROOT")
+            env = {'RPM_BUILD_ROOT': buildroot}
+            scriptpath = path.join(DIRPATH, '..', 'java-utils', 'install_pom.py')
+            args = [pom, '.result_file']
+            (stdout, stderr, return_value) = call_script(scriptpath, args, extra_env=env)
+            res_file = None
+            if return_value == 0:
+                res_file = open('.result_file','r')
+            fun(self, stdout, stderr, return_value, result=res_file)
+            if res_file != None:
+                os.remove('.result_file')
+        return test_decorated
+    return test_decorator
+
 def mvn_depmap(pom, jar=None, fnargs=None):
     def test_decorator(fun):
         @wraps(fun)
