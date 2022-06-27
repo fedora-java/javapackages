@@ -329,6 +329,20 @@ class TestMavenDepmap(unittest.TestCase):
                                            depmap)
         self.assertEqual(report, '', report)
 
+    @mvn_depmap('JPP-depmngmnt.pom', 'usr/share/java/depmngmnt.jar')
+    def test_expansion(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
+
+    @mvn_depmap('JPP-modelexpansion.pom', 'usr/share/java/depmngmnt.jar')
+    def test_expansion_model(self, stdout, stderr, return_value, depmap):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           depmap)
+        self.assertEqual(report, '', report)
+
     def test_missing_jar(self):
         p = Package('test')
         p.append_to_prep("%add_maven_depmap g:a:1 this/file/doesnt/exist.jar")

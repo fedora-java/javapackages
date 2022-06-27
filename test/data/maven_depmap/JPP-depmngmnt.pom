@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.fedoraproject.xmvn</groupId>
+  <version>4.0.0</version>
+  <artifactId>xmvn-subst</artifactId>
+  <name>XMvn Subst</name>
+  <description>
+    XMvn Subst is a tool that can substitute Maven artifact files with
+    symbolic links to corresponding files in artifact repository.
+  </description>
+  <properties>
+    <jcommanderVersion>1.82</jcommanderVersion>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.beust</groupId>
+        <artifactId>jcommander</artifactId>
+        <version>${jcommanderVersion}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+    </dependency>
+  </dependencies>
+</project>
