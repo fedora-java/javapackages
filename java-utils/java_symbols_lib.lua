@@ -61,24 +61,23 @@ local function ignore_whitespace_comments(string, position)
 end
 
 --! Finds the next uncommented symbol and returns it and an index pointing past
---! it. The symbol is wither a sequence of alphanumeric characters or a single
+--! it. The symbol is either a sequence of alphanumeric characters or a single
 --! non-aphanumeric character or an empty string if the end has been reached.
 local function next_symbol(string, position)
     position = position or 1
-    local next_position = position
     local word_end = #string
     
     if position <= #string then
-        next_position = ignore_whitespace_comments(string, position)
-        if next_position <= #string then
-            _, word_end = string.find(string, "%w*", next_position)
-            if word_end < next_position then
-                word_end = next_position
+        position = ignore_whitespace_comments(string, position)
+        if position <= #string then
+            _, word_end = string.find(string, "%w*", position)
+            if word_end < position then
+                word_end = position
             end
         end
     end
     
-    return string.sub(string, next_position, word_end), word_end + 1
+    return string.sub(string, position, word_end), word_end + 1
 end
 
 --! Searches within @p string starting from @p position to find a string
@@ -182,11 +181,7 @@ end
 local function name_matches(name, patterns, names, imported_names)
     local class_name = select(3, string.find(name, ".*[.](.*)")) or name
     
-    if names[class_name] then
-        return class_name
-    end
-    
-    if imported_names[name] then
+    if names[class_name] or imported_names[name] then
         return class_name
     end
     
