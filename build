@@ -79,8 +79,6 @@ expand depgenerators/fileattrs/javadoc.attr
 manpage abs2rel
 manpage find-jar
 manpage gradle_build
-manpage java_remove_annotations
-manpage java_remove_imports
 manpage mvn_alias
 manpage mvn_artifact
 manpage mvn_build
