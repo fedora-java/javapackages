@@ -31,15 +31,16 @@ If no option is specified the default action will be to create symbolic links
 *-h, --hard*::
     Create hard links.
 
-*-p, --preserve-naming* Try  to preserve the names of the original JAR files (in
+*-p, --preserve-naming*::
+    Try  to preserve the names of the original JAR files (in
     case of a nested hit the slashes in the path will still be replaced by
     underscores). Using this option makes any future automated repository rebuild
     impossible, and implies -c unless specified otherwise.
 
-*-s, --soft, --symbolic*
+*-s, --soft, --symbolic*::
     Create symbolic links (default).
 
-*--help*
+*--help*::
     Display help text
 
 DEPENDENCIES
