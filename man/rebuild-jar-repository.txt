@@ -28,7 +28,7 @@ links
 *-h, --hard*::
     Create hard links.
 
-*-s, --soft, --symbolic*
+*-s, --soft, --symbolic*::
     Create symbolic links (default).
 
 DEPENDENCIES
