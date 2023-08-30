@@ -135,7 +135,6 @@ inst_data target/rebuild-jar-repository.1 "${mandir}/man1"
 inst_data target/shade-jar.1 "${mandir}/man1"
 inst_data target/find-jar.1 "${mandir}/man1"
 
-inst_data etc/javapackages-metadata.xml "${datadir}/maven-metadata"
 inst_data configs/configuration.xml "${m2home}"
 
 if [ -z "$pyinterpreter" ]; then
