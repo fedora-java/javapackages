@@ -213,7 +213,7 @@ def add_aliases(artifact, additions):
 
     aliases = additions.split(',')
     result = list()
-    for a in aliases:
+    for a in sorted(aliases):
         alias = MetadataAlias.from_mvn_str(a)
         alias.extension = artifact.extension
         result.append(alias)
