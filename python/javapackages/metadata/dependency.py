@@ -46,7 +46,7 @@ class MetadataDependency(ObjectBinding):
     defaults = {'extension': 'jar',
                 'requestedVersion': 'SYSTEM'}
     types = {'optional': str,  # todo bool
-             'exclusions': set([MetadataExclusion])}
+             'exclusions': list([MetadataExclusion])}
 
     def is_optional(self):
         if self.optional and self.optional.lower() == "true":
@@ -145,4 +145,4 @@ class MetadataDependency(ObjectBinding):
                    classifier=mvn_dep.classifier,
                    optional=mvn_dep.optional,
                    requestedVersion=mvn_dep.version,
-                   exclusions=exclusions)
+                   exclusions=sorted(exclusions))

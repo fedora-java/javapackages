@@ -41,6 +41,15 @@ class MetadataExclusion(ObjectBinding):
     element_name = 'exclusion'
     fields = ['groupId', 'artifactId']
 
+    def __lt__(self, other):
+        if self.groupId < other.groupId:
+            return True
+        if self.groupId > other.groupId:
+            return False
+        if self.artifactId < other.artifactId:
+            return True
+        return False
+
     def get_mvn_str(self):
         return Printer.get_mvn_str(self.groupId, self.artifactId)
 
