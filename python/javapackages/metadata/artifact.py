@@ -52,8 +52,8 @@ class MetadataArtifact(ObjectBinding):
               'compatVersions', 'dependencies']
     defaults = {'extension': 'jar'}
     types = {'compatVersions': set(['version']),
-             'aliases': set([MetadataAlias]),
-             'dependencies': set([MetadataDependency]),
+             'aliases': list([MetadataAlias]),
+             'dependencies': list([MetadataDependency]),
              'properties': dict}
 
     def __init__(self, *args, **kwargs):
