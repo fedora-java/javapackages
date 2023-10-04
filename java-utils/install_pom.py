@@ -31,6 +31,7 @@
 # Authors:  Michal Srb <msrb@redhat.com>
 
 from javapackages.maven.pom import POM, PomLoadingException
+from javapackages.maven.artifact import Artifact
 
 from javapackages.xmvn.xmvn_resolve import (XMvnResolve, ResolutionRequest,
                                             XMvnResolveException)
@@ -164,7 +165,7 @@ def gather_dependencies(pom_path):
     # only deps with scope "compile" or "runtime" are interesting
     deps = [x for x in deps if x.scope in ["", "compile", "runtime"]]
 
-    return deps
+    return deps, props
 
 
 def _get_dependencies(pom):
@@ -215,21 +216,23 @@ def _main():
     if uart.packaging and uart.packaging.lower() == 'pom':
         tree = ElementTree.parse(args[0])
     else:
+        mvn_deps, props = gather_dependencies(pom_path)
+        mvn_art =  Artifact.from_mvn_str(str(uart))
+        mvn_art.interpolate(props)
         result_pom = "<?xml version='1.0' encoding='UTF-8'?>\n"
         result_pom += "<project xmlns=\"http://maven.apache.org/POM/4.0.0\">\n"
         result_pom += "  <modelVersion>4.0.0</modelVersion>\n"
-        result_pom += ("  <groupId>{0}</groupId>\n" ).format(uart.groupId)
-        result_pom += ("  <artifactId>{0}</artifactId>\n" ).format(uart.artifactId)
-        result_pom += ("  <version>{0}</version>\n").format(uart.version)
+        result_pom += ("  <groupId>{0}</groupId>\n" ).format(mvn_art.groupId)
+        result_pom += ("  <artifactId>{0}</artifactId>\n" ).format(mvn_art.artifactId)
+        result_pom += ("  <version>{0}</version>\n").format(mvn_art.version)
 
         if hasattr(uart, "packaging") and uart.packaging != 'jar':
             result_pom += ("  <packaging>{0}</packaging>\n").format(uart.packaging)
         if hasattr(uart, "extension") and uart.extension != 'jar':
             result_pom += ("  <extension>{0}</extension>\n").format(uart.extension)
-        if hasattr(uart, "classifier") and uart.classifiler != '':
+        if hasattr(uart, "classifier") and uart.classifier != '':
             result_pom += ("  <classifier>{0}</classifier>\n").format(uart.classifier)
 
-        mvn_deps = gather_dependencies(pom_path)
         if mvn_deps:
             result_pom += "  <dependencies>\n"
             for d in mvn_deps:
