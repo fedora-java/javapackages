@@ -103,6 +103,13 @@ class TestInstallPom(unittest.TestCase):
                                            result)
         self.assertEqual(report, '', report)
 
+    @install_pom('empty_relpath.pom')
+    def test_empty_relpath(self, stdout, stderr, return_value, result):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           result)
+        self.assertEqual(report, '', report)
+
     @install_pom(os.path.join('xmvn', 'xmvn-tools', 'xmvn-install', 'pom.xml'))
     def test_parent_chain(self, stdout, stderr, return_value, result):
         self.assertEqual(return_value, 0, stderr)
