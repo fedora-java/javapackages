@@ -131,6 +131,13 @@ class TestInstallPom(unittest.TestCase):
                                            result)
         self.assertEqual(report, '', report)
 
+    @install_pom(os.path.join('xgboost', 'xgboost4j', 'pom.xml'))
+    def test_artifactid_expansion(self, stdout, stderr, return_value, result):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           result)
+        self.assertEqual(report, '', report)
+
     @install_pom('a_binary_file.pom')
     def test_not_pom(self, stdout, stderr, return_value, result):
         self.assertNotEqual(return_value, 0)
