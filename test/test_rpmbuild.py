@@ -4,6 +4,7 @@ import re
 import sys
 import subprocess
 import shutil
+import glob
 
 from textwrap import dedent
 
@@ -27,7 +28,8 @@ class Package(object):
         self.__prep = ''
         self.__build = ''
         self.__install = ''
-        self.buildpath = os.path.join('rpmbuild', 'BUILD', name + '-1')
+        # buildpath is set after running prep, it is not known in advance
+        self.buildpath = None
         self.__env = dict(os.environ)
         self.__env['HOME'] = os.getcwd()
         self.__env['PATH'] = '{mock}:{path}'.format(mock=DIRPATH,
@@ -97,6 +99,10 @@ class Package(object):
         err = errfile.read()
         os.remove('tmpout')
         os.remove('tmperr')
+        # RPM 4.19 and 4.20 use different BUILD directory structure, thus we search the filesystem
+        # to find the actual location of build subdir without reliance on particular structure
+        self.buildpath = glob.glob('rpmbuild/BUILD/**/{name}-subdir'.format(name=self.__name),
+                                   recursive=True)[0]
         return (out, err, ret)
 
     def set_env(self, name, value):
@@ -139,8 +145,7 @@ class Package(object):
         prep_section = dedent("""\
 
         %prep
-        mkdir %{name}-%{version}
-        cd ./%{name}-%{version}
+        %setup -cTn %{name}-subdir
         """)
         for index, (_, filename) in enumerate(self.__sources):
             directory = os.path.dirname(filename)
@@ -153,7 +158,6 @@ class Package(object):
         build_section = dedent("""\
 
         %build
-        cd ./%{name}-%{version}
         """)
         build_section += self.__build
 
