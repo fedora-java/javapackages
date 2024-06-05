@@ -103,6 +103,13 @@ class TestInstallPom(unittest.TestCase):
                                            result)
         self.assertEqual(report, '', report)
 
+    @install_pom('empty_relpath.pom')
+    def test_empty_relpath(self, stdout, stderr, return_value, result):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           result)
+        self.assertEqual(report, '', report)
+
     @install_pom(os.path.join('xmvn', 'xmvn-tools', 'xmvn-install', 'pom.xml'))
     def test_parent_chain(self, stdout, stderr, return_value, result):
         self.assertEqual(return_value, 0, stderr)
@@ -126,6 +133,13 @@ class TestInstallPom(unittest.TestCase):
 
     @install_pom(os.path.join('languagetool', 'languagetool-language-modules', 'ja', 'pom.xml'))
     def test_dep_classifier(self, stdout, stderr, return_value, result):
+        self.assertEqual(return_value, 0, stderr)
+        report = self.check_result(inspect.currentframe().f_code.co_name,
+                                           result)
+        self.assertEqual(report, '', report)
+
+    @install_pom(os.path.join('xgboost', 'xgboost4j', 'pom.xml'))
+    def test_artifactid_expansion(self, stdout, stderr, return_value, result):
         self.assertEqual(return_value, 0, stderr)
         report = self.check_result(inspect.currentframe().f_code.co_name,
                                            result)
