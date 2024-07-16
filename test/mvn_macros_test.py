@@ -379,7 +379,7 @@ class MvnMacrosTest(unittest.TestCase):
         _, stderr, return_value = pack.run_install()
         self.assertEqual(return_value, 0, stderr)
 
-        argspath = os.path.join('rpmbuild', 'BUILD', '.xmvn', 'install-out')
+        argspath = os.path.join(pack.buildpath, '.xmvn', 'install-out')
         with open(argspath, 'r') as argsfile:
             args = argsfile.read()
             self.assertTrue(re.match(r'-R \.xmvn-reactor -n \S+ -d \S+\n',
@@ -392,7 +392,7 @@ class MvnMacrosTest(unittest.TestCase):
         _, stderr, return_value = pack.run_install()
         self.assertEqual(return_value, 0, stderr)
 
-        argspath = os.path.join('rpmbuild', 'BUILD', '.xmvn', 'install-out')
+        argspath = os.path.join(pack.buildpath, '.xmvn', 'install-out')
         with open(argspath, 'r') as argsfile:
             args = argsfile.read()
             self.assertTrue(re.match(r'-X -R \.xmvn-reactor -n \S+ -d \S+\n',
@@ -400,21 +400,21 @@ class MvnMacrosTest(unittest.TestCase):
 
     @rpm_test()
     def test_mvn_install_directory(self, pack):
-        pack.append_to_build('mkdir ../doc')
-        pack.append_to_build('touch ../doc/file')
+        pack.append_to_build('mkdir doc')
+        pack.append_to_build('touch doc/file')
         pack.append_to_install('%mvn_install -J doc')
         pack.append_to_install('%files -f .mfiles-javadoc')
 
         _, stderr, return_value = pack.run_install()
         self.assertEqual(return_value, 0, stderr)
 
-        argspath = os.path.join('rpmbuild', 'BUILD', '.xmvn', 'install-out')
+        argspath = os.path.join(pack.buildpath, '.xmvn', 'install-out')
         with open(argspath, 'r') as argsfile:
             args = argsfile.read()
             self.assertTrue(re.match(r'-R \.xmvn-reactor -n \S+ -d \S+\n',
                                      args), args)
 
-        mfilespath = os.path.join('rpmbuild', 'BUILD', '.mfiles-javadoc')
+        mfilespath = os.path.join(pack.buildpath, '.mfiles-javadoc')
         with open(mfilespath, 'r') as mfiles:
             self.assertEqual(mfiles.read(),
                              '/usr/share/javadoc/test_mvn_install_directory\n')

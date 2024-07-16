@@ -22,10 +22,10 @@ def exec_macro(command = "", pom = "pom.xml", tail=''):
             pomname = os.path.basename(pom)
             package = Package(function.__name__)
             package.add_source(pompath)
-            pomsourcepath = os.path.join(package.buildpath, pomname)
             package.append_to_prep('%{command} {pom} {tail}'.format(command=command,
                 pom=pomname, tail=tail))
             stdin, stderr, return_value = package.run_prep()
+            pomsourcepath = os.path.join(package.buildpath, pomname)
 
             function(self, stdin, stderr, return_value, pomsourcepath)
         return test_decorated
