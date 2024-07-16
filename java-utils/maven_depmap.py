@@ -43,7 +43,7 @@ import sys
 
 from os.path import basename, dirname
 import zipfile
-from time import gmtime, strftime
+import time
 from copy import deepcopy
 
 from javapackages.maven.pom import POM
@@ -172,7 +172,11 @@ def append_if_missing(archive_name, file_name, file_contents):
     archive = zipfile.ZipFile(archive_name, 'a')
     try:
         if file_name not in archive.namelist():
-            archive.writestr(file_name, file_contents)
+            file_time = min(4354819199,
+                max(315532800,
+                int(os.environ.get('SOURCE_DATE_EPOCH', time.time()))))
+            file_zipinfo = zipfile.ZipInfo(file_name, date_time=time.gmtime(file_time))
+            archive.writestr(file_zipinfo, file_contents)
     finally:
         archive.close()
 
