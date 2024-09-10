@@ -1,195 +1,225 @@
-# %{scl}-runtime requires us, not the other way
-%{?scl:%global __requires_exclude %{?__requires_exclude:%__requires_exclude|}^%{scl}-runtime$}
-
-%bcond_without gradle
-%bcond_without tests
-
-%global pkg_name javapackages-tools
-%{?scl:%scl_package javapackages-tools}
+%bcond_without xmvn_generator
 
 %if 0%{?fedora}
-%global python_prefix python3
-%global python_interpreter %{__python3}
+%bcond_without ivy
 %else
-%global python_prefix python
-%global python_interpreter %{__python2}
-%global rpmmacrodir /etc/rpm
+%bcond_with ivy
 %endif
 
-%global default_jdk %{?_root_prefix}%{!?_root_prefix:%{_prefix}}/lib/jvm/java-1.8.0-openjdk
-%global default_jre %{?_root_prefix}%{!?_root_prefix:%{_prefix}}/lib/jvm/jre-1.8.0-openjdk
+%global python_prefix python3
+%global python_interpreter %{?__python3}%{!?__python3:dummy}
 
-Name:           %{?scl_prefix}%{pkg_name}
-Version:        5.3.0
-Release:        0.git.%(date +%%Y%%m%%d.%%H%%M%%S)
+%global default_jdk %{_prefix}/lib/jvm/java-21-openjdk
+%global default_jre %{_prefix}/lib/jvm/jre-21-openjdk
 
+%global maven_home %{_usr}/share/xmvn
+
+Name:           javapackages-tools
+Version:        [...]
+Release:        %autorelease
 Summary:        Macros and scripts for Java packaging support
-
-License:        BSD
+License:        BSD-3-Clause
 URL:            https://github.com/fedora-java/javapackages
-Source0:        javapackages-%{version}.tar.gz
-
 BuildArch:      noarch
+
+Source:         https://github.com/fedora-java/javapackages/archive/%{version}.tar.gz
+Source3:        javapackages-config.json
+
+Source21:       toolchains-openjdk21.xml
 
 BuildRequires:  coreutils
 BuildRequires:  which
 BuildRequires:  make
-BuildRequires:  asciidoc
-BuildRequires:  xmlto
-BuildRequires:  scl-utils-build
+BuildRequires:  rubygem-asciidoctor
 BuildRequires:  %{python_prefix}-devel
 BuildRequires:  %{python_prefix}-lxml
 BuildRequires:  %{python_prefix}-setuptools
 BuildRequires:  %{python_prefix}-pytest
-BuildRequires:  %{python_prefix}-pytest-cov
 
-Requires:       %{?scl_prefix}javapackages-filesystem = %{version}-%{release}
+Requires:       javapackages-filesystem = %{version}-%{release}
 Requires:       coreutils
 Requires:       findutils
 Requires:       which
 # default JRE
-Requires:       java-1.8.0-openjdk-headless
+Requires:       java-21-openjdk-headless
 
-Provides:       %{?scl_prefix}jpackage-utils = %{version}-%{release}
-# These could be generated automatically, but then we would need to
-# depend on javapackages-local for dependency generator.
-Provides:       %{?scl_prefix}mvn(com.sun:tools) = SYSTEM
-Provides:       %{?scl_prefix}mvn(sun.jdk:jconsole) = SYSTEM
+Provides:       jpackage-utils = %{version}-%{release}
 
 %description
 This package provides macros and scripts to support Java packaging.
 
-%package -n %{?scl_prefix}javapackages-filesystem
+%package -n javapackages-filesystem
 Summary:        Java packages filesystem layout
-Obsoletes:      %{?scl_prefix}eclipse-filesystem < 2
-Provides:       %{?scl_prefix}eclipse-filesystem = %{version}-%{release}
+Provides:       eclipse-filesystem = %{version}-%{release}
 
-%description -n %{?scl_prefix}javapackages-filesystem
+%description -n javapackages-filesystem
 This package provides some basic directories into which Java packages
 install their content.
 
-%package -n %{?scl_prefix}javapackages-compat
-Summary:        Previously deprecated macros and scripts for Java packaging support
-Requires:       %{?scl_prefix}javapackages-local = %{version}-%{release}
-
-%description -n %{?scl_prefix}javapackages-compat
-This package provides previously deprecated macros and scripts to
-support Java packaging as well as some additions to them.
-
-%package -n %{?scl_prefix}maven-local
+%package -n maven-local
 Summary:        Macros and scripts for Maven packaging support
 Requires:       %{name} = %{version}-%{release}
-Requires:       %{?scl_prefix}javapackages-local = %{version}-%{release}
-Requires:       %{?scl_prefix}xmvn-minimal >= 3.0.0
-Requires:       %{?scl_prefix}xmvn-mojo >= 3.0.0
-Requires:       %{?scl_prefix}xmvn-connector-aether >= 3.0.0
+Requires:       javapackages-local = %{version}-%{release}
+Requires:       xmvn-minimal
+Requires:       mvn(org.fedoraproject.xmvn:xmvn-mojo)
 # Common Maven plugins required by almost every build. It wouldn't make
 # sense to explicitly require them in every package built with Maven.
-Requires:       %{?scl_prefix}mvn(org.apache.maven.plugins:maven-compiler-plugin)
-Requires:       %{?scl_prefix}mvn(org.apache.maven.plugins:maven-jar-plugin)
-Requires:       %{?scl_prefix}mvn(org.apache.maven.plugins:maven-resources-plugin)
-Requires:       %{?scl_prefix}mvn(org.apache.maven.plugins:maven-surefire-plugin)
-# Tests based on JUnit are very common and JUnit itself is small.
-# Include JUnit and JUnit provider for Surefire just for convenience.
-Requires:       %{?scl_prefix}mvn(junit:junit)
-Requires:       %{?scl_prefix}mvn(org.apache.maven.surefire:surefire-junit4)
-# testng is quite common as well
-Requires:       %{?scl_prefix}mvn(org.apache.maven.surefire:surefire-testng)
+Requires:       mvn(org.apache.maven.plugins:maven-compiler-plugin)
+Requires:       mvn(org.apache.maven.plugins:maven-jar-plugin)
+Requires:       mvn(org.apache.maven.plugins:maven-resources-plugin)
+Requires:       mvn(org.apache.maven.plugins:maven-surefire-plugin)
+# Remove in Fedora 45
+Obsoletes:      maven-local-openjdk8 < 6.2.0-29
+Obsoletes:      maven-local-openjdk11 < 6.2.0-29
+Obsoletes:      maven-local-openjdk17 < 6.2.0-29
 
-%description -n %{?scl_prefix}maven-local
+%description -n maven-local
 This package provides macros and scripts to support packaging Maven artifacts.
 
-%if %{with gradle}
-%package -n %{?scl_prefix}gradle-local
-Summary:        Local mode for Gradle
-Requires:       %{name} = %{version}-%{release}
-Requires:       %{?scl_prefix}javapackages-local = %{version}-%{release}
-Requires:       %{?scl_prefix}gradle >= 2.2.1-2
-Requires:       %{?scl_prefix}xmvn-connector-gradle >= 3.0.0
-
-%description -n %{?scl_prefix}gradle-local
-This package implements local mode for Gradle, which allows artifact
-resolution using XMvn resolver.
-%endif
-
-%package -n %{?scl_prefix}ivy-local
+%if %{with ivy}
+%package -n ivy-local
 Summary:        Local mode for Apache Ivy
 Requires:       %{name} = %{version}-%{release}
-Requires:       %{?scl_prefix}javapackages-local = %{version}-%{release}
-Requires:       %{?scl_prefix}apache-ivy >= 2.3.0-8
-Requires:       %{?scl_prefix}xmvn-connector-ivy >= 3.0.0
+Requires:       javapackages-local = %{version}-%{release}
+Requires:       apache-ivy >= 2.3.0-8
+Requires:       xmvn-connector-ivy
 
-%description -n %{?scl_prefix}ivy-local
+%description -n ivy-local
 This package implements local mode for Apache Ivy, which allows
 artifact resolution using XMvn resolver.
+%endif
 
-%package -n %{?scl_prefix}%{python_prefix}-javapackages
+%package -n %{python_prefix}-javapackages
 Summary:        Module for handling various files for Java packaging
 Requires:       %{python_prefix}-lxml
-Obsoletes:      %{?scl_prefix}python-javapackages < %{version}-%{release}
 
-%description -n %{?scl_prefix}%{python_prefix}-javapackages
+%description -n %{python_prefix}-javapackages
 Module for handling, querying and manipulating of various files for Java
 packaging in Linux distributions
 
-%package -n %{?scl_prefix}javapackages-local
+%package -n javapackages-local
 Summary:        Non-essential macros and scripts for Java packaging support
-Requires:       %{name} = %{version}-%{release}
-Requires:       %{?scl_prefix}xmvn-install >= 3.0.0
-Requires:       %{?scl_prefix}xmvn-subst >= 3.0.0
-Requires:       %{?scl_prefix}xmvn-resolve >= 3.0.0
+Requires:       javapackages-common = %{version}-%{release}
 # Java build systems don't have hard requirement on java-devel, so it should be there
-Requires:       java-1.8.0-openjdk-devel
-Requires:       %{?scl_prefix}%{python_prefix}-javapackages = %{version}-%{release}
-Requires:       %{python_interpreter}
+Requires:       java-21-openjdk-devel
+Requires:       xmvn-tools
+%if %{with xmvn_generator}
+Requires:       xmvn-generator
+%endif
 
-%description -n %{?scl_prefix}javapackages-local
+%description -n javapackages-local
 This package provides non-essential macros and scripts to support Java packaging.
 
+%package -n javapackages-generators
+Summary:        RPM dependency generators for Java packaging support
+Requires:       %{name} = %{version}-%{release}
+Requires:       %{python_prefix}-javapackages = %{version}-%{release}
+Requires:       %{python_interpreter}
+
+%description -n javapackages-generators
+RPM dependency generators to support Java packaging.
+
+%package -n javapackages-common
+Summary:        Non-essential macros and scripts for Java packaging support
+Requires:       javapackages-generators = %{version}-%{release}
+
+%description -n javapackages-common
+This package provides non-essential, but commonly used macros and
+scripts to support Java packaging.
+
+%package -n javapackages-compat
+Summary:        Previously deprecated macros and scripts for Java packaging support
+Requires:       javapackages-local = %{version}-%{release}
+
+%description -n javapackages-compat
+This package provides previously deprecated macros and scripts to
+support Java packaging as well as some additions to them.
+
+%package -n maven-local-openjdk21
+Summary:        OpenJDK 21 toolchain for XMvn
+RemovePathPostfixes: -openjdk21
+Requires:       maven-local
+Requires:       java-21-openjdk-devel
+
+%description -n maven-local-openjdk21
+OpenJDK 21 toolchain for XMvn
+
 %prep
-%setup -q -n %{pkg_name}-%{version}
+%autosetup -p1 -C
 
 %build
 %configure --pyinterpreter=%{python_interpreter} \
     --default_jdk=%{default_jdk} --default_jre=%{default_jre} \
-    --rpmmacrodir=%{rpmmacrodir} \
-    %{?scl:--rpmconfigdir=%{_root_prefix}/lib/rpm --scl=%{scl} --scl_root=%{_scl_root}}
+    --rpmmacrodir=%{_rpmmacrodir} --rpmconfigdir=%{_rpmconfigdir} \
+    --m2home=%{maven_home}
 ./build
 
 %install
 ./install
 
-sed -i 's|mvn_build.py|& --xmvn-javadoc|' $(find %{buildroot} -name 'macros*.fjava')
-sed -e 's/.[17]$/&.gz/' -e 's/.py$/&*/' -i files-*
+sed -e 's/.[17]$/&*/' -i files-*
 
-%if %{without gradle}
 rm -rf %{buildroot}%{_bindir}/gradle-local
 rm -rf %{buildroot}%{_datadir}/gradle-local
 rm -rf %{buildroot}%{_mandir}/man7/gradle_build.7
+%if %{without ivy}
+rm -rf %{buildroot}%{_sysconfdir}/ivy
+rm -rf %{buildroot}%{_sysconfdir}/ant.d
 %endif
 
-%if %{with tests}
+mkdir -p %{buildroot}%{maven_home}/conf/
+cp -p %{SOURCE21} %{buildroot}%{maven_home}/conf/toolchains.xml-openjdk21
+
+install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/java/javapackages-config.json
+
+%if 0%{?flatpak}
+# make both /app (runtime deps) and /usr (build-only deps) builds discoverable
+sed -e '/^JAVA_LIBDIR=/s|$|:/usr/share/java|' \
+    -e '/^JNI_LIBDIR=/s|$|:/usr/lib/java|' \
+    -i %{buildroot}%{_sysconfdir}/java/java.conf
+%if %{with ivy}
+# fix ivy paths
+mkdir -p %{buildroot}/etc
+mv %{buildroot}%{_sysconfdir}/{ant.d,ivy} %{buildroot}/etc/
+sed -i -e 's|%{_sysconfdir}|/etc|' files-ivy
+%endif
+# /usr path is hard-coded in ant and xmvn
+mkdir -p %{buildroot}%{_usr}/{bin,share}
+ln -s %{_bindir}/build-classpath %{buildroot}%{_usr}/bin/build-classpath
+ln -s %{_datadir}/java-utils %{buildroot}%{_usr}/share/java-utils
+%endif
+
 %check
 ./check
-%endif
 
 %files -f files-tools
-
-%files -n %{?scl_prefix}javapackages-filesystem -f files-filesystem
-
-%files -n %{?scl_prefix}javapackages-compat -f files-compat
-
-%files -n %{?scl_prefix}javapackages-local -f files-local
-
-%files -n %{?scl_prefix}maven-local
-
-%if %{with gradle}
-%files -n %{?scl_prefix}gradle-local -f files-gradle
+%if 0%{?flatpak}
+%{_usr}/bin/build-classpath
+%{_usr}/share/java-utils
 %endif
 
-%files -n %{?scl_prefix}ivy-local -f files-ivy
+%files -n javapackages-filesystem -f files-filesystem
 
-%files -n %{?scl_prefix}%{python_prefix}-javapackages -f files-python
+%files -n javapackages-generators -f files-generators
+
+%files -n javapackages-common -f files-common
+
+%files -n javapackages-compat -f files-compat
+
+%files -n javapackages-local
+
+%files -n maven-local
+
+%if %{with ivy}
+%files -n ivy-local -f files-ivy
+%endif
+
+%files -n maven-local-openjdk21
+%dir %{maven_home}/conf
+%{maven_home}/conf/toolchains.xml-openjdk21
+
+%files -n %{python_prefix}-javapackages -f files-python
 %license LICENSE
 
 %changelog
+%autochangelog
