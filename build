@@ -76,6 +76,10 @@ expand depgenerators/fileattrs/osgi.attr
 expand depgenerators/fileattrs/maven.attr
 expand depgenerators/fileattrs/javadoc.attr
 
+while IFS== read -d' ' id path; do
+    echo "%java_home ${path}" >target/macros.fjava-"${id}"
+done <<<"${jvms}"
+
 manpage abs2rel
 manpage find-jar
 manpage gradle_build
