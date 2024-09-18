@@ -134,22 +134,6 @@ _set_java_home()
         return
     fi
 
-    case "${_prefer_jre}" in
-        1|[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee])
-            dirs="@{default_jre}:@{default_jdk}"
-            ;;
-        *)
-            dirs="@{default_jdk}:@{default_jre}"
-            ;;
-    esac
-
-    for JAVA_HOME in $dirs; do
-        if [ -d "${JAVA_HOME}" ]; then
-            _log "Using configured JAVA_HOME: ${JAVA_HOME}"
-            return
-        fi
-    done
-
     unset JAVA_HOME
 }
 

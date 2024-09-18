@@ -7,11 +7,6 @@
 #   Nicolas Mailhot <Nicolas.Mailhot@laPoste.net>
 #
 
-#
-# Current default JVM home.
-#
-%java_home      %(. @{javadir}-utils/java-functions; set_jvm; echo $JAVA_HOME)
-
 #==============================================================================
 # ---- default Java commands
 
@@ -32,7 +27,6 @@
 # %3    options
 # %4    jars (separated by ':')
 # %5    the name of script you wish to create
-# %6    whether to prefer a jre over a sdk when finding a jvm
 #
 %jpackage_script() \
 install -d -m 755 %{buildroot}%{_bindir} \
@@ -42,8 +36,10 @@ cat > %{buildroot}%{_bindir}/%5 << EOF \
 # %{name} script\
 # JPackage Project <http://www.jpackage.org/>\
 \
+# Set default JAVA_HOME\
+export JAVA_HOME="\\${JAVA_HOME:-%{?java_home}}"\
+\
 # Source functions library\
-_prefer_jre="%{?6}"\
 . @{javadir}-utils/java-functions\
 \
 # Source system prefs\

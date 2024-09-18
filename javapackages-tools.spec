@@ -9,9 +9,6 @@
 %global python_prefix python3
 %global python_interpreter %{?__python3}%{!?__python3:dummy}
 
-%global default_jdk %{_prefix}/lib/jvm/java-21-openjdk
-%global default_jre %{_prefix}/lib/jvm/jre-21-openjdk
-
 %global maven_home %{_usr}/share/xmvn
 
 Name:           javapackages-tools
@@ -40,8 +37,6 @@ Requires:       javapackages-filesystem = %{version}-%{release}
 Requires:       coreutils
 Requires:       findutils
 Requires:       which
-# default JRE
-Requires:       java-21-openjdk-headless
 
 Provides:       jpackage-utils = %{version}-%{release}
 
@@ -56,10 +51,13 @@ Provides:       eclipse-filesystem = %{version}-%{release}
 This package provides some basic directories into which Java packages
 install their content.
 
-%package -n maven-local
+%package -n maven-local-openjdk21
 Summary:        Macros and scripts for Maven packaging support
+RemovePathPostfixes: -openjdk21
+Requires:       java-21-openjdk-devel
+Provides:       maven-local = %{version}-%{release}
 Requires:       %{name} = %{version}-%{release}
-Requires:       javapackages-local = %{version}-%{release}
+Requires:       javapackages-local-openjdk21 = %{version}-%{release}
 Requires:       xmvn-minimal
 Requires:       mvn(org.fedoraproject.xmvn:xmvn-mojo)
 # Common Maven plugins required by almost every build. It wouldn't make
@@ -69,11 +67,12 @@ Requires:       mvn(org.apache.maven.plugins:maven-jar-plugin)
 Requires:       mvn(org.apache.maven.plugins:maven-resources-plugin)
 Requires:       mvn(org.apache.maven.plugins:maven-surefire-plugin)
 # Remove in Fedora 45
+Obsoletes:      maven-local < 7
 Obsoletes:      maven-local-openjdk8 < 6.2.0-29
 Obsoletes:      maven-local-openjdk11 < 6.2.0-29
 Obsoletes:      maven-local-openjdk17 < 6.2.0-29
 
-%description -n maven-local
+%description -n maven-local-openjdk21
 This package provides macros and scripts to support packaging Maven artifacts.
 
 %if %{with ivy}
@@ -97,17 +96,19 @@ Requires:       %{python_prefix}-lxml
 Module for handling, querying and manipulating of various files for Java
 packaging in Linux distributions
 
-%package -n javapackages-local
+%package -n javapackages-local-openjdk21
 Summary:        Non-essential macros and scripts for Java packaging support
+Obsoletes:      javapackages-local < 7
+Provides:       javapackages-local = %{version}-%{release}
 Requires:       javapackages-common = %{version}-%{release}
+Requires:       xmvn-tools
 # Java build systems don't have hard requirement on java-devel, so it should be there
 Requires:       java-21-openjdk-devel
-Requires:       xmvn-tools
 %if %{with xmvn_generator}
 Requires:       xmvn-generator
 %endif
 
-%description -n javapackages-local
+%description -n javapackages-local-openjdk21
 This package provides non-essential macros and scripts to support Java packaging.
 
 %package -n javapackages-generators
@@ -135,23 +136,14 @@ Requires:       javapackages-local = %{version}-%{release}
 This package provides previously deprecated macros and scripts to
 support Java packaging as well as some additions to them.
 
-%package -n maven-local-openjdk21
-Summary:        OpenJDK 21 toolchain for XMvn
-RemovePathPostfixes: -openjdk21
-Requires:       maven-local
-Requires:       java-21-openjdk-devel
-
-%description -n maven-local-openjdk21
-OpenJDK 21 toolchain for XMvn
-
 %prep
 %autosetup -p1 -C
 
 %build
 %configure --pyinterpreter=%{python_interpreter} \
-    --default_jdk=%{default_jdk} --default_jre=%{default_jre} \
     --rpmmacrodir=%{_rpmmacrodir} --rpmconfigdir=%{_rpmconfigdir} \
-    --m2home=%{maven_home}
+    --m2home=%{maven_home} \
+    --jvm=openjdk21=%{_jvmdir}/jre-21-openjdk
 ./build
 
 %install
@@ -206,17 +198,15 @@ ln -s %{_datadir}/java-utils %{buildroot}%{_usr}/share/java-utils
 
 %files -n javapackages-compat -f files-compat
 
-%files -n javapackages-local
-
-%files -n maven-local
-
-%if %{with ivy}
-%files -n ivy-local -f files-ivy
-%endif
+%files -n javapackages-local-openjdk21 -f files-local-openjdk21
 
 %files -n maven-local-openjdk21
 %dir %{maven_home}/conf
 %{maven_home}/conf/toolchains.xml-openjdk21
+
+%if %{with ivy}
+%files -n ivy-local -f files-ivy
+%endif
 
 %files -n %{python_prefix}-javapackages -f files-python
 %license LICENSE

@@ -137,6 +137,13 @@ inst_data target/find-jar.1 "${mandir}/man1"
 
 inst_data configs/configuration.xml "${m2home}"
 
+
+while IFS== read -d' ' id path; do
+    exec >files-local-"${id}"
+    inst_data target/macros.fjava-"${id}" "${rpmmacrodir}"
+done <<<"${jvms}"
+
+
 if [ -z "$pyinterpreter" ]; then
     exit 0
 fi
