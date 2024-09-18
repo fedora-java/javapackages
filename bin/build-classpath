@@ -21,12 +21,6 @@ exit 2
 
 [ "$#" -eq "0" ] && usage
 
-set_javacmd || exit 3
-
-check_java_env || exit 4
-
-set_jvm_dirs || exit 5
-
 _ALLFOUND="true"
 
 for extension in "$@" ; do

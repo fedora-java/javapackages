@@ -5,10 +5,6 @@
 # JPackage Project <http://www.jpackage.org/>
 #
 
-# Import java functions
-[ -r "@{javadir}-utils/java-functions" ] \
- &&  . "@{javadir}-utils/java-functions" || exit 1
-
 # Prints help message
 usage() {
 	cat >&2 << EOF_USAGE
@@ -27,10 +23,6 @@ EOF_USAGE
 [ "$1" = "--help" ] && usage
 
 [ "$#" = 0 ] && usage
-
-set_javacmd || exit 3
-check_java_env || exit 4
-set_jvm_dirs || exit 5
 
 # Default jar map
 _JAR_MAP_FILE="@{javadir}-utils/jarname-jpp-map"
