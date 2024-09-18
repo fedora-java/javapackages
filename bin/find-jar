@@ -20,12 +20,6 @@ exit 2
 
 [ "$#" -ne "1" ] && usage
 
-set_javacmd || exit 3
-
-check_java_env || exit 4
-
-set_jvm_dirs || exit 5
-
 find_jar $1
 
 if [ $? != 0 ]; then

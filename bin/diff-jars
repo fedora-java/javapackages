@@ -12,14 +12,6 @@
 #      - use mktemp(1) for creating temp files
 # 1.3  - fix java-functions location
 
-# Source functions library
-if [ -r "@{javadir}-utils/java-functions" ] ; then
-  . "@{javadir}-utils/java-functions"
-else
-  echo "Can't find functions library, aborting"
-  exit 1
-fi
-
 # Check arguments
 if [ $# != 2 ] ; then
 	echo  "usage: `basename $0` jar1 jar2"
@@ -43,8 +35,7 @@ else
 fi
 
 # Get jar command
-set_jvm
-JAR=$JAVA_HOME/bin/jar
+JAR=jar
 
 LIST1=`mktemp "$LIST1"`
 LIST2=`mktemp "$LIST2"`
