@@ -45,8 +45,7 @@ mkdir target
 manpage()
 {
     echo Generating manpage for "${1}"...
-    asciidoc -b docbook -d manpage -o "target/${1}.xml" "man/${1}.txt"
-    (cd ./target && xmlto man --skip-validation "${1}.xml")
+    asciidoctor -b manpage -D "target" "man/${1}.txt"
 }
 
 expand bin/abs2rel
