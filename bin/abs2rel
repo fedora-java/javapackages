@@ -1,5 +1,5 @@
-#!@{pyinterpreter}
-# Copyright (c) 2017, Red Hat, Inc.
+#!/bin/sh
+# Copyright (c) 2024, Red Hat, Inc.
 #
 # All rights reserved.
 #
@@ -31,19 +31,9 @@
 #
 # Authors:  Mikolaj Izdebski <mizdebsk@redhat.com>
 
-import os
-import sys
+if [ $# -ne 2 ]; then
+    echo "Usage: $(basename $0) <PATH> <BASE>" >&2
+    exit 1
+fi
 
-if len(sys.argv) != 3:
-    print("Usage: {0} <PATH> <BASE>"
-          .format(os.path.basename(sys.argv[0])),
-          file=sys.stderr)
-    sys.exit(1)
-
-print(os.path.relpath(*sys.argv[1:]))
-
-
-# Local Variables:
-# mode: Python
-# End:
-# vi: ft=python
+exec realpath -s --relative-to="$2" "$1"

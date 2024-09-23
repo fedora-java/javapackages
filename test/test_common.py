@@ -24,10 +24,10 @@ for var in ('PYTHONPATH', 'COVERAGE_PROCESS_START'):
         SCRIPT_ENV[var] = os.environ[var]
 
 
-def call_script(name, args, stdin=None, extra_env={}, wait=True):
+def call_script(name, args, stdin=None, extra_env={}, wait=True, shell=False):
     with open("tmpout", 'w') as outfile:
         with open("tmperr", 'w') as errfile:
-            procargs = [sys.executable, name]
+            procargs = ['sh' if shell else sys.executable, name]
             env = SCRIPT_ENV.copy()
             env.update(extra_env)
             proc = subprocess.Popen(procargs + args, shell=False,
@@ -124,12 +124,12 @@ def javautils_script(name, fnargs):
     return test_decorator
 
 
-def bindir_script(name, fnargs):
+def bindir_script(name, fnargs, shell=False):
     def test_decorator(fun):
         @wraps(fun)
         def test_decorated(self):
             scriptpath = path.join(DIRPATH, '..', 'bin', name)
-            (stdout, stderr, return_value) = call_script(scriptpath, fnargs)
+            (stdout, stderr, return_value) = call_script(scriptpath, fnargs, shell=shell)
             fun(self, stdout, stderr, return_value)
         return test_decorated
     return test_decorator
