@@ -1,5 +1,3 @@
-%bcond_without xmvn_generator
-
 %if 0%{?fedora}
 %bcond_without ivy
 %else
@@ -20,7 +18,6 @@ URL:            https://github.com/fedora-java/javapackages
 BuildArch:      noarch
 
 Source:         https://github.com/fedora-java/javapackages/archive/%{version}.tar.gz
-Source3:        javapackages-config.json
 
 Source21:       toolchains-openjdk21.xml
 
@@ -104,25 +101,17 @@ Requires:       javapackages-common = %{version}-%{release}
 Requires:       xmvn-tools
 # Java build systems don't have hard requirement on java-devel, so it should be there
 Requires:       java-21-openjdk-devel
-%if %{with xmvn_generator}
 Requires:       xmvn-generator
-%endif
+Obsoletes:      javapackages-generators < 7
 
 %description -n javapackages-local-openjdk21
 This package provides non-essential macros and scripts to support Java packaging.
 
-%package -n javapackages-generators
-Summary:        RPM dependency generators for Java packaging support
+%package -n javapackages-common
+Summary:        Non-essential macros and scripts for Java packaging support
 Requires:       %{name} = %{version}-%{release}
 Requires:       %{python_prefix}-javapackages = %{version}-%{release}
 Requires:       %{python_interpreter}
-
-%description -n javapackages-generators
-RPM dependency generators to support Java packaging.
-
-%package -n javapackages-common
-Summary:        Non-essential macros and scripts for Java packaging support
-Requires:       javapackages-generators = %{version}-%{release}
 
 %description -n javapackages-common
 This package provides non-essential, but commonly used macros and
@@ -162,8 +151,6 @@ rm -rf %{buildroot}%{_sysconfdir}/ant.d
 mkdir -p %{buildroot}%{maven_home}/conf/
 cp -p %{SOURCE21} %{buildroot}%{maven_home}/conf/toolchains.xml-openjdk21
 
-install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/java/javapackages-config.json
-
 %if 0%{?flatpak}
 # make both /app (runtime deps) and /usr (build-only deps) builds discoverable
 sed -e '/^JAVA_LIBDIR=/s|$|:/usr/share/java|' \
@@ -191,8 +178,6 @@ ln -s %{_datadir}/java-utils %{buildroot}%{_usr}/share/java-utils
 %endif
 
 %files -n javapackages-filesystem -f files-filesystem
-
-%files -n javapackages-generators -f files-generators
 
 %files -n javapackages-common -f files-common
 
