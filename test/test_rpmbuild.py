@@ -4,7 +4,6 @@ import re
 import sys
 import subprocess
 import shutil
-import glob
 
 from textwrap import dedent
 
@@ -101,8 +100,9 @@ class Package(object):
         os.remove('tmperr')
         # RPM 4.19 and 4.20 use different BUILD directory structure, thus we search the filesystem
         # to find the actual location of build subdir without reliance on particular structure
-        self.buildpath = glob.glob('rpmbuild/BUILD/**/{name}-subdir'.format(name=self.__name),
-                                   recursive=True)[0]
+        self.buildpath = [os.path.join(dirpath, d)
+            for dirpath, dirnames, files in os.walk('rpmbuild/BUILD')
+            for d in dirnames if d.endswith('{name}-subdir'.format(name=self.__name))][0]
         return (out, err, ret)
 
     def set_env(self, name, value):
