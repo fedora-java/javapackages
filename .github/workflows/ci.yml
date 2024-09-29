@@ -23,14 +23,14 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-18.04
     steps:
       - name: Checkout git repository
         uses: actions/checkout@v2
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.4'
       - name: Install required Python packages
         run: pip install -r requirements.txt -r test-requirements.txt codecov
       - name: Run configure script
