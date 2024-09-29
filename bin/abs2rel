@@ -36,4 +36,4 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-exec realpath -s --relative-to="$2" "$1"
+exec realpath -m -s --relative-to="$2" "$1"
