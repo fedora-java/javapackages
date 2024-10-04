@@ -376,12 +376,6 @@ find_jar()
 ## Checks java environment
 check_java_env()
 {
-    # This is usually set by set_jvm
-    if [ -z "${JAVA_HOME}" ]; then
-	_err "JAVA_HOME must be set"
-	return 1
-    fi
-
     if [ -z "${JAVACMD}" ]; then
 	_err "JAVACMD must be set"
 	return 2
