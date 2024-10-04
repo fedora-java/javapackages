@@ -127,9 +127,6 @@ _load_java_conf()
 # Test default JRE/JVM roots if nothing is defined yet
 _set_java_home()
 {
-    local IFS=:
-    local jvmdir
-
     if [ -n "${JAVA_HOME}" ]; then
         return
     fi
