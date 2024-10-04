@@ -137,18 +137,7 @@ _set_java_home()
 # Set the java virtual machine
 set_jvm()
 {
-    local IFS=:
-    local javaconfdirs
-
     _set_java_home
-
-    if [ -z "${JAVA_HOME}" ]; then
-        javaconfdirs="${JAVACONFDIRS:-@{javaconfdir}}"
-        _err "JAVA_HOME is not set and default java installation was not found. JAVA_HOME for system applications can be set in java.conf in ${javaconfdirs}"
-        exit 1
-    fi
-
-    return 0
 }
 
 # Set the classpath
