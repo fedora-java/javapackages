@@ -153,19 +153,21 @@ set_javacmd()
     fi
 
     # Add all sorts of jvm layouts here
-    for cmd in jre/sh/java jre/bin/java bin/java; do
-	JAVACMD="${JAVA_HOME}/${cmd}"
-	if [ -x "${JAVACMD}" ]; then
-	    _log "Using configured JAVACMD: $JAVACMD"
-	    if [ -n "${JAVACMD_OPTS}" ]; then
-		_log "Using java-wrapper with extra options: ${JAVACMD_OPTS}"
-		export _JP_JAVACMD="${JAVACMD}"
-		export _JP_JAVACMD_OPTS="${JAVACMD_OPTS}"
-		JAVACMD="@{javadir}-utils/java-wrapper"
-	    fi
-	    return 0
-	fi
-    done
+    if [ -n "${JAVA_HOME}" ]; then
+        for cmd in jre/sh/java jre/bin/java bin/java; do
+            JAVACMD="${JAVA_HOME}/${cmd}"
+            if [ -x "${JAVACMD}" ]; then
+                _log "Using configured JAVACMD: $JAVACMD"
+                if [ -n "${JAVACMD_OPTS}" ]; then
+                    _log "Using java-wrapper with extra options: ${JAVACMD_OPTS}"
+                    export _JP_JAVACMD="${JAVACMD}"
+                    export _JP_JAVACMD_OPTS="${JAVACMD_OPTS}"
+                    JAVACMD="@{javadir}-utils/java-wrapper"
+                fi
+                return 0
+            fi
+        done
+    fi
 
     JAVACMD=$(which java 2>/dev/null || :)
     if [ -x "${JAVACMD}" ]; then
