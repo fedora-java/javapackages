@@ -59,7 +59,6 @@ BASE_OPTIONS=%3\
 BASE_JARS="%(echo %4 | sed -e 's,:, ,g')"\
 \
 # Set parameters\
-set_jvm\
 set_classpath \\$BASE_JARS\
 set_flags \\$BASE_FLAGS\
 set_options \\$BASE_OPTIONS\
