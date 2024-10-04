@@ -124,28 +124,16 @@ _load_java_conf()
 }
 
 
-# Test default JRE/JVM roots if nothing is defined yet
-_set_java_home()
-{
-    if [ -n "${JAVA_HOME}" ]; then
-        return
-    fi
-
-    unset JAVA_HOME
-}
-
 # Set the java virtual machine
 set_jvm()
 {
-    _set_java_home
+    return 0
 }
 
 # Set the classpath
 set_classpath()
 {
     local IFS
-
-    _set_java_home
 
     # get local classpath first
     set -- "${@}" ${ADDITIONAL_JARS}
@@ -240,8 +228,6 @@ run()
 # Set JVM-related directories
 set_jvm_dirs()
 {
-    _set_java_home
-
     return 0
 }
 
