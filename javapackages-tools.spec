@@ -64,7 +64,7 @@ Requires:       mvn(org.apache.maven.plugins:maven-jar-plugin)
 Requires:       mvn(org.apache.maven.plugins:maven-resources-plugin)
 Requires:       mvn(org.apache.maven.plugins:maven-surefire-plugin)
 # Remove in Fedora 45
-Obsoletes:      maven-local < 7
+Obsoletes:      maven-local < 6.3.0
 Obsoletes:      maven-local-openjdk8 < 6.2.0-29
 Obsoletes:      maven-local-openjdk11 < 6.2.0-29
 Obsoletes:      maven-local-openjdk17 < 6.2.0-29
@@ -95,14 +95,14 @@ packaging in Linux distributions
 
 %package -n javapackages-local-openjdk21
 Summary:        Non-essential macros and scripts for Java packaging support
-Obsoletes:      javapackages-local < 7
+Obsoletes:      javapackages-local < 6.3.0
 Provides:       javapackages-local = %{version}-%{release}
 Requires:       javapackages-common = %{version}-%{release}
 Requires:       xmvn-tools
 # Java build systems don't have hard requirement on java-devel, so it should be there
 Requires:       java-21-openjdk-devel
 Requires:       xmvn-generator
-Obsoletes:      javapackages-generators < 7
+Obsoletes:      javapackages-generators < 6.3.0
 
 %description -n javapackages-local-openjdk21
 This package provides non-essential macros and scripts to support Java packaging.
