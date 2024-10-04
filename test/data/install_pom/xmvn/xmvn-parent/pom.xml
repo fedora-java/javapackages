@@ -86,7 +86,7 @@
     <plexusUtilsVersion>3.4.2</plexusUtilsVersion>
     <pluginToolsVersion>3.6.4</pluginToolsVersion>
     <slf4jVersion>2.0.0-alpha7</slf4jVersion>
-    <commonsCompressVersion>1.21</commonsCompressVersion>
+    <commonsCompressVersion>1.26.0</commonsCompressVersion>
 
     <!-- Build dependencies -->
     <apivizVersion>1.3.2.GA</apivizVersion>
