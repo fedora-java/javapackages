@@ -124,7 +124,7 @@ _load_java_conf()
 }
 
 
-# Set the java virtual machine
+# Obsolete, does nothing
 set_jvm()
 {
     return 0
@@ -151,8 +151,6 @@ set_javacmd()
     if [ -x "${JAVACMD}" ]; then
 	return
     fi
-
-    set_jvm
 
     # Add all sorts of jvm layouts here
     for cmd in jre/sh/java jre/bin/java bin/java; do
@@ -225,7 +223,7 @@ run()
     eval "exec \"\${JAVACMD}\" ${FLAGS} -classpath \"\${CLASSPATH}\" ${OPTIONS} \"\${MAIN_CLASS}\" \"\${@}\""
 }
 
-# Set JVM-related directories
+# Obsolete, does nothing
 set_jvm_dirs()
 {
     return 0
