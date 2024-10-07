@@ -171,14 +171,23 @@ set_javacmd()
 
     JAVACMD=$(which java 2>/dev/null || :)
     if [ -x "${JAVACMD}" ]; then
-	_log "Using JAVACMD from PATH: $JAVACMD"
-	if [ -n "${JAVACMD_OPTS}" ]; then
-	    _log "Using java-wrapper with extra options: ${JAVACMD_OPTS}"
-	    export _JP_JAVACMD="${JAVACMD}"
-	    export _JP_JAVACMD_OPTS="${JAVACMD_OPTS}"
-	    JAVACMD="@{javadir}-utils/java-wrapper"
-	fi
-	return 0
+            _log "Using JAVACMD from PATH: $JAVACMD"
+    else
+        if java -version >/dev/null 2>&1; then
+            JAVACMD="java"
+            _log "Using simple ${JAVACMD} call"
+        else
+            unset JAVACMD
+        fi
+    fi
+    if [ -n "${JAVACMD}" ]; then
+        if [ -n "${JAVACMD_OPTS}" ]; then
+            _log "Using java-wrapper with extra options: ${JAVACMD_OPTS}"
+            export _JP_JAVACMD="${JAVACMD}"
+            export _JP_JAVACMD_OPTS="${JAVACMD_OPTS}"
+            JAVACMD="@{javadir}-utils/java-wrapper"
+        fi
+        return 0
     fi
 
     _err "Failed to set JAVACMD"
