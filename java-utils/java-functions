@@ -169,7 +169,7 @@ set_javacmd()
         done
     fi
 
-    JAVACMD=$(which java 2>/dev/null || :)
+    JAVACMD=$(type -p java 2>/dev/null || :)
     if [ -x "${JAVACMD}" ]; then
             _log "Using JAVACMD from PATH: $JAVACMD"
     else
@@ -324,7 +324,7 @@ find_jar()
 {
     local IFS=:
     local artifact="${1}"
-    local cmd=$(which xmvn-resolve 2>/dev/null || :)
+    local cmd=$(type -p xmvn-resolve 2>/dev/null || :)
 
     # If artifact contains semicolon then assume it specifies Maven
     # artifact coordinates.
