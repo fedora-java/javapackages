@@ -42,7 +42,7 @@
 _log()
 {
     if [ -n "${JAVAPACKAGES_DEBUG}" ]; then
-	echo "${0}: ${@}" >&2
+        echo "${0}: ${@}" >&2
     fi
 }
 
@@ -59,12 +59,12 @@ _load_java_conf_file()
     local JNI_LIBDIR
 
     if [ -f "${1}" ]; then
-	_log "Loading config file: ${1}"
-	. "${1}"
+        _log "Loading config file: ${1}"
+        . "${1}"
 
-	_javadirs="${_javadirs}${_javadirs:+:}${JAVA_LIBDIR}:${JNI_LIBDIR}"
+        _javadirs="${_javadirs}${_javadirs:+:}${JAVA_LIBDIR}:${JNI_LIBDIR}"
     else
-	_log "Skipping config file ${1}: file does not exist"
+        _log "Skipping config file ${1}: file does not exist"
     fi
 }
 
@@ -83,16 +83,16 @@ _load_java_conf()
 
     _log "Java config directories are:"
     for javaconfdir; do
-	_log "  * ${javaconfdir}"
+        _log "  * ${javaconfdir}"
     done
 
     for javaconfdir; do
-	conf="${javaconfdir}/java.conf"
-	if [ ! -f "${conf}" ]; then
-	    _err "Java configuration directory ${javaconfdir} was ignored because configuration file ${conf} does not exist"
-	else
-	    _load_java_conf_file "${conf}"
-	fi
+        conf="${javaconfdir}/java.conf"
+        if [ ! -f "${conf}" ]; then
+            _err "Java configuration directory ${javaconfdir} was ignored because configuration file ${conf} does not exist"
+        else
+            _load_java_conf_file "${conf}"
+        fi
     done
 
     _load_java_conf_file "${HOME}/.java/java.conf"
@@ -100,10 +100,10 @@ _load_java_conf()
     _javadirs=${_javadirs:-@{javadir}:@{jnidir}}
 
     if [ -d "${java_home_save}" ]; then
-	JAVA_HOME="${java_home_save}"
+        JAVA_HOME="${java_home_save}"
     fi
     if [ -n "${java_opts_save}" ]; then
-	JAVACMD_OPTS="${java_opts_save}"
+        JAVACMD_OPTS="${java_opts_save}"
     fi
 
     if [ "_${JAVA_ABRT}" != "_off" -a -f "@{abrtlibdir}/libabrt-java-connector.so" ]; then
@@ -149,7 +149,7 @@ set_javacmd()
     local cmd
 
     if [ -x "${JAVACMD}" ]; then
-	return
+        return
     fi
 
     # Add all sorts of jvm layouts here
@@ -200,8 +200,8 @@ set_flags()
     FLAGS=""
     set -- "${@}" ${ADDITIONAL_FLAGS}
     while [ $# -gt 0 ]; do
-	FLAGS="${FLAGS}${FLAGS:+ }'$(echo "$1"|sed "s#[']#'\\\\''#g")'"
-	shift
+        FLAGS="${FLAGS}${FLAGS:+ }'$(echo "$1"|sed "s#[']#'\\\\''#g")'"
+        shift
     done
 }
 
@@ -211,8 +211,8 @@ set_options()
     OPTIONS=""
     set -- "${@}" ${ADDITIONAL_OPTIONS}
     while [ $# -gt 0 ]; do
-	OPTIONS="${OPTIONS}${OPTIONS:+ }'$(echo "$1"|sed "s#[']#'\\\\''#g")'"
-	shift
+        OPTIONS="${OPTIONS}${OPTIONS:+ }'$(echo "$1"|sed "s#[']#'\\\\''#g")'"
+        shift
     done
 }
 
@@ -222,12 +222,12 @@ run()
     set_javacmd
 
     if [ -n "${VERBOSE}" ]; then
-	echo "Java virtual machine used: ${JAVACMD}"
-	echo "classpath used: ${CLASSPATH}"
-	echo "main class used: ${MAIN_CLASS}"
-	echo "flags used: ${FLAGS}"
-	echo "options used: ${OPTIONS}"
-	echo "arguments used: ${@}"
+        echo "Java virtual machine used: ${JAVACMD}"
+        echo "classpath used: ${CLASSPATH}"
+        echo "main class used: ${MAIN_CLASS}"
+        echo "flags used: ${FLAGS}"
+        echo "options used: ${OPTIONS}"
+        echo "arguments used: ${@}"
     fi
 
     # let's start
@@ -330,37 +330,37 @@ find_jar()
     # artifact coordinates.
     set -- ${artifact}
     if [ ${#} -gt 1 ]; then
-	if [ -z "${cmd}" ]; then
+        if [ -z "${cmd}" ]; then
             echo "${0}: Unable to find xmvn-resolve." >&2
             echo "${0}: Make sure that xmvn-resolve package is installed." >&2
             return 1
-	fi
-	_log "Using xmvn-resolve: ${cmd}"
+        fi
+        _log "Using xmvn-resolve: ${cmd}"
 
-	"${cmd}" -c "${artifact}"
-	return ${?}
+        "${cmd}" -c "${artifact}"
+        return ${?}
     fi
 
     set -- ${_javaverdirs} ${_javadirs}
 
     _log "JAR search path is:"
     for dir; do
-	_log "  * ${dir}"
+        _log "  * ${dir}"
     done
 
     for artifact in ${artifact%.jar} ${artifact%-*} ${artifact%/*}; do
-	for dir; do
-	    _log "Trying file ${dir}/${artifact}.jar"
-	    if [ -r "${dir}/${artifact}.jar" ]; then
-		echo "${dir}/${artifact}.jar"
-		return 0
-	    fi
-	    _log "Trying dir  ${dir}/${artifact}/"
-	    if [ -d "${dir}/${artifact}" ]; then
-		echo "${dir}/${artifact}"
-		return 0
-	    fi
-	done
+        for dir; do
+            _log "Trying file ${dir}/${artifact}.jar"
+            if [ -r "${dir}/${artifact}.jar" ]; then
+                echo "${dir}/${artifact}.jar"
+                return 0
+            fi
+            _log "Trying dir  ${dir}/${artifact}/"
+            if [ -d "${dir}/${artifact}" ]; then
+                echo "${dir}/${artifact}"
+                return 0
+            fi
+        done
     done
 
     _err "Could not find ${artifact} Java extension for this JVM"
@@ -372,8 +372,8 @@ find_jar()
 check_java_env()
 {
     if [ -z "${JAVACMD}" ]; then
-	_err "JAVACMD must be set"
-	return 2
+        _err "JAVACMD must be set"
+        return 2
     fi
 
     return 0
