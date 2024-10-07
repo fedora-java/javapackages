@@ -22,7 +22,6 @@ Source:         https://github.com/fedora-java/javapackages/archive/%{version}.t
 Source21:       toolchains-openjdk21.xml
 
 BuildRequires:  coreutils
-BuildRequires:  which
 BuildRequires:  make
 BuildRequires:  rubygem-asciidoctor
 BuildRequires:  %{python_prefix}-devel
@@ -33,7 +32,6 @@ BuildRequires:  %{python_prefix}-pytest
 Requires:       javapackages-filesystem = %{version}-%{release}
 Requires:       coreutils
 Requires:       findutils
-Requires:       which
 
 Provides:       jpackage-utils = %{version}-%{release}
 
