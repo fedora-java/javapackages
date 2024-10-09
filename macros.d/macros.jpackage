@@ -10,11 +10,11 @@
 #==============================================================================
 # ---- default Java commands
 
-%ant            %{?jpb_env} JAVA_HOME=%{java_home} ant
-%jar            %{java_home}/bin/jar
-%java           %(. @{javadir}-utils/java-functions; set_javacmd; echo $JAVACMD)
-%javac          %{java_home}/bin/javac
-%javadoc        %{java_home}/bin/javadoc
+%ant            %{?jpb_env} %{?java_home:JAVA_HOME=%{java_home}} ant
+%jar            %{?java_home:%{java_home}/bin/}jar
+%java           %{?java_home:%{java_home}/bin/}java
+%javac          %{?java_home:%{java_home}/bin/}javac
+%javadoc        %{?java_home:%{java_home}/bin/}javadoc
 
 
 #
