@@ -37,7 +37,7 @@ cat > %{buildroot}%{_bindir}/%5 << EOF \
 # JPackage Project <http://www.jpackage.org/>\
 %{?java_home:
 # Set default JAVA_HOME
-export JAVA_HOME="\\${JAVA_HOME:-%{java_home}}"
+JAVA_HOME="\\${JAVA_HOME:-%{java_home}}"
 }\
 # Source functions library\
 . @{javadir}-utils/java-functions\
