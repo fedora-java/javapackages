@@ -76,8 +76,12 @@ expand depgenerators/fileattrs/osgi.attr
 expand depgenerators/fileattrs/maven.attr
 expand depgenerators/fileattrs/javadoc.attr
 
-while IFS== read -d' ' id path; do
-    echo "%java_home ${path}" >target/macros.fjava-"${id}"
+while IFS== read -d' ' java_id java_home; do
+    expand macros.d/macros.javapackages-binding target/macros.java-"${java_id}"
+    sed -i \
+	-e "s|@{java_id}|${java_id}|g" \
+	-e "s|@{java_home}|${java_home}|g" \
+	target/macros.java-"${java_id}"
 done <<<"${jvms}"
 
 manpage abs2rel

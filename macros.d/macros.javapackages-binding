@@ -1,0 +1,2 @@
+# Home directory for Java @{java_id}
+%java_home @{java_home}
