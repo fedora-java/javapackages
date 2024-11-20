@@ -138,9 +138,9 @@ inst_data target/find-jar.1 "${mandir}/man1"
 inst_data configs/configuration.xml "${m2home}"
 
 
-while IFS== read -d' ' id path; do
-    exec >files-local-"${id}"
-    inst_data target/macros.fjava-"${id}" "${rpmmacrodir}"
+while IFS== read -d' ' java_id java_path; do
+    exec >files-local-"${java_id}"
+    inst_data target/macros.java-"${java_id}" "${rpmmacrodir}"
 done <<<"${jvms}"
 
 
