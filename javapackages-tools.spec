@@ -100,6 +100,7 @@ Requires:       xmvn-tools
 # Java build systems don't have hard requirement on java-devel, so it should be there
 Requires:       java-21-openjdk-devel
 Requires:       xmvn-generator
+Requires:       (ant-openjdk21 if ant)
 Obsoletes:      javapackages-generators < 6.3.0
 
 %description -n javapackages-local-openjdk21
