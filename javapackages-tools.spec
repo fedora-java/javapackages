@@ -19,8 +19,6 @@ BuildArch:      noarch
 
 Source:         https://github.com/fedora-java/javapackages/archive/%{version}.tar.gz
 
-Source21:       toolchains-openjdk21.xml
-
 BuildRequires:  coreutils
 BuildRequires:  make
 BuildRequires:  rubygem-asciidoctor
@@ -48,12 +46,12 @@ install their content.
 
 %package -n maven-local-openjdk21
 Summary:        Macros and scripts for Maven packaging support
-RemovePathPostfixes: -openjdk21
 Requires:       java-21-openjdk-devel
 Provides:       maven-local = %{version}-%{release}
 Requires:       %{name} = %{version}-%{release}
 Requires:       javapackages-local-openjdk21 = %{version}-%{release}
 Requires:       xmvn-minimal
+Requires:       xmvn-toolchain-openjdk21
 Requires:       mvn(org.fedoraproject.xmvn:xmvn-mojo)
 # Common Maven plugins required by almost every build. It wouldn't make
 # sense to explicitly require them in every package built with Maven.
@@ -147,9 +145,6 @@ rm -rf %{buildroot}%{_sysconfdir}/ivy
 rm -rf %{buildroot}%{_sysconfdir}/ant.d
 %endif
 
-mkdir -p %{buildroot}%{maven_home}/conf/
-cp -p %{SOURCE21} %{buildroot}%{maven_home}/conf/toolchains.xml-openjdk21
-
 %if 0%{?flatpak}
 # make both /app (runtime deps) and /usr (build-only deps) builds discoverable
 sed -e '/^JAVA_LIBDIR=/s|$|:/usr/share/java|' \
@@ -185,8 +180,6 @@ ln -s %{_datadir}/java-utils %{buildroot}%{_usr}/share/java-utils
 %files -n javapackages-local-openjdk21 -f files-local-openjdk21
 
 %files -n maven-local-openjdk21
-%dir %{maven_home}/conf
-%{maven_home}/conf/toolchains.xml-openjdk21
 
 %if %{with ivy}
 %files -n ivy-local -f files-ivy
