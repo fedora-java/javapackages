@@ -80,3 +80,9 @@
 # Directory for Ivy XML files
 #
 %_ivyxmldir     %{_datadir}/ivy-xmls
+
+#
+# Directory containing binding symlinks
+# EXPERIMENTAL, subject to change or removal
+#
+%_jpbindingdir     %{_datadir}/jpbinding

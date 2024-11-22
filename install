@@ -89,6 +89,7 @@ dir "${jnidir}"
 dir "${javadocdir}"
 dir "${mavenpomdir}"
 dir "${ivyxmldir}"
+dir "${jpbindingdir}"
 dir "${datadir}/maven-metadata"
 dir "${prefix}/lib/eclipse"
 dir "${prefix}/lib/eclipse/features"
@@ -125,6 +126,7 @@ inst_config target/eclipse.conf "${javaconfdir}"
 
 inst_data target/java-functions "${javadir}-utils"
 inst_exec java-utils/java-wrapper "${javadir}-utils"
+inst_exec target/jp_binding.sh "${javadir}-utils"
 
 inst_data target/macros.jpackage "${rpmmacrodir}"
 

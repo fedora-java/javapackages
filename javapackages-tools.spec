@@ -9,6 +9,8 @@
 
 %global maven_home %{_usr}/share/xmvn
 
+%global _jpbindingdir %{_datadir}/jpbinding
+
 Name:           javapackages-tools
 Version:        [...]
 Release:        %autorelease
@@ -164,6 +166,36 @@ ln -s %{_datadir}/java-utils %{buildroot}%{_usr}/share/java-utils
 
 %check
 ./check
+
+%transfiletriggerin -- %{_jpbindingdir}
+shopt -s nullglob
+grep -E '^%{_jpbindingdir}/.*\.d/' | sed 's|%{_jpbindingdir}/\(.*\)/\(.*\)|\1 \2|' | while read dir tgt; do
+  lnk=${dir/%.d}
+  ln -sf "$dir/$tgt" %{_jpbindingdir}/"$lnk"
+done
+
+%transfiletriggerun -- %{_jpbindingdir}
+shopt -s nullglob
+grep -E '^%{_jpbindingdir}/.*\.d/' | sed 's|%{_jpbindingdir}/\(.*\)/\(.*\)|\1 \2|' | while read dir tgt; do
+  lnk=${dir/%.d}
+  was=$(readlink %{_jpbindingdir}/"$lnk" || :)
+  if [[ "$was" = "$dir/$tgt" ]]; then
+    unlink %{_jpbindingdir}/"$lnk"
+  fi
+done
+
+%transfiletriggerpostun -- %{_jpbindingdir}
+shopt -s nullglob
+for bindd in %{_jpbindingdir}/*.d/; do
+  lnk=${bindd/%.d\/}
+  if ! [[ -e "$lnk" ]]; then
+    for ftgt in "$bindd"*; do
+      tgt=$(realpath -m -s --relative-to=%{_jpbindingdir} "$ftgt")
+      ln -sf "$tgt" "$lnk"
+      break
+    done
+  fi
+done
 
 %files -f files-tools
 %if 0%{?flatpak}

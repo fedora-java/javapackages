@@ -67,6 +67,7 @@ expand macros.d/macros.jpackage
 expand macros.d/macros.fjava
 expand macros.d/macros.javapackages-compat
 expand java-utils/java-functions
+expand java-utils/jp_binding.sh
 expand depgenerators/maven.req
 expand depgenerators/maven.prov
 expand depgenerators/osgi.req
