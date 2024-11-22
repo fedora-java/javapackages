@@ -68,3 +68,10 @@ run "\\$@"\
 EOF\
 chmod 755 %{buildroot}%{_bindir}/%5\
 %{nil}
+
+
+#
+# Creates binding subpackages
+# EXPERIMENTAL, subject to change or removal
+#
+%jp_binding @{javadir}-utils/jp_binding.sh --rpm-name %{name}

@@ -45,6 +45,7 @@ expand()
         -e "s|@{javadir}|${javadir}|g" \
         -e "s|@{jnidir}|${jnidir}|g" \
         -e "s|@{jvmdir}|${jvmdir}|g" \
+        -e "s|@{jpbindingdir}|${jpbindingdir}|g" \
         -e "s|@{m2home}|${m2home}|g" \
         -e "s|@{prefix}|${prefix}|g" \
         -e "s|@{rundir}|${rundir}|g" \
