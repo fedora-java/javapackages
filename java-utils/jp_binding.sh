@@ -39,7 +39,7 @@ if [ -z "${RPM_BUILD_ROOT:-}" ]; then
     exit 1
 fi
 if [ -z "${RPM_SPECPARTS_DIR:-}" ]; then
-    echo RPM_BUILD_ROOT env variable has not been set >&2
+    echo RPM_SPECPARTS_DIR env variable has not been set >&2
     exit 1
 fi
 
