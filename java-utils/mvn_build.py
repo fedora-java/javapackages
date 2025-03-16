@@ -127,7 +127,7 @@ if __name__ == "__main__":
         mvn_args.append("-Dxmvn.compat=20-rpmbuild-raw")
 
     if options.debug:
-        mvn_args.append("--debug")
+        mvn_args.append("-X")
 
     if options.xmvn_debug or options.debug:
         mvn_args.append("-Dxmvn.debug")
