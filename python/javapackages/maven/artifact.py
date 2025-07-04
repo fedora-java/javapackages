@@ -191,7 +191,7 @@ class AbstractArtifact(object):
                getattr(self, member) and
                isinstance(getattr(self, member), str)):
                     curr_value = getattr(self, member)
-                    prog = re.compile("\$\{([^}]+)\}")
+                    prog = re.compile("\\$\{([^}]+)\}")
                     props = prog.findall(curr_value)
                     for key in props:
                         try:
