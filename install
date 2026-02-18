@@ -136,6 +136,7 @@ inst_data man/diff-jars.1 "${mandir}/man1"
 inst_data target/rebuild-jar-repository.1 "${mandir}/man1"
 inst_data target/shade-jar.1 "${mandir}/man1"
 inst_data target/find-jar.1 "${mandir}/man1"
+inst_data target/jpackage_script.7 "${mandir}/man7"
 
 inst_data configs/configuration.xml "${m2home}"
 

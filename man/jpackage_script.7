@@ -1,0 +1,105 @@
+.Dd February 18, 2026
+.Dt JPACKAGE_SCRIPT 7
+.Os
+.Sh NAME
+.Nm jpackage_script
+.Nd generate a shell launcher script for a Java application in an RPM build
+.Sh SYNOPSIS
+.Nm \&%jpackage_script
+.Op Fl h
+.Op Fl c Ar config_file
+.Ar main_class
+.Ar flags
+.Ar options
+.Ar jars
+.Ar script_name
+.Sh DESCRIPTION
+The
+.Nm
+RPM macro creates a shell launcher script that prepares the runtime
+environment and then invokes a Java application.
+It is typically invoked during the
+.Cm %install
+phase of an RPM build.
+The script is written to
+.Pa %{buildroot}%{_bindir}/ Ns Ar script_name .
+.Pp
+The generated script uses helper functions from
+.Pa %{javadir}-utils/java-functions
+to construct the classpath, process flags and options, and execute the JVM.
+It also reads optional configuration files to allow system-wide and per-user
+customization.
+.Pp
+If the RPM macro
+.Nm \&%{java_home}
+is defined at build time, the generated script hardcodes its value as the
+default
+.Ev JAVA_HOME .
+If
+.Nm \&%{java_home}
+is not defined, the generated script locates the
+.Cm java
+executable using the user's
+.Ev PATH .
+Users can override the selected Java runtime by setting
+.Ev JAVA_HOME
+in their environment.
+.Pp
+When the
+.Fl h
+option is specified, the macro does not embed any default
+.Ev JAVA_HOME
+setting in the generated script, leaving runtime selection entirely to the
+user environment.
+.Sh OPTIONS
+.Bl -tag -width Ds
+.It Fl h
+Do not set a default value for
+.Ev JAVA_HOME
+in the generated script.
+The script will rely on the user's environment or lookup via
+.Ev PATH .
+.It Fl c Ar config_file
+Specify the name of the configuration file sourced by the generated script
+instead of the default
+.Pa %{_sysconfdir}/java/%{name}.conf .
+.El
+.Sh ARGUMENTS
+.Bl -tag -width Ds
+.It Ar main_class
+Fully qualified name of the Java main class to execute.
+.It Ar flags
+Whitespace-separated JVM flags to apply by default.
+.It Ar options
+Whitespace-separated application options to apply by default.
+.It Ar jars
+A colon-separated list of JAR names.
+Each element is processed with
+.Cm build-classpath
+to produce the runtime classpath.
+.It Ar script_name
+Name of the launcher script to create in
+.Pa %{_bindir} .
+.El
+.Sh FILES
+.Bl -tag -width Ds
+.It Pa %{javadir}-utils/java-functions
+Helper functions used by the generated launcher script.
+.It Pa %{_sysconfdir}/java/%{name}.conf
+Default system-wide configuration sourced by the generated script.
+.It Pa $HOME/.%{name}rc
+Optional per-user configuration sourced by the generated script.
+.El
+.Sh EXAMPLES
+Generate the
+.Nm msv
+launcher with the main class
+.Dq msv.textui.Driver
+and a classpath assembled from multiple libraries:
+.Dl %jpackage_script msv.textui.Driver \(dq\(dq \(dq\(dq msv-msv:msv-xsdlib:relaxngDatatype:isorelax msv
+.Sh SEE ALSO
+.Xr build-classpath 1 ,
+.Xr rpm-macros 7 ,
+.Xr rpm 8
+.Sh AUTHORS
+.An Mikolaj Izdebski Aq Mt mizdebsk@redhat.com
