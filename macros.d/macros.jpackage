@@ -33,7 +33,7 @@ install -d -m 755 %{buildroot}%{_bindir} \
 cat > %{buildroot}%{_bindir}/%5 << EOF \
 #!/bin/bash\
 #\
-# %{name} script\
+# %5 script\
 # JPackage Project <http://www.jpackage.org/>\
 %{?java_home:\
 # Set default JAVA_HOME\
