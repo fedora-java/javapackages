@@ -27,18 +27,20 @@
 # %3    options
 # %4    jars (separated by ':')
 # %5    the name of script you wish to create
+# [-h]
+#       do not set default JAVA_HOME
 #
-%jpackage_script() \
+%jpackage_script(h) \
 install -d -m 755 %{buildroot}%{_bindir} \
 cat > %{buildroot}%{_bindir}/%5 << EOF \
 #!/bin/bash\
 #\
 # %5 script\
 # JPackage Project <http://www.jpackage.org/>\
-%{?java_home:\
+%{!-h:%{?java_home:\
 # Set default JAVA_HOME\
 JAVA_HOME="\\${JAVA_HOME:-%{java_home}}"\
-}\
+}}\
 # Source functions library\
 . @{javadir}-utils/java-functions\
 \
