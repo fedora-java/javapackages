@@ -32,10 +32,8 @@ jobs:
         with:
           python-version: '3.10'
       - name: Install required Python packages
-        run: pip install -r requirements.txt -r test-requirements.txt codecov
+        run: pip install -r requirements.txt -r test-requirements.txt
       - name: Run configure script
         run: ./configure
       - name: Run check script
         run: ./check
-      - name: Upload coverage report to Codecov
-        uses: codecov/codecov-action@v5.5.2
