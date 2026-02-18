@@ -29,8 +29,10 @@
 # %5    the name of script you wish to create
 # [-h]
 #       do not set default JAVA_HOME
+# [-c <config file name>]
+#       name of the configuration file
 #
-%jpackage_script(h) \
+%jpackage_script(c:h) \
 install -d -m 755 %{buildroot}%{_bindir} \
 cat > %{buildroot}%{_bindir}/%5 << EOF \
 #!/bin/bash\
@@ -45,13 +47,13 @@ JAVA_HOME="\\${JAVA_HOME:-%{java_home}}"\
 . @{javadir}-utils/java-functions\
 \
 # Source system prefs\
-if [ -f %{_sysconfdir}/java/%{name}.conf ] ; then\
-  . %{_sysconfdir}/java/%{name}.conf\
+if [ -f %{_sysconfdir}/java/%{-c*}%{!-c:%{name}}.conf ] ; then\
+  . %{_sysconfdir}/java/%{-c*}%{!-c:%{name}}.conf\
 fi\
 \
 # Source user prefs\
-if [ -f \\$HOME/.%{name}rc ] ; then\
-  . \\$HOME/.%{name}rc\
+if [ -f \\$HOME/.%{-c*}%{!-c:%{name}}rc ] ; then\
+  . \\$HOME/.%{-c*}%{!-c:%{name}}rc\
 fi\
 \
 # Configuration\
