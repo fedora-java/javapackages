@@ -203,41 +203,42 @@ inst_data java-utils/maven_depmap.py "${javadir}-utils"
 
 inst_data target/macros.javapackages-compat "${rpmmacrodir}"
 
-exec >files-generators
+if $with_generators; then
+    exec >files-generators
 
-dir "${rpmconfigdir}/fileattrs"
+    dir "${rpmconfigdir}/fileattrs"
 
-inst_exec target/maven.prov "${rpmconfigdir}" maven.prov
-inst_exec target/maven.req "${rpmconfigdir}" maven.req
-inst_exec target/osgi.prov "${rpmconfigdir}" osgi.prov
-inst_exec target/osgi.req "${rpmconfigdir}" osgi.req
-inst_exec target/javadoc.req "${rpmconfigdir}" javadoc.req
+    inst_exec target/maven.prov "${rpmconfigdir}" maven.prov
+    inst_exec target/maven.req "${rpmconfigdir}" maven.req
+    inst_exec target/osgi.prov "${rpmconfigdir}" osgi.prov
+    inst_exec target/osgi.req "${rpmconfigdir}" osgi.req
+    inst_exec target/javadoc.req "${rpmconfigdir}" javadoc.req
 
-inst_data target/maven.attr "${rpmconfigdir}/fileattrs" maven.attr
-inst_data target/osgi.attr "${rpmconfigdir}/fileattrs" osgi.attr
-inst_data target/javadoc.attr "${rpmconfigdir}/fileattrs" javadoc.attr
+    inst_data target/maven.attr "${rpmconfigdir}/fileattrs" maven.attr
+    inst_data target/osgi.attr "${rpmconfigdir}/fileattrs" osgi.attr
+    inst_data target/javadoc.attr "${rpmconfigdir}/fileattrs" javadoc.attr
 
-inst_config etc/javapackages-config.json "${javaconfdir}"
-
+    inst_config etc/javapackages-config.json "${javaconfdir}"
+fi
 
 exec >files-maven
 
 # Nothing
 
 
-exec >files-ivy
+if $with_ivy; then
+    exec >files-ivy
+    dir "${sysconfdir}/ivy"
+    inst_data configs/ivy-local-classpath "${sysconfdir}/ant.d"
+    inst_data configs/ivysettings.xml "${sysconfdir}/ivy"
+fi
 
-dir "${sysconfdir}/ivy"
-
-inst_data configs/ivy-local-classpath "${sysconfdir}/ant.d"
-inst_data configs/ivysettings.xml "${sysconfdir}/ivy"
-
-
-exec >files-gradle
-
-inst_exec target/gradle-local "${bindir}"
-inst_data gradle/init.gradle "${datadir}/gradle-local"
-inst_data target/gradle_build.7 "${mandir}/man7"
+if $with_gradle; then
+    exec >files-gradle
+    inst_exec target/gradle-local "${bindir}"
+    inst_data gradle/init.gradle "${datadir}/gradle-local"
+    inst_data target/gradle_build.7 "${mandir}/man7"
+fi
 
 exec >files-python
 (cd ./python && "${pyinterpreter}" setup.py install -O1 --skip-build --prefix "${prefix}" --root "${DEST}") >&2
