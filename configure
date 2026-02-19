@@ -70,6 +70,23 @@ vars_re=$(echo $vars | sed 's/ /\\|/g')
 eval $(for _; do echo "$_"; done |
     sed -n 's/^--\('"$vars_re"'\)=\(.*\)$/\1="\2"/;T;p')
 
+conds="
+ivy
+gradle
+generators
+"
+
+for _ in $conds; do
+    eval "with_$_=true"
+done
+
+conds_re=$(echo $conds | sed 's/ /\\|/g')
+condvars_re=with_$(echo $conds | sed 's/ /\\|with_/g')
+
+eval $(for _; do echo "$_"; done |
+    sed -n 's/^--without-\('"$conds_re"'\)$/with_\1=false/;T;p')
+
+
 eval $(for _; do echo "$_"; done |
     sed -n 's/^--jvm=\([^=]*\)=\(.*\)$/jvms="${jvms}\1=\2 "/;T;p')
 
@@ -90,5 +107,5 @@ test -z "${abrtlibdir}" && abrtlibdir="${prefix}/lib/abrt-java-connector"
 
 eval $(sed -n 's/^%_\('"$vars_re"'\)\ *\(.*\)$/\1="\2"/;T;s/%{_\(.*}\)/${\1/;p' macros.d/macros.javapackages-filesystem)
 
-set | sed -n 's/^\('"$vars_re"'\)=/&/;T;p' >config.status
+set | sed -n 's/^\('"$vars_re\\|$condvars_re"'\)=/&/;T;p' >config.status
 echo "jvms=\"${jvms}\"" >>config.status
