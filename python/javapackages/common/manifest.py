@@ -67,6 +67,9 @@ class Manifest(object):
             return None
         content = mf.read()
         mf.close()
+        # Unfold continuation lines before decoding so split multibyte UTF-8
+        # characters are reconstructed prior to decoding.
+        content = self._join_continuation_lines_bytes(content)
         return content.decode("utf-8")
 
     def get_requires(self):
@@ -91,15 +94,17 @@ class Manifest(object):
                 version = ".".join(versions)
         return symbolicName, version
 
-    def _normalize_manifest(self):
-        lines = []
-        manifest = self._manifest.splitlines()
-        for line in manifest:
-            if line.startswith(' '):
-                lines[-1] += line.strip()
+    def _join_continuation_lines_bytes(self, data):
+        logical_lines = []
+        for line in data.splitlines():
+            if line.startswith(b' ') and logical_lines:
+                logical_lines[-1] += line[1:]
             else:
-                lines.append(line.strip())
-        return lines
+                logical_lines.append(line)
+        return b"\n".join(logical_lines)
+
+    def _normalize_manifest(self):
+        return [line.strip() for line in self._manifest.splitlines()]
 
     def _parse_manifest(self):
         headers = {}
